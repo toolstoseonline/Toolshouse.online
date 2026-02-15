@@ -1,694 +1,727 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html lang="en">
 <head>
-  <meta charset='utf-8'/>
-  <meta content='width=device-width, initial-scale=1, maximum-scale=1' name='viewport'/>
-  <title><data:blog.pageTitle/></title>
-  
-  <!-- Google Fonts -->
-  <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap' rel='stylesheet'/>
-  
-  <!-- Font Awesome -->
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'/>
-  
-  <style type='text/css'>
-    /* ===== RESET & VARIABLES ===== */
-    :root {
-      --primary: #6C63FF;
-      --secondary: #FF6B6B;
-      --bg-gradient: linear-gradient(145deg, #f9faff 0%, #f0f3fd 100%);
-      --text-dark: #2f2e41;
-      --text-light: #5d5a7a;
-      --white: #ffffff;
-      --shadow: 0 20px 30px -8px rgba(108, 99, 255, 0.12);
-      --shadow-hover: 0 30px 40px -6px rgba(108, 99, 255, 0.28);
-      --border-radius: 32px;
-      --border-radius-sm: 40px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools house online 2 | AI & media tools</title>
+    <!-- Google Fonts (Poppins) & Font Awesome icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ==================== style.css ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+        body {
+            background: linear-gradient(145deg, #f9faff 0%, #f0f3fd 100%);
+            color: #2d2d4e;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
 
-    body {
-      background: var(--bg-gradient);
-      color: var(--text-dark);
-      line-height: 1.5;
-      overflow-x: hidden;
-    }
+        /* ---------- sticky header ---------- */
+        .header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.1);
+            z-index: 1000;
+            padding: 0.8rem 2rem;
+            transition: all 0.3s ease;
+        }
 
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    /* ===== HEADER ===== */
-    .header-wrapper {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 8px 20px rgba(108, 99, 255, 0.08);
-      padding: 12px 0;
-    }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6C63FF, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
 
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+        }
 
-    .logo {
-      font-size: 1.9rem;
-      font-weight: 700;
-      background: linear-gradient(130deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.5px;
-    }
+        .nav-menu a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #2d2d4e;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
 
-    .logo a {
-      color: transparent;
-      text-decoration: none;
-    }
+        .nav-menu a:hover {
+            color: #6C63FF;
+        }
 
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-      list-style: none;
-    }
+        .btn {
+            border: none;
+            background: transparent;
+            font-weight: 500;
+            padding: 0.5rem 1.4rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            border: 2px solid transparent;
+        }
 
-    .nav-links a {
-      text-decoration: none;
-      font-weight: 500;
-      color: var(--text-dark);
-      transition: color 0.2s;
-      font-size: 1rem;
-    }
-    
-    .nav-links a:hover { 
-      color: var(--primary); 
-    }
+        .btn-login {
+            background: white;
+            color: #6C63FF;
+            border-color: #6C63FF;
+        }
 
-    .auth-btns {
-      display: flex;
-      gap: 12px;
-    }
-    
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--primary);
-      color: var(--primary);
-      padding: 8px 20px;
-      border-radius: var(--border-radius-sm);
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-    
-    .btn-outline:hover {
-      background: var(--primary);
-      color: var(--white);
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(108,99,255,0.3);
-    }
-    
-    .btn-primary {
-      background: var(--primary);
-      border: none;
-      color: var(--white);
-      padding: 8px 24px;
-      border-radius: var(--border-radius-sm);
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.25s;
-      border: 1.5px solid var(--primary);
-    }
-    
-    .btn-primary:hover {
-      background: #5a52d9;
-      border-color: #5a52d9;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 20px rgba(108,99,255,0.35);
-    }
+        .btn-login:hover {
+            background: #6C63FF;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+        }
 
-    .hamburger {
-      display: none;
-      font-size: 28px;
-      cursor: pointer;
-      color: var(--primary);
-      background: none;
-      border: none;
-    }
+        .btn-signup {
+            background: #6C63FF;
+            color: white;
+        }
 
-    /* ===== HERO SECTION ===== */
-    .hero-section {
-      padding: 70px 0 90px;
-      text-align: center;
-    }
-    
-    .hero-title {
-      font-size: 3.3rem;
-      font-weight: 700;
-      background: linear-gradient(120deg, var(--text-dark), var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      max-width: 900px;
-      margin: 0 auto 24px;
-      line-height: 1.2;
-    }
-    
-    .hero-subtitle {
-      font-size: 1.3rem;
-      color: var(--text-light);
-      margin-bottom: 36px;
-    }
-    
-    .btn-hero {
-      background: var(--secondary);
-      border: none;
-      color: var(--white);
-      padding: 16px 48px;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      box-shadow: 0 16px 30px rgba(255,107,107,0.3);
-      transition: 0.3s;
-      cursor: pointer;
-    }
-    
-    .btn-hero:hover {
-      background: #f55b5b;
-      transform: scale(1.05) translateY(-4px);
-      box-shadow: 0 24px 36px rgba(255,107,107,0.4);
-    }
+        .btn-signup:hover {
+            background: #5a52d9;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
 
-    /* ===== SECTION TITLES ===== */
-    .section-title {
-      font-size: 2.4rem;
-      font-weight: 600;
-      margin-bottom: 48px;
-      text-align: center;
-      color: var(--text-dark);
-    }
-    
-    .section-title span {
-      background: linear-gradient(130deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+        /* mobile hamburger */
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #6C63FF;
+        }
 
-    /* ===== CARD GRID ===== */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 30px;
-      margin-bottom: 60px;
-    }
-    
-    .tool-card {
-      background: var(--white);
-      border-radius: var(--border-radius);
-      padding: 28px 20px;
-      box-shadow: var(--shadow);
-      transition: all 0.25s ease;
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.6);
-    }
-    
-    .tool-card:hover {
-      transform: translateY(-12px);
-      box-shadow: var(--shadow-hover);
-    }
-    
-    .tool-card i {
-      font-size: 2.8rem;
-      background: linear-gradient(140deg, rgba(108,99,255,0.2), rgba(255,107,107,0.2));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: var(--primary);
-      margin-bottom: 18px;
-    }
-    
-    .tool-card h3 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-    }
-    
-    .tool-card p {
-      font-size: 0.95rem;
-      color: var(--text-light);
-      margin-bottom: 24px;
-    }
-    
-    .card-btn {
-      background: transparent;
-      border: 1.5px solid var(--primary);
-      color: var(--primary);
-      padding: 8px 20px;
-      border-radius: 60px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    
-    .card-btn:hover {
-      background: var(--primary);
-      color: var(--white);
-    }
+        /* ---------- hero ---------- */
+        .hero {
+            max-width: 1200px;
+            margin: 3rem auto 4rem;
+            padding: 2rem 2rem;
+            text-align: center;
+        }
 
-    /* ===== FEATURES GRID ===== */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin: 60px 0 80px;
-    }
-    
-    .feature-item {
-      background: var(--white);
-      border-radius: 28px;
-      padding: 30px 16px;
-      text-align: center;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.02);
-    }
-    
-    .feature-item i {
-      font-size: 2.6rem;
-      color: var(--secondary);
-      margin-bottom: 12px;
-    }
-    
-    .feature-item h4 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: var(--text-dark);
-    }
+        .hero h1 {
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(145deg, #1e1e3f, #6C63FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
 
-    /* ===== CONTACT FORM ===== */
-    .contact-form {
-      max-width: 680px;
-      margin: 0 auto 70px;
-      background: var(--white);
-      border-radius: 48px;
-      padding: 48px 42px;
-      box-shadow: 0 30px 40px -20px rgba(108,99,255,0.2);
-    }
-    
-    .form-group {
-      margin-bottom: 24px;
-    }
-    
-    input, textarea {
-      width: 100%;
-      padding: 16px 22px;
-      border-radius: 44px;
-      border: 1px solid #e2e0f0;
-      font-size: 1rem;
-      transition: 0.2s;
-      background: #fcfcff;
-    }
-    
-    input:focus, textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(108,99,255,0.15);
-    }
-    
-    .btn-submit {
-      background: var(--primary);
-      color: var(--white);
-      border: none;
-      padding: 16px 38px;
-      border-radius: 44px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    
-    .btn-submit:hover {
-      background: var(--secondary);
-      transform: scale(1.02);
-    }
+        .hero p {
+            font-size: 1.3rem;
+            color: #5a5a7a;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
 
-    /* ===== FOOTER ===== */
-    .footer {
-      background: var(--white);
-      padding: 48px 0 24px;
-      border-radius: 60px 60px 0 0;
-      box-shadow: 0 -20px 40px rgba(0,0,0,0.02);
-    }
-    
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1.5fr;
-      gap: 40px;
-      margin-bottom: 32px;
-    }
-    
-    .social-icons i {
-      font-size: 1.8rem;
-      margin-right: 22px;
-      color: var(--primary);
-      transition: 0.2s;
-      cursor: pointer;
-    }
-    
-    .social-icons i:hover { 
-      color: var(--secondary); 
-      transform: translateY(-5px); 
-    }
-    
-    .copyright {
-      text-align: center;
-      border-top: 1px solid #eaeaf5;
-      padding-top: 28px;
-      color: #7a78a0;
-    }
+        .btn-hero {
+            background: #FF6B6B;
+            color: white;
+            padding: 0.9rem 2.8rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 20px 30px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s;
+        }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 900px) {
-      .nav-links { display: none; }
-      .hamburger { display: block; }
-      .auth-btns { gap: 8px; }
-      .hero-title { font-size: 2.6rem; }
-      .feature-grid { grid-template-columns: repeat(2,1fr); }
-      .footer-grid { grid-template-columns: 1fr; }
-    }
-    
-    @media (max-width: 550px) {
-      .auth-btns .btn-outline, 
-      .auth-btns .btn-primary { 
-        padding: 6px 16px; 
-        font-size: 0.9rem; 
-      }
-      .hero-title { font-size: 2rem; }
-      .card-grid { grid-template-columns: 1fr; }
-    }
+        .btn-hero:hover {
+            background: #ff5252;
+            transform: translateY(-6px);
+            box-shadow: 0 25px 35px rgba(255, 107, 107, 0.5);
+        }
 
-    /* ===== ANIMATIONS ===== */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    
-    .fade-up.appear {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid var(--primary);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 0.8s linear infinite;
-      margin: 20px auto;
-    }
-    
-    @keyframes spin { 
-      0% { transform: rotate(0deg); } 
-      100% { transform: rotate(360deg); } 
-    }
-    
-    .hide { display: none; }
-  </style>
+        /* ---------- sections general ---------- */
+        .section {
+            max-width: 1300px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            color: #2d2d4e;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #6C63FF, #FF6B6B);
+            margin: 0.5rem auto 0;
+            border-radius: 4px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 18px 35px rgba(108, 99, 255, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 28px 45px rgba(108, 99, 255, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 2.8rem;
+            color: #6C63FF;
+            margin-bottom: 1.2rem;
+        }
+
+        .tool-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-card p {
+            color: #6b6b8b;
+            font-size: 0.9rem;
+            margin: 0.5rem 0 1.8rem;
+        }
+
+        .btn-card {
+            background: white;
+            border: 2px solid #6C63FF;
+            color: #6C63FF;
+            padding: 0.5rem 1.4rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-card:hover {
+            background: #6C63FF;
+            color: white;
+        }
+
+        /* feature boxes */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.02);
+            border: 1px solid rgba(108, 99, 255, 0.1);
+            transition: 0.2s;
+        }
+
+        .feature-item i {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #6C63FF, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.7rem;
+        }
+
+        .feature-item h4 {
+            font-weight: 600;
+        }
+
+        /* contact form */
+        .contact-form {
+            max-width: 650px;
+            margin: 2rem auto 0;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 40px;
+            box-shadow: 0 25px 45px rgba(108,99,255,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 1rem 1.4rem;
+            border: 1px solid #e0e0ec;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .form-group textarea {
+            border-radius: 30px;
+            resize: vertical;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #6C63FF;
+            box-shadow: 0 0 0 4px rgba(108,99,255,0.15);
+        }
+
+        .btn-submit {
+            background: #6C63FF;
+            color: white;
+            border: none;
+            padding: 1rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #4f48d4;
+            transform: scale(1.02);
+        }
+
+        .error-message {
+            color: #FF6B6B;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            padding-left: 1rem;
+        }
+
+        /* footer */
+        .footer {
+            background: #1e1e2f;
+            color: #ddd;
+            padding: 3rem 2rem 1.5rem;
+            border-radius: 60px 60px 0 0;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+            gap: 2.5rem;
+        }
+
+        .footer-col p {
+            margin: 1rem 0;
+            color: #b0b0d0;
+        }
+
+        .footer-col .social-icons i {
+            font-size: 1.5rem;
+            margin-right: 1.2rem;
+            color: #b0b0d0;
+            transition: 0.2s;
+        }
+
+        .footer-col .social-icons i:hover {
+            color: #FF6B6B;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2.5rem;
+            color: #8f8fb1;
+            font-size: 0.95rem;
+        }
+
+        /* loading animation (simple) */
+        .loading {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #6C63FF, #FF6B6B, #6C63FF);
+            background-size: 200% auto;
+            animation: loadingShimmer 1.5s ease infinite;
+            z-index: 9999;
+            display: none;
+        }
+
+        @keyframes loadingShimmer {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* mobile responsive */
+        @media (max-width: 950px) {
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                background: rgba(255,255,255,0.95);
+                backdrop-filter: blur(15px);
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                padding: 2rem;
+                box-shadow: 0 30px 40px rgba(0,0,0,0.1);
+                border-radius: 0 0 40px 40px;
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.8rem;
+            }
+            .hamburger {
+                display: block;
+            }
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .tool-card {
+                padding: 1.5rem;
+            }
+            .section {
+                padding: 0 1.2rem;
+            }
+        }
+
+        /* scroll animation (fade-up) */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
-
 <body>
-  <!-- HEADER SECTION -->
-  <div class='header-wrapper'>
-    <div class='container header-inner'>
-      <div class='logo'>
-        <a href='/'>Toolshouse.Online</a>
-      </div>
-      <nav class='nav-menu'>
-        <ul class='nav-links'>
-          <li><a href='#home'>Home</a></li>
-          <li><a href='#image-tools'>Image Tools</a></li>
-          <li><a href='#video-tools'>Video Tools</a></li>
-          <li><a href='#document-tools'>Document Tools</a></li>
-          <li><a href='#ai-tools'>AI Tools</a></li>
-          <li><a href='#contact'>Contact</a></li>
-        </ul>
-        <div class='auth-btns'>
-          <button class='btn-outline' onclick="window.location.href='/search'">Login</button>
-          <button class='btn-primary' onclick="window.location.href='/p/signup.html'">Sign Up</button>
+    <!-- simple loading bar (javascript triggered) -->
+    <div class="loading" id="loadingBar"></div>
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="header" id="header">
+        <div class="header-container">
+            <div class="logo">Toolshose.Online</div>
+            <nav class="nav-menu" id="navMenu">
+                <a href="#home">Home</a>
+                <a href="#image-tools">Image Tools</a>
+                <a href="#video-tools">Video Tools</a>
+                <a href="#document-tools">Document Tools</a>
+                <a href="#ai-tools">AI Tools</a>
+                <a href="#contact">Contact</a>
+                <div class="auth-buttons">
+                    <button class="btn btn-login">Login</button>
+                    <button class="btn btn-signup">Sign Up</button>
+                </div>
+            </nav>
+            <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
         </div>
-        <button class='hamburger' id='hamburgerBtn'><i class='fas fa-bars'></i></button>
-      </nav>
-    </div>
-  </div>
+    </header>
 
-  <!-- MAIN CONTENT -->
-  <main>
-    <!-- HERO SECTION -->
-    <section id='home' class='hero-section'>
-      <div class='container'>
-        <h1 class='hero-title'>All-in-One Free AI & Media Tools</h1>
-        <p class='hero-subtitle'>Convert, compress, edit, generate — 40+ powerful tools, 100% free.</p>
-        <button class='btn-hero get-started'>Get Started <i class='fas fa-arrow-right'></i></button>
-      </div>
-    </section>
+    <main>
+        <!-- ==================== HERO ==================== -->
+        <section id="home" class="hero fade-up">
+            <h1>All-in-One Free AI & Media Tools</h1>
+            <p>Convert, compress, edit, and generate — 50+ powerful tools at your fingertips. 100% free, no sign-up required.</p>
+            <button class="btn-hero" onclick="document.getElementById('image-tools').scrollIntoView({behavior:'smooth'});">Get Started</button>
+        </section>
 
-    <!-- IMAGE TOOLS SECTION -->
-    <section id='image-tools' class='container fade-up'>
-      <h2 class='section-title'><span>Image</span> tools</h2>
-      <div class='card-grid'>
-        <div class='tool-card'><i class='fas fa-file-image'></i><h3>PNG/JPG Converter</h3><p>Convert any image format in seconds</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-compress-alt'></i><h3>Image Compressor</h3><p>Reduce size, keep quality</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-eraser'></i><h3>Background Remover</h3><p>AI-powered automatic removal</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-expand-arrows-alt'></i><h3>Image Resizer</h3><p>Resize for any platform</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-fill-drip'></i><h3>Watermark Tool</h3><p>Protect your images</p><button class='card-btn'>Open Tool</button></div>
-      </div>
-    </section>
+        <!-- ==================== FEATURES ==================== -->
+        <section class="section">
+            <div class="features-grid">
+                <div class="feature-item fade-up"><i class="fas fa-coins"></i><h4>100% Free</h4><p>No hidden fees</p></div>
+                <div class="feature-item fade-up"><i class="fas fa-bolt"></i><h4>Fast Processing</h4><p>Under 2 seconds</p></div>
+                <div class="feature-item fade-up"><i class="fas fa-lock"></i><h4>Secure</h4><p>256-bit encrypted</p></div>
+                <div class="feature-item fade-up"><i class="fas fa-robot"></i><h4>AI Powered</h4><p>Smart & accurate</p></div>
+            </div>
+        </section>
 
-    <!-- VIDEO TOOLS SECTION -->
-    <section id='video-tools' class='container fade-up'>
-      <h2 class='section-title'><span>Video</span> tools</h2>
-      <div class='card-grid'>
-        <div class='tool-card'><i class='fas fa-music'></i><h3>Video to MP3</h3><p>Extract audio in high quality</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-compress'></i><h3>Video Compressor</h3><p>Smaller files, same clarity</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-cut'></i><h3>Video Cutter</h3><p>Trim & split seamlessly</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-robot'></i><h3>AI Text to Video</h3><p>Generate video from prompt</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-closed-captioning'></i><h3>Subtitle Generator</h3><p>Auto subtitles + translation</p><button class='card-btn'>Open Tool</button></div>
-      </div>
-    </section>
+        <!-- ==================== IMAGE TOOLS ==================== -->
+        <section id="image-tools" class="section">
+            <h2 class="section-title">🖼️ Image Tools</h2>
+            <div class="card-grid">
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-file-image"></i></div><h3>Image to PNG/JPG Converter</h3><p>Convert any format to PNG/JPG instantly</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-compress-alt"></i></div><h3>Image Compressor</h3><p>Reduce size without quality loss</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-eraser"></i></div><h3>Background Remover</h3><p>AI-powered precise removal</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-expand-alt"></i></div><h3>Image Resizer</h3><p>Resize for social media, print</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-watermark"></i></div><h3>Watermark Tool</h3><p>Protect your images</p><button class="btn-card">Open Tool</button></div>
+            </div>
+        </section>
 
-    <!-- DOCUMENT TOOLS SECTION -->
-    <section id='document-tools' class='container fade-up'>
-      <h2 class='section-title'><span>Document</span> tools</h2>
-      <div class='card-grid'>
-        <div class='tool-card'><i class='fas fa-file-word'></i><h3>Word to PDF</h3><p>Perfect conversion, editable</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-file-pdf'></i><h3>PDF to Word</h3><p>Turn PDFs into docs</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-object-group'></i><h3>PDF Merge & Split</h3><p>Combine or divide pages</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-eye'></i><h3>OCR Tool</h3><p>Extract text from scans</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-signature'></i><h3>eSign PDF</h3><p>Digital signatures</p><button class='card-btn'>Open Tool</button></div>
-      </div>
-    </section>
+        <!-- ==================== VIDEO TOOLS ==================== -->
+        <section id="video-tools" class="section">
+            <h2 class="section-title">🎥 Video Tools</h2>
+            <div class="card-grid">
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-music"></i></div><h3>Video to MP3</h3><p>Extract audio in high quality</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-compress"></i></div><h3>Video Compressor</h3><p>Make videos smaller</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-cut"></i></div><h3>Video Cutter</h3><p>Trim and split clips</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-film"></i></div><h3>AI Text to Video</h3><p>Create video from text</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-closed-captioning"></i></div><h3>Subtitle Generator</h3><p>Auto subtitle & sync</p><button class="btn-card">Open Tool</button></div>
+            </div>
+        </section>
 
-    <!-- AI TOOLS SECTION -->
-    <section id='ai-tools' class='container fade-up'>
-      <h2 class='section-title'><span>AI</span> tools</h2>
-      <div class='card-grid'>
-        <div class='tool-card'><i class='fas fa-pen-fancy'></i><h3>AI Text Generator</h3><p>Write blogs, emails, code</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-palette'></i><h3>AI Image Generator</h3><p>Create art from words</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-file-alt'></i><h3>AI Resume Builder</h3><p>Stand out in minutes</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-microphone-alt'></i><h3>AI Voice to Text</h3><p>Transcribe speeches</p><button class='card-btn'>Open Tool</button></div>
-        <div class='tool-card'><i class='fas fa-comment-dots'></i><h3>AI Chatbot</h3><p>Smart assistant 24/7</p><button class='card-btn'>Open Tool</button></div>
-      </div>
-    </section>
+        <!-- ==================== DOCUMENT TOOLS ==================== -->
+        <section id="document-tools" class="section">
+            <h2 class="section-title">📄 Document Tools</h2>
+            <div class="card-grid">
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-file-word"></i></div><h3>Word to PDF</h3><p>Convert DOC/DOCX to PDF</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-file-pdf"></i></div><h3>PDF to Word</h3><p>Editable Word documents</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-object-group"></i></div><h3>PDF Merge & Split</h3><p>Combine or divide PDFs</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-eye"></i></div><h3>OCR Tool</h3><p>Extract text from scans</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-pen"></i></div><h3>eSign PDF</h3><p>Digital signatures</p><button class="btn-card">Open Tool</button></div>
+            </div>
+        </section>
 
-    <!-- FEATURES SECTION -->
-    <section class='container fade-up'>
-      <h2 class='section-title'>why <span>choose us</span></h2>
-      <div class='feature-grid'>
-        <div class='feature-item'><i class='fas fa-coins'></i><h4>100% Free</h4><p>No hidden payments</p></div>
-        <div class='feature-item'><i class='fas fa-bolt'></i><h4>Fast Processing</h4><p>Results under 3s</p></div>
-        <div class='feature-item'><i class='fas fa-shield-alt'></i><h4>Secure</h4><p>Encrypted & private</p></div>
-        <div class='feature-item'><i class='fas fa-brain'></i><h4>AI Powered</h4><p>Cutting-edge models</p></div>
-      </div>
-    </section>
+        <!-- ==================== AI TOOLS ==================== -->
+        <section id="ai-tools" class="section">
+            <h2 class="section-title">🤖 AI Tools</h2>
+            <div class="card-grid">
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-pen-fancy"></i></div><h3>AI Text Generator</h3><p>Blogs, emails, ideas</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-palette"></i></div><h3>AI Image Generator</h3><p>Create art from prompts</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-file-alt"></i></div><h3>AI Resume Builder</h3><p>Professional resumes</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-microphone-alt"></i></div><h3>AI Voice to Text</h3><p>Transcribe recordings</p><button class="btn-card">Open Tool</button></div>
+                <div class="tool-card fade-up"><div class="tool-icon"><i class="fas fa-comment-dots"></i></div><h3>AI Chatbot</h3><p>Smart assistant</p><button class="btn-card">Open Tool</button></div>
+            </div>
+        </section>
 
-    <!-- CONTACT SECTION -->
-    <section id='contact' class='container fade-up'>
-      <h2 class='section-title'>get in <span>touch</span></h2>
-      <div class='contact-form'>
-        <form id='contactForm'>
-          <div class='form-group'><input type='text' id='name' placeholder='Your name' required/></div>
-          <div class='form-group'><input type='email' id='email' placeholder='Email address' required/></div>
-          <div class='form-group'><textarea id='message' rows='4' placeholder='Your message' required></textarea></div>
-          <div id='formError' class='error-msg'></div>
-          <button type='submit' class='btn-submit'>Send message</button>
-          <div id='loader' class='loader hide'></div>
-        </form>
-      </div>
-    </section>
-  </main>
+        <!-- ==================== CONTACT SECTION ==================== -->
+        <section id="contact" class="section">
+            <h2 class="section-title">📩 Contact us</h2>
+            <div class="contact-form fade-up" id="contactForm">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Your name">
+                    <div class="error-message" id="nameError"></div>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email address">
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" rows="4" placeholder="How can we help?"></textarea>
+                    <div class="error-message" id="msgError"></div>
+                </div>
+                <button class="btn-submit" id="submitBtn">Send message</button>
+            </div>
+        </section>
+    </main>
 
-  <!-- FOOTER -->
-  <footer class='footer'>
-    <div class='container footer-grid'>
-      <div>
-        <h3>About</h3>
-        <p>Toolshouse.Online – free, modern tools for creators. AI, media & documents.</p>
-      </div>
-      <div>
-        <h3>Quick Links</h3>
-        <ul style='list-style: none;'>
-          <li><a href='#home' style='text-decoration: none; color: inherit;'>Home</a></li>
-          <li><a href='#image-tools' style='text-decoration: none; color: inherit;'>Image Tools</a></li>
-          <li><a href='#video-tools' style='text-decoration: none; color: inherit;'>Video Tools</a></li>
-          <li><a href='#ai-tools' style='text-decoration: none; color: inherit;'>AI Tools</a></li>
-        </ul>
-      </div>
-      <div class='social-icons'>
-        <h3>Follow us</h3>
-        <i class='fab fa-facebook'></i>
-        <i class='fab fa-twitter'></i>
-        <i class='fab fa-instagram'></i>
-        <i class='fab fa-linkedin'></i>
-      </div>
-    </div>
-    <div class='copyright'>
-      <p>© 2026 Tools house online 2 – All rights reserved.</p>
-    </div>
-  </footer>
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Toolshose.Online</h4>
+                <p>All-in-one free AI & media toolkit. Fast, private, modern.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <p>Home<br>Image Tools<br>Video Tools<br>Document Tools<br>AI Tools</p>
+            </div>
+            <div class="footer-col">
+                <h4>About</h4>
+                <p>Privacy<br>Terms<br>Contact</p>
+            </div>
+            <div class="footer-col">
+                <h4>Follow</h4>
+                <div class="social-icons">
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-linkedin"></i>
+                    <i class="fab fa-github"></i>
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Toolshose.Online — All rights reserved.
+        </div>
+    </footer>
 
-  <!-- JAVASCRIPT -->
-  <script>
-    // Mobile menu toggle
-    const hamburger = document.getElementById('hamburgerBtn');
-    const navLinks = document.querySelector('.nav-links');
-    
-    hamburger.addEventListener('click', () => {
-      if (navLinks.style.display === 'flex') {
-        navLinks.style.display = 'none';
-      } else {
-        navLinks.style.display = 'flex';
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = '80px';
-        navLinks.style.left = '0';
-        navLinks.style.width = '100%';
-        navLinks.style.background = 'white';
-        navLinks.style.padding = '20px';
-        navLinks.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
-        navLinks.style.zIndex = '99';
-      }
-    });
+    <!-- ==================== script.js ==================== -->
+    <script>
+        (function() {
+            // ----- mobile hamburger toggle -----
+            const hamburger = document.getElementById('hamburgerBtn');
+            const navMenu = document.getElementById('navMenu');
+            hamburger.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
 
-    // Smooth scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if(target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        if(window.innerWidth <= 900) {
-          navLinks.style.display = 'none';
-        }
-      });
-    });
+            // close menu after clicking link (optional)
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 950) {
+                        navMenu.classList.remove('active');
+                    }
+                });
+            });
 
-    // Get Started button
-    document.querySelector('.get-started').addEventListener('click', () => {
-      document.getElementById('image-tools').scrollIntoView({ behavior: 'smooth' });
-    });
+            // ----- loading animation (simple) -----
+            const loadingBar = document.getElementById('loadingBar');
+            function showLoading() {
+                loadingBar.style.display = 'block';
+                setTimeout(() => {
+                    loadingBar.style.display = 'none';
+                }, 800);
+            }
+            // trigger on any "Open Tool" or login/signup click for demo
+            document.querySelectorAll('.btn-card, .btn-login, .btn-signup, .btn-hero').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();   // prevent any actual navigation for demo
+                    showLoading();
+                });
+            });
 
-    // Scroll animations
-    const fadeElements = document.querySelectorAll('.fade-up');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('appear');
-        }
-      });
-    }, { threshold: 0.2 });
-    
-    fadeElements.forEach(el => observer.observe(el));
+            // ----- smooth scroll for anchor links (home etc) already native + 70px offset for sticky header
+            document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        const offset = 90;  // header height approx
+                        const top = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                    }
+                });
+            });
 
-    // Form validation
-    const form = document.getElementById('contactForm');
-    const errorDiv = document.getElementById('formError');
-    const loader = document.getElementById('loader');
-    const nameInp = document.getElementById('name');
-    const emailInp = document.getElementById('email');
-    const msgInp = document.getElementById('message');
+            // Get Started button also smooth
+            document.querySelector('.btn-hero').addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.getElementById('image-tools');
+                const offset = 90;
+                const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({ top, behavior: 'smooth' });
+            });
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      errorDiv.innerText = '';
-      let isValid = true;
+            // ----- scroll animation (fade-up) using IntersectionObserver -----
+            const fadeElements = document.querySelectorAll('.fade-up');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('appear');
+                    }
+                });
+            }, { threshold: 0.1 });
+            fadeElements.forEach(el => observer.observe(el));
 
-      if (!nameInp.value.trim()) {
-        errorDiv.innerText = 'Name is required.';
-        isValid = false;
-      } else if (!emailInp.value.trim() || !/^\S+@\S+\.\S+$/.test(emailInp.value)) {
-        errorDiv.innerText = 'Valid email is required.';
-        isValid = false;
-      } else if (!msgInp.value.trim()) {
-        errorDiv.innerText = 'Message cannot be empty.';
-        isValid = false;
-      }
+            // ----- form validation -----
+            const submitBtn = document.getElementById('submitBtn');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const msgInput = document.getElementById('message');
+            const nameErr = document.getElementById('nameError');
+            const emailErr = document.getElementById('emailError');
+            const msgErr = document.getElementById('msgError');
 
-      if (isValid) {
-        loader.classList.remove('hide');
-        setTimeout(() => {
-          loader.classList.add('hide');
-          alert('Message sent successfully!');
-          form.reset();
-        }, 1500);
-      }
-    });
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
 
-    // Card button animation
-    document.querySelectorAll('.card-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const originalText = this.innerText;
-        this.innerText = 'Opening...';
-        setTimeout(() => { this.innerText = originalText; }, 700);
-      });
-    });
+            submitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                let isValid = true;
 
-    // Responsive menu reset
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 900) {
-        navLinks.style.display = 'flex';
-        navLinks.style.flexDirection = 'row';
-        navLinks.style.position = 'static';
-        navLinks.style.width = 'auto';
-        navLinks.style.background = 'transparent';
-        navLinks.style.padding = '0';
-        navLinks.style.boxShadow = 'none';
-      } else {
-        navLinks.style.display = 'none';
-      }
-    });
-  </script>
+                // name
+                if (!nameInput.value.trim()) {
+                    nameErr.textContent = 'Name is required';
+                    isValid = false;
+                } else {
+                    nameErr.textContent = '';
+                }
 
-  <!-- Blogger specific includes -->
-  <b:include data='blog' name='google-analytics'/>
+                // email
+                if (!emailInput.value.trim()) {
+                    emailErr.textContent = 'Email is required';
+                    isValid = false;
+                } else if (!validateEmail(emailInput.value.trim())) {
+                    emailErr.textContent = 'Enter a valid email';
+                    isValid = false;
+                } else {
+                    emailErr.textContent = '';
+                }
+
+                // message
+                if (!msgInput.value.trim()) {
+                    msgErr.textContent = 'Message cannot be empty';
+                    isValid = false;
+                } else {
+                    msgErr.textContent = '';
+                }
+
+                if (isValid) {
+                    showLoading(); // pretend sending
+                    setTimeout(() => {
+                        alert('Message sent (demo) — thank you!');
+                        nameInput.value = '';
+                        emailInput.value = '';
+                        msgInput.value = '';
+                    }, 500);
+                }
+            });
+
+            // close mobile menu on window resize > 950
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 950) {
+                    navMenu.classList.remove('active');
+                }
+            });
+
+        })();
+    </script>
 </body>
 </html>
