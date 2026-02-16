@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF to Word Converter</title>
+
+<!-- PDF.js for reading PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#4e73df,#1cc88a);
+}
+
+.card{
+    background:white;
+    width:95%;
+    max-width:500px;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 25px 50px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+h2{
+    margin-bottom:20px;
+    color:#333;
+}
+
+.drop-area{
+    border:2px dashed #4e73df;
+    padding:25px;
+    border-radius:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.drop-area:hover{
+    background:#f0f4ff;
+}
+
+button{
+    margin-top:20px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:12px;
+    background:#4e73df;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+canvas{
+    margin-top:15px;
+    max-width:100%;
+    border-radius:10px;
+}
+
+.loader{
+    display:none;
+    margin-top:15px;
+}
+
+.loader div{
+    width:25px;
+    height:25px;
+    border:4px solid #4e73df;
+    border-top:4px solid transparent;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:auto;
+}
+
+@keyframes spin{
+    100%{transform:rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>PDF to Word Converter</h2>
+
+    <div class="drop-area" id="dropArea">
+        Drag & Drop PDF Here<br>or Click to Upload
+        <input type="file" id="fileInput" hidden accept="application/pdf">
+    </div>
+
+    <canvas id="previewCanvas"></canvas>
+
+    <button onclick="convert()">Convert to Word</button>
+
+    <div class="loader"><div></div></div>
+</div>
+
+<script>
+const dropArea = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
+const canvas = document.getElementById("previewCanvas");
+const ctx = canvas.getContext("2d");
+const loader = document.querySelector(".loader");
+
+let pdfFile = null;
+
+dropArea.addEventListener("click",()=>fileInput.click());
+
+fileInput.addEventListener("change",(e)=>{
+    handleFile(e.target.files[0]);
+});
+
+dropArea.addEventListener("dragover",(e)=>{
+    e.preventDefault();
+});
+
+dropArea.addEventListener("drop",(e)=>{
+    e.preventDefault();
+    handleFile(e.dataTransfer.files[0]);
+});
+
+function handleFile(file){
+    if(!file || file.type !== "application/pdf"){
+        alert("Please upload a valid PDF file.");
+        return;
+    }
+
+    pdfFile = file;
+
+    const reader = new FileReader();
+    reader.onload = function(){
+        const typedarray = new Uint8Array(this.result);
+        pdfjsLib.getDocument(typedarray).promise.then(function(pdf){
+            pdf.getPage(1).then(function(page){
+                const viewport = page.getViewport({scale:1});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                });
+            });
+        });
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+async function convert(){
+    if(!pdfFile){
+        alert("Upload PDF first.");
+        return;
+    }
+
+    loader.style.display="block";
+
+    const reader = new FileReader();
+    reader.onload = async function(){
+        const typedarray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+
+        let fullText = "";
+
+        for(let i=1;i<=pdf.numPages;i++){
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            content.items.forEach(item=>{
+                fullText += item.str + " ";
+            });
+            fullText += "\n\n";
+        }
+
+        const blob = new Blob(
+            ['<html><body>'+fullText+'</body></html>'],
+            {type:"application/msword"}
+        );
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = pdfFile.name.replace(".pdf","")+".doc";
+        link.click();
+
+        loader.style.display="none";
+    };
+    reader.readAsArrayBuffer(pdfFile);
+}
+</script>
+
+</body>
+</html>
