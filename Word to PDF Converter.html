@@ -2,74 +2,65 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Word to PDF Converter</title>
 
+<!-- Mammoth for DOCX reading -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+
+<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-body{
-    font-family: Arial;
-    background: linear-gradient(135deg,#667eea,#764ba2);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-.card{
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    width:400px;
-    text-align:center;
-}
-button{
-    padding:10px 15px;
-    margin-top:15px;
-    border:none;
-    background:#764ba2;
-    color:white;
-    border-radius:8px;
-    cursor:pointer;
-}
-button:hover{
-    background:#5a3796;
-}
-</style>
 </head>
-<body>
 
-<div class="card">
-    <h2>Word to PDF Converter</h2>
-    <input type="file" id="fileInput" accept=".docx">
-    <br>
-    <button onclick="convertToPDF()">Convert to PDF</button>
-</div>
+<body style="font-family:Arial;text-align:center;margin-top:100px;">
+
+<h2>Word (.docx) to PDF Converter</h2>
+
+<input type="file" id="fileInput" accept=".docx">
+<br><br>
+<button onclick="convert()">Convert to PDF</button>
 
 <script>
-async function convertToPDF(){
+async function convert() {
+
     const file = document.getElementById("fileInput").files[0];
-    if(!file){
-        alert("Please upload DOCX file");
+
+    if (!file) {
+        alert("Please upload a DOCX file.");
+        return;
+    }
+
+    if (!file.name.endsWith(".docx")) {
+        alert("Only DOCX supported.");
         return;
     }
 
     const reader = new FileReader();
-    reader.onload = async function(event){
-        const arrayBuffer = event.target.result;
 
-        const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
-        const text = result.value;
+    reader.onload = async function(e) {
 
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        try {
 
-        const lines = doc.splitTextToSize(text, 180);
-        doc.text(lines, 10, 10);
+            const arrayBuffer = e.target.result;
 
-        doc.save(file.name.replace(".docx","") + ".pdf");
+            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+
+            const text = result.value;
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            const lines = pdf.splitTextToSize(text, 180);
+            pdf.text(lines, 10, 10);
+
+            pdf.save(file.name.replace(".docx", "") + ".pdf");
+
+        } catch (error) {
+            alert("Conversion failed.");
+            console.error(error);
+        }
+
     };
+
     reader.readAsArrayBuffer(file);
 }
 </script>
