@@ -1,83 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Word to PDF Converter</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
-}
 body{
-    height:100vh;
+    font-family: Arial;
+    background: linear-gradient(135deg,#667eea,#764ba2);
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#667eea,#764ba2);
+    height:100vh;
 }
 .card{
-    background:#fff;
-    width:95%;
-    max-width:500px;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.2);
-    text-align:center;
-}
-h2{
-    margin-bottom:20px;
-}
-.drop-area{
-    border:2px dashed #764ba2;
+    background:white;
     padding:30px;
     border-radius:15px;
-    cursor:pointer;
-    transition:0.3s;
-}
-.drop-area.hover{
-    background:#f3f0ff;
+    width:400px;
+    text-align:center;
 }
 button{
-    margin-top:20px;
-    padding:12px 20px;
+    padding:10px 15px;
+    margin-top:15px;
     border:none;
-    border-radius:10px;
     background:#764ba2;
-    color:#fff;
+    color:white;
+    border-radius:8px;
     cursor:pointer;
-    transition:0.3s;
 }
 button:hover{
-    transform:scale(1.05);
-}
-#fileInfo{
-    margin-top:10px;
-    font-size:14px;
-}
-.loader{
-    display:none;
-    margin-top:15px;
-}
-.loader div{
-    width:20px;
-    height:20px;
-    border:3px solid #764ba2;
-    border-top:3px solid transparent;
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-    margin:auto;
-}
-@keyframes spin{
-    100%{transform:rotate(360deg);}
-}
-.success{
-    display:none;
-    margin-top:10px;
-    color:green;
+    background:#5a3796;
 }
 </style>
 </head>
@@ -85,78 +42,36 @@ button:hover{
 
 <div class="card">
     <h2>Word to PDF Converter</h2>
-    <div class="drop-area" id="dropArea">
-        Drag & Drop DOC/DOCX file here<br>or Click to Upload
-        <input type="file" id="fileInput" hidden accept=".doc,.docx">
-    </div>
-    <div id="fileInfo"></div>
-    <button id="convertBtn">Convert to PDF</button>
-    <div class="loader"><div></div></div>
-    <div class="success">Conversion Complete!</div>
+    <input type="file" id="fileInput" accept=".docx">
+    <br>
+    <button onclick="convertToPDF()">Convert to PDF</button>
 </div>
 
 <script>
-const dropArea = document.getElementById("dropArea");
-const fileInput = document.getElementById("fileInput");
-const fileInfo = document.getElementById("fileInfo");
-const convertBtn = document.getElementById("convertBtn");
-const loader = document.querySelector(".loader");
-const success = document.querySelector(".success");
-
-let selectedFile = null;
-
-dropArea.addEventListener("click",()=>fileInput.click());
-
-fileInput.addEventListener("change",()=>{
-    handleFile(fileInput.files[0]);
-});
-
-dropArea.addEventListener("dragover",(e)=>{
-    e.preventDefault();
-    dropArea.classList.add("hover");
-});
-
-dropArea.addEventListener("dragleave",()=>{
-    dropArea.classList.remove("hover");
-});
-
-dropArea.addEventListener("drop",(e)=>{
-    e.preventDefault();
-    dropArea.classList.remove("hover");
-    handleFile(e.dataTransfer.files[0]);
-});
-
-function handleFile(file){
-    if(!file) return;
-    if(file.name.endsWith(".doc") || file.name.endsWith(".docx")){
-        selectedFile = file;
-        fileInfo.innerHTML = `File: ${file.name}<br>Size: ${(file.size/1024).toFixed(2)} KB`;
-    } else {
-        alert("Unsupported file format. Please upload DOC or DOCX.");
-        selectedFile = null;
-    }
-}
-
-convertBtn.addEventListener("click",()=>{
-    if(!selectedFile){
-        alert("Please upload a Word file first.");
+async function convertToPDF(){
+    const file = document.getElementById("fileInput").files[0];
+    if(!file){
+        alert("Please upload DOCX file");
         return;
     }
 
-    loader.style.display="block";
-    success.style.display="none";
+    const reader = new FileReader();
+    reader.onload = async function(event){
+        const arrayBuffer = event.target.result;
 
-    setTimeout(()=>{
-        loader.style.display="none";
-        success.style.display="block";
+        const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+        const text = result.value;
 
-        const blob = new Blob([`Converted from: ${selectedFile.name}`], {type:"application/pdf"});
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = selectedFile.name.replace(/\.(docx|doc)/,"")+".pdf";
-        link.click();
-    },2000);
-});
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const lines = doc.splitTextToSize(text, 180);
+        doc.text(lines, 10, 10);
+
+        doc.save(file.name.replace(".docx","") + ".pdf");
+    };
+    reader.readAsArrayBuffer(file);
+}
 </script>
 
 </body>
