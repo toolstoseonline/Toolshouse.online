@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Background Remover | Tools House Online</title>
+
+<style>
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#f5f5f5,#e6c9a8);
+    text-align:center;
+}
+
+header{
+    background:#87CEFA;
+    padding:15px;
+    font-size:24px;
+    font-weight:bold;
+    color:#222;
+}
+
+.hero{
+    padding:40px 20px;
+}
+
+.hero h1{
+    font-size:32px;
+    color:#222;
+}
+
+.hero p{
+    font-size:16px;
+    color:#555;
+    max-width:600px;
+    margin:auto;
+}
+
+.upload-box{
+    margin-top:30px;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    display:inline-block;
+}
+
+input{
+    margin:10px 0;
+}
+
+button{
+    background:#D2B48C;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+button:hover{
+    opacity:0.8;
+}
+
+img{
+    margin-top:20px;
+    max-width:300px;
+}
+footer{
+    margin-top:50px;
+    padding:15px;
+    background:#222;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+Tools House Online | Background Remover
+</header>
+
+<section class="hero">
+<h1>Background Remover – Remove BG with AI</h1>
+<p>
+Remove image background instantly using advanced AI technology.
+Fast, accurate, and 100% free. No signup required.
+Perfect for thumbnails, e-commerce, social media & professional editing.
+</p>
+
+<div class="upload-box">
+<input type="file" id="imageInput" accept="image/*"><br>
+<button onclick="previewImage()">Upload & Preview</button>
+<div id="preview"></div>
+</div>
+</section>
+
+<footer>
+© 2026 Tools House Online (Ayyaz) | Free AI Tools
+</footer>
+
+<script>
+function previewImage(){
+    const file = document.getElementById("imageInput").files[0];
+    const preview = document.getElementById("preview");
+    preview.innerHTML = "";
+
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    } else {
+        alert("Please select an image.");
+    }
+}
+</script>
+
+</body>
+</html>
