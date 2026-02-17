@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Compressor - ZIP Tool</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI, sans-serif;
+}
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#667eea,#764ba2);
+padding:20px;
+}
+
+.card{
+background:#fff;
+width:100%;
+max-width:600px;
+padding:30px;
+border-radius:20px;
+box-shadow:0 25px 50px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+h2{
+margin-bottom:20px;
+}
+
+.drop-area{
+border:2px dashed #764ba2;
+padding:25px;
+border-radius:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.drop-area:hover{
+background:#f3f0ff;
+}
+
+.file-list{
+margin-top:15px;
+max-height:150px;
+overflow:auto;
+text-align:left;
+font-size:14px;
+}
+
+.file-item{
+padding:5px 0;
+border-bottom:1px solid #eee;
+}
+
+select,button{
+margin-top:15px;
+padding:12px;
+width:100%;
+border:none;
+border-radius:12px;
+font-size:16px;
+}
+
+select{
+border:1px solid #ccc;
+}
+
+button{
+background:#764ba2;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+.loader{
+display:none;
+margin-top:15px;
+}
+
+.loader div{
+width:25px;
+height:25px;
+border:4px solid #764ba2;
+border-top:4px solid transparent;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:auto;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
+@media(max-width:500px){
+.card{padding:20px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>File Compressor - ZIP Tool</h2>
+
+<div class="drop-area" id="dropArea">
+Drag & Drop Files Here<br>or Click to Upload
+<input type="file" id="fileInput" hidden multiple>
+</div>
+
+<div class="file-list" id="fileList"></div>
+
+<select id="formatSelect">
+<option value="zip">ZIP Format</option>
+<option value="rar">RAR (Not Supported in Browser)</option>
+</select>
+
+<button id="compressBtn">Convert File</button>
+
+<div class="loader"><div></div></div>
+
+</div>
+
+<script>
+const dropArea = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
+const fileList = document.getElementById("fileList");
+const compressBtn = document.getElementById("compressBtn");
+const formatSelect = document.getElementById("formatSelect");
+const loader = document.querySelector(".loader");
+
+let selectedFiles = [];
+
+dropArea.addEventListener("click",()=>fileInput.click());
+
+dropArea.addEventListener("dragover",(e)=>e.preventDefault());
+
+dropArea.addEventListener("drop",(e)=>{
+e.preventDefault();
+handleFiles(e.dataTransfer.files);
+});
+
+fileInput.addEventListener("change",(e)=>{
+handleFiles(e.target.files);
+});
+
+function handleFiles(files){
+selectedFiles = Array.from(files);
+fileList.innerHTML="";
+if(selectedFiles.length===0){
+alert("No files selected");
+return;
+}
+selectedFiles.forEach(file=>{
+const div=document.createElement("div");
+div.className="file-item";
+div.textContent=file.name+" ("+(file.size/1024).toFixed(1)+" KB)";
+fileList.appendChild(div);
+});
+}
+
+compressBtn.addEventListener("click",async()=>{
+if(selectedFiles.length===0){
+alert("Upload files first");
+return;
+}
+
+if(formatSelect.value==="rar"){
+alert("RAR format not supported in browser.\nPlease select ZIP.");
+return;
+}
+
+loader.style.display="block";
+
+try{
+const zipBlob = await createZip(selectedFiles);
+downloadFile(zipBlob,"compressed.zip");
+}catch(e){
+alert("Compression failed");
+console.error(e);
+}
+
+loader.style.display="none";
+});
+
+function downloadFile(blob,filename){
+const link=document.createElement("a");
+link.href=URL.createObjectURL(blob);
+link.download=filename;
+link.click();
+}
+
+async function createZip(files){
+const fileEntries=[];
+for(const file of files){
+const buffer=await file.arrayBuffer();
+fileEntries.push({name:file.name,data:new Uint8Array(buffer)});
+}
+return buildZip(fileEntries);
+}
+
+function buildZip(files){
+const encoder=new TextEncoder();
+let zipParts=[];
+let centralDirectory=[];
+let offset=0;
+
+files.forEach(file=>{
+const fileNameBytes=encoder.encode(file.name);
+const localHeader=new Uint8Array(30+fileNameBytes.length);
+const view=new DataView(localHeader.buffer);
+
+view.setUint32(0,0x04034b50,true);
+view.setUint16(4,20,true);
+view.setUint16(6,0,true);
+view.setUint16(8,0,true);
+view.setUint16(10,0,true);
+view.setUint16(12,0,true);
+view.setUint32(14,0,true);
+view.setUint32(18,file.data.length,true);
+view.setUint32(22,file.data.length,true);
+view.setUint16(26,fileNameBytes.length,true);
+view.setUint16(28,0,true);
+
+localHeader.set(fileNameBytes,30);
+
+zipParts.push(localHeader);
+zipParts.push(file.data);
+
+const centralHeader=new Uint8Array(46+fileNameBytes.length);
+const centralView=new DataView(centralHeader.buffer);
+
+centralView.setUint32(0,0x02014b50,true);
+centralView.setUint16(4,20,true);
+centralView.setUint16(6,20,true);
+centralView.setUint16(8,0,true);
+centralView.setUint16(10,0,true);
+centralView.setUint16(12,0,true);
+centralView.setUint16(14,0,true);
+centralView.setUint32(16,0,true);
+centralView.setUint32(20,file.data.length,true);
+centralView.setUint32(24,file.data.length,true);
+centralView.setUint16(28,fileNameBytes.length,true);
+centralView.setUint16(30,0,true);
+centralView.setUint16(32,0,true);
+centralView.setUint16(34,0,true);
+centralView.setUint16(36,0,true);
+centralView.setUint32(38,0,true);
+centralView.setUint32(42,offset,true);
+
+centralHeader.set(fileNameBytes,46);
+
+centralDirectory.push(centralHeader);
+
+offset+=localHeader.length+file.data.length;
+});
+
+const centralSize=centralDirectory.reduce((a,b)=>a+b.length,0);
+const endRecord=new Uint8Array(22);
+const endView=new DataView(endRecord.buffer);
+
+endView.setUint32(0,0x06054b50,true);
+endView.setUint16(8,files.length,true);
+endView.setUint16(10,files.length,true);
+endView.setUint32(12,centralSize,true);
+endView.setUint32(16,offset,true);
+endView.setUint16(20,0,true);
+
+return new Blob([...zipParts,...centralDirectory,endRecord],{type:"application/zip"});
+}
+</script>
+
+</body>
+</html>
