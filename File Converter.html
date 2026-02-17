@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>File Converter - Image Format Tool</title>
+<title>Generic File Converter</title>
 
 <style>
 *{
@@ -23,18 +23,16 @@ padding:20px;
 }
 
 .card{
-background:#fff;
+background:white;
 width:100%;
-max-width:650px;
+max-width:700px;
 padding:30px;
 border-radius:20px;
 box-shadow:0 25px 50px rgba(0,0,0,0.2);
 text-align:center;
 }
 
-h2{
-margin-bottom:20px;
-}
+h2{margin-bottom:20px;}
 
 .drop-area{
 border:2px dashed #764ba2;
@@ -44,26 +42,25 @@ cursor:pointer;
 transition:0.3s;
 }
 
-.drop-area:hover{
-background:#f3f0ff;
-}
+.drop-area:hover{background:#f3f0ff;}
 
-.preview-container{
+.preview{
 margin-top:20px;
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-justify-content:center;
+max-height:250px;
+overflow:auto;
 }
 
-.preview-box{
-flex:1 1 45%;
-}
-
-canvas,img{
+img,canvas,textarea{
 width:100%;
+margin-top:10px;
 border-radius:12px;
 box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+textarea{
+height:150px;
+padding:10px;
+resize:none;
 }
 
 select,button{
@@ -75,9 +72,7 @@ border-radius:12px;
 font-size:16px;
 }
 
-select{
-border:1px solid #ccc;
-}
+select{border:1px solid #ccc;}
 
 button{
 background:#764ba2;
@@ -111,7 +106,6 @@ margin:auto;
 }
 
 @media(max-width:600px){
-.preview-box{flex:1 1 100%;}
 .card{padding:20px;}
 }
 </style>
@@ -120,28 +114,22 @@ margin:auto;
 <body>
 
 <div class="card">
-<h2>Image File Converter</h2>
+<h2>Generic File Converter</h2>
 
 <div class="drop-area" id="dropArea">
-Drag & Drop Image Here<br>or Click to Upload
-<input type="file" id="fileInput" hidden accept="image/*">
+Drag & Drop File Here<br>or Click to Upload
+<input type="file" id="fileInput" hidden>
 </div>
 
-<div class="preview-container">
-<div class="preview-box">
-<h4>Original</h4>
-<img id="originalPreview">
-</div>
-<div class="preview-box">
-<h4>Converted</h4>
-<canvas id="canvasPreview"></canvas>
-</div>
-</div>
+<div class="preview" id="preview"></div>
 
 <select id="formatSelect">
-<option value="image/png">Convert to PNG</option>
-<option value="image/jpeg">Convert to JPG</option>
-<option value="image/webp">Convert to WEBP</option>
+<option value="">Select Output Format</option>
+<option value="png">Convert Image → PNG</option>
+<option value="jpg">Convert Image → JPG</option>
+<option value="webp">Convert Image → WEBP</option>
+<option value="txt">Convert JSON → TXT</option>
+<option value="json">Convert TXT → JSON</option>
 </select>
 
 <button id="convertBtn">Convert File</button>
@@ -154,81 +142,140 @@ Drag & Drop Image Here<br>or Click to Upload
 <script>
 const dropArea=document.getElementById("dropArea");
 const fileInput=document.getElementById("fileInput");
-const originalPreview=document.getElementById("originalPreview");
-const canvas=document.getElementById("canvasPreview");
-const ctx=canvas.getContext("2d");
+const preview=document.getElementById("preview");
 const convertBtn=document.getElementById("convertBtn");
 const downloadBtn=document.getElementById("downloadBtn");
 const formatSelect=document.getElementById("formatSelect");
 const loader=document.querySelector(".loader");
 
-let currentImage=null;
-let convertedDataURL=null;
+let selectedFile=null;
+let convertedBlob=null;
 
 dropArea.addEventListener("click",()=>fileInput.click());
-
 dropArea.addEventListener("dragover",(e)=>e.preventDefault());
-
 dropArea.addEventListener("drop",(e)=>{
 e.preventDefault();
 handleFile(e.dataTransfer.files[0]);
 });
-
 fileInput.addEventListener("change",(e)=>{
 handleFile(e.target.files[0]);
 });
 
 function handleFile(file){
-if(!file || !file.type.startsWith("image/")){
-alert("Please upload a valid image file.");
+if(!file){
+alert("No file selected");
 return;
 }
 
+selectedFile=file;
+preview.innerHTML="";
+downloadBtn.style.display="none";
+
+if(file.type.startsWith("image/")){
+const img=document.createElement("img");
+img.src=URL.createObjectURL(file);
+preview.appendChild(img);
+}else{
 const reader=new FileReader();
 reader.onload=function(e){
-originalPreview.src=e.target.result;
-currentImage=new Image();
-currentImage.src=e.target.result;
+const textarea=document.createElement("textarea");
+textarea.value=e.target.result;
+preview.appendChild(textarea);
 };
-reader.readAsDataURL(file);
-
-downloadBtn.style.display="none";
+reader.readAsText(file);
+}
 }
 
 convertBtn.addEventListener("click",()=>{
-if(!currentImage){
-alert("Upload image first.");
+if(!selectedFile){
+alert("Upload file first");
+return;
+}
+
+if(!formatSelect.value){
+alert("Select output format");
 return;
 }
 
 loader.style.display="block";
 
 setTimeout(()=>{
-canvas.width=currentImage.width;
-canvas.height=currentImage.height;
-ctx.drawImage(currentImage,0,0);
-
-const format=formatSelect.value;
-convertedDataURL=canvas.toDataURL(format,0.9);
-
-downloadBtn.style.display="block";
+if(selectedFile.type.startsWith("image/")){
+convertImage();
+}else{
+convertText();
+}
 loader.style.display="none";
+downloadBtn.style.display="block";
 },300);
 });
 
+function convertImage(){
+const img=new Image();
+img.src=URL.createObjectURL(selectedFile);
+img.onload=function(){
+const canvas=document.createElement("canvas");
+canvas.width=img.width;
+canvas.height=img.height;
+const ctx=canvas.getContext("2d");
+ctx.drawImage(img,0,0);
+
+let mime="image/png";
+if(formatSelect.value==="jpg") mime="image/jpeg";
+if(formatSelect.value==="webp") mime="image/webp";
+
+const dataURL=canvas.toDataURL(mime,0.9);
+convertedBlob=dataURLToBlob(dataURL);
+
+preview.innerHTML="";
+preview.appendChild(canvas);
+};
+}
+
+function convertText(){
+const reader=new FileReader();
+reader.onload=function(e){
+let result=e.target.result;
+
+if(formatSelect.value==="json"){
+try{
+const obj={data:result};
+result=JSON.stringify(obj,null,2);
+}catch{}
+}
+if(formatSelect.value==="txt"){
+try{
+const obj=JSON.parse(result);
+result=JSON.stringify(obj);
+}catch{}
+}
+
+convertedBlob=new Blob([result],{type:"text/plain"});
+preview.innerHTML="<textarea>"+result+"</textarea>";
+};
+reader.readAsText(selectedFile);
+}
+
 downloadBtn.addEventListener("click",()=>{
-if(!convertedDataURL) return;
+if(!convertedBlob) return;
 
 const link=document.createElement("a");
-link.href=convertedDataURL;
-
-let extension="png";
-if(formatSelect.value==="image/jpeg") extension="jpg";
-if(formatSelect.value==="image/webp") extension="webp";
-
-link.download="converted."+extension;
+link.href=URL.createObjectURL(convertedBlob);
+link.download="converted."+formatSelect.value;
 link.click();
 });
+
+function dataURLToBlob(dataURL){
+const arr=dataURL.split(',');
+const mime=arr[0].match(/:(.*?);/)[1];
+const bstr=atob(arr[1]);
+let n=bstr.length;
+const u8arr=new Uint8Array(n);
+while(n--){
+u8arr[n]=bstr.charCodeAt(n);
+}
+return new Blob([u8arr],{type:mime});
+}
 </script>
 
 </body>
