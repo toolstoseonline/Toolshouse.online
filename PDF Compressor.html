@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Compressor - Reduce PDF Size</title>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<!-- pdf-lib -->
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    padding:20px;
+}
+
+.card{
+    background:white;
+    width:100%;
+    max-width:600px;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 25px 50px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+.drop-area{
+    border:2px dashed #764ba2;
+    padding:25px;
+    border-radius:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.drop-area:hover{
+    background:#f3f0ff;
+}
+
+button{
+    margin-top:15px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:12px;
+    background:#764ba2;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+.preview{
+    margin-top:20px;
+    max-height:200px;
+    overflow:auto;
+}
+
+canvas{
+    width:100%;
+    margin-bottom:10px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+.loader{
+    display:none;
+    margin-top:15px;
+}
+
+.loader div{
+    width:25px;
+    height:25px;
+    border:4px solid #764ba2;
+    border-top:4px solid transparent;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:auto;
+}
+
+@keyframes spin{
+    100%{transform:rotate(360deg);}
+}
+
+@media(max-width:500px){
+    .card{
+        padding:20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>PDF Compressor - Reduce PDF Size</h2>
+
+    <div class="drop-area" id="dropArea">
+        Drag & Drop PDF Here<br>or Click to Upload
+        <input type="file" id="fileInput" hidden accept="application/pdf">
+    </div>
+
+    <button id="compressBtn">Compress PDF</button>
+
+    <div class="loader"><div></div></div>
+
+    <div class="preview" id="preview"></div>
+</div>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+const dropArea = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const compressBtn = document.getElementById("compressBtn");
+const loader = document.querySelector(".loader");
+
+let selectedFile = null;
+
+dropArea.addEventListener("click",()=>fileInput.click());
+
+dropArea.addEventListener("dragover",(e)=>e.preventDefault());
+
+dropArea.addEventListener("drop",(e)=>{
+    e.preventDefault();
+    handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener("change",(e)=>{
+    handleFile(e.target.files[0]);
+});
+
+function handleFile(file){
+    if(!file || file.type !== "application/pdf"){
+        alert("Please upload a valid PDF file.");
+        return;
+    }
+    selectedFile = file;
+    preview.innerHTML="";
+    previewPDF(file);
+}
+
+async function previewPDF(file){
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+
+    for(let i=1;i<=Math.min(pdf.numPages,3);i++){
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({scale:0.6});
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        preview.appendChild(canvas);
+
+        await page.render({
+            canvasContext:context,
+            viewport:viewport
+        }).promise;
+    }
+}
+
+compressBtn.addEventListener("click",async ()=>{
+    if(!selectedFile){
+        alert("Upload a PDF first.");
+        return;
+    }
+
+    loader.style.display="block";
+
+    const arrayBuffer = await selectedFile.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    const { PDFDocument } = PDFLib;
+    const newPdf = await PDFDocument.create();
+
+    for(let i=1;i<=pdf.numPages;i++){
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({scale:1});
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({
+            canvasContext:context,
+            viewport:viewport
+        }).promise;
+
+        const imgData = canvas.toDataURL("image/jpeg",0.6); // compression quality
+        const jpgImage = await newPdf.embedJpg(imgData);
+        const pageNew = newPdf.addPage([viewport.width, viewport.height]);
+        pageNew.drawImage(jpgImage,{
+            x:0,
+            y:0,
+            width:viewport.width,
+            height:viewport.height
+        });
+    }
+
+    const pdfBytes = await newPdf.save();
+    const blob = new Blob([pdfBytes],{type:"application/pdf"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "compressed.pdf";
+    link.click();
+
+    loader.style.display="none";
+});
+
+</script>
+
+</body>
+</html>
