@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collage Maker – Create Photo Collages</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg,#d7ccc8,#bbdefb);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    background:#fff;
+    width:95%;
+    max-width:900px;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+h1{
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+p{
+    color:#555;
+    margin-bottom:20px;
+}
+
+.controls{
+    margin-bottom:20px;
+}
+
+input[type="file"]{
+    margin:10px 0;
+}
+
+select{
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:#8d6e63;
+    color:#fff;
+    cursor:pointer;
+    transition:0.3s;
+    margin:10px 5px;
+}
+
+button:hover{
+    background:#5d4037;
+}
+
+canvas{
+    margin-top:20px;
+    width:100%;
+    max-height:500px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.15);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>📸 Collage Maker</h1>
+    <p>Create beautiful photo collages instantly – 100% Free</p>
+
+    <div class="controls">
+        <input type="file" id="images" multiple accept="image/*"><br>
+
+        <select id="layout">
+            <option value="2">2 x 2 Grid</option>
+            <option value="3">3 x 3 Grid</option>
+            <option value="4">4 x 4 Grid</option>
+        </select><br>
+
+        <button onclick="createCollage()">Create Collage</button>
+        <button onclick="downloadCollage()">Download</button>
+    </div>
+
+    <canvas id="canvas"></canvas>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function createCollage(){
+    const files = document.getElementById("images").files;
+    const layout = parseInt(document.getElementById("layout").value);
+
+    if(files.length === 0){
+        alert("Please upload images!");
+        return;
+    }
+
+    const size = 800;
+    canvas.width = size;
+    canvas.height = size;
+
+    const cellSize = size / layout;
+
+    ctx.clearRect(0,0,size,size);
+
+    let imagesLoaded = 0;
+
+    for(let i=0; i<Math.min(files.length, layout*layout); i++){
+        const img = new Image();
+        img.src = URL.createObjectURL(files[i]);
+
+        img.onload = function(){
+            const row = Math.floor(i / layout);
+            const col = i % layout;
+
+            ctx.drawImage(img, col*cellSize, row*cellSize, cellSize, cellSize);
+
+            imagesLoaded++;
+        }
+    }
+}
+
+function downloadCollage(){
+    const link = document.createElement("a");
+    link.download = "collage.png";
+    link.href = canvas.toDataURL();
+    link.click();
+}
+</script>
+
+</body>
+</html>
 
