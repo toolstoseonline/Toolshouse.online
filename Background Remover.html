@@ -1,151 +1,1725 @@
-<!DOCTYPE html>
-<html lang="en">
+!doctype html>
+<html lang="en" lang="en-US">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Background Remover – Remove BG with AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://cdn.removal.ai/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="https://cdn.removal.ai/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="https://cdn.removal.ai/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.removal.ai/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Removal.AI" />
+    <link rel="manifest" href="https://cdn.removal.ai/favicon/site.webmanifest" />
 
+    <link rel="alternate" hreflang="x-default" href="https://removal.ai/">
+<link rel="alternate" hreflang="es" href="https://removal.ai/es/">
+<link rel="alternate" hreflang="fr" href="https://removal.ai/fr/">
+<link rel="alternate" hreflang="de" href="https://removal.ai/de/">
+<link rel="alternate" hreflang="ja" href="https://removal.ai/ja/">
+<link rel="alternate" hreflang="zh" href="https://removal.ai/zh/">
+<link rel="alternate" hreflang="id" href="https://removal.ai/id/">
+<link rel="alternate" hreflang="hi" href="https://removal.ai/hi/">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XECZHS4N4G"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'G-XECZHS4N4G');
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-PMKHQK8');
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta name="google-signin-client_id"
+        content="313527232134-snuiq3u5ulr7dt543pnmff5mc037v70a.apps.googleusercontent.com" />
+    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO Premium plugin v26.7 (Yoast SEO v26.7) - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Image Background Remover | Remove BG from Image for Free</title>
+	<meta name="description" content="Remove image backgrounds in seconds with Removal.AI. Save your time and get creative. Try it for free now! No sign-up required." />
+	<link rel="canonical" href="https://removal.ai" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Image Background Remover | Remove BG from Image for Free" />
+	<meta property="og:description" content="Remove image backgrounds in seconds with Removal.AI. Save your time and get creative. Try it for free now! No sign-up required." />
+	<meta property="og:url" content="https://removal.ai" />
+	<meta property="og:site_name" content="Removal.AI" />
+	<meta property="article:modified_time" content="2025-09-16T13:59:31+00:00" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://removal.ai/","url":"https://removal.ai","name":"Image Background Remover | Remove BG from Image for Free","isPartOf":{"@id":"https://removal.ai/#website"},"datePublished":"2024-11-18T13:16:25+00:00","dateModified":"2025-09-16T13:59:31+00:00","description":"Remove image backgrounds in seconds with Removal.AI. Save your time and get creative. Try it for free now! No sign-up required.","breadcrumb":{"@id":"https://removal.ai#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://removal.ai"]}]},{"@type":"BreadcrumbList","@id":"https://removal.ai#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home"}]},{"@type":"WebSite","@id":"https://removal.ai/#website","url":"https://removal.ai/","name":"Removal.AI","description":"","potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://removal.ai/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"en-US"}]}</script>
+	<!-- / Yoast SEO Premium plugin. -->
+
+
+<link rel='dns-prefetch' href='//cdn.removal.ai' />
+<link rel="alternate" type="application/rss+xml" title="Removal.AI &raquo; Feed" href="https://removal.ai/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Removal.AI &raquo; Comments Feed" href="https://removal.ai/comments/feed/" />
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://removal.ai/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fremoval.ai%2F" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://removal.ai/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fremoval.ai%2F&#038;format=xml" />
+<style id='wp-img-auto-sizes-contain-inline-css' type='text/css'>
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<style id='wp-emoji-styles-inline-css' type='text/css'>
+
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+/*# sourceURL=wp-emoji-styles-inline-css */
+</style>
+<style id='wp-block-library-inline-css' type='text/css'>
+:root{--wp-block-synced-color:#7a00df;--wp-block-synced-color--rgb:122,0,223;--wp-bound-block-color:var(--wp-block-synced-color);--wp-editor-canvas-background:#ddd;--wp-admin-theme-color:#007cba;--wp-admin-theme-color--rgb:0,124,186;--wp-admin-theme-color-darker-10:#006ba1;--wp-admin-theme-color-darker-10--rgb:0,107,160.5;--wp-admin-theme-color-darker-20:#005a87;--wp-admin-theme-color-darker-20--rgb:0,90,135;--wp-admin-border-width-focus:2px}@media (min-resolution:192dpi){:root{--wp-admin-border-width-focus:1.5px}}.wp-element-button{cursor:pointer}:root .has-very-light-gray-background-color{background-color:#eee}:root .has-very-dark-gray-background-color{background-color:#313131}:root .has-very-light-gray-color{color:#eee}:root .has-very-dark-gray-color{color:#313131}:root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background{background:linear-gradient(135deg,#00d084,#0693e3)}:root .has-purple-crush-gradient-background{background:linear-gradient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,#330968,#31cdcf)}:root .has-midnight-gradient-background{background:linear-gradient(135deg,#020381,#2874fc)}:root{--wp--preset--font-size--normal:16px;--wp--preset--font-size--huge:42px}.has-regular-font-size{font-size:1em}.has-larger-font-size{font-size:2.625em}.has-normal-font-size{font-size:var(--wp--preset--font-size--normal)}.has-huge-font-size{font-size:var(--wp--preset--font-size--huge)}.has-text-align-center{text-align:center}.has-text-align-left{text-align:left}.has-text-align-right{text-align:right}.has-fit-text{white-space:nowrap!important}#end-resizable-editor-section{display:none}.aligncenter{clear:both}.items-justified-left{justify-content:flex-start}.items-justified-center{justify-content:center}.items-justified-right{justify-content:flex-end}.items-justified-space-between{justify-content:space-between}.screen-reader-text{border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-wrap:normal!important}.screen-reader-text:focus{background-color:#ddd;clip-path:none;color:#444;display:block;font-size:1em;height:auto;left:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}html :where(.has-border-color){border-style:solid}html :where([style*=border-top-color]){border-top-style:solid}html :where([style*=border-right-color]){border-right-style:solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid}html :where([style*=border-width]){border-style:solid}html :where([style*=border-top-width]){border-top-style:solid}html :where([style*=border-right-width]){border-right-style:solid}html :where([style*=border-bottom-width]){border-bottom-style:solid}html :where([style*=border-left-width]){border-left-style:solid}html :where(img[class*=wp-image-]){height:auto;max-width:100%}:where(figure){margin:0 0 1em}html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:var(--wp-admin--admin-bar--height,0px)}@media screen and (max-width:600px){html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:0px}}
+
+/*# sourceURL=wp-block-library-inline-css */
+</style>
+<style id='classic-theme-styles-inline-css' type='text/css'>
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+/*# sourceURL=/wp-includes/css/classic-themes.min.css */
+</style>
+<style id='global-styles-inline-css' type='text/css'>
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<link rel='stylesheet' id='bootstrap-grid-css' href='https://cdn.removal.ai/web/v2.3.7/css/bootstrap-grid.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='normalize-css' href='https://cdn.removal.ai/web/v2.3.7/css/normalize.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='font-css' href='https://cdn.removal.ai/web/v2.3.7/fonts/import.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='main-css' href='https://cdn.removal.ai/web/v2.3.7/css/main.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='header-css' href='https://cdn.removal.ai/web/v2.3.7/css/header.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='footer-css' href='https://cdn.removal.ai/web/v2.3.7/css/footer.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='cookie-css' href='https://cdn.removal.ai/web/v2.3.7/css/cookie.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='home-css' href='https://cdn.removal.ai/web/v2.3.7/css/home.min.css' type='text/css' media='all' />
+<link rel="https://api.w.org/" href="https://removal.ai/wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="https://removal.ai/wp-json/wp/v2/pages/493" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://removal.ai/xmlrpc.php?rsd" />
+<link rel='shortlink' href='https://removal.ai/' />
+<link rel='stylesheet' id='upload-css' href='https://cdn.removal.ai/web/v2.3.7/css/upload.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='upload-form-css' href='https://cdn.removal.ai/web/v2.3.7/css/upload-form.min.css' type='text/css' media='all' />
+
+</head>
+
+<body class="home wp-singular page-template page-template-templates page-template-template-home page-template-templatestemplate-home-php page page-id-493 wp-theme-removal20">
+    <div id="page" class="site">
+        <header id="header">
+            <div class="rm-inner-header">
+                <div class="rm-logo">
+                    <a href="https://removal.ai" aria-label="Removal.AI">
+                        <img class="no-drag" src="https://cdn.removal.ai/web/v3/images/logo.svg" width="215" height="40"
+                            alt="Removal.AI" />
+                    </a>
+                </div>
+                <div class="rm-header-menu">
+                    <ul class="rm-list-menu">
+                        <li>
+                            <a href="https://removal.ai/upload/">
+                                Remove Background                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="https://removal.ai/manual-background-removal-services/">
+                                Photo Editing Services                            </a>
+                        </li>
+                        <li>
+                            <a href="https://removal.ai/tools-api/">
+                                Tools & API                            </a>
+                        </li>
+                        <li class="menu-item-has-children">
+                            <span style="cursor: pointer">How To Use</span>
+                            <div class="rm-header-submenu">
+                                <ul>
+                                    <li>
+                                        <a
+                                            href="https://removal.ai/services/car-dealerships/">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/car.svg" loading="lazy"
+                                                alt="Car dealers" />
+                                            <span>Car Dealers</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://removal.ai/services/individuals/ ">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/individual.svg"
+                                                loading="lazy"
+                                                alt="Individual" />
+                                            <span>Individuals</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://removal.ai/services/ecommerce/ ">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/ecom.svg"
+                                                loading="lazy"
+                                                alt="E-commerce" />
+                                            <span>Ecommerce</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://removal.ai/services/developers/ ">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/dev.svg" loading="lazy"
+                                                alt="Developers" />
+                                            <span>Developers</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://removal.ai/services/marketing/ ">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/marketer.svg"
+                                                loading="lazy"
+                                                alt="Marketers" />
+                                            <span>Marketers</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://removal.ai/services/photographer/ ">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/photographer.svg"
+                                                loading="lazy"
+                                                alt="Photographers" />
+                                            <span>Photographers</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://removal.ai/services/designers/">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/designer.svg"
+                                                loading="lazy"
+                                                alt="Designers" />
+                                            <span>Designers</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/services/media/">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/media.svg"
+                                                loading="lazy"
+                                                alt="Media" />
+                                            <span>Media</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/enterprises/">
+                                            <img src="https://cdn.removal.ai/web/v3/images/icons/enterprise.svg"
+                                                loading="lazy"
+                                                alt="Enterprise" />
+                                            <span>Enterprise</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href=" https://removal.ai/pricing/">
+                                Pricing                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="rm-header-right">
+                                            <div class="rm-login not-login">
+                            <a href="https://removal.ai/login/"
+                                class="login">Login</a>
+                            <a href="https://removal.ai/sign-up/"
+                                class="signup">Sign Up</a>
+                        </div>
+                                    </div>
+                <div class="rm-header-responsive">
+                    <div class="rm-menu-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="rm-menu-responsive">
+                        <ul class="rst-main-menu-ul">
+                            <li><a
+                                    href="https://removal.ai/upload/">Remove Background</a>
+                            </li>
+                            <li><a
+                                    href="https://removal.ai/manual-background-removal-services/">
+                                    Photo Editing Services</a></li>
+                            <li class="menu-item-has-children-tool"><a href="/tools-api/">
+                                    Tools & API</a>
+                            </li>
+                            <li class="menu-item-has-children  menu-item_how-to-use"><a
+                                    href="#">How To Use</a>
+                                <div class="rst-container-submenu" style="display:none;">
+                                    <ul>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/car-dealerships/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/car.svg"
+                                                    loading="lazy"
+                                                    alt="Car dealers">
+                                                Car Dealers                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/individuals/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/individual.svg"
+                                                    loading="lazy"
+                                                    alt="Individual">
+                                                Individuals                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/ecommerce/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/ecom.svg"
+                                                    loading="lazy"
+                                                    alt="E-commerce">
+                                                Ecommerce                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/developers/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/dev.svg"
+                                                    loading="lazy"
+                                                    alt="Developers">
+                                                Developers                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/marketing/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/marketer.svg"
+                                                    loading="lazy"
+                                                    alt="Marketers">
+                                                Marketers                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/photographer/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/photographer.svg"
+                                                    loading="lazy"
+                                                    alt="Photographers">
+                                                Photographers                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/designers/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/designer.svg"
+                                                    loading="lazy"
+                                                    alt="Designers">
+                                                Designers                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="https://removal.ai/services/media/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/media.svg"
+                                                    loading="lazy"
+                                                    alt="Media">
+                                                Media                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/services/enterprises/">
+                                                <img src="https://cdn.removal.ai/web/v3/images/icons/enterprise.svg"
+                                                    loading="lazy"
+                                                    alt="Enterprise">
+                                                Enterprise                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li><a
+                                    href="https://removal.ai/pricing/">Pricing</a>
+                            </li>
+                        </ul>
+                        <div class="rm-header-right">
+                                                            <div class="rm-login not-login">
+                                    <a href="https://removal.ai/login/"
+                                        class="login">Login</a>
+                                    <a href="https://removal.ai/sign-up/"
+                                        class="signup">Sign Up</a>
+                                </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+        </header><main id="content" class="site-main">
+    <section class="home-section banner-home">
+        <div class="container banner-container">
+            <div class="row">
+                <div class="col-12 col-md-5 d-flex justify-content-end">
+                    <div class="banner-home__content">
+                        <h1>AI Background Remover</h1>
+                        <p class="automated">Remove background from image instantly, fully automated and                            <span>FREE</span>
+                        </p>
+                        
+<div class="rm-upload rm-upload__mini">
+    <div class="remove-background-item loading d-none template-upload-item">
+    <div class="remove-background-item__heading">
+        <ul>
+            <li class="active remove-background-item__view" data-tab="remove-background-item__preview-original">
+                Original            </li>
+            <li class="remove-background-item__view" data-tab="remove-background-item__preview-result">
+                Removed Background            </li>
+        </ul>
+        <a class="close"><img src="https://cdn.removal.ai/web/v3/images/close.png" alt="Close" /></a>
+    </div>
+    <div class="remove-background-item__content">
+        <div class="remove-background-item__preview">
+            <div class="remove-background-item__preview-tab remove-background-item__preview-original active">
+                <img class="original">
+            </div>
+            <div class="remove-background-item__preview-tab remove-background-item__preview-result">
+                <img class="preview-demo">
+            </div>
+        </div>
+        <div class="remove-background-item__action">
+            <div class="rm-item-tool">
+                <div class="rm-item-tool__item">
+                    <div style="position: relative; overflow: hidden; width: 100%;">
+                        <button class="rmr-image-button rm-tool-button rm-btn rm-btn-white">
+                            Erase/Restore                        </button>
+                    </div>
+                    <div class="rmr-image-dropdown tool-dropdown-content">
+                        <button class="rmr-image rmr-image-low tool-dropdown-button">
+                            Preview image                        </button>
+                        <button class="rmr-image rmr-image-high tool-dropdown-button">
+                            Full HD image                        </button>
+                    </div>
+                </div>
+                <div class="rm-item-tool__item">
+                    <div style="position: relative; overflow: hidden; width: 100%;">
+                        <button class="rme-image-button rm-tool-button rm-btn rm-btn-white">
+                            Editor tools                        </button>
+                    </div>
+                    <div class="rme-image-dropdown tool-dropdown-content">
+                        <button class="rme-image rme-image-low tool-dropdown-button">
+                            Preview image                        </button>
+                        <button class="rme-image rme-image-high tool-dropdown-button">
+                            Full HD image                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="rm-download-option rm-download-preview">
+                <a class="rm-btn rm-btn-primary rm-download-preview" target="_blank">
+                    Download                </a>
+                <p class="rm-result-dimension">
+                    <span class="rm-preview-dimension"></span> px
+                </p>
+            </div>
+            <div class="rm-download-option">
+                <a class="rm-btn rm-btn-block rm-btn-white rm-download-high" target="_blank">
+                    Download HD                </a>
+                <p class="rm-result-dimension">
+                    <span class="rm-high-dimension"></span> px
+                </p>
+            </div>
+            <div class="rm-manual-editors text-center">
+                <p>More challenging images?</p>
+                <a class="rm-btn rm-btn-block rm-btn-white" href="https://removal.ai/manual-background-removal-services/"
+                    class="rm-bt-manual-editors" target="_blank">
+                    Hire professional editors                </a>
+                <p>Have image back within 24 hours</p>
+            </div>
+        </div>
+    </div>
+    <div class="rst-upload-process-content-inner error-upload">
+        <div class="rm-upload-result-content">
+            <div class="rm-upload-result-content-error">
+                <h3>Sorry...</h3>
+                <h4>We could not identify the foreground of your image.</h4>
+                <p>Please make sure that you are uploading an image in .jpg or .jpeg format. We also advise checking your internet connection as it may affect and interrupt the upload process. Please try again after a few moments.</p>
+                <p>If you have an image with specific requirements and urgent needs, consider hiring our professional editors.</p>
+                <p>For more information:                    <a href="https://removal.ai/manual-background-removal-services/">
+                        Hiring our editors                    </a>
+                    or <a href="/feedback">
+                        Leave Feedback                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>    <main id="content" class="d-none template-upload">
+    <div class="section-upload section-upload-process">
+        <div class="container container-1156">
+            <h2 class="title">Upload an image<br>to remove the background</h2>
+            <div class="rm-upload">
+                <div class="rm-upload-inner">
+                    <button
+                        class="rm-btn rm-btn-primary rm-btn-shadow rm-btn-upload rm-button-upload-remove-background">
+                        <img src="https://cdn.removal.ai/web/v2/images/icon_upload.png" width="24" height="24"
+                            alt="Image" />
+                         Upload Your Image                    </button>
+                    <input type="file" class="form-control rm-upload-remove-background" name="rm_file_upload"
+                        accept="image/png,image/jpg,image/jpeg" />
+                    <p>Or Drop an image,</p>
+                    <p>paste image with <span>Ctrl + V</span></p>
+                </div>
+                <div class="rm-upload-try">
+                    <div class="rm-upload-try__label">
+                        <span>No image?</span>
+                        <span>Try one of these</span>
+                    </div>
+                    <div class="rm-upload-try__list">
+                        <img class="rm-upload-try__item"
+                            src="https://cdn.removal.ai/web/v25.1/images/try/human_thumb.jpg" loading="lazy"
+                            alt="Try person" width="48"
+                            height="48">
+                        <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/car_thumb.jpg"
+                            alt="Try car" width="48" height="48">
+                        <img class="rm-upload-try__item"
+                            src="https://cdn.removal.ai/web/v25.1/images/try/product1_thumb.jpg" loading="lazy"
+                            alt="Try product" width="48"
+                            height="48">
+                        <img class="rm-upload-try__item"
+                            src="https://cdn.removal.ai/web/v25.1/images/try/animal1_thumb.jpg" loading="lazy"
+                            alt="Try animal" width="48"
+                            height="48">
+                    </div>
+                </div>
+                <div class="rm-upload-privacy">
+                    <p>
+                        By uploading an image or URL you agree to our <a target="_blank" href="/terms-conditions/">Terms of Service</a> . This site is protected by reCaptcha and its <a target="_blank" href="/privacy-policy/">Privacy Policy</a> and <a target="_blank" href="/terms-conditions/">Terms of Service</a> apply.                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container container-1156 " id="container-result">
+    </div>
+    <div class="section-three-box">
+        <div class="container container-1156 container-img">
+            <div class="row row-bottom">
+                <div class="col-md-4 rm-item-three-box text-center no-drag">
+                    <img src="https://cdn.removal.ai/web/v3/images/upload/upload1.png"
+                        alt="White background" />
+                    <h3>Fully automated background remover</h3>
+                    <p>Instantly get an image with a transparent background. Fully automated and FREE.</p>
+                </div>
+                <div class="col-md-4 rm-item-three-box text-center no-drag">
+                    <img src="https://cdn.removal.ai/web/v3/images/upload/upload2.png"
+                        alt="Change image background" />
+                    <h3>Replace image background</h3>
+                    <p>Easily replace the original background with a solid or another image background.</p>
+                </div>
+                <div class="col-md-4 rm-item-three-box text-center no-drag">
+                    <img src="https://cdn.removal.ai/web/v3/images/upload/upload3.png"
+                        alt="Removal.ai designer" />
+                    <h3>Design the way you want</h3>
+                    <p>Create stunning banners and designs from your transparent background image easily.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>    <div class="rm-upload-inner">
+        <button class="rm-btn rm-btn-primary rm-btn-shadow rm-btn-upload rm-button-upload-remove-background">
+            <img src="https://cdn.removal.ai/web/v2/images/icon_upload.png" width="24" height="24"
+                alt="Image" />
+             Upload Your Image        </button>
+        <input type="file" style="display: none;" class="form-control rm-upload-remove-background" name="rm_file_upload"
+            accept="image/png,image/jpg,image/jpeg" />
+        <p>Or Drop an image,</p>
+        <p>paste image with <span>Ctrl + V</span></p>
+    </div>
+    <div class="rm-upload-try">
+        <div class="rm-upload-try__label">
+            <span>No image?</span>
+            <span>Try one of these</span>
+        </div>
+        <div class="rm-upload-try__list">
+            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/human1_thumb.jpg" loading="lazy" alt="Try person" width="48" height="48">            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/car2_thumb.jpg" loading="lazy" alt="Try car" width="48" height="48">            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/product1_thumb.jpg" loading="lazy" alt="Try product" width="48" height="48">            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/animal_thumb.jpg" loading="lazy" alt="Try animal" width="48" height="48">        </div>
+    </div>
+    <div class="rm-upload-privacy">
+        <p>
+            By uploading an image or URL you agree to our <a target="_blank" href="/terms-conditions/">Terms of Service</a> . This site is protected by reCaptcha and its <a target="_blank" href="/privacy-policy/">Privacy Policy</a> and <a target="_blank" href="/terms-conditions/">Terms of Service</a> apply.        </p>
+    </div>
+</div>                    </div>
+                </div>
+                <div class="col-2 d-none d-sm-block"></div>
+                <div class="col-5 d-none d-sm-block banner-home__play">
+                    <div class="banner-home__video">
+                        <video id="myVideo" autoplay muted playsinline preload="auto">
+                            <source src="https://cdn.removal.ai/banner.mp4" ?>"
+                            type=" video/webm">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="home-section section-scenarios">
+        <div class="container">
+            <div class="home-section__heading">
+                <div class="row ">
+                    <div class="col-sm-12 col-lg-3 offset-lg-1">
+                        <div class="icon-section">
+                            <div></div>
+                            <span
+                                class="icon-section__label">WHY CHOOSE US?</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Amazing image quality for various scenarios</h2>
+                                <p>Create designs with our background remover tool. Turn your images into art, stunning banners, visual presentations, product catalog and graphics—fully customizable for your needs. </p>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="rm-scenarios-tab-container">
+                                    <ul class="rm-scenarios-tab__list">
+                                        <li class="rm-scenarios-tab__item rm-scenarios-tab__item--active"
+                                            data-tab="scenarios-tab1">Products                                        </li>
+                                        <li class="rm-scenarios-tab__item" data-tab="scenarios-tab2">
+                                            People</li>
+                                        <li class="rm-scenarios-tab__item" data-tab="scenarios-tab3">
+                                            Cars</li>
+                                        <li class="rm-scenarios-tab__item" data-tab="scenarios-tab4">
+                                            Animals</a></li>
+                                        <li class="rm-scenarios-tab__item" data-tab="scenarios-tab5">
+                                            Graphics</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="home-section__content">
+                <div class="rm-scenarios-tab__content">
+                    <div id="scenarios-tab1"
+                        class="rm-scenarios-tab__content-item rm-scenarios-tab__content-item--active">
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/product1.jpg" loading="lazy"
+                                width="330" height="464"
+                                alt="Transparent background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/product2.jpg" loading="lazy"
+                                width="330" height="464"
+                                alt="Change image background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/product3.jpg" loading="lazy"
+                                width="330" height="464"
+                                alt="AI background changer" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/product4.jpg" loading="lazy"
+                                width="330" height="464"
+                                alt="Change background" />
+                        </div>
+                    </div>
+                    <div id="scenarios-tab2" class="rm-scenarios-tab__content-item">
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/People1.png" loading="lazy"
+                                alt="Transparent background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/People2.png" loading="lazy" width="330"
+                                height="464" alt="Change image background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/People3.png" loading="lazy" width="330"
+                                height="464" alt="AI background changer" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/People4.png" loading="lazy" width="330"
+                                height="464" alt="Change background" />
+                        </div>
+                    </div>
+                    <div id="scenarios-tab3" class="rm-scenarios-tab__content-item">
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/Cars1.png" loading="lazy" width="330"
+                                height="464" alt="Transparent background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/Cars2.png" loading="lazy" width="330"
+                                height="464" alt="Change image background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/Cars3.png" loading="lazy" width="330"
+                                height="464" alt="AI background changer" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v3/images/home/Cars4.png" loading="lazy" width="330"
+                                height="464" alt="Change background" />
+                        </div>
+                    </div>
+                    <div id="scenarios-tab4" class="rm-scenarios-tab__content-item">
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/Animals1.png" loading="lazy"
+                                width="330" height="464"
+                                alt="Transparent background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/Animals2.png" loading="lazy"
+                                width="330" height="464"
+                                alt="Change image background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/Animals3.png" loading="lazy"
+                                width="330" height="464"
+                                alt="AI background changer" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v2501/images/home/Animals4.png" loading="lazy"
+                                width="330" height="464"
+                                alt="Change background" />
+                        </div>
+                    </div>
+                    <div id="scenarios-tab5" class="rm-scenarios-tab__content-item">
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/Graphics1.png" loading="lazy"
+                                width="330" height="464"
+                                alt="Transparent background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/Graphics2.png" loading="lazy"
+                                width="330" height="464"
+                                alt="Change image background" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/Graphics3.png" loading="lazy"
+                                width="330" height="464"
+                                alt="AI background changer" />
+                        </div>
+                        <div class="rm-img-scenarios no-drag">
+                            <img src="https://cdn.removal.ai/web/v25.1/images/home/Graphics4.png" loading="lazy"
+                                width="330" height="464"
+                                alt="Change background" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="home-section section-slider-img-text">
+        <div class="container">
+            <div class="home-section__content">
+                <div class="rm-slider-img-text">
+                    <div class="rm-item-img-text">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <img class="no-drag rm-item-img-text__image"
+                                    src="https://cdn.removal.ai/web/v25.1/images/home/remove-background.png"
+                                    loading="lazy" width="684" height="480"
+                                    alt="Remove background" />
+                            </div>
+                            <div class="col-md-6">
+                                <div class="rm-item-content-text">
+                                    <h3>Remove background <span>instantly</span> with one click</h3>
+                                    <p>Get images in a white, customized, or transparent background in 3 seconds or less.</p>
+                                    <ul>
+                                        <li>Automatically detect subjects on photos.</li>
+                                        <li>Neat, clear & smooth cutout edges.</li>
+                                        <li>Can process hair or any furry edges.</li>
+                                        <li>Processes over 1,000 images in a single upload.</li>
+                                    </ul>
+                                </div>
+                                <a href="https://removal.ai/upload/"
+                                    class="rm-btn rm-btn-black ">
+                                    <img src="https://cdn.removal.ai/web/v3/images/arrow-right.png" loading="lazy"
+                                        width="24" height="24"
+                                        alt="Removal.ai designer" />
+                                    Try our free background remover                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rm-item-img-text">
+                        <div class="row flex-row-reverse align-items-center">
+                            <div class="col-md-6">
+                                <img class="no-drag rm-item-img-text__image"
+                                    src="https://cdn.removal.ai/web/v25.1/images/home/Frame_37319.png" loading="lazy"
+                                    width="684" height="480"
+                                    alt="Removal.ai api" />
+                            </div>
+                            <div class="col-md-6">
+                                <div class="rm-item-content-text">
+                                    <h3><span>Cool designs</span> as you wish</h3>
+                                    <p>No need to make designs somewhere else. Freely edit and create graphics using our online photo editor after the background is removed from your image.</p>
+                                    <ul>
+                                        <li>Quickly remove and change the background.</li>
+                                        <li>Add texts and effects.</li>
+                                        <li>Edit the foreground manually using the background eraser tool.</li>
+                                        <li>Available presets and templates for marketplaces</li>
+                                    </ul>
+                                </div>
+                                <a href="https://removal.ai/free-online-photo-editor/"
+                                    class="rm-btn rm-btn-black "><img
+                                        src="https://cdn.removal.ai/web/v3/images/arrow-right.png" loading="lazy"
+                                        alt="Removal.ai designer"
+                                        width="24"
+                                        height="24" />Try our free online photo editor</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rm-item-img-text">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <img class="no-drag rm-item-img-text__image"
+                                    src="https://cdn.removal.ai/web/v25.1/images/home/easy-api.png" loading="lazy"
+                                    width="684" height="480"
+                                    alt="Easy api integration" />
+                            </div>
+                            <div class="col-md-6">
+                                <div class="rm-item-content-text">
+                                    <h3><span>Easy API</span> integration for speedy workflow</h3>
+                                    <p>Integrate our API to your existing systems with just few lines of code.</p>
+                                    <ul>
+                                        <li>Reliable, efficient & scalable.</li>
+                                        <li>Optimized for different purposes and use-case.</li>
+                                        <li>99% uptime guarantee.</li>
+                                        <li>100% GDPR compliant file storage.</li>
+                                        <li>Dedicated customer support.</li>
+                                    </ul>
+                                </div>
+                                <a href="https://removal.ai/contact/"
+                                    class="rm-btn rm-btn-black "><img
+                                        src="https://cdn.removal.ai/web/v3/images/arrow-right.png" loading="lazy"
+                                        width="24" height="24"
+                                        alt="Removal.ai designer" />Contact us for your custom needs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="home-section section-who-is-it">
+        <div class="container">
+            <div class="home-section__heading">
+                <div class="row">
+                    <div class="col-sm-12 col-lg-3 offset-lg-1">
+                        <div class="icon-section">
+                            <div></div>
+                            <span
+                                class="icon-section__label">WHY CHOOSE US?</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="row">
+                            <h2>Who is it made for?</h2>
+                            <p>Whether you’re a seasoned photographer, a creative graphic designer, an innovative marketer, or running a dynamic eCommerce store, Removal.AI will seamlessly adapt to your specific needs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="home-section__content">
+                <div class="row align-items-center">
+                    <div class="col-md-3 col-6">
+                        <div class="who-is-it left-who-is-it">
+                            <ul class="rm-menu-tab-who">
+                                <li class="rm-menu-tab-who__item active" data-tab="who-tab1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M20.59 22C20.59 18.13 16.74 15 12 15C7.26 15 3.41 18.13 3.41 22M17 7C17 9.76142 14.7614 12 12 12C9.23858 12 7 9.76142 7 7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7Z"
+                                            stroke="#707070" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                    <span>Individuals</span>
+                                </li>
+                                <li class="rm-menu-tab-who__item" data-tab="who-tab2">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M10.5 8H13.5M6.76002 22H17.24C20 22 21.1 20.31 21.23 18.25L21.75 9.99C21.89 7.83 20.17 6 18 6C17.39 6 16.83 5.65 16.55 5.11L15.83 3.66C15.37 2.75 14.17 2 13.15 2H10.86C9.83001 2 8.63001 2.75 8.17001 3.66L7.45001 5.11C7.17001 5.65 6.61002 6 6.00002 6C3.83001 6 2.11001 7.83 2.25001 9.99L2.77001 18.25C2.89001 20.31 4.00002 22 6.76002 22ZM12 18C13.79 18 15.25 16.54 15.25 14.75C15.25 12.96 13.79 11.5 12 11.5C10.21 11.5 8.75002 12.96 8.75002 14.75C8.75002 16.54 10.21 18 12 18Z"
+                                            stroke="#707070" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                    <span>
+                                        Photographers                                    </span>
+                                </li>
+                                <li class="rm-menu-tab-who__item" data-tab="who-tab3">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_2579_730)">
+                                            <path
+                                                d="M4.86195 9.13753L10.4288 3.79784C11.3757 2.8895 12.9261 3.1238 13.5624 4.2714L17.6141 11.5793C18.2875 12.7938 17.5486 14.308 16.1769 14.5246L11.1859 15.3127M4.86195 9.13753L3.23989 10.6934C2.52679 11.3774 2.42009 12.4797 2.98874 13.2878L4.37395 15.2562C4.81283 15.8799 5.5682 16.1997 6.32148 16.0807L7.12258 15.9542M4.86195 9.13753L7.15152 12.4318M11.1859 15.3127L12.8182 17.9221C13.3872 18.8318 13.1566 20.0609 12.303 20.6673C11.4495 21.2738 10.2963 21.028 9.72727 20.1183L7.12258 15.9542M11.1859 15.3127L7.12258 15.9542M17 4.99966C18.2144 5.91187 19 7.36421 19 9.00003M17 1.58154C19.9318 2.76832 22 5.64265 22 9.00003C22 9.33869 21.979 9.67243 21.9381 10"
+                                                stroke="#707070" stroke-width="1.5" stroke-linecap="round" />
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_2579_730">
+                                                <rect width="24" height="24" fill="white" />
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                    <span>Marketers</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 order-lg-3">
+                        <div class="who-is-it right-who-is-it">
+                            <ul class="rm-menu-tab-who">
+                                <li class="rm-menu-tab-who__item" data-tab="who-tab4">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M8 10L5.78885 11.1056C5.05181 11.4741 5.05181 12.5259 5.78885 12.8944L8 14M16 14L18.2111 12.8944C18.9482 12.5259 18.9482 11.4741 18.2111 11.1056L16 10M13 7L11 17M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                                            stroke="#707070" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                    <span>Developers</span>
+                                </li>
+                                <li class="rm-menu-tab-who__item" data-tab="who-tab5">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M2 2H3.74001C4.82001 2 5.67 2.93 5.58 4L4.75 13.96C4.61 15.59 5.89999 16.99 7.53999 16.99H18.19C19.63 16.99 20.89 15.81 21 14.38L21.54 6.88C21.66 5.22 20.4 3.87 18.73 3.87H5.82001M9 8H21M17.5 20.75C17.5 21.4404 16.9404 22 16.25 22C15.5596 22 15 21.4404 15 20.75C15 20.0596 15.5596 19.5 16.25 19.5C16.9404 19.5 17.5 20.0596 17.5 20.75ZM9.5 20.75C9.5 21.4404 8.94036 22 8.25 22C7.55964 22 7 21.4404 7 20.75C7 20.0596 7.55964 19.5 8.25 19.5C8.94036 19.5 9.5 20.0596 9.5 20.75Z"
+                                            stroke="#707070" stroke-width="1.5" stroke-miterlimit="10"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <span>Ecommerce</span>
+                                </li>
+                                <li class="rm-menu-tab-who__item" data-tab="who-tab6">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M1 22H23M3 22V6.02161C3 4.01055 3.98366 3 5.94103 3H12.0689C14.0262 3 15 4.01055 15 6.02161V22V11.9084C15 10.6382 15.4918 10 16.4705 10H19.5344C20.5131 10 21 10.6382 21 11.9084V22M6.5 6V7M11.5 6V7M6.5 10V11M11.5 10V11M6.5 14V15M11.5 14V15M6.5 18V19M11.5 18V19M17.5 13H18.5M17.5 16H18.5M17.5 19H18.5"
+                                            stroke="#707070" stroke-width="1.5" stroke-miterlimit="10"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <span>Enterprise</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12 image-who-is-it">
+                        <div class="image-who-tabs">
+                            <div id="who-tab1" class="image-who-tab active no-drag">
+                                <img src="https://cdn.removal.ai/web/v25.1/images/home/who1.jpg" loading="lazy"
+                                    width="684" height="480"
+                                    alt="Individual" />
+                                <div id="who_tab1" class="content-who-tab">
+                                    <h3>Individuals</h3>
+                                    <p>Be creative with your presentations, fill up your feed with awesome posts, and easily create amazing designs for your next project. Design graphics like a pro using Removal.AI!</p>
+                                    <a class="learn_more"
+                                        href="https://removal.ai/services/individuals/">Read Individual</a>
+                                </div>
+                            </div>
+                            <div id="who-tab2" class="image-who-tab no-drag">
+                                <img src="https://cdn.removal.ai/web/v25.1/images/home/who3.jpg" loading="lazy"
+                                    width="684" height="480"
+                                    alt="Photographers" />
+                                <div id="who_tab2" class="content-who-tab">
+                                    <h3> Photographers</h3>
+                                    <p>Streamline your photo editing process and transform your photos into powerful stories that captivate and resonate. Trust Removal.AI to maintain the integrity of your art while adding that perfect finishing touch.</p>
+                                    <a class="learn_more"
+                                        href="https://removal.ai/services/photographer/">Read Photographers</a>
+                                </div>
+                            </div>
+                            <div id="who-tab3" class="image-who-tab no-drag">
+                                <img src="https://cdn.removal.ai/web/v3/images/home/who2.jpg" loading="lazy" width="684"
+                                    height="480" alt="Marketers" />
+
+                                <div id="who_tab3" class="content-who-tab">
+                                    <h3>Marketers</h3>
+                                    <p>Improve your storytelling by placing your products in any context. We will help ensure that your graphics are not just see but are also memorable and effective in increasing engagement and driving sales. </p>
+                                    <a class="learn_more"
+                                        href="https://removal.ai/services/marketing/">Read Marketing</a>
+                                </div>
+                            </div>
+                            <div id="who-tab4" class="image-who-tab no-drag">
+                                <img src="https://cdn.removal.ai/web/v25.1/images/home/who4.jpg" loading="lazy"
+                                    width="684" height="480"
+                                    alt="Developers" />
+                                <div id="who_tab4" class="content-who-tab">
+                                    <h3>Developers</h3>
+                                    <p>Keep your development projects at the forefront of technology by embedding advanced image background capabilities. <a href="/">Removal.AI</a> can be seamlessly integrated to your applications to enrich user experiences.</p>
+                                    <a class="learn_more"
+                                        href="https://removal.ai/services/developers/">Read Developers</a>
+                                </div>
+                            </div>
+                            <div id="who-tab5" class="image-who-tab no-drag">
+                                <img src="https://cdn.removal.ai/web/v25.1/images/home/who5.jpg" loading="lazy"
+                                    width="684" height="480"
+                                    alt="E-commerce" />
+
+                                <div id="who_tab5" class="content-who-tab">
+                                    <h3>Ecommerce</h3>
+                                    <p>Remove backgrounds from product photos to create clean images that highlight your products. Our background remover is designed to handle large volumes of photos, showcasing your items in the cleanest, most professional way.</p>
+                                    <a class="learn_more"
+                                        href="https://removal.ai/services/ecommerce/">
+                                        Read Ecommerce</a>
+                                </div>
+                            </div>
+                            <div id="who-tab6" class="image-who-tab no-drag">
+                                <img src="https://cdn.removal.ai/web/v25.1/images/home/who6.jpg" loading="lazy"
+                                    width="684" height="480"
+                                    alt="Enterprise" />
+                                <div id="who_tab6" class="content-who-tab">
+                                    <h3>Enterprise</h3>
+                                    <p>Join leading companies who trust Removal.AI to enhance their visual content and drive business success. Our background remover is designed to meet the diverse needs of your organization.</p>
+                                    <a class="learn_more"
+                                        href="https://removal.ai/enterprises/">Read Enterprise</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="home-section section-testimonials">
+        <div class="inner-testimonials">
+            <div class="container ">
+                <div class="home-section__heading">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-3 offset-lg-1">
+                            <div class="icon-section">
+                                <div></div>
+                                <span
+                                    class="icon-section__label">TESTIMONIALS?</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-8">
+                            <div class="row">
+                                <h2>From startups to established brands,<br> you'll be in good company.</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="home-section__content">
+                    <div class="slider-testimonials">
+                        <div class="item-testimonials">
+                            <div class="box-testimonials">
+                                <span>‟</span>
+                                <p>I've been using Removal.AI for a while, I guess this one is a pretty good match. I have downloaded the preview image at 1000px resolution for free. The basic editor is also quite interesting. Worth giving a try!</p>
+                                <div class="meta-testimonials">
+                                    <div>
+                                        <p class="name"><span>@</span> Powell Gao</p>
+                                        <div class="job">Software Developer - imagecolorizer.com</div>
+                                    </div>
+                                    <div class="avatar-testimonials">
+                                        <img src="https://cdn.removal.ai/web/v3/images/home/Testimonials1.png"
+                                            loading="lazy" width="49" height="48"
+                                            alt="Powell Gao" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-testimonials">
+                            <div class="box-testimonials">
+                                <span>‟</span>
+                                <p>Well I'm particularly surprised at how accurate and smooth are the cut-out edges. I always wanted a super fast background remover. Finally I do not have to open up Photoshop to get the job done.</p>
+                                <div class="meta-testimonials">
+                                    <div>
+                                        <p class="name"><span>@</span> Andrea Mangano</p>
+                                        <div class="job">Product Designer - assemble.tv</div>
+                                    </div>
+                                    <div class="avatar-testimonials">
+                                        <img src="https://cdn.removal.ai/web/v3/images/home/Testimonials2.png"
+                                            loading="lazy" width="49" height="48"
+                                            alt="Andrea Mangano" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-testimonials">
+                            <div class="box-testimonials">
+                                <span>‟</span>
+                                <p>I always wanted a super-fast background remover. Good job!</p>
+                                <div class="meta-testimonials">
+                                    <div>
+                                        <p class="name"><span>@</span> Omar Hamza</p>
+                                        <div class="job">Tech Savvy - quicksync.me</div>
+                                    </div>
+                                    <div class="avatar-testimonials">
+                                        <img src="https://cdn.removal.ai/web/v3/images/home/Testimonials3.png"
+                                            loading="lazy" width="49" height="48"
+                                            alt="Omar Hamza" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="home-section section-remove-image-background">
+        <div class="container">
+            <div class="heading-remove-image-background">
+                <h3>Remove image background</h3>
+            </div>
+            
+<div class="rm-upload rm-upload__mini">
+    <div class="remove-background-item loading d-none template-upload-item">
+    <div class="remove-background-item__heading">
+        <ul>
+            <li class="active remove-background-item__view" data-tab="remove-background-item__preview-original">
+                Original            </li>
+            <li class="remove-background-item__view" data-tab="remove-background-item__preview-result">
+                Removed Background            </li>
+        </ul>
+        <a class="close"><img src="https://cdn.removal.ai/web/v3/images/close.png" alt="Close" /></a>
+    </div>
+    <div class="remove-background-item__content">
+        <div class="remove-background-item__preview">
+            <div class="remove-background-item__preview-tab remove-background-item__preview-original active">
+                <img class="original">
+            </div>
+            <div class="remove-background-item__preview-tab remove-background-item__preview-result">
+                <img class="preview-demo">
+            </div>
+        </div>
+        <div class="remove-background-item__action">
+            <div class="rm-item-tool">
+                <div class="rm-item-tool__item">
+                    <div style="position: relative; overflow: hidden; width: 100%;">
+                        <button class="rmr-image-button rm-tool-button rm-btn rm-btn-white">
+                            Erase/Restore                        </button>
+                    </div>
+                    <div class="rmr-image-dropdown tool-dropdown-content">
+                        <button class="rmr-image rmr-image-low tool-dropdown-button">
+                            Preview image                        </button>
+                        <button class="rmr-image rmr-image-high tool-dropdown-button">
+                            Full HD image                        </button>
+                    </div>
+                </div>
+                <div class="rm-item-tool__item">
+                    <div style="position: relative; overflow: hidden; width: 100%;">
+                        <button class="rme-image-button rm-tool-button rm-btn rm-btn-white">
+                            Editor tools                        </button>
+                    </div>
+                    <div class="rme-image-dropdown tool-dropdown-content">
+                        <button class="rme-image rme-image-low tool-dropdown-button">
+                            Preview image                        </button>
+                        <button class="rme-image rme-image-high tool-dropdown-button">
+                            Full HD image                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="rm-download-option rm-download-preview">
+                <a class="rm-btn rm-btn-primary rm-download-preview" target="_blank">
+                    Download                </a>
+                <p class="rm-result-dimension">
+                    <span class="rm-preview-dimension"></span> px
+                </p>
+            </div>
+            <div class="rm-download-option">
+                <a class="rm-btn rm-btn-block rm-btn-white rm-download-high" target="_blank">
+                    Download HD                </a>
+                <p class="rm-result-dimension">
+                    <span class="rm-high-dimension"></span> px
+                </p>
+            </div>
+            <div class="rm-manual-editors text-center">
+                <p>More challenging images?</p>
+                <a class="rm-btn rm-btn-block rm-btn-white" href="https://removal.ai/manual-background-removal-services/"
+                    class="rm-bt-manual-editors" target="_blank">
+                    Hire professional editors                </a>
+                <p>Have image back within 24 hours</p>
+            </div>
+        </div>
+    </div>
+    <div class="rst-upload-process-content-inner error-upload">
+        <div class="rm-upload-result-content">
+            <div class="rm-upload-result-content-error">
+                <h3>Sorry...</h3>
+                <h4>We could not identify the foreground of your image.</h4>
+                <p>Please make sure that you are uploading an image in .jpg or .jpeg format. We also advise checking your internet connection as it may affect and interrupt the upload process. Please try again after a few moments.</p>
+                <p>If you have an image with specific requirements and urgent needs, consider hiring our professional editors.</p>
+                <p>For more information:                    <a href="https://removal.ai/manual-background-removal-services/">
+                        Hiring our editors                    </a>
+                    or <a href="/feedback">
+                        Leave Feedback                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>    <main id="content" class="d-none template-upload">
+    <div class="section-upload section-upload-process">
+        <div class="container container-1156">
+            <h2 class="title">Upload an image<br>to remove the background</h2>
+            <div class="rm-upload">
+                <div class="rm-upload-inner">
+                    <button
+                        class="rm-btn rm-btn-primary rm-btn-shadow rm-btn-upload rm-button-upload-remove-background">
+                        <img src="https://cdn.removal.ai/web/v2/images/icon_upload.png" width="24" height="24"
+                            alt="Image" />
+                         Upload Your Image                    </button>
+                    <input type="file" class="form-control rm-upload-remove-background" name="rm_file_upload"
+                        accept="image/png,image/jpg,image/jpeg" />
+                    <p>Or Drop an image,</p>
+                    <p>paste image with <span>Ctrl + V</span></p>
+                </div>
+                <div class="rm-upload-try">
+                    <div class="rm-upload-try__label">
+                        <span>No image?</span>
+                        <span>Try one of these</span>
+                    </div>
+                    <div class="rm-upload-try__list">
+                        <img class="rm-upload-try__item"
+                            src="https://cdn.removal.ai/web/v25.1/images/try/human_thumb.jpg" loading="lazy"
+                            alt="Try person" width="48"
+                            height="48">
+                        <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/car_thumb.jpg"
+                            alt="Try car" width="48" height="48">
+                        <img class="rm-upload-try__item"
+                            src="https://cdn.removal.ai/web/v25.1/images/try/product1_thumb.jpg" loading="lazy"
+                            alt="Try product" width="48"
+                            height="48">
+                        <img class="rm-upload-try__item"
+                            src="https://cdn.removal.ai/web/v25.1/images/try/animal1_thumb.jpg" loading="lazy"
+                            alt="Try animal" width="48"
+                            height="48">
+                    </div>
+                </div>
+                <div class="rm-upload-privacy">
+                    <p>
+                        By uploading an image or URL you agree to our <a target="_blank" href="/terms-conditions/">Terms of Service</a> . This site is protected by reCaptcha and its <a target="_blank" href="/privacy-policy/">Privacy Policy</a> and <a target="_blank" href="/terms-conditions/">Terms of Service</a> apply.                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container container-1156 " id="container-result">
+    </div>
+    <div class="section-three-box">
+        <div class="container container-1156 container-img">
+            <div class="row row-bottom">
+                <div class="col-md-4 rm-item-three-box text-center no-drag">
+                    <img src="https://cdn.removal.ai/web/v3/images/upload/upload1.png"
+                        alt="White background" />
+                    <h3>Fully automated background remover</h3>
+                    <p>Instantly get an image with a transparent background. Fully automated and FREE.</p>
+                </div>
+                <div class="col-md-4 rm-item-three-box text-center no-drag">
+                    <img src="https://cdn.removal.ai/web/v3/images/upload/upload2.png"
+                        alt="Change image background" />
+                    <h3>Replace image background</h3>
+                    <p>Easily replace the original background with a solid or another image background.</p>
+                </div>
+                <div class="col-md-4 rm-item-three-box text-center no-drag">
+                    <img src="https://cdn.removal.ai/web/v3/images/upload/upload3.png"
+                        alt="Removal.ai designer" />
+                    <h3>Design the way you want</h3>
+                    <p>Create stunning banners and designs from your transparent background image easily.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>    <div class="rm-upload-inner">
+        <button class="rm-btn rm-btn-primary rm-btn-shadow rm-btn-upload rm-button-upload-remove-background">
+            <img src="https://cdn.removal.ai/web/v2/images/icon_upload.png" width="24" height="24"
+                alt="Image" />
+             Upload Your Image        </button>
+        <input type="file" style="display: none;" class="form-control rm-upload-remove-background" name="rm_file_upload"
+            accept="image/png,image/jpg,image/jpeg" />
+        <p>Or Drop an image,</p>
+        <p>paste image with <span>Ctrl + V</span></p>
+    </div>
+    <div class="rm-upload-try">
+        <div class="rm-upload-try__label">
+            <span>No image?</span>
+            <span>Try one of these</span>
+        </div>
+        <div class="rm-upload-try__list">
+            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/human_thumb.jpg" loading="lazy" alt="Try person" width="48" height="48">            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/car1_thumb.jpg" loading="lazy" alt="Try car" width="48" height="48">            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/product1_thumb.jpg" loading="lazy" alt="Try product" width="48" height="48">            <img class="rm-upload-try__item" src="https://cdn.removal.ai/web/v25.1/images/try/animal_thumb.jpg" loading="lazy" alt="Try animal" width="48" height="48">        </div>
+    </div>
+    <div class="rm-upload-privacy">
+        <p>
+            By uploading an image or URL you agree to our <a target="_blank" href="/terms-conditions/">Terms of Service</a> . This site is protected by reCaptcha and its <a target="_blank" href="/privacy-policy/">Privacy Policy</a> and <a target="_blank" href="/terms-conditions/">Terms of Service</a> apply.        </p>
+    </div>
+</div>        </div>
+    </section>
+</main>
+<footer id="footer">
+    <div class="container container-full">
+        <div class="inner-footer">
+            <div class="container">
+                <div class="inner-footer-container">
+                    <div class="main-footer">
+                        <div class="rst-column-footer rst-column-footer1">
+                            <div class="widget-footer">
+                                <h3 class="title-widget">
+                                    Tools & API                                </h3>
+                                <ul>
+                                    <li>
+                                        <a href="https://removal.ai/api-documentation/">
+                                            API Documentation                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/download/">
+                                            Desktop App                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="widget-footer">
+                                <h3 class="title-widget">
+                                    Company                                </h3>
+                                <ul>
+                                    <li>
+                                        <a href="https://removal.ai/about-us/">
+                                            About Us                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/blog/">
+                                            Blog                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="rst-column-footer rst-column-footer2">
+                            <div class="widget-footer">
+                                <h3 class="title-widget">How To Use</h3>
+                                <ul>
+                                    <li>
+                                        <a href="https://removal.ai/services/car-dealerships/">
+                                            Car Dealers                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/services/developers/">
+                                            Developers                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/services/designers/">
+                                            Designers                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/services/individuals/">
+                                            Individuals                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/services/marketing/">
+                                            Marketers                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/services/media/">
+                                            Media                                        </a>
+                                    </li>
+                                    <li><a href="https://removal.ai/services/ecommerce/">
+                                            Ecommerce                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/services/photographer/">
+                                            Photographers                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/enterprises/">
+                                            Enterprise                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="rst-column-footer rst-column-footer3">
+                            <div class="widget-footer">
+                                <h3 class="title-widget">
+                                    Support                                </h3>
+                                <ul>
+                                    <li>
+                                        <a href="https://removal.ai/contact/">
+                                            Contact Us                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/terms-conditions/">
+                                            Terms & Conditions                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/privacy-policy/">
+                                            Privacy Policy                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/cookie-policy/">
+                                            Cookie Policy                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/refund-policy/">
+                                            Refund Policy                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://removal.ai/cancellation-policy/">
+                                            Cancellation Policy                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="rst-column-footer rst-column-footer4">
+                            <div class="subscribe-form">
+                                <h3>Get Updates</h3>
+                                <p>Sign up for our mailing list and we will let you know when we release new features or updates.</p>
+                                <form id="rm-sub-form">
+                                    <div class="group_field">
+                                        <div class="text_field">
+                                            <label>Email address</label>
+                                            <input id="email-sub" type="email" placeholder="Input your email address" />
+                                        </div>
+                                        <input type="submit" class="btn-subscribe" value="Subscribe" />
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="bottom-footer">
+                        <div class="language-selector">
+    <div class="active-language">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7.99961 3H8.99961C7.04961 8.84 7.04961 15.16 8.99961 21H7.99961" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M15 3C16.95 8.84 16.95 15.16 15 21" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 16V15C8.84 16.95 15.16 16.95 21 15V16" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 9.00156C8.84 7.05156 15.16 7.05156 21 9.00156" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+                    <span>
+                English                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M10.4537 4.77148H6.81951H3.54701C2.98701 4.77148 2.70701 5.44815 3.10367 5.84482L6.12534 8.86648C6.60951 9.35065 7.39701 9.35065 7.88117 8.86648L9.03034 7.71732L10.9028 5.84482C11.2937 5.44815 11.0137 4.77148 10.4537 4.77148Z" fill="#707070" />
+                </svg>
+            </span>
+            </div>
+        <ul class="language-list">
+        <div class="language-group">            <li class="active">
+                <a href="https://removal.ai/en/">
+                    English                </a>
+            </li>
+                    <li class="">
+                <a href="https://removal.ai/es/">
+                    Español                </a>
+            </li>
+                    <li class="">
+                <a href="https://removal.ai/fr/">
+                    Français                </a>
+            </li>
+        </div><div class="language-group">            <li class="">
+                <a href="https://removal.ai/de/">
+                    Deutsch                </a>
+            </li>
+                    <li class="">
+                <a href="https://removal.ai/ja/">
+                    日本語                </a>
+            </li>
+                    <li class="">
+                <a href="https://removal.ai/zh/">
+                    中国人                </a>
+            </li>
+        </div><div class="language-group">            <li class="">
+                <a href="https://removal.ai/id/">
+                    Bahasa Indonesia                </a>
+            </li>
+                    <li class="">
+                <a href="https://removal.ai/hi/">
+                    हिन्दी भाषा                </a>
+            </li>
+        </div>    </ul>
+</div>                        <div class="rst-social-footer">
+                            <ul>
+                                <li><a href="https://twitter.com/Removal_ai" target="_blank">Twitter</a></li>
+                                <li><a href="https://www.pinterest.com/RemovalAI/" target="_blank">Pinterest</a></li>
+                                <li><a href="https://www.facebook.com/removalai" target="_blank">Facebook</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="copyright text-center">
+        <div class="container">
+            Copyright 2019 -             <script>
+                document.write(/\d{4}/.exec(Date())[0])
+            </script>
+            Removal.AI - All rights reserved.        </div>
+    </div>
+</footer>
+</div>
+<!-- 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-body{
-    background:linear-gradient(135deg,#e6c9a8,#cfe9ff);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
+.modal-content {
+    position: relative;
+    margin: 10% auto;
+    max-width: 600px;
+    background-color: #4E7EFE;
+    border: none;
+    box-shadow: 0 14px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    outline: none;
+    padding: 40px 0 100px;
+    background-image: url('https://cdn.removal.ai/web/v3/images/banner-pop.svg');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: bottom;
 }
 
-.container{
-    background:white;
-    width:95%;
-    max-width:1000px;
-    padding:40px;
-    border-radius:20px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.1);
-    text-align:center;
+.modal-content p {
+    font-size: 32px;
+    color: #fff;
+    margin-top: 0;
+    line-height: 36px;
 }
 
-.logo{
-    font-size:28px;
-    font-weight:700;
-    color:#4a4a4a;
-    margin-bottom:10px;
+.modal-content h3 {
+    font-size: 60px;
+    color: #FFE461;
+    margin-bottom: 0;
+    margin-top: 20px;
 }
 
-.logo span{
-    color:#3498db;
+.modal-content button {
+    background-color: #FFE461;
+    color: #4e7efe;
+    border: none;
+    padding: 18px 32px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 16px;
 }
 
-h1{
-    font-size:32px;
-    margin:20px 0;
-    color:#333;
+.modal-content button:hover {
+    background-color: #FFD700;
 }
 
-p{
-    color:#666;
-    margin-bottom:30px;
+.modal-content a {
+    color: #FFF;
+    text-decoration: underline;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    font-size: 15px;
+    font-weight: bold;
 }
 
-.upload-box{
-    border:2px dashed #87CEFA;
-    padding:40px;
-    border-radius:15px;
-    cursor:pointer;
-    transition:0.3s;
+.countdown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
-.upload-box:hover{
-    background:#f0f8ff;
+.countdown span {
+    font-size: 40px;
+    color: #fff;
+    font-weight: bold;
 }
 
-input[type="file"]{
-    display:none;
+.countdown-item {
+    background-color: transparent;
+    padding: 26px 16px;
+    border-radius: 8px;
+    margin: 0 5px;
+    width: 90px;
 }
 
-.btn{
-    background:#3498db;
-    color:white;
-    border:none;
-    padding:12px 25px;
-    border-radius:30px;
-    font-size:16px;
-    cursor:pointer;
-    margin-top:20px;
-    transition:0.3s;
+.countdown-item span {
+    font-size: 36px;
+    color: #fff;
 }
 
-.btn:hover{
-    background:#2980b9;
+.countdown-label {
+    font-size: 14px !important;
+    display: block;
+    font-weight: 500 !important;
+    margin-top: 5px;
+    text-transform: uppercase;
 }
 
-.preview{
-    margin-top:30px;
-    display:none;
-}
-
-.preview img{
-    max-width:100%;
-    border-radius:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
-
-footer{
-    margin-top:30px;
-    font-size:14px;
-    color:#888;
+#skip-deal {
+    cursor: pointer;
 }
 </style>
-</head>
-<body>
 
-<div class="container">
-    <div class="logo">Background <span>Remover</span></div>
-    
-    <h1>Remove Background from Image for Free</h1>
-    <p>Remove image backgrounds automatically in seconds using AI technology.</p>
-
-    <label class="upload-box">
-        Click to Upload Image
-        <input type="file" id="fileInput" accept="image/*">
-    </label>
-
-    <div class="preview" id="preview">
-        <img id="previewImg">
-        <br>
-        <button class="btn">Remove Background (Demo)</button>
+<div id="promoModal" class="modal">
+    <div class="modal-content">
+        <p>GET MORE HD<br><b>DOWNLOADS</b></p>
+        <h3>50% OFF</h3>
+        <div class="countdown">
+            <div class="countdown-item">
+                <span id="countdown-day">00</span>
+                <span class="countdown-label">days</span>
+            </div>
+            <div class="countdown-item">
+                <span id="countdown-hour">00</span>
+                <span class="countdown-label">hours</span>
+            </div>
+            <div class="countdown-item">
+                <span id="countdown-minute">00</span>
+                <span class="countdown-label">minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span id="countdown-second">00</span>
+                <span class="countdown-label">seconds</span>
+            </div>
+        </div>
+        <button id="get-promotion">Get my 50% off</button>
+        <a id="skip-deal">Skip this deal</a>
     </div>
-
-    <footer>
-        © 2026 Background Remover – Remove BG with AI
-    </footer>
 </div>
 
 <script>
-const fileInput = document.getElementById("fileInput");
-const preview = document.getElementById("preview");
-const previewImg = document.getElementById("previewImg");
+var modal = document.getElementById("promoModal");
 
-fileInput.addEventListener("change", function(){
-    const file = this.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(){
-            previewImg.src = reader.result;
-            preview.style.display = "block";
+var btn = document.getElementById("get-promotion");
+
+var skipDeal = document.getElementById("skip-deal");
+
+var span = document.getElementsByClassName("close")[0];
+
+skipDeal.addEventListener("click", function() {
+    RmAlert.Confirm({
+        title: 'Skip promotion?',
+        message: 'Are you sure you want to skip the promotion and pay full price?',
+        confirmText: 'Yes',
+        onConfirm: function() {
+            modal.style.display = "none";
+            setCookie("promoModal", "closed", 0.1);
         }
-        reader.readAsDataURL(file);
-    }
+    });
 });
+
+window.onload = function() {
+    var promoModal = getCookie("promoModal");
+    if (promoModal != "closed") {
+        modal.style.display = "block";
+        let now = new Date();
+        let end = new Date(2025, 1, 28);
+        let seconds = Math.floor((end - now) / 1000);
+        startCountdown(seconds);
+    }
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        RmAlert.Confirm({
+            title: 'Skip promotion?',
+            message: 'Are you sure you want to skip the promotion and pay full price?',
+            confirmText: 'Yes',
+            onConfirm: function() {
+                modal.style.display = "none";
+                setCookie("promoModal", "closed", 1);
+                deleteCookie("coupon");
+            }
+        });
+    }
+}
+
+document.getElementById("get-promotion").addEventListener("click", function() {
+    modal.style.display = "none";
+    setCookie("promoModal", "closed", 1);
+    setCookie("coupon", "NEWYEAR50", 10);
+    window.location.href = `/pricing/?coupon_code=NEWYEAR50`;
+});
+
+function getCookie(name) {
+    let cookieArr = document.cookie.split(";");
+    for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        if (name == cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    return null;
+}
+
+function setCookie(name, value, days) {
+    let date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";path=/";
+}
+
+function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function startCountdown(seconds) {
+    var countdownDay = document.getElementById("countdown-day");
+    var countdownHour = document.getElementById("countdown-hour");
+    var countdownMinute = document.getElementById("countdown-minute");
+    var countdownSecond = document.getElementById("countdown-second");
+
+    var x = setInterval(function() {
+        var days = Math.floor(seconds / (60 * 60 * 24));
+        var hours = Math.floor((seconds % (60 * 60 * 24)) / (60 * 60));
+        var minutes = Math.floor((seconds % (60 * 60)) / 60);
+
+        countdownDay.innerHTML = days < 10 ? "0" + days : days;
+        countdownHour.innerHTML = hours < 10 ? "0" + hours : hours;
+        countdownMinute.innerHTML = minutes < 10 ? "0" + minutes : minutes;
+        countdownSecond.innerHTML = seconds % 60 < 10 ? "0" + seconds % 60 : seconds % 60;
+
+        if (seconds <= 0) {
+            clearInterval(x);
+            modal.style.display = "none";
+            setCookie("promoModal", "closed", 1);
+        } else {
+            seconds--;
+        }
+    }, 1000);
+}
+</script> -->
+
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/removal2.0/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/jquery.min.js" id="jquery-js"></script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/rm-alert.min.js" id="rm-alert-js"></script>
+<script type="text/javascript" id="localized-messages-js-extra">
+/* <![CDATA[ */
+var localizedMessages = {"error":"An error occurred.","success":"Success","confirm-message":"Are you sure?","info":"Here is some information.","slowDownTitle":"Slow down","slowDownMessage":"Please wait a moment before uploading another image.","fileTooLargeMessage":"The file size is too large. Please select a file smaller than 12MB.","confirmRemoveTitle":"Confirm","confirmRemoveMessage":"Are you sure you want to remove this image?","dropFileMessage":"Drop your file anywhere","errorOccurredTitle":"An error occurred","errorOccurredMessage":"Please try again later!","confirmText":"Yes, remove it","error-title":"Error","fillAllFieldsMessage":"Please fill in all fields.","passwordsDoNotMatchMessage":"New password and confirm password do not match.","passwordTooShortMessage":"New password must be at least 8 characters long.","passwordTooLongMessage":"Password must be greater than 8 characters and less than 64 characters.","resetPasswordErrorTitle":"Reset Password Error","resetPasswordErrorMessage":"An error occurred. Please try again later.","maxImagesMessage":"You can upload a maximum of 5 images.","invalidEmailMessage":"Please enter a valid email address.","uploadErrorMessage":"Error uploading images","generalErrorMessage":"An error occurred. Please try again later.","maxImageSizeMessage":"Each image must be less than 100MB.","requestSuccessMessage":"Your request has been sent successfully.","agreeToTermsMessage":"You must agree to the Terms of Service and Privacy Policy.","activationFailedMessage":"Account activation failed. Please try again.","registrationErrorTitle":"Registration Error","tokenExpiredMessage":"Token copied to clipboard.","confirmReIssueTokenMessage":"Are you sure you want to re-issue the token?","confirmCancelSubscriptionMessage":"Are you sure you want to cancel this subscription?","confirmConfirmText":"Yes, re-issue it","no":"No","close":"Close","enterEmailAndPasswordMessage":"Please enter email and password.","deleteAccountErrorTitle":"Delete Account Error","accountDeletedTitle":"Account Deleted","deleteAccountWarningMessage":"\u003Cdiv class=\"deleting-account-title\"\u003EDeleting your account will:\u003C/div\u003E\u003Cdiv\u003E\u2022 Permanently remove all your account data.\u003Cbr\u003E\u2022 Erase your progress and personal settings.\u003Cbr\u003E\u2022 Cancel any active subscriptions.\u003Cbr\u003E\u003Cbr\u003E\u003Cspan class=\"final-warning\"\u003EThis action cannot be undone. Once deleted, your information will be gone forever.\u003C/span\u003E\u003C/div\u003E","deleteAccountConfirmTitle":"Are you sure you want to leave?","deleteAccountConfirmText":"Yes","loginErrorTitle":"Login Error","accountActivatedMessage":"Your account has been activated. You can now login.","accountActivatedTitle":"Account Activated","passwordChangedSuccessMessage":"Password changed successfully.","changePasswordErrorTitle":"Change Password Error","enterEmailMessage":"Please enter your email address.","selectCorrectBracketMessage":"Please select the correct bracket before uploading images to match the price we offer.","uploadAtLeastOneImageMessage":"Please upload at least one image.","errorRetrievingTotalPaymentMessage":"Error retrieving total payment. Please check your bracket selection and try again.","errorTotalPaymentMismatchMessage":"Error retrieving total payment.","maxFilesMessage":"You can only upload up to 20 files.","paymentSuccessTitle":"Payment Success","paymentSuccessMessage":"Your payment has been processed successfully!","paymentFailTitle":"Payment Fail","paymentFailMessage":"Your payment has been canceled or failed, please try again!","feedbackSuccessMessage":"Your feedback has been sent successfully.","subscribeErrorTitle":"Subscribe Error","subscribeSuccessMessage":"Thank you for subscribing.","subscribeSuccessTitle":"Subscribe Success","loginRequiredMessage":"Login Required","paymentErrorTitle":"Payment Error","messageSentSuccess":"Your message has been sent successfully.","reloadPageMessage":"An error may occur while loading data. Please reload the page.","expiredPromoTitle":"Expired Code","expiredPromoMessage":"The promo code has expired and is no longer valid.","messageCookie":"\u003Cp\u003EBy using Removal.AI you agree to the use of cookies. For more information, please refer to our \u003Ca href=\"/cookie-policy/\"\u003ECookie Policy\u003C/a\u003E.\u003C/p\u003E","image":"image","credit":"credits","unlimited":"Unlimited","fileTypeErrorMessage":"Please drop an image file.","documentTitleUpload":"Removal.AI: Upload Image to Create Transparent Background","missingDetailsMessage":"Missing Details","missingDetailsDescMessage":"You haven\u2019t provided any request details. Do you still want to send your request without details, or go back and add more information?","yes":"Yes","duplicate":"Duplicate File","duplicateMessage":"This file has already been uploaded.","nameTooLongTitle":"Name Too Long","nameTooShortMessage":"Name must be at least 2 characters long.","invalidNameTitle":"Invalid Name","invalidNameMessage":"Name cannot contain special characters.","noteTooLongTitle":"Note Too Long","noteTooLongMessage":"Your note cannot exceed 500 characters."};
+//# sourceURL=localized-messages-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/localized-messages.min.js" id="localized-messages-js"></script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/rm-noti.min.js" id="rm-noti-js"></script>
+<script type="text/javascript" id="main-js-extra">
+/* <![CDATA[ */
+var ajax_object = {"ajax_url":"https://removal.ai/wp-admin/admin-ajax.php","security":"1e8f078834"};
+//# sourceURL=main-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/main.min.js" id="main-js"></script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/cookie.min.js" id="cookie-js"></script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/home.min.js" id="home-js"></script>
+<script type="text/javascript" src="https://cdn.removal.ai/tools/v1.0.7/rmr.js" id="rmr-script-js"></script>
+<script type="text/javascript" src="https://cdn.removal.ai/tools/v1.0.7/rme.js" id="rme-script-js"></script>
+<script type="text/javascript" id="upload-script-js-extra">
+/* <![CDATA[ */
+var ajax_upload_object = {"api_url":"https://api.removal.ai/3.0/remove","webtoken_url":"https://removal.ai/wp-admin/admin-ajax.php","security":"e2c723fab8","api_token":null};
+var ajax_upload_object = {"api_url":"https://api.removal.ai/3.0/remove","webtoken_url":"https://removal.ai/wp-admin/admin-ajax.php","security":"e2c723fab8","api_token":null};
+//# sourceURL=upload-script-js-extra
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://cdn.removal.ai/web/v2.3.7/js/upload.min.js" id="upload-script-js"></script>
+<script id="wp-emoji-settings" type="application/json">
+{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"https://removal.ai/wp-includes/js/wp-emoji-release.min.js"}}
+</script>
+<script type="module">
+/* <![CDATA[ */
+/*! This file is auto-generated */
+const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(window._wpemojiSettings=a,"wpEmojiSettingsSupports"),s=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const a=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===a[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,a){let r;const o=(r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),s=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(e=>{s[e]=t(o,e,n,a)}),s}function r(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}a.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(s),u.toString(),c.toString(),p.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"});const r=new Worker(URL.createObjectURL(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=e=>{i(n=e.data),r.terminate(),t(n)})}catch(e){}i(n=f(s,u,c,p))}t(n)}).then(e=>{for(const n in e)a.supports[n]=e[n],a.supports.everything=a.supports.everything&&a.supports[n],"flag"!==n&&(a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&a.supports[n]);var t;a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&!a.supports.flag,a.supports.everything||((t=a.source||{}).concatemoji?r(t.concatemoji):t.wpemoji&&t.twemoji&&(r(t.twemoji),r(t.wpemoji)))});
+//# sourceURL=https://removal.ai/wp-includes/js/wp-emoji-loader.min.js
+/* ]]> */
 </script>
 
 </body>
+
 </html>
