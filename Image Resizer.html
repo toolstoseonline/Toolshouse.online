@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer · Smart resize</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #d7ccc8 0%, #b0c4de 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(3px);
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem 2rem 2.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(93, 64, 55, 0.25);
+            text-align: center;
+            border: 1px solid rgba(255,255,240,0.6);
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+            color: #3e2c23;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        h1 span {
+            font-size: 2rem;
+        }
+
+        .subhead {
+            color: #5b4b3a;
+            margin-bottom: 1.8rem;
+            font-weight: 300;
+            border-bottom: 1px dashed #bcaaa4;
+            padding-bottom: 0.75rem;
+        }
+
+        .upload-area {
+            background: #efebe9;
+            border-radius: 2rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            width: auto;
+            border: 2px dashed #a1887f;
+            transition: background 0.2s;
+        }
+        .upload-area:hover {
+            background: #e0d6d2;
+        }
+        .upload-label {
+            font-weight: 500;
+            color: #4e3e33;
+            margin-right: 0.5rem;
+        }
+
+        .dimension-group {
+            background: #f8f5f2;
+            padding: 1.2rem 1rem;
+            border-radius: 2rem;
+            margin: 1.5rem 0 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem 1.2rem;
+        }
+        .dimension-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.2rem 0.8rem 0.2rem 1.2rem;
+            border-radius: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .dimension-item label {
+            font-weight: 400;
+            color: #5d4037;
+            font-size: 0.95rem;
+        }
+        input[type="number"] {
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 400;
+            width: 90px;
+            padding: 0.5rem 0;
+            outline: none;
+            border-bottom: 2px solid #d7ccc8;
+            transition: border 0.2s;
+            text-align: center;
+        }
+        input[type="number"]:focus {
+            border-bottom-color: #8d6e63;
+        }
+        input[type="file"] {
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            max-width: 220px;
+            cursor: pointer;
+        }
+        input[type="file"]::file-selector-button {
+            background: #bcaaa4;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            margin-right: 12px;
+            transition: 0.2s;
+            cursor: pointer;
+            border: 1px solid #9c7e72;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background: #9c7e72;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem 1.2rem;
+            margin: 1.8rem 0 1.2rem;
+        }
+        button {
+            padding: 0.9rem 2.2rem;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            background: #8d6e63;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 10px rgba(93,64,55,0.2);
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #6d4c41;
+        }
+        button:hover {
+            background: #5d4037;
+            transform: scale(1.02);
+            box-shadow: 0 8px 18px rgba(70, 50, 40, 0.3);
+        }
+        button#downloadBtn {
+            background: #6a8e9b;
+            border-color: #4d6a74;
+        }
+        button#downloadBtn:hover {
+            background: #4d6a74;
+        }
+
+        .canvas-wrapper {
+            background: #f2e9e4;
+            border-radius: 24px;
+            padding: 1.5rem 1rem;
+            margin-top: 1.5rem;
+            box-shadow: inset 0 0 0 1px rgba(255,255,240,0.8), 0 8px 20px rgba(0,0,0,0.1);
+        }
+        canvas {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            background: #ffffff;
+            display: block;
+            margin: 0 auto;
+            border: 3px solid white;
+        }
+
+        .info-note {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #6d4c41;
+            background: #e8e0da;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            display: inline-block;
+        }
+        .info-note i {
+            font-style: normal;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        <span>🖼️</span> Image Resizer
+    </h1>
+    <div class="subhead">↓ resize any image · keep it free ↓</div>
+
+    <!-- upload styled inline -->
+    <div class="upload-area">
+        <span class="upload-label">📁 choose image</span>
+        <input type="file" id="upload" accept="image/*">
+    </div>
+
+    <!-- dimension inputs with better context -->
+    <div class="dimension-group">
+        <div class="dimension-item">
+            <label>↔️ width</label>
+            <input type="number" id="width" placeholder="px" min="1" step="1" value="400">
+        </div>
+        <div class="dimension-item">
+            <label>↕️ height</label>
+            <input type="number" id="height" placeholder="px" min="1" step="1" value="300">
+        </div>
+        <span style="color:#8d6e63; font-weight:300; padding:0 5px;">(pixels)</span>
+    </div>
+
+    <!-- dual action buttons -->
+    <div class="action-buttons">
+        <button onclick="resizeImage()" id="resizeBtn">✧ resize now</button>
+        <button onclick="downloadImage()" id="downloadBtn">⬇ download PNG</button>
+    </div>
+
+    <!-- canvas display area with subtle wrapper -->
+    <div class="canvas-wrapper">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="info-note">
+        <i>⚡</i> dimensions reflect live canvas — original stays untouched
+    </div>
+</div>
+
+<script>
+(function() {
+    // get elements
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const fileInput = document.getElementById('upload');
+    const widthInput = document.getElementById('width');
+    const heightInput = document.getElementById('height');
+
+    // internal image object & state
+    let originalImage = new Image();
+    let imageLoaded = false;
+    let objectURL = null;   // for memory management
+
+    // --- helper: reset object URL to avoid leaks
+    function revokeCurrentURL() {
+        if (objectURL) {
+            URL.revokeObjectURL(objectURL);
+            objectURL = null;
+        }
+    }
+
+    // --- set canvas from image (maintain ratio if needed? we just draw exactly as given)
+    function drawImageToCanvas(img, targetWidth, targetHeight) {
+        if (!img || !imageLoaded) return false;
+        // set canvas dimensions
+        canvas.width = targetWidth || img.width;
+        canvas.height = targetHeight || img.height;
+        // draw image to fill exactly (stretch to new dimensions)
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        return true;
+    }
+
+    // --- load new image from file
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // revoke previous object URL to prevent memory leak
+        revokeCurrentURL();
+
+        // create new object URL
+        objectURL = URL.createObjectURL(file);
+        originalImage = new Image(); // fresh image
+
+        originalImage.onload = function() {
+            imageLoaded = true;
+            // set canvas to original dimensions and draw
+            canvas.width = originalImage.width;
+            canvas.height = originalImage.height;
+            ctx.drawImage(originalImage, 0, 0);
+
+            // optionally prefill width/height inputs with original size (user-friendly)
+            widthInput.value = originalImage.width;
+            heightInput.value = originalImage.height;
+
+            // clean up onload doesn't need revoke here, we keep URL for later use
+        };
+
+        originalImage.onerror = function() {
+            alert('⚠️ Image failed to load. Try another file.');
+            imageLoaded = false;
+            revokeCurrentURL();
+        };
+
+        originalImage.src = objectURL;
+    });
+
+    // --- resize function (called from button)
+    window.resizeImage = function() {
+        if (!imageLoaded || !originalImage) {
+            alert('📤 Please upload an image first.');
+            return;
+        }
+
+        const width = parseInt(widthInput.value, 10);
+        const height = parseInt(heightInput.value, 10);
+
+        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+            alert('⛔ Please enter valid positive numbers for width and height.');
+            return;
+        }
+
+        // perform resize: draw image with new dimensions
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(originalImage, 0, 0, width, height);
+    };
+
+    // --- download function
+    window.downloadImage = function() {
+        if (canvas.width === 0 || canvas.height === 0) {
+            alert('Canvas is empty — upload an image first.');
+            return;
+        }
+
+        try {
+            // create download link
+            const link = document.createElement('a');
+            link.download = 'resized-image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            alert('Download failed: ' + err.message);
+        }
+    };
+
+    // optional: if user clicks resize without any image loaded, originalImage may be empty
+    // but we already check imageLoaded.
+
+    // also if user loads new image after previous, revoke handled.
+    // additionally, when page unloads, there's no harm, but we can revoke on hidden?
+    // clean up on page hide (optional)
+    window.addEventListener('beforeunload', function() {
+        revokeCurrentURL();
+    });
+
+    // Initialize: empty canvas (transparent) but set small placeholder? 
+    // Let's set a friendly placeholder canvas so it doesn't look empty
+    canvas.width = 400;
+    canvas.height = 250;
+    ctx.fillStyle = '#f5f0eb';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#b0a090';
+    ctx.font = '300 16px Poppins, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('⬆ upload image above', canvas.width/2, canvas.height/2);
+    // no image loaded initially
+    imageLoaded = false;
+    // but we still want to allow download? no, only after upload.
+    // also width/height fields can be prefilled, but they are already 400/300 from html value.
+    // fine.
+
+    // However, we might want to reset width/height when new image loads, but we already set them inside onload.
+    // Extra: ensure that resizing uses originalImage (not the placeholder drawn text)
+    // That's correct because originalImage only gets set after upload.
+
+    // if user tries to resize before upload: imageLoaded = false → alert.
+})();
+</script>
+
+<!-- additional minor safeguard: ensure that resize & download are globally attached -->
+<!-- functions are already in window due to standalone function declarations in IIFE? no, we attached them explicitly to window. -->
+<!-- we also need to keep the `resizeImage` and `downloadImage` accessible globally. The IIFE attaches to window. -->
+<!-- Also if upload is used, canvas placeholder gets overwritten by the real image. Good. -->
+
+<!-- make default width/height visible but not interfere with placeholder -->
+</body>
+</html>
