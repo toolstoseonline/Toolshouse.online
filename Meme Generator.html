@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meme Maker Pro ✨ drag & drop stickers</title>
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+  }
+  body {
+    margin: 0;
+    background: linear-gradient(145deg, #1e2b3c 0%, #2b3f5a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 12px;
+  }
+  .container {
+    width: 100%;
+    max-width: 1100px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 24px;
+    border-radius: 36px;
+    box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+  }
+  h1 {
+    text-align: center;
+    margin: 0 0 15px 0;
+    font-weight: 700;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffd966, #ffb347, #ff8c42);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .canvas-wrapper {
+    background: #11131f;
+    border-radius: 28px;
+    padding: 8px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.7), 0 12px 25px black;
+    margin: 12px 0 18px 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+    cursor: grab;
+    background: #2a2f42;
+    box-shadow: 0 4px 15px rgba(255,215,100,0.3);
+    transition: box-shadow 0.2s;
+    user-select: none;
+  }
+  canvas:active {
+    cursor: grabbing;
+  }
+  .upload-area {
+    background: rgba(0,0,0,0.4);
+    border-radius: 60px;
+    padding: 6px 12px 6px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    backdrop-filter: blur(4px);
+    border: 1px solid #ffb85b;
+    margin-bottom: 10px;
+  }
+  .file-label {
+    background: #ffb347;
+    color: #1d2b3a;
+    font-weight: bold;
+    padding: 8px 18px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: 0.2s;
+  }
+  .file-label:hover {
+    background: #ffa01c;
+    transform: scale(1.02);
+  }
+  #upload {
+    display: none;
+  }
+  .grid-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 20px 0 15px;
+  }
+  .control-item {
+    background: rgba(255,255,255,0.08);
+    border-radius: 30px;
+    padding: 12px 16px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,200,130,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .control-item label {
+    color: #ffd966;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .control-item input, .control-item select {
+    background: #1e2c3a;
+    border: 1px solid #f6b83e;
+    border-radius: 40px;
+    padding: 8px 12px;
+    color: white;
+    font-weight: 500;
+    outline: none;
+  }
+  .control-item input[type="color"] {
+    height: 45px;
+    padding: 4px;
+  }
+  .row-double {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    background: rgba(255,255,240,0.05);
+    border-radius: 40px;
+  }
+  .sticker-panel {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 5px;
+  }
+  .sticker-btn {
+    background: #283845;
+    border: none;
+    font-size: 28px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid #f6b83e;
+  }
+  .sticker-btn:hover {
+    background: #f6b83e;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 0 #9e681d;
+  }
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  .btn {
+    background: linear-gradient(145deg, #f6b83e, #f09b22);
+    border: none;
+    padding: 16px 35px;
+    border-radius: 60px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #1f2c3a;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 8px 0 #b2620f, 0 10px 20px black;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn:active {
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 #b2620f, 0 8px 15px black;
+  }
+  .btn.download {
+    background: linear-gradient(145deg, #4facfe, #0084ff);
+    box-shadow: 0 8px 0 #0152b0, 0 10px 20px black;
+  }
+  .flex-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .instruction {
+    color: #e0e0ff;
+    font-size: 0.9rem;
+    text-align: center;
+    background: rgba(0,0,0,0.3);
+    border-radius: 60px;
+    padding: 8px 20px;
+    margin-top: 15px;
+  }
+  .emoji-badge {
+    font-size: 1.6rem;
+    vertical-align: middle;
+  }
+  @media (max-width:700px){
+    .grid-controls{grid-template-columns:1fr 1fr;}
+    .row-double{grid-column:span 1;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>✨ STICKER MEME LAB ✨</h1>
+
+  <div class="flex-row" style="justify-content:space-between; align-items:center;">
+    <div class="upload-area">
+      <span style="color:white;">📸</span>
+      <label for="upload" class="file-label">Choose image</label>
+      <span style="color:#ffb347; font-size:0.9rem;">JPG/PNG</span>
+    </div>
+    <div style="color:#ffe5b4; font-weight:500;">⬇️ drag any sticker 🎯</div>
+  </div>
+  <input type="file" id="upload" accept="image/*">
+
+  <!-- canvas wrapper -->
+  <div class="canvas-wrapper">
+    <canvas id="canvas" width="600" height="400"></canvas>
+  </div>
+
+  <!-- main controls grid -->
+  <div class="grid-controls">
+    <div class="control-item">
+      <label>⬆️ TOP text</label>
+      <input type="text" id="topText" placeholder="e.g. When you code..." value="WHEN YOU">
+    </div>
+    <div class="control-item">
+      <label>⬇️ BOTTOM text</label>
+      <input type="text" id="bottomText" placeholder="bottom text" value="LIKE A BOSS">
+    </div>
+    <div class="control-item">
+      <label>🎨 color</label>
+      <input type="color" id="textColor" value="#ffffff">
+    </div>
+    <div class="control-item">
+      <label>🔤 size</label>
+      <input type="range" id="fontSize" min="20" max="90" value="46">
+    </div>
+    <div class="control-item">
+      <label>⚫ stroke</label>
+      <input type="range" id="strokeSize" min="1" max="12" value="4">
+    </div>
+    <div class="control-item row-double">
+      <div style="display:flex; gap:15px; align-items:center; width:100%; justify-content:center;">
+        <span style="color:#ffd966;">😎 QUICK STICKERS</span>
+        <button class="sticker-btn" data-sticker="😂">😂</button>
+        <button class="sticker-btn" data-sticker="🔥">🔥</button>
+        <button class="sticker-btn" data-sticker="💀">💀</button>
+        <button class="sticker-btn" data-sticker="🤣">🤣</button>
+        <button class="sticker-btn" data-sticker="👀">👀</button>
+        <button class="sticker-btn" data-sticker="✨">✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- hidden sticker input & drag hint -->
+  <div style="display:flex; gap:12px; margin-bottom:8px; align-items:center; justify-content:space-between;">
+    <select id="sticker" style="padding:10px 25px; border-radius:40px; background:#1f2e3f; color:white; border:2px solid #f6b83e; width:auto;">
+      <option value="">➕ dropdown sticker</option>
+      <option value="😂">😂 laughing</option>
+      <option value="🔥">🔥 fire</option>
+      <option value="💀">💀 skull</option>
+      <option value="🤣">🤣 rofl</option>
+      <option value="😎">😎 cool</option>
+      <option value="👽">👽 alien</option>
+    </select>
+    <span style="color:#fccf7c;">⭐ click on canvas to place sticker (drag to move) </span>
+  </div>
+
+  <!-- action row -->
+  <div class="action-buttons">
+    <button class="btn" onclick="drawMeme()"><span>⚡</span> GENERATE</button>
+    <button class="btn download" onclick="downloadMeme()"><span>⬇️</span> DOWNLOAD</button>
+  </div>
+  <div class="instruction">
+    💡 <strong>new:</strong> click any emoji sticker above → then click on image to place it. Drag stickers around! (double-click sticker to delete)
+  </div>
+</div>
+
+<script>
+(function() {
+  // ----- DOM elements -----
+  const upload = document.getElementById("upload");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  // image base
+  let img = new Image();
+  img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'%3E%3Crect width=\'600\' height=\'400\' fill=\'%233a4a6b\'/%3E%3Ctext x=\'300\' y=\'200\' font-family=\'Arial\' font-size=\'30\' fill=\'%23ffe28c\' text-anchor=\'middle\'%3EUPLOAD IMAGE%3C/text%3E%3C/svg%3E'; // placeholder
+  img.crossOrigin = 'anonymous';
+
+  // ---------- STICKER SYSTEM (drag & drop, multiple) ----------
+  let stickers = [];               // array of { emoji, x, y, fontSize }
+  let activeStickerEmoji = '😂';    // currently selected emoji to place (default)
+  let isDraggingSticker = false;
+  let dragIndex = -1;              // index of dragged sticker
+  let dragOffsetX = 0, dragOffsetY = 0;
+
+  // set default sticker from quick buttons or select
+  const stickerSelect = document.getElementById('sticker');
+  const quickStickerBtns = document.querySelectorAll('.sticker-btn');
+
+  quickStickerBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const em = btn.getAttribute('data-sticker');
+      if (em) {
+        activeStickerEmoji = em;
+        // also update select for consistency
+        if ([...stickerSelect.options].some(opt => opt.value === em)) {
+          stickerSelect.value = em;
+        } else {
+          // custom emoji not in select? fine
+        }
+        // optional highlight effect
+      }
+    });
+  });
+
+  stickerSelect.addEventListener('change', (e) => {
+    if (stickerSelect.value) {
+      activeStickerEmoji = stickerSelect.value;
+    } else {
+      activeStickerEmoji = null;   // no sticker selected
+    }
+  });
+
+  // ----- canvas mouse events for stickers -----
+  function getMouseCanvasPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;   // canvas physical size / display size
+    const scaleY = canvas.height / rect.height;
+    const mouseX = (e.clientX - rect.left) * scaleX;
+    const mouseY = (e.clientY - rect.top) * scaleY;
+    return { x: Math.min(canvas.width-10, Math.max(10, mouseX)), y: Math.min(canvas.height-20, Math.max(20, mouseY)) };
+  }
+
+  // mousedown: check if clicked on a sticker (for drag) or add new sticker
+  canvas.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    const pos = getMouseCanvasPos(e);
+    
+    // check if click hits any existing sticker (reverse order for topmost)
+    for (let i = stickers.length-1; i >= 0; i--) {
+      const s = stickers[i];
+      ctx.font = `${s.fontSize || 50}px 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Arial', sans-serif`;
+      const metrics = ctx.measureText(s.emoji);
+      const width = metrics.width;
+      const height = s.fontSize * 1.2;  // approx height
+      const halfW = width/2;
+      const halfH = height/2;
+      // bounding box approx
+      if (pos.x >= s.x - halfW && pos.x <= s.x + halfW && pos.y >= s.y - halfH && pos.y <= s.y + halfH) {
+        // start dragging this sticker
+        isDraggingSticker = true;
+        dragIndex = i;
+        dragOffsetX = pos.x - s.x;
+        dragOffsetY = pos.y - s.y;
+        return;
+      }
+    }
+
+    // if no sticker hit, and we have an active emoji -> add new sticker at click position
+    if (activeStickerEmoji && activeStickerEmoji.trim() !== '') {
+      stickers.push({
+        emoji: activeStickerEmoji,
+        x: pos.x,
+        y: pos.y,
+        fontSize: 50   // base size
+      });
+      drawMeme();      // redraw with new sticker
+    }
+  });
+
+  // mousemove: drag sticker
+  canvas.addEventListener('mousemove', (e) => {
+    if (!isDraggingSticker || dragIndex === -1) return;
+    e.preventDefault();
+    const pos = getMouseCanvasPos(e);
+    const sticker = stickers[dragIndex];
+    if (sticker) {
+      sticker.x = pos.x - dragOffsetX;
+      sticker.y = pos.y - dragOffsetY;
+      // keep inside canvas roughly
+      sticker.x = Math.min(canvas.width-20, Math.max(20, sticker.x));
+      sticker.y = Math.min(canvas.height-30, Math.max(30, sticker.y));
+      drawMeme();
+    }
+  });
+
+  // mouseup / mouseleave: stop dragging
+  canvas.addEventListener('mouseup', () => {
+    isDraggingSticker = false;
+    dragIndex = -1;
+  });
+  canvas.addEventListener('mouseleave', () => {
+    isDraggingSticker = false;
+    dragIndex = -1;
+  });
+
+  // double-click to delete sticker
+  canvas.addEventListener('dblclick', (e) => {
+    const pos = getMouseCanvasPos(e);
+    for (let i = stickers.length-1; i >= 0; i--) {
+      const s = stickers[i];
+      ctx.font = `${s.fontSize || 50}px 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Arial', sans-serif`;
+      const metrics = ctx.measureText(s.emoji);
+      const width = metrics.width;
+      const height = s.fontSize * 1.2;
+      if (pos.x >= s.x - width/2 && pos.x <= s.x + width/2 && pos.y >= s.y - height/2 && pos.y <= s.y + height/2) {
+        stickers.splice(i, 1);
+        drawMeme();
+        break;
+      }
+    }
+  });
+
+  // ----- file upload -----
+  upload.addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        // clear previous stickers? maybe keep? We'll keep stickers, but if new image ratio changes, we reset stickers? better reset
+        stickers = []; // start fresh with new image (more intuitive)
+        drawMeme();
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ensure image drawn after load (if no upload, placeholder)
+  img.onload = function() {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    drawMeme();
+  };
+
+  // ----- main drawing function (include all stickers) -----
+  window.drawMeme = function() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // get text options
+    const topText = document.getElementById("topText").value;
+    const bottomText = document.getElementById("bottomText").value;
+    const color = document.getElementById("textColor").value;
+    const size = parseInt(document.getElementById("fontSize").value, 10);
+    const stroke = parseInt(document.getElementById("strokeSize").value, 10);
+
+    // draw top & bottom text
+    ctx.font = `bold ${size}px Impact, 'Anton', sans-serif`;
+    ctx.fillStyle = color;
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = stroke;
+    ctx.textAlign = "center";
+
+    if (topText.trim() !== "") {
+      ctx.fillText(topText, canvas.width/2, size + 12);
+      ctx.strokeText(topText, canvas.width/2, size + 12);
+    }
+    if (bottomText.trim() !== "") {
+      ctx.fillText(bottomText, canvas.width/2, canvas.height - 25);
+      ctx.strokeText(bottomText, canvas.width/2, canvas.height - 25);
+    }
+
+    // draw all stickers (with emoji font)
+    stickers.forEach(s => {
+      ctx.font = `${s.fontSize || 50}px 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Arial', sans-serif`;
+      ctx.fillStyle = "#ffffff"; // emoji are colored by system, but background contrast, but fine.
+      ctx.strokeStyle = "#222";
+      ctx.lineWidth = 2;
+      ctx.textAlign = "center";
+      ctx.fillText(s.emoji, s.x, s.y);
+      // optional light stroke for visibility
+      ctx.strokeText(s.emoji, s.x, s.y);
+    });
+
+    // sync any active sticker from dropdown (but don't draw extra)
+  };
+
+  // download
+  window.downloadMeme = function() {
+    const link = document.createElement("a");
+    link.download = "meme-sticker.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
+  // connect quick sticker buttons also update activeStickerEmoji & select
+  // already done above
+
+  // also update active from select
+  stickerSelect.addEventListener('change', () => {
+    activeStickerEmoji = stickerSelect.value || null;
+  });
+
+  // first draw
+  window.onload = function() {
+    // set default image width/height on canvas
+    if (img.complete) {
+      canvas.width = img.width;
+      canvas.height = img.height;
+    } else {
+      canvas.width = 600;
+      canvas.height = 400;
+    }
+    drawMeme();
+  };
+
+  // add example stickers to demo drag feature
+  setTimeout(() => {
+    if (stickers.length === 0) {
+      stickers.push({ emoji: '😂', x: 150, y: 150, fontSize: 52 });
+      stickers.push({ emoji: '🔥', x: 450, y: 280, fontSize: 60 });
+      drawMeme();
+    }
+  }, 200);
+
+})();
+</script>
+
+<!-- extra note: the select "sticker" still works as a source of new emoji -->
+</body>
+</html>
