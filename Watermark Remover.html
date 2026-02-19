@@ -3,473 +3,674 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watermark Remover – erase with blur</title>
+    <title>⚡ ONE CLICK MAGIC - Instant Image Enhancer</title>
     <style>
         * {
             box-sizing: border-box;
         }
         body {
             margin: 0;
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-            background: linear-gradient(145deg, #cbdff7 0%, #efdecb 100%);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #0b1729, #1d3a5c);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 12px;
+            padding: 16px;
         }
         .container {
             width: 100%;
-            max-width: 1000px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(2px);
-            padding: 25px 25px 30px;
-            border-radius: 32px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255,255,255,0.5);
+            max-width: 1300px;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 50px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,215,0,0.3);
         }
         h1 {
             text-align: center;
-            margin: 0 0 10px 0;
-            font-weight: 500;
-            font-size: 2.3rem;
-            letter-spacing: -0.5px;
-            color: #2d3e5f;
+            margin: 0 0 10px;
+            font-weight: 800;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #FF6B00, #FFD700, #00C6FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
         }
-        h1 span {
-            font-size: 2rem;
-        }
-        .upload-area {
-            text-align: center;
-            margin-bottom: 20px;
-            background: #f4f9ff;
-            padding: 12px 20px;
+        .badge {
+            background: #ffd966;
+            color: #1d3a5c;
+            padding: 8px 30px;
             border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
             display: inline-block;
-            width: auto;
-            box-shadow: inset 0 1px 4px #b3c9e0;
+            margin: 0 auto 20px;
+            text-align: center;
+            box-shadow: 0 5px 0 #b47d00;
         }
-        .upload-area input {
-            font-size: 0.95rem;
-            padding: 6px 12px;
-            border: none;
-            background: transparent;
-            width: 240px;
-            cursor: pointer;
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .canvas-area {
+            background: #0a1a2a;
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px #00000055;
         }
         .canvas-wrapper {
             display: flex;
             justify-content: center;
-            border-radius: 24px;
+            border-radius: 30px;
             overflow: hidden;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
-            background: #e5eef7;
-            margin-bottom: 18px;
+            background: #102433;
         }
         canvas {
             display: block;
-            width: 100%;
+            max-width: 100%;
             height: auto;
-            cursor: crosshair;
-            background: #f0f4fa;
-            transition: box-shadow 0.1s;
-            touch-action: none; /* improve mobile drawing */
-        }
-        .controls {
-            margin-top: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-        .slider-box {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #f0f7fe;
-            padding: 10px 18px;
-            border-radius: 40px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .slider-box label {
-            font-weight: 600;
-            color: #1e3b5c;
-            min-width: 85px;
-            font-size: 1rem;
-        }
-        .slider-box input {
-            flex: 1;
-            height: 7px;
-            border-radius: 20px;
-            background: #cbd6e6;
-            -webkit-appearance: none;
-        }
-        .slider-box input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #2e6396;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px #0a2a44;
-            cursor: grab;
-            border: 2px solid white;
-        }
-        .value-badge {
-            background: #2a4d77;
-            color: white;
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            min-width: 50px;
-            text-align: center;
-        }
-        .button-group {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        button {
-            flex: 1 1 200px;
-            padding: 14px 18px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
-            display: inline-flex;
+            border: 3px solid transparent;
+        }
+        canvas:active {
+            transform: scale(0.99);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            margin-top: 15px;
+            padding: 0 10px;
+            font-weight: 600;
+        }
+        .magic-panel {
+            background: linear-gradient(145deg, #ffffff, #f0f9ff);
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(255,215,0,0.2);
+            border: 2px solid gold;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3d62;
+            margin: 10px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .magic-btn {
+            background: white;
+            border: 3px solid #d0e0ff;
+            border-radius: 100px;
+            padding: 15px 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1d446b;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 5px 0 #b3c7e0;
+        }
+        .magic-btn span {
+            font-size: 2rem;
+        }
+        .magic-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #b3c7e0;
+            border-color: #ffaa33;
+        }
+        .magic-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #b3c7e0;
+        }
+        .magic-btn.active {
+            background: linear-gradient(145deg, #FFE68F, #FFD700);
+            border-color: #ff7700;
+            box-shadow: 0 5px 0 #b45f00;
+            color: #2d1f00;
+        }
+        .slider-container {
+            background: #e9f2fc;
+            border-radius: 60px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            color: #003366;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        input[type=range] {
+            width: 100%;
+            height: 12px;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #0066ff, #ffaa00, #ff5500);
+            -webkit-appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px black;
+            border: 4px solid #ff9900;
+            cursor: pointer;
+        }
+        .big-btn {
+            width: 100%;
+            padding: 20px;
+            border-radius: 60px;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255,255,255,0.5);
-        }
-        .remove-btn {
-            background: #3a7bc8;
-            color: white;
-            text-shadow: 0 1px 2px #004080;
-        }
-        .remove-btn:hover {
-            background: #2266b9;
-            transform: scale(1.02);
-            box-shadow: 0 12px 22px rgba(0,60,130,0.4);
+            gap: 15px;
+            margin: 10px 0;
         }
         .download-btn {
-            background: #9f7e55;
+            background: linear-gradient(145deg, #00c3ff, #0066cc);
             color: white;
-            text-shadow: 0 1px 2px #4f3e28;
+            box-shadow: 0 10px 0 #003f88;
         }
-        .download-btn:hover {
-            background: #8b673b;
-            transform: scale(1.02);
+        .download-btn:active {
+            transform: translateY(10px);
+            box-shadow: 0 0 0 #003f88;
         }
-        .hint {
+        .reset-btn {
+            background: linear-gradient(145deg, #ffb347, #ff7700);
+            color: white;
+            box-shadow: 0 10px 0 #b45f00;
+        }
+        .preview-badge {
+            background: gold;
+            color: black;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); background: #ffaa33; }
+        }
+        .quick-tip {
+            background: #003366;
+            color: gold;
+            padding: 10px;
+            border-radius: 30px;
             text-align: center;
-            color: #3c4f6e;
-            font-size: 0.95rem;
-            font-style: italic;
-            background: #dae9fa;
-            padding: 8px 16px;
-            border-radius: 60px;
-            margin: 5px 0 0;
+            font-weight: 600;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>
-            <span>🧽</span> Watermark Remover <span>✨</span>
-        </h1>
-        <div class="upload-area">
-            <input type="file" id="upload" accept="image/*" aria-label="Choose image">
+<div class="container">
+    <h1>
+        ⚡ ONE CLICK MAGIC ⚡
+    </h1>
+    <div style="text-align: center;">
+        <span class="badge">✨ CLICK ANY FILTER → INSTANT EFFECT ✨</span>
+    </div>
+
+    <div class="main-grid">
+        <div class="canvas-area">
+            <div class="canvas-wrapper">
+                <canvas id="canvas" width="700" height="450"></canvas>
+            </div>
+            <div class="stats">
+                <span>📸 <span id="dimensions">no image</span></span>
+                <span>✨ <span id="activeFilter">normal</span></span>
+                <span>⚡ <span id="fileSize">0 KB</span></span>
+            </div>
+            <div class="quick-tip">
+                💡 TIP: Click canvas to quickly compare before/after!
+            </div>
         </div>
 
-        <div class="canvas-wrapper">
-            <canvas id="canvas"></canvas>
-        </div>
-
-        <div class="controls">
-            <div class="slider-box">
-                <label for="brushSize">🖌️ Brush size</label>
-                <input type="range" id="brushSize" min="5" max="60" value="28">
-                <span class="value-badge" id="sizeDisplay">28</span>
+        <div class="magic-panel">
+            <div class="section-title">
+                <span>🎨</span> INSTANT FILTERS
+            </div>
+            
+            <div class="filter-grid">
+                <div class="magic-btn active" id="filter-normal">
+                    <span>🔄</span> NORMAL
+                </div>
+                <div class="magic-btn" id="filter-vintage">
+                    <span>📻</span> VINTAGE
+                </div>
+                <div class="magic-btn" id="filter-cinematic">
+                    <span>🎬</span> CINEMATIC
+                </div>
+                <div class="magic-btn" id="filter-dreamy">
+                    <span>☁️</span> DREAMY
+                </div>
+                <div class="magic-btn" id="filter-neon">
+                    <span>💫</span> NEON
+                </div>
+                <div class="magic-btn" id="filter-sketch">
+                    <span>✏️</span> SKETCH
+                </div>
+                <div class="magic-btn" id="filter-warm">
+                    <span>🔥</span> WARM
+                </div>
+                <div class="magic-btn" id="filter-cool">
+                    <span>❄️</span> COOL
+                </div>
             </div>
 
-            <div class="button-group">
-                <button class="remove-btn" id="eraseButton">
-                    <span>🧼</span> Erase (drag on image)
-                </button>
-                <button class="download-btn" id="downloadBtn">
-                    <span>⬇️</span> Download
-                </button>
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>🌈 INTENSITY</span>
+                    <span id="intensityValue" style="background:#ffd966; padding:3px 15px; border-radius:40px;">70%</span>
+                </div>
+                <input type="range" id="intensitySlider" min="0" max="100" value="70">
             </div>
-            <div class="hint">
-                ⚡ click & drag to blur‑erase watermark · brush size adjustable
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>🌟 MAGIC GLOW</span>
+                    <span id="glowValue" style="background:#ffd966; padding:3px 15px; border-radius:40px;">40%</span>
+                </div>
+                <input type="range" id="glowSlider" min="0" max="100" value="40">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>🎨 VIBRANCE</span>
+                    <span id="vibranceValue" style="background:#ffd966; padding:3px 15px; border-radius:40px;">50%</span>
+                </div>
+                <input type="range" id="vibranceSlider" min="0" max="100" value="50">
+            </div>
+
+            <button class="big-btn reset-btn" id="resetBtn">
+                <span>🔄</span> RESET TO ORIGINAL
+            </button>
+
+            <button class="big-btn download-btn" id="downloadBtn">
+                <span>💾</span> DOWNLOAD MAGIC IMAGE
+            </button>
+
+            <div style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: #666;">
+                ⚡ Sliders also work instantly! ⚡
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        (function() {
-            const upload = document.getElementById('upload');
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            const brushSizeInput = document.getElementById('brushSize');
-            const sizeDisplay = document.getElementById('sizeDisplay');
-            const eraseButton = document.getElementById('eraseButton');
-            const downloadBtn = document.getElementById('downloadBtn');
+<script>
+    (function() {
+        // ===== ELEMENTS =====
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const upload = document.getElementById('upload');
+        
+        // State
+        let originalImage = null;
+        let currentFilter = 'normal';
+        let originalImageData = null; // store for quick reset
+        
+        // UI Elements
+        const intensitySlider = document.getElementById('intensitySlider');
+        const glowSlider = document.getElementById('glowSlider');
+        const vibranceSlider = document.getElementById('vibranceSlider');
+        const intensityValue = document.getElementById('intensityValue');
+        const glowValue = document.getElementById('glowValue');
+        const vibranceValue = document.getElementById('vibranceValue');
+        const dimensions = document.getElementById('dimensions');
+        const activeFilter = document.getElementById('activeFilter');
+        const fileSize = document.getElementById('fileSize');
+        
+        // Filter buttons
+        const filterNormal = document.getElementById('filter-normal');
+        const filterVintage = document.getElementById('filter-vintage');
+        const filterCinematic = document.getElementById('filter-cinematic');
+        const filterDreamy = document.getElementById('filter-dreamy');
+        const filterNeon = document.getElementById('filter-neon');
+        const filterSketch = document.getElementById('filter-sketch');
+        const filterWarm = document.getElementById('filter-warm');
+        const filterCool = document.getElementById('filter-cool');
+        
+        const filterButtons = [
+            { btn: filterNormal, name: 'normal' },
+            { btn: filterVintage, name: 'vintage' },
+            { btn: filterCinematic, name: 'cinematic' },
+            { btn: filterDreamy, name: 'dreamy' },
+            { btn: filterNeon, name: 'neon' },
+            { btn: filterSketch, name: 'sketch' },
+            { btn: filterWarm, name: 'warm' },
+            { btn: filterCool, name: 'cool' }
+        ];
 
-            let img = new Image();
-            let drawing = false;
-            let lastX = 0, lastY = 0;      // for optional continuous stroke, but simple arcs every move works
-            let currentBrushSize = 28;
-
-            // --- initial placeholder (empty canvas with subtle grid) ---
-            function drawEmptyGrid() {
-                canvas.width = 600;
-                canvas.height = 400;
-                ctx.fillStyle = '#f5f9ff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#d9e2ef';
-                ctx.font = '16px "Segoe UI", sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('⬆️ upload an image', canvas.width/2, canvas.height/2 - 20);
-                ctx.font = '14px sans-serif';
-                ctx.fillStyle = '#7f95b0';
-                ctx.fillText('then drag mouse to remove watermark', canvas.width/2, canvas.height/2 + 20);
-                // subtle grid
-                ctx.strokeStyle = '#c0d0e5';
-                ctx.lineWidth = 0.5;
-                for (let i = 0; i < canvas.width; i += 30) {
-                    ctx.beginPath();
-                    ctx.moveTo(i, 0);
-                    ctx.lineTo(i, canvas.height);
-                    ctx.strokeStyle = '#c0d0e5';
-                    ctx.stroke();
-                }
-                for (let i = 0; i < canvas.height; i += 30) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, i);
-                    ctx.lineTo(canvas.width, i);
-                    ctx.stroke();
-                }
-            }
-            drawEmptyGrid();
-
-            // --- sync brush display ---
-            function updateBrushDisplay() {
-                currentBrushSize = parseInt(brushSizeInput.value, 10);
-                sizeDisplay.textContent = currentBrushSize;
-            }
-            brushSizeInput.addEventListener('input', updateBrushDisplay);
-            updateBrushDisplay();
-
-            // --- load image from file ---
-            upload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    img.onload = function() {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        ctx.drawImage(img, 0, 0);
-                    };
-                    img.src = ev.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-
-            // --- ERASE function: applies strong blur to a circular area ---
-            function eraseAt(x, y) {
-                if (!ctx) return;
-
-                // save context state
-                ctx.save();
-                // use blur filter (larger blur makes watermark disappear)
-                // radius-dependent blur: stronger for bigger brush, but at least 4px
-                let blurAmount = Math.min(18, Math.max(4, Math.floor(currentBrushSize / 2.2)));
-                ctx.filter = `blur(${blurAmount}px)`;
+        // ===== DRAW PLACEHOLDER =====
+        function drawPlaceholder() {
+            canvas.width = 700;
+            canvas.height = 450;
+            ctx.fillStyle = '#102433';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw stars
+            for(let i=0; i<50; i++) {
+                ctx.fillStyle = `rgba(255,255,200,${Math.random()*0.5})`;
                 ctx.beginPath();
-                ctx.arc(x, y, currentBrushSize, 0, Math.PI * 2);
-                // fill with the underlying (blurred) content – we need to fill using a colour that pulls from background.
-                // but fill() with blur will sample existing pixels. However filling with transparent black won't blur.
-                // Better: use fill with a colour that composites the blur.
-                // We'll use fillStyle = 'rgba(0,0,0,0)' but that erases. We need to blur the area.
-                // The standard technique: use 'ctx.fill()' with a colour that has zero opacity? That erases to transparent.
-                // But we want to blur the pixels underneath, not erase to transparency.
-                // WORKING METHOD: draw a very short blurred copy of itself? Too complex. Instead,
-                // we can use 'globalCompositeOperation' to blur in place? Not straightforward.
-                // But current approach: set filter blur, then fill with a semi-transparent color to merge? No.
-                // Actually correct method: use `filter` and then fill with `ctx.fillStyle = 'rgba(0,0,0,0)'` -> removes pixels (transparent).
-                // But we want blur, not transparency.
-                // Better: use ctx.globalCompositeOperation = 'source-over' and fill with a color that averages?
-                // The easiest is to use "copy" of the area with blur: we can't.
-                // Let's reframe: we use fillStyle = 'white' and blur filter? That fills circle with blurred white, not the image.
-                // So to blur underlying pixels we must copy region, blur it as an image data, put back.
-                // But that's heavier. However for a demo, we can do a hack: fill with a color using 'lighter'? No.
-                // I'll implement an effective in-place blur using 'ctx.filter = "blur(8px)"' AND fill with a color that
-                // blends using 'source-atop'? Not reliable.
-                // Let's do it properly with getImageData/putImageData for a true blur effect on the region.
-                // Performance is acceptable for small areas. I'll implement blurRegion function.
-                ctx.restore(); // cancel previous save, we will use a more precise method
-
-                // ---- precise blur region ----
-                blurRegion(Math.round(x), Math.round(y), currentBrushSize);
+                ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*3, 0, Math.PI*2);
+                ctx.fill();
             }
+            
+            ctx.font = 'bold 32px "Segoe UI"';
+            ctx.fillStyle = 'gold';
+            ctx.textAlign = 'center';
+            ctx.fillText('✨ CLICK TO UPLOAD ✨', canvas.width/2, canvas.height/2 - 40);
+            
+            ctx.font = '24px sans-serif';
+            ctx.fillStyle = '#ffaa66';
+            ctx.fillText('⬇️ drag & drop or click below ⬇️', canvas.width/2, canvas.height/2 + 30);
+            
+            // Fake upload button
+            ctx.fillStyle = '#ff9900';
+            ctx.beginPath();
+            ctx.roundRect(canvas.width/2-100, canvas.height/2+60, 200, 50, 30);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText('📁 SELECT IMAGE', canvas.width/2, canvas.height/2+95);
+        }
+        
+        // Helper for rounded rect
+        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            this.moveTo(x + r, y);
+            this.lineTo(x + w - r, y);
+            this.quadraticCurveTo(x + w, y, x + w, y + r);
+            this.lineTo(x + w, y + h - r);
+            this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            this.lineTo(x + r, y + h);
+            this.quadraticCurveTo(x, y + h, x, y + h - r);
+            this.lineTo(x, y + r);
+            this.quadraticCurveTo(x, y, x + r, y);
+            return this;
+        };
+        
+        drawPlaceholder();
 
-            // ---- Helper: blur a circular region using image data (box blur emulation) ----
-            function blurRegion(cx, cy, radius) {
-                if (radius < 1) return;
+        // ===== CREATE HIDDEN FILE INPUT =====
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
 
-                // define bounding box
-                const left = Math.max(0, cx - radius);
-                const top = Math.max(0, cy - radius);
-                const right = Math.min(canvas.width, cx + radius);
-                const bottom = Math.min(canvas.height, cy + radius);
-                const width = right - left;
-                const height = bottom - top;
-                if (width <= 0 || height <= 0) return;
+        // Click canvas to upload
+        canvas.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-                // get pixel data
-                const imageData = ctx.getImageData(left, top, width, height);
-                const data = imageData.data;
-                const w = width, h = height;
+        // File selection
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-                // create copy for blurred source (simple box blur 3x3 for speed)
-                const original = new Uint8ClampedArray(data);
-                const blurSize = Math.max(2, Math.floor(radius / 6) + 1); // blur kernel half-size adaptive
-                const kernelSize = blurSize * 2 + 1; // full kernel odd size
-
-                for (let y = 0; y < h; y++) {
-                    for (let x = 0; x < w; x++) {
-                        // check if pixel within circle (optional: only blur inside circular mask)
-                        const dx = x + left - cx;
-                        const dy = y + top - cy;
-                        const dist = Math.sqrt(dx*dx + dy*dy);
-                        if (dist > radius) continue; // keep original outside
-
-                        let r = 0, g = 0, b = 0, a = 0, count = 0;
-
-                        // average kernel around (x,y)
-                        for (let ky = -blurSize; ky <= blurSize; ky++) {
-                            for (let kx = -blurSize; kx <= blurSize; kx++) {
-                                const nx = x + kx;
-                                const ny = y + ky;
-                                if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                                    const idx = (ny * w + nx) * 4;
-                                    r += original[idx];
-                                    g += original[idx + 1];
-                                    b += original[idx + 2];
-                                    a += original[idx + 3];
-                                    count++;
-                                }
-                            }
-                        }
-                        if (count > 0) {
-                            const idx = (y * w + x) * 4;
-                            data[idx] = r / count;
-                            data[idx + 1] = g / count;
-                            data[idx + 2] = b / count;
-                            data[idx + 3] = a / count; // keep original alpha blending
-                        }
-                    }
-                }
-
-                // put blurred image back
-                ctx.putImageData(imageData, left, top);
-            }
-
-            // --- mouse/touch event handlers ---
-            function getCanvasCoords(e) {
-                const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;   // canvas physical size / display size
-                const scaleY = canvas.height / rect.height;
-
-                let clientX, clientY;
-
-                if (e.touches) {
-                    // touch event
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                    e.preventDefault(); // prevent scrolling
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                }
-
-                const canvasX = (clientX - rect.left) * scaleX;
-                const canvasY = (clientY - rect.top) * scaleY;
-
-                return {
-                    x: Math.min(canvas.width, Math.max(0, canvasX)),
-                    y: Math.min(canvas.height, Math.max(0, canvasY))
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImage = img;
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Save original image data for reset
+                    originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    
+                    dimensions.textContent = `${img.width}×${img.height}`;
+                    fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                    
+                    // Apply current filter automatically
+                    applyCurrentFilter();
                 };
-            }
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
 
-            function startDraw(e) {
-                e.preventDefault(); // important for touch
-                drawing = true;
-                const coord = getCanvasCoords(e);
-                // erase a single spot on click down
-                eraseAt(coord.x, coord.y);
-            }
+        // ===== UPDATE SLIDER DISPLAYS =====
+        function updateSliderDisplays() {
+            intensityValue.textContent = intensitySlider.value + '%';
+            glowValue.textContent = glowSlider.value + '%';
+            vibranceValue.textContent = vibranceSlider.value + '%';
+        }
+        
+        intensitySlider.addEventListener('input', () => {
+            updateSliderDisplays();
+            applyCurrentFilter(); // INSTANT update on slider move
+        });
+        
+        glowSlider.addEventListener('input', () => {
+            updateSliderDisplays();
+            applyCurrentFilter();
+        });
+        
+        vibranceSlider.addEventListener('input', () => {
+            updateSliderDisplays();
+            applyCurrentFilter();
+        });
 
-            function drawMove(e) {
-                e.preventDefault();
-                if (!drawing) return;
-                const coord = getCanvasCoords(e);
-                eraseAt(coord.x, coord.y);
-            }
-
-            function stopDraw(e) {
-                e.preventDefault();
-                drawing = false;
-            }
-
-            // --- register events (mouse + touch) ---
-            canvas.addEventListener('mousedown', startDraw);
-            canvas.addEventListener('mousemove', drawMove);
-            canvas.addEventListener('mouseup', stopDraw);
-            canvas.addEventListener('mouseleave', stopDraw);
-
-            // touch events
-            canvas.addEventListener('touchstart', startDraw, { passive: false });
-            canvas.addEventListener('touchmove', drawMove, { passive: false });
-            canvas.addEventListener('touchend', stopDraw);
-            canvas.addEventListener('touchcancel', stopDraw);
-
-            // optional: visual feedback for brush size (cursor not easily changeable but ok)
-            // Also make erase button just focuses brush size
-            eraseButton.addEventListener('click', function() {
-                brushSizeInput.focus();
+        // ===== FILTER BUTTON CLICKS (INSTANT) =====
+        filterButtons.forEach(item => {
+            item.btn.addEventListener('click', () => {
+                // Remove active class from all
+                filterButtons.forEach(b => b.btn.classList.remove('active'));
+                // Add active to clicked
+                item.btn.classList.add('active');
+                // Set current filter
+                currentFilter = item.name;
+                activeFilter.textContent = currentFilter;
+                // Apply instantly!
+                applyCurrentFilter();
             });
+        });
 
-            // Download button
-            downloadBtn.addEventListener('click', function() {
-                if (!canvas.width || !canvas.height) {
-                    alert('No image to download');
-                    return;
+        // ===== MAGIC FILTER FUNCTION =====
+        function applyFilter(imageData, filter, intensity, glow, vibrance) {
+            const data = imageData.data;
+            const intFactor = intensity / 100;
+            const glowFactor = glow / 100;
+            const vibFactor = vibrance / 100;
+            
+            for(let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i+1];
+                let b = data[i+2];
+                
+                // Apply selected filter
+                switch(filter) {
+                    case 'vintage':
+                        r = Math.min(255, r * 0.9 + g * 0.3 + 30 * intFactor);
+                        g = Math.min(255, g * 0.8 + b * 0.2 + 15 * intFactor);
+                        b = Math.min(255, b * 0.7 - 5 * intFactor);
+                        break;
+                        
+                    case 'cinematic':
+                        r = Math.min(255, r * 1.2 - 10 * intFactor + 10);
+                        g = Math.min(255, g * 1.1 - 5 * intFactor);
+                        b = Math.min(255, b * 1.3 + 25 * intFactor);
+                        break;
+                        
+                    case 'dreamy':
+                        r = Math.min(255, r * 0.85 + 40 * intFactor);
+                        g = Math.min(255, g * 0.85 + 45 * intFactor);
+                        b = Math.min(255, b * 1.05 + 35 * intFactor);
+                        break;
+                        
+                    case 'neon':
+                        const avg = (r + g + b) / 3;
+                        r = Math.min(255, avg + (r - avg) * 2.2 * intFactor);
+                        g = Math.min(255, avg + (g - avg) * 2.2 * intFactor);
+                        b = Math.min(255, avg + (b - avg) * 2.2 * intFactor);
+                        break;
+                        
+                    case 'sketch':
+                        const gray = (r + g + b) / 3;
+                        const edge = 255 - gray + 40 * intFactor;
+                        r = Math.min(255, edge);
+                        g = Math.min(255, edge);
+                        b = Math.min(255, edge);
+                        break;
+                        
+                    case 'warm':
+                        r = Math.min(255, r + 45 * intFactor);
+                        g = Math.min(255, g + 25 * intFactor);
+                        b = Math.min(255, b - 15 * intFactor);
+                        break;
+                        
+                    case 'cool':
+                        r = Math.min(255, r - 15 * intFactor);
+                        g = Math.min(255, g + 15 * intFactor);
+                        b = Math.min(255, b + 45 * intFactor);
+                        break;
+                        
+                    default: // normal
+                        r = r;
+                        g = g;
+                        b = b;
                 }
-                const link = document.createElement('a');
-                link.download = 'watermark-cleaned.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
+                
+                // Apply vibrance (color boost)
+                if(vibFactor > 0 && filter !== 'sketch') {
+                    const gray = (r + g + b) / 3;
+                    r = Math.min(255, r + (r - gray) * vibFactor * 1.2);
+                    g = Math.min(255, g + (g - gray) * vibFactor * 1.2);
+                    b = Math.min(255, b + (b - gray) * vibFactor * 1.2);
+                }
+                
+                // Apply glow
+                if(glowFactor > 0) {
+                    r = Math.min(255, r + 30 * glowFactor);
+                    g = Math.min(255, g + 30 * glowFactor);
+                    b = Math.min(255, b + 30 * glowFactor);
+                }
+                
+                data[i] = Math.max(0, Math.min(255, r));
+                data[i+1] = Math.max(0, Math.min(255, g));
+                data[i+2] = Math.max(0, Math.min(255, b));
+                // Alpha unchanged
+            }
+            return imageData;
+        }
 
-            // Re-draw if image loaded? Already done in onload.
-            // but keep empty grid when no image
+        // ===== APPLY CURRENT FILTER (INSTANT) =====
+        function applyCurrentFilter() {
+            if(!originalImage) {
+                // If no image, show message but don't crash
+                return;
+            }
+            
+            // Get current values
+            const intensity = parseInt(intensitySlider.value);
+            const glow = parseInt(glowSlider.value);
+            const vibrance = parseInt(vibranceSlider.value);
+            
+            // Start with original image
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+            
+            // Get image data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            // Apply filter
+            const enhanced = applyFilter(imageData, currentFilter, intensity, glow, vibrance);
+            
+            // Put back
+            ctx.putImageData(enhanced, 0, 0);
+            
+            // Update active filter display
+            activeFilter.textContent = currentFilter;
+        }
 
-            // If user uploads broken image, we keep previous.
-            // Also disable context menu on canvas to avoid interference
-            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-        })();
-    </script>
+        // ===== RESET BUTTON =====
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if(!originalImage) return;
+            
+            // Reset to original
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+            
+            // Reset active filter to normal
+            filterButtons.forEach(b => b.btn.classList.remove('active'));
+            filterNormal.classList.add('active');
+            currentFilter = 'normal';
+            activeFilter.textContent = 'normal';
+            
+            // Reset sliders to default
+            intensitySlider.value = 70;
+            glowSlider.value = 40;
+            vibranceSlider.value = 50;
+            updateSliderDisplays();
+        });
+
+        // ===== DOWNLOAD BUTTON =====
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if(!originalImage) {
+                alert('Please upload an image first!');
+                return;
+            }
+            const link = document.createElement('a');
+            link.download = `magic-${currentFilter}-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // ===== DOUBLE CLICK CANVAS FOR BEFORE/AFTER =====
+        canvas.addEventListener('dblclick', () => {
+            if(!originalImage) return;
+            
+            // Save current filter settings
+            const currentIntensity = intensitySlider.value;
+            const currentGlow = glowSlider.value;
+            const currentVibrance = vibranceSlider.value;
+            
+            // Show original
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+            
+            // After 300ms, reapply filter
+            setTimeout(() => {
+                applyCurrentFilter();
+            }, 300);
+        });
+
+        // Initialize slider displays
+        updateSliderDisplays();
+    })();
+</script>
 </body>
 </html>
