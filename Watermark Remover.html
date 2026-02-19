@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watermark Remover – erase with blur</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: linear-gradient(145deg, #cbdff7 0%, #efdecb 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(2px);
+            padding: 25px 25px 30px;
+            border-radius: 32px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        h1 {
+            text-align: center;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+            font-size: 2.3rem;
+            letter-spacing: -0.5px;
+            color: #2d3e5f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        h1 span {
+            font-size: 2rem;
+        }
+        .upload-area {
+            text-align: center;
+            margin-bottom: 20px;
+            background: #f4f9ff;
+            padding: 12px 20px;
+            border-radius: 60px;
+            display: inline-block;
+            width: auto;
+            box-shadow: inset 0 1px 4px #b3c9e0;
+        }
+        .upload-area input {
+            font-size: 0.95rem;
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            width: 240px;
+            cursor: pointer;
+        }
+        .canvas-wrapper {
+            display: flex;
+            justify-content: center;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+            background: #e5eef7;
+            margin-bottom: 18px;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: crosshair;
+            background: #f0f4fa;
+            transition: box-shadow 0.1s;
+            touch-action: none; /* improve mobile drawing */
+        }
+        .controls {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .slider-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f0f7fe;
+            padding: 10px 18px;
+            border-radius: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .slider-box label {
+            font-weight: 600;
+            color: #1e3b5c;
+            min-width: 85px;
+            font-size: 1rem;
+        }
+        .slider-box input {
+            flex: 1;
+            height: 7px;
+            border-radius: 20px;
+            background: #cbd6e6;
+            -webkit-appearance: none;
+        }
+        .slider-box input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2e6396;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px #0a2a44;
+            cursor: grab;
+            border: 2px solid white;
+        }
+        .value-badge {
+            background: #2a4d77;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            min-width: 50px;
+            text-align: center;
+        }
+        .button-group {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            flex: 1 1 200px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .remove-btn {
+            background: #3a7bc8;
+            color: white;
+            text-shadow: 0 1px 2px #004080;
+        }
+        .remove-btn:hover {
+            background: #2266b9;
+            transform: scale(1.02);
+            box-shadow: 0 12px 22px rgba(0,60,130,0.4);
+        }
+        .download-btn {
+            background: #9f7e55;
+            color: white;
+            text-shadow: 0 1px 2px #4f3e28;
+        }
+        .download-btn:hover {
+            background: #8b673b;
+            transform: scale(1.02);
+        }
+        .hint {
+            text-align: center;
+            color: #3c4f6e;
+            font-size: 0.95rem;
+            font-style: italic;
+            background: #dae9fa;
+            padding: 8px 16px;
+            border-radius: 60px;
+            margin: 5px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>🧽</span> Watermark Remover <span>✨</span>
+        </h1>
+        <div class="upload-area">
+            <input type="file" id="upload" accept="image/*" aria-label="Choose image">
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="controls">
+            <div class="slider-box">
+                <label for="brushSize">🖌️ Brush size</label>
+                <input type="range" id="brushSize" min="5" max="60" value="28">
+                <span class="value-badge" id="sizeDisplay">28</span>
+            </div>
+
+            <div class="button-group">
+                <button class="remove-btn" id="eraseButton">
+                    <span>🧼</span> Erase (drag on image)
+                </button>
+                <button class="download-btn" id="downloadBtn">
+                    <span>⬇️</span> Download
+                </button>
+            </div>
+            <div class="hint">
+                ⚡ click & drag to blur‑erase watermark · brush size adjustable
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const upload = document.getElementById('upload');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const brushSizeInput = document.getElementById('brushSize');
+            const sizeDisplay = document.getElementById('sizeDisplay');
+            const eraseButton = document.getElementById('eraseButton');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            let img = new Image();
+            let drawing = false;
+            let lastX = 0, lastY = 0;      // for optional continuous stroke, but simple arcs every move works
+            let currentBrushSize = 28;
+
+            // --- initial placeholder (empty canvas with subtle grid) ---
+            function drawEmptyGrid() {
+                canvas.width = 600;
+                canvas.height = 400;
+                ctx.fillStyle = '#f5f9ff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#d9e2ef';
+                ctx.font = '16px "Segoe UI", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('⬆️ upload an image', canvas.width/2, canvas.height/2 - 20);
+                ctx.font = '14px sans-serif';
+                ctx.fillStyle = '#7f95b0';
+                ctx.fillText('then drag mouse to remove watermark', canvas.width/2, canvas.height/2 + 20);
+                // subtle grid
+                ctx.strokeStyle = '#c0d0e5';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < canvas.width; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.strokeStyle = '#c0d0e5';
+                    ctx.stroke();
+                }
+                for (let i = 0; i < canvas.height; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+            }
+            drawEmptyGrid();
+
+            // --- sync brush display ---
+            function updateBrushDisplay() {
+                currentBrushSize = parseInt(brushSizeInput.value, 10);
+                sizeDisplay.textContent = currentBrushSize;
+            }
+            brushSizeInput.addEventListener('input', updateBrushDisplay);
+            updateBrushDisplay();
+
+            // --- load image from file ---
+            upload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    img.onload = function() {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // --- ERASE function: applies strong blur to a circular area ---
+            function eraseAt(x, y) {
+                if (!ctx) return;
+
+                // save context state
+                ctx.save();
+                // use blur filter (larger blur makes watermark disappear)
+                // radius-dependent blur: stronger for bigger brush, but at least 4px
+                let blurAmount = Math.min(18, Math.max(4, Math.floor(currentBrushSize / 2.2)));
+                ctx.filter = `blur(${blurAmount}px)`;
+                ctx.beginPath();
+                ctx.arc(x, y, currentBrushSize, 0, Math.PI * 2);
+                // fill with the underlying (blurred) content – we need to fill using a colour that pulls from background.
+                // but fill() with blur will sample existing pixels. However filling with transparent black won't blur.
+                // Better: use fill with a colour that composites the blur.
+                // We'll use fillStyle = 'rgba(0,0,0,0)' but that erases. We need to blur the area.
+                // The standard technique: use 'ctx.fill()' with a colour that has zero opacity? That erases to transparent.
+                // But we want to blur the pixels underneath, not erase to transparency.
+                // WORKING METHOD: draw a very short blurred copy of itself? Too complex. Instead,
+                // we can use 'globalCompositeOperation' to blur in place? Not straightforward.
+                // But current approach: set filter blur, then fill with a semi-transparent color to merge? No.
+                // Actually correct method: use `filter` and then fill with `ctx.fillStyle = 'rgba(0,0,0,0)'` -> removes pixels (transparent).
+                // But we want blur, not transparency.
+                // Better: use ctx.globalCompositeOperation = 'source-over' and fill with a color that averages?
+                // The easiest is to use "copy" of the area with blur: we can't.
+                // Let's reframe: we use fillStyle = 'white' and blur filter? That fills circle with blurred white, not the image.
+                // So to blur underlying pixels we must copy region, blur it as an image data, put back.
+                // But that's heavier. However for a demo, we can do a hack: fill with a color using 'lighter'? No.
+                // I'll implement an effective in-place blur using 'ctx.filter = "blur(8px)"' AND fill with a color that
+                // blends using 'source-atop'? Not reliable.
+                // Let's do it properly with getImageData/putImageData for a true blur effect on the region.
+                // Performance is acceptable for small areas. I'll implement blurRegion function.
+                ctx.restore(); // cancel previous save, we will use a more precise method
+
+                // ---- precise blur region ----
+                blurRegion(Math.round(x), Math.round(y), currentBrushSize);
+            }
+
+            // ---- Helper: blur a circular region using image data (box blur emulation) ----
+            function blurRegion(cx, cy, radius) {
+                if (radius < 1) return;
+
+                // define bounding box
+                const left = Math.max(0, cx - radius);
+                const top = Math.max(0, cy - radius);
+                const right = Math.min(canvas.width, cx + radius);
+                const bottom = Math.min(canvas.height, cy + radius);
+                const width = right - left;
+                const height = bottom - top;
+                if (width <= 0 || height <= 0) return;
+
+                // get pixel data
+                const imageData = ctx.getImageData(left, top, width, height);
+                const data = imageData.data;
+                const w = width, h = height;
+
+                // create copy for blurred source (simple box blur 3x3 for speed)
+                const original = new Uint8ClampedArray(data);
+                const blurSize = Math.max(2, Math.floor(radius / 6) + 1); // blur kernel half-size adaptive
+                const kernelSize = blurSize * 2 + 1; // full kernel odd size
+
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        // check if pixel within circle (optional: only blur inside circular mask)
+                        const dx = x + left - cx;
+                        const dy = y + top - cy;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (dist > radius) continue; // keep original outside
+
+                        let r = 0, g = 0, b = 0, a = 0, count = 0;
+
+                        // average kernel around (x,y)
+                        for (let ky = -blurSize; ky <= blurSize; ky++) {
+                            for (let kx = -blurSize; kx <= blurSize; kx++) {
+                                const nx = x + kx;
+                                const ny = y + ky;
+                                if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                                    const idx = (ny * w + nx) * 4;
+                                    r += original[idx];
+                                    g += original[idx + 1];
+                                    b += original[idx + 2];
+                                    a += original[idx + 3];
+                                    count++;
+                                }
+                            }
+                        }
+                        if (count > 0) {
+                            const idx = (y * w + x) * 4;
+                            data[idx] = r / count;
+                            data[idx + 1] = g / count;
+                            data[idx + 2] = b / count;
+                            data[idx + 3] = a / count; // keep original alpha blending
+                        }
+                    }
+                }
+
+                // put blurred image back
+                ctx.putImageData(imageData, left, top);
+            }
+
+            // --- mouse/touch event handlers ---
+            function getCanvasCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;   // canvas physical size / display size
+                const scaleY = canvas.height / rect.height;
+
+                let clientX, clientY;
+
+                if (e.touches) {
+                    // touch event
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                    e.preventDefault(); // prevent scrolling
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+
+                const canvasX = (clientX - rect.left) * scaleX;
+                const canvasY = (clientY - rect.top) * scaleY;
+
+                return {
+                    x: Math.min(canvas.width, Math.max(0, canvasX)),
+                    y: Math.min(canvas.height, Math.max(0, canvasY))
+                };
+            }
+
+            function startDraw(e) {
+                e.preventDefault(); // important for touch
+                drawing = true;
+                const coord = getCanvasCoords(e);
+                // erase a single spot on click down
+                eraseAt(coord.x, coord.y);
+            }
+
+            function drawMove(e) {
+                e.preventDefault();
+                if (!drawing) return;
+                const coord = getCanvasCoords(e);
+                eraseAt(coord.x, coord.y);
+            }
+
+            function stopDraw(e) {
+                e.preventDefault();
+                drawing = false;
+            }
+
+            // --- register events (mouse + touch) ---
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', drawMove);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseleave', stopDraw);
+
+            // touch events
+            canvas.addEventListener('touchstart', startDraw, { passive: false });
+            canvas.addEventListener('touchmove', drawMove, { passive: false });
+            canvas.addEventListener('touchend', stopDraw);
+            canvas.addEventListener('touchcancel', stopDraw);
+
+            // optional: visual feedback for brush size (cursor not easily changeable but ok)
+            // Also make erase button just focuses brush size
+            eraseButton.addEventListener('click', function() {
+                brushSizeInput.focus();
+            });
+
+            // Download button
+            downloadBtn.addEventListener('click', function() {
+                if (!canvas.width || !canvas.height) {
+                    alert('No image to download');
+                    return;
+                }
+                const link = document.createElement('a');
+                link.download = 'watermark-cleaned.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+
+            // Re-draw if image loaded? Already done in onload.
+            // but keep empty grid when no image
+
+            // If user uploads broken image, we keep previous.
+            // Also disable context menu on canvas to avoid interference
+            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+        })();
+    </script>
+</body>
+</html>
