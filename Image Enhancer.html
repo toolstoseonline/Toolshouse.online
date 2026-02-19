@@ -1,1 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Enhancer – Upscale & Enhance</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background:linear-gradient(135deg,#d7e9ff,#f3e5d0);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:95%;
+    max-width:1100px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+h1{
+    text-align:center;
+}
+
+.upload-area{
+    text-align:center;
+    margin:20px 0;
+}
+
+.preview{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+canvas{
+    width:100%;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-top:20px;
+}
+
+label{
+    font-size:14px;
+}
+
+input[type="range"]{
+    width:100%;
+}
+
+select{
+    padding:8px;
+    border-radius:6px;
+}
+
+button{
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.enhance-btn{
+    background:#4da6ff;
+    color:white;
+}
+
+.enhance-btn:hover{
+    background:#3399ff;
+}
+
+.auto-btn{
+    background:#6abf69;
+    color:white;
+}
+
+.auto-btn:hover{
+    background:#58a95a;
+}
+
+.download-btn{
+    background:#c49b66;
+    color:white;
+}
+
+.download-btn:hover{
+    background:#b88a4f;
+}
+
+@media(max-width:768px){
+    .preview, .controls{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🖼 Image Enhancer</h1>
+    <p style="text-align:center;color:#555;">Upscale & Enhance Images Like a Pro</p>
+
+    <div class="upload-area">
+        <input type="file" id="upload" accept="image/*">
+    </div>
+
+    <div class="preview">
+        <div>
+            <h3 style="text-align:center;">Original</h3>
+            <canvas id="originalCanvas"></canvas>
+        </div>
+        <div>
+            <h3 style="text-align:center;">Enhanced</h3>
+            <canvas id="enhancedCanvas"></canvas>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div>
+            <label>Brightness</label>
+            <input type="range" id="brightness" min="50" max="150" value="100">
+        </div>
+
+        <div>
+            <label>Contrast</label>
+            <input type="range" id="contrast" min="50" max="150" value="110">
+        </div>
+
+        <div>
+            <label>Sharpness</label>
+            <input type="range" id="sharpness" min="0" max="3" step="0.1" value="0.5">
+        </div>
+
+        <div>
+            <label>Upscale</label>
+            <select id="scale">
+                <option value="1">1x</option>
+                <option value="2">2x</option>
+                <option value="4">4x</option>
+            </select>
+        </div>
+    </div>
+
+    <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="enhance-btn" onclick="enhanceImage()">Enhance Image</button>
+        <button class="auto-btn" onclick="autoEnhance()">Auto Enhance</button>
+        <button class="download-btn" onclick="downloadImage()">Download</button>
+    </div>
+
+</div>
+
+<script>
+const upload = document.getElementById("upload");
+const originalCanvas = document.getElementById("originalCanvas");
+const enhancedCanvas = document.getElementById("enhancedCanvas");
+const oCtx = originalCanvas.getContext("2d");
+const eCtx = enhancedCanvas.getContext("2d");
+
+let img = new Image();
+
+upload.addEventListener("change", function(e){
+    const reader = new FileReader();
+    reader.onload = function(event){
+        img.onload = function(){
+            originalCanvas.width = img.width;
+            originalCanvas.height = img.height;
+            oCtx.drawImage(img,0,0);
+
+            enhancedCanvas.width = img.width;
+            enhancedCanvas.height = img.height;
+            eCtx.drawImage(img,0,0);
+        }
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);
+});
+
+function enhanceImage(){
+    const brightness = document.getElementById("brightness").value;
+    const contrast = document.getElementById("contrast").value;
+    const sharpness = document.getElementById("sharpness").value;
+    const scale = document.getElementById("scale").value;
+
+    const width = img.width * scale;
+    const height = img.height * scale;
+
+    enhancedCanvas.width = width;
+    enhancedCanvas.height = height;
+
+    eCtx.filter = `
+        brightness(${brightness}%)
+        contrast(${contrast}%)
+        saturate(115%)
+        blur(${sharpness}px)
+    `;
+
+    eCtx.drawImage(img,0,0,width,height);
+}
+
+function autoEnhance(){
+    document.getElementById("brightness").value = 110;
+    document.getElementById("contrast").value = 120;
+    document.getElementById("sharpness").value = 0.7;
+    document.getElementById("scale").value = 2;
+    enhanceImage();
+}
+
+function downloadImage(){
+    const link = document.createElement("a");
+    link.download = "enhanced-image.png";
+    link.href = enhancedCanvas.toDataURL();
+    link.click();
+}
+</script>
+
+</body>
+</html>
 
