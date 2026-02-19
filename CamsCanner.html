@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Mobile Scanner · Camera to PDF & OCR</title>
+
+<!-- jsPDF for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Tesseract OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(145deg, #dbeafe 0%, #fef3c7 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 12px 20px;
+}
+
+header {
+    text-align: center;
+    padding: 16px 5px 8px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    letter-spacing: -0.3px;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+header span {
+    background: #2563eb;
+    color: white;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 40px;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(12px);
+    padding: 22px 18px 28px;
+    border-radius: 38px;
+    box-shadow: 0 20px 40px rgba(0, 20, 50, 0.25);
+    border: 1px solid rgba(255,255,255,0.8);
+}
+
+/* source selection + camera */
+.source-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.source-btn {
+    flex: 1 1 160px;
+    background: #ffffffdd;
+    border: 1.5px solid #2563eb60;
+    padding: 14px 10px;
+    border-radius: 36px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+}
+
+.source-btn.active {
+    background: #2563eb;
+    color: white;
+    border-color: #1e3a8a;
+    box-shadow: 0 8px 16px #2563eb50;
+}
+
+.source-btn input {
+    display: none;
+}
+
+.upload-box {
+    border: 2.5px dashed #2563eb;
+    padding: 35px 15px;
+    text-align: center;
+    border-radius: 34px;
+    cursor: pointer;
+    background: #f9faff;
+    transition: background 0.2s;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #1e40af;
+    margin: 10px 0 15px;
+    word-break: break-word;
+}
+
+.upload-box.highlight {
+    background: #e6f0ff;
+    border-color: #1d4ed8;
+}
+
+#preview {
+    max-width: 100%;
+    max-height: 280px;
+    margin: 15px 0 12px;
+    border-radius: 28px;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    background: #f1f5f9;
+    object-fit: contain;
+    display: none;
+    border: 3px solid white;
+}
+
+.action-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 18px 0 15px;
+    justify-content: center;
+}
+
+.action-btn {
+    flex: 1 1 140px;
+    padding: 16px 8px;
+    border: none;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 8px 16px rgba(0,40,80,0.2);
+    transition: 0.1s transform, 0.1s box-shadow;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: white;
+    color: #1e3a8a;
+    border: 1px solid #a5b4fc;
+}
+
+.action-btn.primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+}
+
+.action-btn.secondary {
+    background: #059669;
+    color: white;
+    border: none;
+}
+
+.action-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 28px;
+    border: 1.5px solid #cbd5e1;
+    font-family: 'Segoe UI', monospace;
+    font-size: 1rem;
+    resize: vertical;
+    background: white;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px #2563eb30;
+}
+
+.ad-box {
+    margin-top: 28px;
+    padding: 16px 8px;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 32px;
+    color:#334155;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+    box-shadow: inset 0 1px 4px white, 0 6px 14px rgba(0,0,0,0.08);
+    font-size: 1rem;
+}
+
+/* camera element (hidden by default) */
+#cameraContainer {
+    margin: 15px 0 10px;
+    border-radius: 36px;
+    overflow: hidden;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+    display: none;
+    background: #000;
+    border: 3px solid white;
+}
+
+#cameraFeed {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    display: block;
+}
+
+.camera-controls {
+    display: flex;
+    gap: 12px;
+    margin: 12px 0 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.camera-btn {
+    background: #1e293b;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 24px;
+    font-weight: 600;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px #00000040;
+}
+
+footer {
+    margin-top: 16px;
+    color: #334155;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 450px) {
+    header { font-size: 1.8rem; }
+    .source-row .source-btn { flex: 1 1 120px; font-size: 0.95rem; }
+    .action-btn { font-size: 1rem; padding: 14px 4px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    📱 Smart Scan <span>CAMERA + PDF + OCR</span>
+</header>
+
+<div class="container">
+
+    <!-- source selection: camera or gallery -->
+    <div class="source-row">
+        <label class="source-btn" id="cameraSourceBtn">
+            📸 Camera
+            <input type="file" id="cameraCapture" accept="image/*" capture="environment">
+        </label>
+        <label class="source-btn" id="galleryBtn">
+            🖼️ Gallery
+            <input type="file" id="galleryInput" accept="image/*">
+        </label>
+    </div>
+
+    <!-- fallback drag / click box (also triggers gallery) -->
+    <div class="upload-box" id="uploadBox">
+        ⬆️ Tap to upload / drag image
+    </div>
+
+    <!-- live camera preview section (hidden initially) -->
+    <div id="cameraContainer">
+        <video id="cameraFeed" autoplay playsinline></video>
+        <div class="camera-controls">
+            <button class="camera-btn" id="capturePhotoBtn">📸 Capture</button>
+            <button class="camera-btn" id="closeCameraBtn">✖️ Close</button>
+        </div>
+    </div>
+
+    <!-- image preview -->
+    <img id="preview" alt="preview">
+
+    <!-- action buttons -->
+    <div class="action-grid">
+        <button class="action-btn primary" id="pdfBtn">📥 PDF</button>
+        <button class="action-btn secondary" id="ocrBtn">🔍 OCR text</button>
+        <button class="action-btn" id="shareBtn" title="Share image or text (if OCR available)">📤 Share</button>
+        <button class="action-btn" id="resetBtn">🔄 New scan</button>
+    </div>
+
+    <!-- OCR result area -->
+    <textarea id="ocrResult" placeholder="Extracted text appears here ..." readonly></textarea>
+
+    <!-- ad space -->
+    <div class="ad-box">
+        📢 Google AdSense · 320x100 (responsive)
+    </div>
+</div>
+
+<footer>⚡ double tap · instant scan & convert</footer>
+
+<script>
+(function() {
+    // ----- DOM elements -----
+    const cameraSourceBtn = document.getElementById('cameraSourceBtn');
+    const cameraCapture = document.getElementById('cameraCapture');
+    const galleryBtn = document.getElementById('galleryBtn');
+    const galleryInput = document.getElementById('galleryInput');
+    const uploadBox = document.getElementById('uploadBox');
+    const cameraContainer = document.getElementById('cameraContainer');
+    const cameraFeed = document.getElementById('cameraFeed');
+    const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+    const closeCameraBtn = document.getElementById('closeCameraBtn');
+    const preview = document.getElementById('preview');
+    const pdfBtn = document.getElementById('pdfBtn');
+    const ocrBtn = document.getElementById('ocrBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const ocrResult = document.getElementById('ocrResult');
+
+    // ----- state -----
+    let currentImageDataURL = null;        // stored image dataURL
+    let currentOcrText = '';               // last extracted text
+    let cameraStream = null;                // active stream
+
+    // ----- helper: stop camera -----
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+        cameraContainer.style.display = 'none';
+        cameraFeed.srcObject = null;
+    }
+
+    // ----- show preview image -----
+    function displayImage(dataURL) {
+        currentImageDataURL = dataURL;
+        preview.src = dataURL;
+        preview.style.display = 'block';
+        // clear previous OCR
+        ocrResult.value = '';
+        currentOcrText = '';
+        // if camera was open, close it
+        stopCamera();
+    }
+
+    // ----- handle file selection (from input) -----
+    function handleFileSelect(file) {
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            alert('❌ Please select an image file');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => displayImage(e.target.result);
+        reader.readAsDataURL(file);
+    }
+
+    // ----- camera handling -----
+    async function startCamera() {
+        try {
+            stopCamera(); // close any previous
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'environment' } // back camera preferred
+            });
+            cameraStream = stream;
+            cameraFeed.srcObject = stream;
+            cameraContainer.style.display = 'block';
+        } catch (err) {
+            alert('❌ Camera access denied or not supported. Use gallery instead.');
+            console.error(err);
+        }
+    }
+
+    // capture photo from video feed
+    function capturePhoto() {
+        if (!cameraStream) return;
+
+        const canvas = document.createElement('canvas');
+        const track = cameraStream.getVideoTracks()[0];
+        const settings = track.getSettings();
+        canvas.width = settings.width || 1280;
+        canvas.height = settings.height || 720;
+        const context = canvas.getContext('2d');
+        context.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob((blob) => {
+            const reader = new FileReader();
+            reader.onload = (e) => displayImage(e.target.result);
+            reader.readAsDataURL(blob);
+        }, 'image/jpeg', 0.95);
+        
+        // keep camera open for more captures (user can close manually)
+    }
+
+    // ----- event listeners -----
+    // camera source button (triggers native camera via capture)
+    cameraCapture.addEventListener('change', (e) => {
+        if (e.target.files.length) handleFileSelect(e.target.files[0]);
+        cameraCapture.value = ''; // allow same file again
+    });
+
+    // gallery button: trigger hidden file input
+    galleryInput.addEventListener('change', (e) => {
+        if (e.target.files.length) handleFileSelect(e.target.files[0]);
+        galleryInput.value = '';
+    });
+
+    // click on upload box -> open gallery as default (also allow drag later)
+    uploadBox.addEventListener('click', () => {
+        galleryInput.click();
+    });
+
+    // Drag & drop on container (or uploadBox)
+    const container = document.querySelector('.container');
+    [uploadBox, container].forEach(el => {
+        el.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.classList.add('highlight');
+        });
+        el.addEventListener('dragleave', () => {
+            uploadBox.classList.remove('highlight');
+        });
+        el.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove('highlight');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelect(file);
+            } else {
+                alert('❌ Drop image only');
+            }
+        });
+    });
+
+    // open camera manually via source "Camera" label (since capture input may not work on some ios? we also add direct camera stream)
+    // We'll provide both: the native capture input and also a manual camera stream option.
+    // For better control: cameraSourceBtn click can request stream instead of just relying on input.
+    cameraSourceBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // On mobile, the 'capture' input usually opens camera immediately. 
+        // But we also provide fallback: if we want continuous preview, we start stream.
+        // Let's combine: give user option to use live preview (more flexible)
+        if (confirm('📸 Use live camera preview? (OK for live, Cancel for native camera app)')) {
+            startCamera();
+        } else {
+            // trigger the file input with capture
+            cameraCapture.click();
+        }
+    });
+
+    capturePhotoBtn.addEventListener('click', capturePhoto);
+    closeCameraBtn.addEventListener('click', () => {
+        stopCamera();
+    });
+
+    // ----- PDF generation -----
+    pdfBtn.addEventListener('click', () => {
+        if (!currentImageDataURL) {
+            alert('⚠️ No image. Capture or upload first.');
+            return;
+        }
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: preview.naturalWidth > preview.naturalHeight ? 'landscape' : 'portrait',
+                unit: 'px',
+                format: 'a4'
+            });
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // get image dimensions
+            const img = new Image();
+            img.src = currentImageDataURL;
+            const imgWidth = preview.naturalWidth || 1200;
+            const imgHeight = preview.naturalHeight || 900;
+
+            const maxWidth = pageWidth - 40;
+            const maxHeight = pageHeight - 40;
+            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+            const drawWidth = imgWidth * ratio;
+            const drawHeight = imgHeight * ratio;
+            const xOffset = (pageWidth - drawWidth) / 2;
+            const yOffset = (pageHeight - drawHeight) / 2;
+
+            doc.addImage(currentImageDataURL, 'JPEG', xOffset, yOffset, drawWidth, drawHeight, undefined, 'FAST');
+            doc.save('scanned-document.pdf');
+        } catch (err) {
+            alert('PDF error: ' + err.message);
+        }
+    });
+
+    // ----- OCR -----
+    ocrBtn.addEventListener('click', async () => {
+        if (!currentImageDataURL) {
+            alert('⚠️ No image to process.');
+            return;
+        }
+        ocrResult.value = '⏳ OCR running ... (Tesseract.js)';
+        ocrBtn.disabled = true;
+        const originalText = ocrBtn.innerHTML;
+        ocrBtn.innerHTML = '⏳ ...';
+
+        try {
+            const result = await Tesseract.recognize(currentImageDataURL, 'eng', {
+                logger: m => console.log(m)
+            });
+            currentOcrText = result.data.text.trim() || '(no text)';
+            ocrResult.value = currentOcrText;
+        } catch (err) {
+            ocrResult.value = '❌ OCR failed.';
+        } finally {
+            ocrBtn.disabled = false;
+            ocrBtn.innerHTML = originalText;
+        }
+    });
+
+    // ----- share (if Web Share API) -----
+    shareBtn.addEventListener('click', async () => {
+        if (!currentImageDataURL && !currentOcrText) {
+            alert('Nothing to share – capture image or run OCR first.');
+            return;
+        }
+
+        // If image exists, try to share image + optionally text
+        if (currentImageDataURL && navigator.share) {
+            try {
+                // convert dataURL to blob for share
+                const blob = await (await fetch(currentImageDataURL)).blob();
+                const file = new File([blob], 'scan.jpg', { type: 'image/jpeg' });
+                const shareData = {
+                    title: 'Smart Scanner',
+                    text: currentOcrText || 'Scanned document',
+                    files: [file]
+                };
+                await navigator.share(shareData);
+            } catch (err) {
+                if (err.name !== 'AbortError') alert('Share failed or canceled.');
+            }
+        } else if (currentOcrText) {
+            // fallback: copy to clipboard
+            try {
+                await navigator.clipboard.writeText(currentOcrText);
+                alert('📋 OCR text copied to clipboard (share not supported)');
+            } catch {
+                alert('Text: ' + currentOcrText.substring(0, 100));
+            }
+        } else {
+            alert('Share not supported or no content');
+        }
+    });
+
+    // ----- reset (new scan) -----
+    resetBtn.addEventListener('click', () => {
+        stopCamera();
+        currentImageDataURL = null;
+        currentOcrText = '';
+        preview.style.display = 'none';
+        preview.src = '';
+        ocrResult.value = '';
+        galleryInput.value = '';
+        cameraCapture.value = '';
+    });
+
+    // cleanup on page hide
+    window.addEventListener('beforeunload', () => {
+        stopCamera();
+    });
+
+})();
+</script>
+</body>
+</html>
