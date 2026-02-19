@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Retouch – Retouch Portraits Like a Pro</title>
+
+<style>
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#d7e9ff,#f3e5d0);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:95%;
+    max-width:1000px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:5px;
+}
+
+p{
+    text-align:center;
+    color:#555;
+    margin-bottom:20px;
+}
+
+.upload-area{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input[type="file"]{
+    padding:10px;
+}
+
+.canvas-container{
+    display:flex;
+    justify-content:center;
+    margin-bottom:20px;
+}
+
+canvas{
+    max-width:100%;
+    border-radius:10px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.control-box{
+    display:flex;
+    flex-direction:column;
+}
+
+.control-box label{
+    font-size:14px;
+    margin-bottom:5px;
+}
+
+input[type="range"]{
+    width:100%;
+}
+
+button{
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.apply-btn{
+    background:#4da6ff;
+    color:white;
+}
+
+.apply-btn:hover{
+    background:#3399ff;
+}
+
+.download-btn{
+    background:#c49b66;
+    color:white;
+    margin-top:10px;
+}
+
+.download-btn:hover{
+    background:#b88a4f;
+}
+
+@media(max-width:768px){
+    .controls{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✨ Photo Retouch</h1>
+    <p>Retouch Portraits Like a Pro – Simple, Fast & Professional</p>
+
+    <div class="upload-area">
+        <input type="file" id="upload" accept="image/*">
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <div class="control-box">
+            <label>Skin Smoothening</label>
+            <input type="range" id="blur" min="0" max="5" step="0.1" value="0">
+        </div>
+
+        <div class="control-box">
+            <label>Brightness</label>
+            <input type="range" id="brightness" min="50" max="150" value="100">
+        </div>
+
+        <div class="control-box">
+            <label>Contrast</label>
+            <input type="range" id="contrast" min="50" max="150" value="100">
+        </div>
+
+        <div class="control-box">
+            <label>Eye Enhancement</label>
+            <input type="range" id="saturate" min="100" max="200" value="100">
+        </div>
+    </div>
+
+    <button class="apply-btn" onclick="applyEffects()">Apply Effects</button>
+    <button class="download-btn" onclick="downloadImage()">Download Edited Photo</button>
+
+</div>
+
+<script>
+const upload = document.getElementById("upload");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let img = new Image();
+
+upload.addEventListener("change", function(e){
+    const reader = new FileReader();
+    reader.onload = function(event){
+        img.onload = function(){
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img,0,0);
+        }
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);
+});
+
+function applyEffects(){
+    const blur = document.getElementById("blur").value;
+    const brightness = document.getElementById("brightness").value;
+    const contrast = document.getElementById("contrast").value;
+    const saturate = document.getElementById("saturate").value;
+
+    ctx.filter = `
+        blur(${blur}px)
+        brightness(${brightness}%)
+        contrast(${contrast}%)
+        saturate(${saturate}%)
+    `;
+    ctx.drawImage(img,0,0);
+}
+
+function downloadImage(){
+    const link = document.createElement("a");
+    link.download = "retouched-photo.png";
+    link.href = canvas.toDataURL();
+    link.click();
+}
+</script>
+
+</body>
+</html>
