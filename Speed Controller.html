@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Controller Pro – pitch & custom speed</title>
+<style>
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+body {
+  margin: 0;
+  background: linear-gradient(145deg, #0b1a2e, #142c3c);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+.container {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  width: 100%;
+  max-width: 760px;
+  padding: 2.2rem 2rem;
+  border-radius: 2.5rem;
+  box-shadow: 0 30px 55px -15px #00000080;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #eef5ff;
+  transition: 0.2s;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(120deg, #c0e0ff, #f2ddc0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.sub {
+  color: #9bbcdb;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  border-bottom: 1px dashed #3e6382;
+  padding-bottom: 0.8rem;
+}
+.upload-card {
+  background: rgba(12, 28, 45, 0.7);
+  border-radius: 2rem;
+  padding: 1.2rem 1.8rem;
+  border: 1px solid #3670a0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+.upload-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  background: #1e3b57;
+  padding: 0.7rem 1.7rem;
+  border-radius: 40px;
+  transition: 0.15s;
+  border: 1px solid #5c93c9;
+}
+.upload-label:hover {
+  background: #254f75;
+  transform: scale(1.02);
+}
+.upload-label svg {
+  width: 22px;
+  stroke: white;
+}
+#fileInfo {
+  color: #c1d9f0;
+  font-size: 0.95rem;
+}
+.media-wrapper {
+  background: #00111f;
+  border-radius: 28px;
+  padding: 1.5rem 1rem 1rem 1rem;
+  margin: 1.8rem 0 1.5rem;
+  border: 1px solid #1f587d;
+}
+video, audio {
+  width: 100%;
+  border-radius: 22px;
+  background: #000;
+  outline: 1px solid #3875aa;
+  box-shadow: 0 12px 25px #00000060;
+}
+.speed-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  background: #112b3f;
+  border-radius: 40px;
+  padding: 1.5rem 1.8rem;
+  margin: 1.8rem 0 0.8rem;
+  align-items: center;
+  border: 1px solid #4279ae;
+}
+.preset-box {
+  flex: 2 1 200px;
+}
+.preset-box label {
+  display: block;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #aac6ec;
+  margin-bottom: 6px;
+}
+.preset-select {
+  width: 100%;
+  background: #0b2237;
+  color: white;
+  border: 1px solid #3e7fb1;
+  padding: 0.8rem 1rem;
+  border-radius: 40px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.custom-box {
+  flex: 1 1 140px;
+}
+.custom-box label {
+  font-size: 0.8rem;
+  color: #aac6ec;
+}
+.custom-input {
+  width: 100%;
+  background: #0b2237;
+  border: 1px solid #3e7fb1;
+  color: white;
+  padding: 0.8rem 0.8rem;
+  border-radius: 40px;
+  text-align: center;
+  font-weight: 600;
+}
+.extra-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  background: #07202f;
+  padding: 1.2rem 1.8rem;
+  border-radius: 40px;
+  margin: 1rem 0 1.5rem;
+}
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.toggle-item label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.toggle-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #3b82f6;
+}
+.badge {
+  background: #245b8f;
+  border-radius: 30px;
+  padding: 0.2rem 1rem;
+  font-size: 0.8rem;
+  color: #e7f0ff;
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.btn {
+  background: linear-gradient(145deg, #2563eb, #4f46e5);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.9rem 2rem;
+  border-radius: 40px;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 1px solid #86b4fa;
+  box-shadow: 0 8px 20px #1e3a8a80;
+}
+.btn:hover {
+  background: linear-gradient(145deg, #3b82f6, #6366f1);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px #1e3f8f;
+}
+.btn-outline {
+  background: transparent;
+  border: 2px solid #627fad;
+  box-shadow: none;
+  color: #e0edff;
+}
+.btn-outline:hover {
+  background: #1f4460;
+  border-color: #97c2ff;
+}
+.btn:active {
+  transform: translateY(2px);
+}
+#currentSpeedIndicator {
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: #0b2b42;
+  padding: 0.3rem 1.6rem;
+  border-radius: 60px;
+  display: inline-block;
+  border: 1px solid #3b86c0;
+}
+.footer-note {
+  text-align: center;
+  color: #779fc9;
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>
+    <span>⚡</span> Speed Controller Pro
+  </h1>
+  <div class="sub">custom speed, preserve pitch · loop & fine‑tune</div>
+
+  <!-- file input area -->
+  <div class="upload-card">
+    <label for="fileInput" class="upload-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+      <span>Choose file</span>
+    </label>
+    <input type="file" id="fileInput" accept="video/*,audio/*" style="display:none;">
+    <span id="fileInfo">🎬 no file selected</span>
+  </div>
+
+  <!-- media preview area -->
+  <div class="media-wrapper" id="mediaWrapper" style="display: none;">
+    <div id="mediaBox"></div>
+  </div>
+
+  <!-- speed control panel with extra options -->
+  <div class="speed-panel">
+    <div class="preset-box">
+      <label>🎚️ preset speed</label>
+      <select id="speedSelect" class="preset-select">
+        <option value="0.25">0.25x (slow)</option>
+        <option value="0.5">0.5x</option>
+        <option value="0.75">0.75x</option>
+        <option value="1" selected>1x (normal)</option>
+        <option value="1.25">1.25x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2">2x</option>
+        <option value="2.5">2.5x</option>
+        <option value="3">3x (fast)</option>
+        <option value="4">4x</option>
+      </select>
+    </div>
+    <div class="custom-box">
+      <label>🔢 custom speed</label>
+      <input type="number" id="customSpeed" class="custom-input" step="0.05" min="0.1" max="16" value="1.0" placeholder="0.1–16">
+    </div>
+  </div>
+
+  <!-- extra features: preserve pitch, loop, indicator -->
+  <div class="extra-toggles">
+    <div class="toggle-item">
+      <label>
+        <input type="checkbox" id="preservePitchCheck" checked> 🎵 preserve pitch
+      </label>
+    </div>
+    <div class="toggle-item">
+      <label>
+        <input type="checkbox" id="loopCheck"> 🔁 loop media
+      </label>
+    </div>
+    <div class="badge" id="currentSpeedIndicator">1.00x</div>
+  </div>
+
+  <!-- action buttons -->
+  <div class="buttons">
+    <button class="btn" id="applySpeedBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Apply speed
+    </button>
+    <button class="btn btn-outline" id="resetBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      Reset to 1x
+    </button>
+  </div>
+  <div class="footer-note">
+    ⚡ preserves pitch using <code>preservesPitch</code> (if supported). Loop & fine custom speed.
+  </div>
+</div>
+
+<script>
+  (function() {
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const mediaWrapper = document.getElementById('mediaWrapper');
+    const mediaBox = document.getElementById('mediaBox');
+    const speedSelect = document.getElementById('speedSelect');
+    const customSpeed = document.getElementById('customSpeed');
+    const preservePitchCheck = document.getElementById('preservePitchCheck');
+    const loopCheck = document.getElementById('loopCheck');
+    const applySpeedBtn = document.getElementById('applySpeedBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const speedIndicator = document.getElementById('currentSpeedIndicator');
+
+    let mediaElement = null;       // current audio/video element
+    let currentFile = null;
+
+    // helper: update indicator from element playbackRate
+    function updateSpeedIndicator() {
+      if (mediaElement && !isNaN(mediaElement.playbackRate)) {
+        speedIndicator.innerText = mediaElement.playbackRate.toFixed(2) + 'x';
+      } else {
+        speedIndicator.innerText = '1.00x';
+      }
+    }
+
+    // helper: set media presetPitch & loop from checkboxes
+    function applyMediaOptions() {
+      if (!mediaElement) return;
+      try {
+        // 'preservesPitch' is supported in most modern browsers for audio/video
+        if (mediaElement.hasOwnProperty('preservesPitch')) {
+          mediaElement.preservesPitch = preservePitchCheck.checked;
+        } else {
+          // fallback: some browsers use mozPreservesPitch / webkitPreservesPitch
+          if (mediaElement.mozPreservesPitch !== undefined) {
+            mediaElement.mozPreservesPitch = preservePitchCheck.checked;
+          }
+          if (mediaElement.webkitPreservesPitch !== undefined) {
+            mediaElement.webkitPreservesPitch = preservePitchCheck.checked;
+          }
+        }
+      } catch (e) {}
+      // loop
+      mediaElement.loop = loopCheck.checked;
+    }
+
+    // function to change speed using selected + custom
+    function setSpeedFromControls() {
+      if (!mediaElement) {
+        alert('Please upload a media file first.');
+        return;
+      }
+
+      let speed = parseFloat(speedSelect.value);
+      const customVal = parseFloat(customSpeed.value);
+      // if custom field is different from select and not exactly 0, we prioritize custom? 
+      // we combine: customSpeed overrides but we can link them.
+      // better: apply custom if user changes it; but we use explicit apply button:
+      // we take custom field as final speed (if not empty and valid)
+      if (!isNaN(customVal) && customVal >= 0.1 && customVal <= 16) {
+        speed = customVal;
+        // also update select to nearest? not necessary, just use custom
+      } else {
+        // fallback to select, but ensure it's a number
+        speed = parseFloat(speedSelect.value);
+      }
+
+      if (isNaN(speed) || speed < 0.1) speed = 1.0;
+
+      mediaElement.playbackRate = speed;
+      applyMediaOptions();   // ensure pitch/loop are set
+      updateSpeedIndicator();
+    }
+
+    // reset to 1.0
+    function resetSpeed() {
+      if (!mediaElement) return;
+      mediaElement.playbackRate = 1.0;
+      speedSelect.value = '1';
+      customSpeed.value = '1.0';
+      applyMediaOptions();
+      updateSpeedIndicator();
+    }
+
+    // --- file selection ---
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      currentFile = file;
+      fileInfo.innerText = `📁 ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
+
+      // clear previous media
+      mediaBox.innerHTML = '';
+      const url = URL.createObjectURL(file);
+
+      if (file.type.startsWith('video/')) {
+        mediaElement = document.createElement('video');
+        mediaElement.controls = true;
+        mediaElement.src = url;
+      } else if (file.type.startsWith('audio/')) {
+        mediaElement = document.createElement('audio');
+        mediaElement.controls = true;
+        mediaElement.src = url;
+      } else {
+        fileInfo.innerText = '⚠️ unsupported file type';
+        return;
+      }
+
+      mediaElement.preload = 'auto';
+      mediaElement.style.width = '100%';
+      mediaElement.style.borderRadius = '20px';
+
+      // once metadata loaded, we can set initial options
+      mediaElement.onloadedmetadata = () => {
+        applyMediaOptions();
+        updateSpeedIndicator();
+        // set default speed from select (1.0)
+        mediaElement.playbackRate = 1.0;
+        speedSelect.value = '1';
+        customSpeed.value = '1.0';
+      };
+
+      mediaBox.appendChild(mediaElement);
+      mediaWrapper.style.display = 'block';
+
+      // revoke object URL later to free memory
+      mediaElement.onload = () => URL.revokeObjectURL(url);
+    });
+
+    // apply speed button
+    applySpeedBtn.addEventListener('click', setSpeedFromControls);
+
+    // reset button
+    resetBtn.addEventListener('click', resetSpeed);
+
+    // when checkboxes change, re-apply options (preserve pitch / loop)
+    preservePitchCheck.addEventListener('change', () => {
+      if (mediaElement) applyMediaOptions();
+    });
+    loopCheck.addEventListener('change', () => {
+      if (mediaElement) mediaElement.loop = loopCheck.checked;
+    });
+
+    // optional: sync custom input with select (if user changes select, set custom value)
+    speedSelect.addEventListener('change', function() {
+      customSpeed.value = speedSelect.value;   // sync to same number
+      // but not auto-apply – user needs to press apply
+    });
+
+    // initial hide
+    mediaWrapper.style.display = 'none';
+    updateSpeedIndicator(); // default 1.00
+
+    // also if user directly changes custom input, we don't auto apply (apply button)
+    // but we allow enter key to apply (nice)
+    customSpeed.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        setSpeedFromControls();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
