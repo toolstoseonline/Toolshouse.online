@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Video Editor | Tools Store</title>
+
+<style>
+:root{
+  --bg:#0f172a;
+  --card:#111827;
+  --text:#e5e7eb;
+  --accent:#3b82f6;
+  --success:#22c55e;
+  --error:#ef4444;
+}
+
+*{box-sizing:border-box;font-family:system-ui,sans-serif;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+}
+
+.container{
+  background:var(--card);
+  width:100%;
+  max-width:700px;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 20px 40px rgba(0,0,0,.5);
+}
+
+h1{text-align:center;margin-bottom:20px;}
+
+input,button,select{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:none;
+  background:#1f2937;
+  color:white;
+}
+
+button{
+  background:var(--accent);
+  font-weight:bold;
+  cursor:pointer;
+}
+
+video{
+  width:100%;
+  margin-top:10px;
+  border-radius:8px;
+  filter:brightness(1) contrast(1);
+}
+
+.controls{
+  margin-top:15px;
+}
+
+.status{text-align:center;font-size:14px;}
+.error{color:var(--error);text-align:center;}
+.download-btn{
+  display:none;
+  background:var(--success);
+  color:black;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Advanced Video Editor</h1>
+
+<input type="file" id="videoInput" accept="video/*">
+
+<h3>Trim</h3>
+<input type="number" id="startTime" placeholder="Start Time (sec)">
+<input type="number" id="endTime" placeholder="End Time (sec)">
+
+<h3>Audio Options</h3>
+<select id="voiceOption">
+  <option value="normal">Normal Voice</option>
+  <option value="mute">Mute Voice</option>
+  <option value="chipmunk">High Pitch</option>
+  <option value="deep">Deep Voice</option>
+</select>
+
+<h3>Video Color</h3>
+<label>Brightness</label>
+<input type="range" id="brightness" min="0.5" max="2" step="0.1" value="1">
+
+<label>Contrast</label>
+<input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1">
+
+<button id="processBtn">Process Video</button>
+
+<p class="status" id="status"></p>
+<p class="error" id="error"></p>
+
+<video id="previewVideo" controls></video>
+
+<a id="downloadBtn" class="download-btn" download="edited-video.webm">Download Video</a>
+
+</div>
+
+<script>
+const videoInput=document.getElementById("videoInput");
+const preview=document.getElementById("previewVideo");
+const brightness=document.getElementById("brightness");
+const contrast=document.getElementById("contrast");
+const voiceOption=document.getElementById("voiceOption");
+const processBtn=document.getElementById("processBtn");
+const statusText=document.getElementById("status");
+const errorText=document.getElementById("error");
+const downloadBtn=document.getElementById("downloadBtn");
+
+let videoFile;
+let audioContext;
+let sourceNode;
+
+videoInput.addEventListener("change",()=>{
+  const file=videoInput.files[0];
+  if(!file || !file.type.startsWith("video/")){
+    errorText.textContent="Upload valid video file.";
+    return;
+  }
+  videoFile=file;
+  preview.src=URL.createObjectURL(file);
+});
+
+brightness.addEventListener("input",updateFilter);
+contrast.addEventListener("input",updateFilter);
+
+function updateFilter(){
+  preview.style.filter=`brightness(${brightness.value}) contrast(${contrast.value})`;
+}
+
+processBtn.addEventListener("click",()=>{
+  if(!videoFile){
+    errorText.textContent="Upload video first.";
+    return;
+  }
+
+  statusText.textContent="Processing... Please wait.";
+  processBtn.disabled=true;
+
+  const video=preview;
+  const stream=video.captureStream();
+  const recorder=new MediaRecorder(stream);
+  let chunks=[];
+
+  recorder.ondataavailable=e=>chunks.push(e.data);
+
+  recorder.onstop=()=>{
+    const blob=new Blob(chunks,{type:"video/webm"});
+    const url=URL.createObjectURL(blob);
+    preview.src=url;
+    downloadBtn.href=url;
+    downloadBtn.style.display="block";
+    statusText.textContent="Processing complete!";
+    processBtn.disabled=false;
+  };
+
+  // Audio Effects
+  if(voiceOption.value!=="mute"){
+    audioContext=new AudioContext();
+    sourceNode=audioContext.createMediaElementSource(video);
+    const gainNode=audioContext.createGain();
+
+    if(voiceOption.value==="chipmunk"){
+      video.playbackRate=1.5;
+    }
+    else if(voiceOption.value==="deep"){
+      video.playbackRate=0.7;
+    }
+    else{
+      video.playbackRate=1;
+    }
+
+    sourceNode.connect(gainNode).connect(audioContext.destination);
+  }
+  else{
+    video.muted=true;
+  }
+
+  recorder.start();
+  video.play();
+
+  setTimeout(()=>{
+    recorder.stop();
+    video.pause();
+  },5000); // Records 5 sec preview
+});
+</script>
+
+</body>
+</html>
