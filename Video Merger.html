@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Merger · side‑by‑side preview</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  :root {
+    --bg: #0c111d;
+    --card: #1e2a3a;
+    --surface: #2c3a50;
+    --accent: #3b82f6;
+    --success: #22c55e;
+    --text: #edf2f7;
+    --radius: 20px;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+  }
+  .container {
+    max-width: 1300px;
+    width: 100%;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2rem 2rem 2rem 2rem;
+    box-shadow: 0 25px 45px -8px #00000080;
+    border: 1px solid #38546e;
+  }
+  h1 {
+    font-size: 2.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    background: linear-gradient(to right, #bae6fd, #c7d2fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.2rem;
+  }
+  .sub {
+    color: #9ab8d9;
+    margin-bottom: 2rem;
+    border-bottom: 1px dashed #335577;
+    padding-bottom: 1rem;
+  }
+  .split-panel {
+    display: flex;
+    gap: 1.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .watch-col {
+    flex: 2 1 400px;
+    background: #17212b;
+    border-radius: 24px;
+    padding: 1.4rem 1rem 1rem 1rem;
+    border: 1px solid #3c5a7c;
+  }
+  .merge-col {
+    flex: 1 1 280px;
+    background: #17212b;
+    border-radius: 24px;
+    padding: 1.4rem 1.2rem;
+    border: 1px solid #3c5a7c;
+    display: flex;
+    flex-direction: column;
+  }
+  .watch-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .thumb-list {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0.5rem 0.2rem;
+    background: #101a24;
+    border-radius: 18px;
+    justify-content: center;
+  }
+  .thumb-item {
+    background: #253241;
+    border-radius: 16px;
+    padding: 0.4rem;
+    width: 110px;
+    border: 2px solid transparent;
+    transition: 0.1s;
+    cursor: pointer;
+    text-align: center;
+  }
+  .thumb-item.selected {
+    border-color: var(--accent);
+    background: #2d405b;
+    box-shadow: 0 0 0 2px #3b82f660;
+  }
+  .thumb-video {
+    width: 100%;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+    pointer-events: none;
+    background: black;
+  }
+  .thumb-name {
+    font-size: 0.65rem;
+    color: #bdd3ec;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .main-preview {
+    background: #0f1a24;
+    border-radius: 24px;
+    padding: 1rem;
+  }
+  .preview-video {
+    width: 100%;
+    max-height: 260px;
+    border-radius: 20px;
+    background: #000;
+    outline: 1px solid #3f6792;
+  }
+  .file-input-area {
+    background: var(--surface);
+    border-radius: 40px;
+    padding: 0.2rem 1rem 0.2rem 1.5rem;
+    border: 1px solid #52749c;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.6rem;
+  }
+  .file-input-area input {
+    flex: 1;
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 0.8rem 0;
+    font-size: 0.95rem;
+  }
+  .file-input-area input::file-selector-button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    margin-right: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .btn-merge {
+    background: var(--accent);
+    border: none;
+    padding: 1rem;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 1.2rem 0 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid #7fb0ff;
+  }
+  .btn-merge:hover:not(:disabled) {
+    background: #256ef0;
+    transform: scale(1.01);
+  }
+  .btn-merge:disabled {
+    opacity: 0.5;
+  }
+  .merge-option {
+    background: #1f3142;
+    border-radius: 20px;
+    padding: 0.9rem;
+    margin: 0.5rem 0;
+  }
+  .status-box {
+    background: #0f2637;
+    border-radius: 30px;
+    padding: 0.6rem 1.2rem;
+    border-left: 5px solid var(--accent);
+    margin: 0.8rem 0;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #error {
+    color: #fca5a5;
+    font-size: 0.9rem;
+    min-height: 1.8rem;
+  }
+  .download-area {
+    text-align: center;
+    margin-top: 0.6rem;
+  }
+  .download-btn {
+    background: var(--success);
+    color: #0a3410;
+    font-weight: 700;
+    padding: 0.8rem 2.2rem;
+    border-radius: 40px;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #86efac;
+    transition: 0.2s;
+  }
+  .badge {
+    background: #2b4d77;
+    border-radius: 50px;
+    padding: 0.2rem 1rem;
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎬 WATCH & MERGE</h1>
+  <div class="sub">select clips · preview side by side · then merge</div>
+
+  <!-- file input always visible -->
+  <div class="file-input-area">
+    <input type="file" id="fileInput" accept="video/*" multiple>
+    <span class="badge" id="fileCount">0 files</span>
+  </div>
+
+  <!-- main split: watch panel (left) and merge panel (right) -->
+  <div class="split-panel">
+    <!-- LEFT: watch & preview column -->
+    <div class="watch-col">
+      <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.8rem;">
+        <span style="background: #3b82f6; padding: 0.2rem 1rem; border-radius: 30px;">👀 WATCH</span>
+        <span id="selectedHint" style="color: #a5d0ff;">click any thumbnail</span>
+      </div>
+      <!-- video thumbnails scroll -->
+      <div class="thumb-list" id="thumbContainer"></div>
+      <!-- main preview player -->
+      <div class="main-preview">
+        <video id="previewPlayer" class="preview-video" controls></video>
+        <p style="text-align: center; margin-top: 0.3rem; font-size: 0.9rem;" id="previewFilename"></p>
+      </div>
+    </div>
+
+    <!-- RIGHT: merge controls & output -->
+    <div class="merge-col">
+      <h3 style="display: flex; gap: 0.5rem;">⚙️ MERGE SETTINGS</h3>
+      <div class="merge-option">
+        <label style="display: block; margin-bottom: 0.4rem;">🖼️ Resolution</label>
+        <select id="resSelect" style="width:100%; background:#1d2b3c; color:white; padding:0.5rem; border-radius:30px; border:1px solid #456f9c;">
+          <option value="keep">original</option>
+          <option value="1280x720">HD 720p</option>
+          <option value="1920x1080">Full HD</option>
+          <option value="854x480">SD 480p</option>
+        </select>
+      </div>
+      <div class="merge-option">
+        <label style="display: block; margin-bottom: 0.4rem;">⚡ FPS (target)</label>
+        <select id="fpsSelect" style="width:100%; background:#1d2b3c; color:white; padding:0.5rem; border-radius:30px;">
+          <option value="0">source</option>
+          <option value="24">24</option>
+          <option value="30" selected>30</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+      <button class="btn-merge" id="mergeBtn">🔀 MERGE ALL VIDEOS</button>
+
+      <div class="status-box">
+        <span>📌</span>
+        <span id="status">ready</span>
+      </div>
+      <div id="error"></div>
+
+      <div class="download-area" id="downloadBlock" style="display: none;">
+        <a id="downloadLink" class="download-btn" download="merged-video.webm">⬇️ Download merged</a>
+      </div>
+      <p style="font-size:0.7rem; color:#7b98b3; margin-top: 1rem;">*preview uses original files. merged video uses canvas.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // DOM elements
+  const fileInput = document.getElementById('fileInput');
+  const thumbContainer = document.getElementById('thumbContainer');
+  const previewPlayer = document.getElementById('previewPlayer');
+  const previewFilename = document.getElementById('previewFilename');
+  const fileCountSpan = document.getElementById('fileCount');
+  const mergeBtn = document.getElementById('mergeBtn');
+  const statusSpan = document.getElementById('status');
+  const errorDiv = document.getElementById('error');
+  const downloadBlock = document.getElementById('downloadBlock');
+  const downloadLink = document.getElementById('downloadLink');
+  const resSelect = document.getElementById('resSelect');
+  const fpsSelect = document.getElementById('fpsSelect');
+  const selectedHint = document.getElementById('selectedHint');
+
+  // data
+  let files = [];
+  let selectedIndex = 0;          // for preview
+
+  // update thumbnails + preview
+  function renderThumbnails() {
+    if (!files.length) {
+      thumbContainer.innerHTML = '<div style="color: #6f8fbb; padding: 1rem;">no videos loaded</div>';
+      previewPlayer.src = '';
+      previewFilename.innerText = '';
+      fileCountSpan.innerText = '0 files';
+      return;
+    }
+    fileCountSpan.innerText = files.length + ' file' + (files.length > 1 ? 's' : '');
+    let html = '';
+    files.forEach((f, idx) => {
+      const url = URL.createObjectURL(f);
+      const isSelected = (idx === selectedIndex);
+      html += `<div class="thumb-item ${isSelected ? 'selected' : ''}" data-index="${idx}">`;
+      html += `<video class="thumb-video" src="${url}" muted></video>`;
+      // short name
+      let name = f.name.length > 12 ? f.name.substring(0,10)+'…' : f.name;
+      html += `<div class="thumb-name" title="${f.name}">${name}</div>`;
+      html += `</div>`;
+    });
+    thumbContainer.innerHTML = html;
+
+    // attach click listeners
+    document.querySelectorAll('.thumb-item').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const idx = el.dataset.index;
+        if (idx !== undefined) {
+          selectedIndex = parseInt(idx);
+          renderThumbnails();     // re-render to show selected border
+          loadSelectedPreview();
+        }
+      });
+    });
+
+    // load preview for selected index
+    loadSelectedPreview();
+  }
+
+  function loadSelectedPreview() {
+    if (!files.length || selectedIndex >= files.length) {
+      previewPlayer.src = '';
+      previewFilename.innerText = '';
+      return;
+    }
+    const f = files[selectedIndex];
+    const url = URL.createObjectURL(f);
+    previewPlayer.src = url;
+    previewFilename.innerText = '🔍 preview: ' + f.name;
+    // optional hint
+    selectedHint.innerText = `showing: ${f.name.substring(0,20)}`;
+  }
+
+  // when files selected
+  fileInput.addEventListener('change', () => {
+    files = [...fileInput.files].filter(f => f.type.startsWith('video/'));
+    if (files.length === 0) {
+      errorDiv.textContent = 'No valid video files.';
+    } else {
+      errorDiv.textContent = '';
+    }
+    selectedIndex = (files.length > 0) ? 0 : -1;
+    renderThumbnails();
+    downloadBlock.style.display = 'none';  // hide old download
+    statusSpan.innerText = files.length ? `${files.length} clips loaded.` : 'select videos';
+  });
+
+  // ---- merger (canvas based with watch options) ----
+  function getTargetSize(originalW, originalH) {
+    const mode = resSelect.value;
+    if (mode === 'keep') return { w: originalW, h: originalH };
+    const [w, h] = mode.split('x').map(Number);
+    return { w, h };
+  }
+
+  function playVideoOnCanvas(file, canvas, ctx, targetFps, maxDur = 0) {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.muted = true;
+      video.src = URL.createObjectURL(file);
+      video.crossOrigin = 'anonymous';
+      video.preload = 'auto';
+
+      video.onloadedmetadata = () => {
+        const ow = video.videoWidth;
+        const oh = video.videoHeight;
+        if (!ow || !oh) return reject('invalid dimensions');
+
+        const { w, h } = getTargetSize(ow, oh);
+        canvas.width = w;
+        canvas.height = h;
+
+        // duration limit per clip? not used but we could: 0 = full
+        const playUntil = (maxDur > 0 && maxDur < video.duration) ? maxDur : video.duration;
+
+        let rafId;
+        let lastDraw = performance.now();
+        const fps = targetFps > 0 ? targetFps : 0;  // 0 = no throttle
+        const frameTime = fps ? 1000 / fps : 0;
+
+        video.play().catch(reject);
+
+        function drawFrame(now) {
+          if (video.paused || video.ended || video.currentTime >= playUntil) {
+            video.pause();
+            cancelAnimationFrame(rafId);
+            URL.revokeObjectURL(video.src);
+            resolve();
+            return;
+          }
+
+          if (!fps) {
+            // draw every frame
+            ctx.drawImage(video, 0, 0, w, h);
+            rafId = requestAnimationFrame(drawFrame);
+          } else {
+            if (now - lastDraw >= frameTime) {
+              ctx.drawImage(video, 0, 0, w, h);
+              lastDraw = now;
+            }
+            rafId = requestAnimationFrame(drawFrame);
+          }
+        }
+        rafId = requestAnimationFrame(drawFrame);
+      };
+      video.onerror = () => reject('video error');
+    });
+  }
+
+  mergeBtn.addEventListener('click', async () => {
+    errorDiv.textContent = '';
+    if (files.length < 1) {
+      errorDiv.textContent = '⚠️ Load at least one video.';
+      return;
+    }
+
+    // optional max duration (0 = no limit)
+    const targetFps = parseInt(fpsSelect.value, 10) || 0;
+    // disable button
+    mergeBtn.disabled = true;
+    statusSpan.innerText = `⏳ merging ${files.length} clip(s) ... (canvas)`;
+    downloadBlock.style.display = 'none';
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 640;  // temp
+    canvas.height = 480;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const stream = canvas.captureStream(targetFps || 30);
+    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+    let chunks = [];
+
+    recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      downloadLink.href = url;
+      downloadBlock.style.display = 'block';
+      statusSpan.innerText = '✅ merge finished!';
+      mergeBtn.disabled = false;
+    };
+    recorder.onerror = () => {
+      errorDiv.textContent = 'recorder error';
+      mergeBtn.disabled = false;
+    };
+
+    recorder.start();
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        statusSpan.innerText = `⏳ clip ${i+1}/${files.length}: ${files[i].name.substring(0,15)}...`;
+        await playVideoOnCanvas(files[i], canvas, ctx, targetFps, 0); // 0 = no max duration per clip
+        // tiny gap to ensure canvas update
+        await new Promise(r => setTimeout(r, 20));
+      }
+    } catch (err) {
+      errorDiv.textContent = 'error: ' + err;
+      recorder.stop();
+      mergeBtn.disabled = false;
+      return;
+    }
+
+    recorder.stop();
+  });
+
+  // initial
+  renderThumbnails();
+})();
+</script>
+</body>
+</html>
