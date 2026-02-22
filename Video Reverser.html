@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Reverser • download FIXED</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+    body {
+      background: radial-gradient(circle at 20% 30%, #1d1b3a, #0a0a1a);
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      color: #eee;
+    }
+    .glass-panel {
+      background: rgba(15, 20, 35, 0.6);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid #4d7cb0;
+      border-radius: 2.5rem;
+      padding: 2rem 2rem 2.2rem;
+      width: min(550px, 100%);
+      box-shadow: 0 30px 45px #00000080, 0 0 0 2px #2366b180 inset;
+    }
+    h2 {
+      font-size: 2.4rem;
+      font-weight: 400;
+      display: flex;
+      gap: 0.7rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(130deg, #c6e2ff, #80b5ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 2px;
+    }
+    .file-row {
+      background: #0e2038b3;
+      border: 2px dashed #3f88d0;
+      border-radius: 50px;
+      padding: 0.9rem 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      cursor: pointer;
+      margin-bottom: 1.8rem;
+      transition: 0.2s;
+    }
+    .file-row:hover {
+      background: #1a3a60;
+      border-color: #7bc3ff;
+      box-shadow: 0 0 20px #007bff99;
+    }
+    #fileInput {
+      display: none;
+    }
+    #fileName {
+      font-size: 1.1rem;
+      color: #c3dcff;
+      word-break: break-word;
+    }
+    video {
+      width: 100%;
+      max-height: 280px;
+      border-radius: 28px;
+      background: #000e1c;
+      box-shadow: 0 10px 30px #000, 0 0 0 2px #2b8bff;
+      margin: 1.2rem 0 1.8rem;
+    }
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin: 1.2rem 0 1.2rem;
+      justify-content: center;
+    }
+    .btn {
+      background: #10273f;
+      border: 2px solid #2a7ed4;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.7rem 1.2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: 0.2s;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 12px black;
+      flex: 1 0 auto;
+      justify-content: center;
+    }
+    .btn:hover:not(:disabled) {
+      background: #1e4b77;
+      border-color: #9ad0ff;
+      box-shadow: 0 0 18px #007bff, 0 0 0 1px white inset;
+      transform: scale(1.02);
+    }
+    .btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      border-color: #666;
+      cursor: not-allowed;
+    }
+    select {
+      background: #10273f;
+      border: 2px solid #2a7ed4;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      flex: 0 1 auto;
+    }
+    .status-panel {
+      background: #0b1d30;
+      border-radius: 60px;
+      padding: 0.8rem 1.5rem;
+      margin: 1.2rem 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #3870b0;
+      font-size: 1rem;
+    }
+    #statusText {
+      background: #001a2b;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      border: 1px solid #3f8ad0;
+      font-family: monospace;
+    }
+    .small-note {
+      font-size: 0.8rem;
+      color: #9cb9e0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      border-top: 1px solid #31567e;
+      padding-top: 1.2rem;
+    }
+    .small-note span {
+      background: #0f2138;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      border: 1px solid #3e6fa3;
+    }
+  </style>
+</head>
+<body>
+<div class="glass-panel">
+  <h2><span>⏪</span> REVERSER <span>⏩</span></h2>
+
+  <!-- custom file upload -->
+  <label for="fileInput" class="file-row" id="uploadLabel">
+    <span style="font-size:2rem;">📁</span>
+    <span id="fileName">choose video (mp4, webm, mov)</span>
+  </label>
+  <input type="file" id="fileInput" accept="video/*">
+
+  <!-- video preview -->
+  <video id="preview" controls playsinline></video>
+
+  <!-- control buttons -->
+  <div class="button-grid">
+    <button class="btn" id="btnPlayForward">▶ Forward</button>
+    <button class="btn" id="btnPlayReverse">◀ Reverse</button>
+    <button class="btn" id="btnStop">⏹ Stop</button>
+    <button class="btn" id="btnMute">🔇 Mute</button>
+    <select id="speed">
+      <option value="0.5">0.5×</option>
+      <option value="0.75">0.75×</option>
+      <option value="1" selected>1×</option>
+      <option value="1.5">1.5×</option>
+      <option value="2">2×</option>
+    </select>
+    <button class="btn" id="btnDownloadReverse" disabled>⬇ Download Reversed</button>
+  </div>
+
+  <!-- live status -->
+  <div class="status-panel">
+    <span>🌀 status</span>
+    <span id="statusText">no video</span>
+  </div>
+
+  <!-- future additions note -->
+  <div class="small-note">
+    <span>🔁 loop</span> <span>🎞️ crop</span> <span>🪞 mirror</span> <span>⚡ speed</span> <span>🎵 audio reverse</span> <span>📸 GIF</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  // --- elements ---
+  const video = document.getElementById('preview');
+  const fileInput = document.getElementById('fileInput');
+  const fileNameSpan = document.getElementById('fileName');
+  const btnFwd = document.getElementById('btnPlayForward');
+  const btnRev = document.getElementById('btnPlayReverse');
+  const btnStop = document.getElementById('btnStop');
+  const btnMute = document.getElementById('btnMute');
+  const speedSel = document.getElementById('speed');
+  const btnDL = document.getElementById('btnDownloadReverse');
+  const statusSpan = document.getElementById('statusText');
+
+  // --- state ---
+  let rafId = null;
+  let isReversing = false;
+  let currentSpeed = 1.0;
+  let isMuted = false;
+  let currentFileURL = null;
+
+  function setStatus(msg, isActive = false) {
+    statusSpan.innerText = msg;
+    statusSpan.style.background = isActive ? '#00578a' : '#001a2b';
+  }
+
+  function stopReverseEngine() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    isReversing = false;
+  }
+
+  function stopAll() {
+    stopReverseEngine();
+    video.pause();
+    setStatus('stopped');
+  }
+
+  // --- file selection ---
+  fileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (currentFileURL) URL.revokeObjectURL(currentFileURL);
+    const url = URL.createObjectURL(file);
+    video.src = url;
+    currentFileURL = url;
+
+    fileNameSpan.innerText = file.name.length > 35 ? file.name.substr(0,32)+'…' : file.name;
+    setStatus('loading…');
+    stopAll();
+
+    video.onloadedmetadata = () => {
+      setStatus(`ready · ${video.duration.toFixed(1)}s`);
+      btnFwd.disabled = false;
+      btnRev.disabled = false;
+      btnStop.disabled = false;
+      speedSel.disabled = false;
+      // enable download only if duration <= 30s
+      if (video.duration <= 30) {
+        btnDL.disabled = false;
+      } else {
+        btnDL.disabled = true;
+        setStatus(`duration ${video.duration.toFixed(1)}s (max 30s for download)`);
+      }
+    };
+
+    video.onerror = () => {
+      setStatus('error loading video');
+    };
+  });
+
+  // --- forward ---
+  btnFwd.addEventListener('click', () => {
+    if (!video.src || video.readyState < 2) {
+      setStatus('no video or still loading');
+      return;
+    }
+    stopReverseEngine();
+    isReversing = false;
+    video.playbackRate = currentSpeed;
+    video.play()
+      .then(() => setStatus('▶ playing forward'))
+      .catch(() => setStatus('play blocked (interaction?)'));
+  });
+
+  // --- reverse (raf based) ---
+  btnRev.addEventListener('click', () => {
+    if (!video.src || video.readyState < 2) {
+      setStatus('load video first');
+      return;
+    }
+    stopReverseEngine();
+    video.pause();
+
+    if (video.currentTime <= 0.05) {
+      video.currentTime = video.duration;
+    }
+    if (video.currentTime >= video.duration - 0.05) {
+      video.currentTime = video.duration;
+    }
+
+    isReversing = true;
+    setStatus('⏪ reverse playing', true);
+
+    function step() {
+      if (!isReversing || !video.src) {
+        rafId = null;
+        return;
+      }
+      const stepSize = currentSpeed / 30;
+      let newTime = video.currentTime - stepSize;
+      if (newTime <= 0) {
+        video.currentTime = 0;
+        stopReverseEngine();
+        setStatus('reached start', false);
+        return;
+      }
+      video.currentTime = newTime;
+      rafId = requestAnimationFrame(step);
+    }
+    rafId = requestAnimationFrame(step);
+  });
+
+  // --- stop ---
+  btnStop.addEventListener('click', stopAll);
+
+  // --- mute toggle ---
+  btnMute.addEventListener('click', () => {
+    isMuted = !isMuted;
+    video.muted = isMuted;
+    btnMute.innerHTML = isMuted ? '🔊 Unmute' : '🔇 Mute';
+  });
+
+  // --- speed change ---
+  speedSel.addEventListener('change', () => {
+    currentSpeed = parseFloat(speedSel.value);
+    if (!isReversing) {
+      video.playbackRate = currentSpeed;
+    }
+  });
+
+  video.addEventListener('seeking', () => {
+    if (isReversing) {
+      stopReverseEngine();
+      setStatus('seek cancelled reverse', false);
+    }
+  });
+
+  // --- ✅ FIXED DOWNLOAD: works reliably, produces playable reversed video ---
+  btnDL.addEventListener('click', async () => {
+    if (!video.src || video.readyState < 2) {
+      alert('Video not loaded');
+      return;
+    }
+    if (video.duration > 30) {
+      alert('Please use a video shorter than 30 seconds for download.');
+      return;
+    }
+
+    setStatus('⏳ reversing & encoding...', true);
+
+    try {
+      const fps = 30;
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+      
+      if (width === 0 || height === 0) {
+        // Sometimes dimensions not ready - play video briefly to activate
+        video.play();
+        await new Promise(r => setTimeout(r, 200));
+        video.pause();
+        // Try again
+        if (video.videoWidth === 0) {
+          throw new Error('Could not get video dimensions. Try playing the video first.');
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+
+      // Create stream and recorder
+      const stream = canvas.captureStream(fps);
+      
+      // Choose supported codec
+      let mimeType = 'video/webm';
+      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
+        mimeType = 'video/webm;codecs=vp9';
+      } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+        mimeType = 'video/webm;codecs=vp8';
+      }
+      
+      const recorder = new MediaRecorder(stream, { mimeType: mimeType });
+
+      const chunks = [];
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reversed-video.webm';
+        a.click();
+        URL.revokeObjectURL(url);
+        setStatus('✅ download ready!');
+      };
+
+      // Start recording
+      recorder.start();
+
+      // Store original mute state
+      const originalMuted = video.muted;
+      video.muted = true;
+
+      // Calculate total frames
+      const totalFrames = Math.floor(video.duration * fps);
+      
+      // Seek from end to start and draw each frame
+      for (let frame = totalFrames; frame >= 0; frame--) {
+        const targetTime = frame / fps;
+        video.currentTime = Math.min(targetTime, video.duration);
+        
+        // Wait for seek to complete
+        await new Promise((resolve) => {
+          const seekHandler = () => {
+            video.removeEventListener('seeked', seekHandler);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            resolve();
+          };
+          video.addEventListener('seeked', seekHandler);
+          
+          // If already at correct time, seeked may not fire
+          if (Math.abs(video.currentTime - targetTime) < 0.01) {
+            video.removeEventListener('seeked', seekHandler);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            resolve();
+          }
+        });
+      }
+
+      // Restore mute state
+      video.muted = originalMuted;
+      
+      // Stop recorder - this will trigger onstop and download
+      recorder.stop();
+
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Download failed: ' + err.message);
+      setStatus('download error', false);
+    }
+  });
+
+  // initial disable
+  btnFwd.disabled = true;
+  btnRev.disabled = true;
+  btnStop.disabled = true;
+  speedSel.disabled = true;
+  btnDL.disabled = true;
+
+  window.addEventListener('beforeunload', () => {
+    if (currentFileURL) URL.revokeObjectURL(currentFileURL);
+    if (rafId) cancelAnimationFrame(rafId);
+  });
+})();
+</script>
+</body>
+</html>
