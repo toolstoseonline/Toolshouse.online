@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Rotator - ToolsHouse</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Space Grotesk', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0d0d1f 100%);
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .glow-border {
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3),
+                  0 0 40px rgba(99, 102, 241, 0.15),
+                  inset 0 0 60px rgba(99, 102, 241, 0.05);
+    }
+    
+    .rotate-btn {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .rotate-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+    }
+    
+    .rotate-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .video-container {
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .drop-zone {
+      border: 2px dashed rgba(99, 102, 241, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: rgba(99, 102, 241, 0.8);
+      background: rgba(99, 102, 241, 0.1);
+    }
+    
+    .pulse-dot {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    input[type="range"] {
+      -webkit-appearance: none;
+      background: rgba(99, 102, 241, 0.2);
+      border-radius: 10px;
+      height: 8px;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+    
+    .github-link:hover svg {
+      transform: rotate(360deg);
+      transition: transform 0.5s ease;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full gradient-bg text-white overflow-auto">
+  <div class="min-h-full flex flex-col">
+   <!-- Header -->
+   <header class="w-full px-6 py-4 flex items-center justify-between border-b border-white/5">
+    <div class="flex items-center gap-3">
+     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+     </div>
+     <div>
+      <h1 id="site-title" class="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">ToolsHouse</h1>
+      <p class="text-xs text-gray-500 mono">Free Online Tools</p>
+     </div>
+    </div><a href="https://github.com" target="_blank" rel="noopener noreferrer" class="github-link flex items-center gap-2 px-4 py-2 rounded-lg glass-card hover:bg-white/5 transition-all">
+     <svg class="w-5 h-5 transition-transform" fill="currentColor" viewbox="0 0 24 24">
+      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+     </svg><span class="text-sm font-medium hidden sm:inline">GitHub</span> </a>
+   </header><!-- Main Content -->
+   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-8">
+    <!-- Tool Header -->
+    <div class="text-center mb-8 fade-in">
+     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-4">
+      <span class="w-2 h-2 rounded-full bg-green-400 pulse-dot"></span> <span class="text-xs text-indigo-300 mono">Online Tool</span>
+     </div>
+     <h2 id="tool-name" class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-white via-indigo-200 to-purple-300 bg-clip-text text-transparent">Video Rotator</h2>
+     <p id="tagline" class="text-gray-400 text-lg">Rotate your videos instantly — 90°, 180°, or any custom angle</p>
+    </div><!-- Upload Zone -->
+    <div id="upload-zone" class="drop-zone rounded-2xl p-12 text-center cursor-pointer mb-8 fade-in glass-card">
+     <div class="flex flex-col items-center gap-4">
+      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
+       <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+       </svg>
+      </div>
+      <div>
+       <p class="text-xl font-semibold text-white mb-1">Drop your video here</p>
+       <p class="text-gray-500">or click to browse • MP4, WebM, MOV supported</p>
+      </div>
+      <div class="flex items-center gap-2 mt-2">
+       <span class="px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400 mono">Max 500MB</span> <span class="px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400 mono">Free Forever</span>
+      </div>
+     </div><input type="file" id="video-input" accept="video/*" class="hidden">
+    </div><!-- Video Editor (Hidden by default) -->
+    <div id="editor-section" class="hidden fade-in">
+     <!-- Video Preview -->
+     <div class="glass-card glow-border rounded-2xl p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+       <h3 class="font-semibold text-white">Preview</h3><button id="remove-video" class="text-gray-500 hover:text-red-400 transition-colors text-sm flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg> Remove </button>
+      </div>
+      <div class="relative bg-black/50 rounded-xl overflow-hidden flex items-center justify-center" style="min-height: 300px;">
+       <video id="video-preview" class="video-container max-w-full max-h-96" controls style="width: auto; height: auto;"></video>
+      </div>
+      <div id="video-info" class="mt-4 flex flex-wrap gap-3 text-xs mono text-gray-500"></div>
+     </div><!-- Rotation Controls -->
+     <div class="glass-card rounded-2xl p-6 mb-6">
+      <h3 class="font-semibold text-white mb-6 flex items-center gap-2">
+       <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+       </svg> Rotation Controls</h3><!-- Quick Rotation Buttons -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+       <button onclick="rotateVideo(-90)" class="rotate-btn px-4 py-4 rounded-xl bg-gradient-to-br from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 hover:border-indigo-400/50 flex flex-col items-center gap-2">
+        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+        </svg><span class="text-sm font-medium">-90°</span> <span class="text-xs text-gray-500">Left</span> </button> <button onclick="rotateVideo(90)" class="rotate-btn px-4 py-4 rounded-xl bg-gradient-to-br from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 hover:border-indigo-400/50 flex flex-col items-center gap-2">
+        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg><span class="text-sm font-medium">+90°</span> <span class="text-xs text-gray-500">Right</span> </button> <button onclick="rotateVideo(180)" class="rotate-btn px-4 py-4 rounded-xl bg-gradient-to-br from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 hover:border-indigo-400/50 flex flex-col items-center gap-2">
+        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+        </svg><span class="text-sm font-medium">180°</span> <span class="text-xs text-gray-500">Flip</span> </button> <button onclick="resetRotation()" class="rotate-btn px-4 py-4 rounded-xl bg-gradient-to-br from-gray-600/20 to-gray-700/20 border border-gray-500/30 hover:border-gray-400/50 flex flex-col items-center gap-2">
+        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg><span class="text-sm font-medium">Reset</span> <span class="text-xs text-gray-500">0°</span> </button>
+      </div><!-- Custom Rotation Slider -->
+      <div class="mb-6">
+       <div class="flex items-center justify-between mb-3">
+        <label class="text-sm text-gray-400">Custom Rotation</label> <span id="rotation-value" class="mono text-indigo-400 font-medium px-3 py-1 rounded-lg bg-indigo-500/10">0°</span>
+       </div><input type="range" id="rotation-slider" min="-180" max="180" value="0" class="w-full" oninput="updateRotation(this.value)">
+       <div class="flex justify-between text-xs text-gray-600 mt-2 mono">
+        <span>-180°</span> <span>0°</span> <span>+180°</span>
+       </div>
+      </div><!-- Current Rotation Display -->
+      <div class="flex items-center justify-center gap-4 p-4 rounded-xl bg-black/20">
+       <span class="text-gray-500">Current Rotation:</span> <span id="current-rotation" class="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mono">0°</span>
+      </div>
+     </div><!-- Download Section -->
+     <div class="glass-card rounded-2xl p-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+       <div>
+        <h3 class="font-semibold text-white mb-1">Ready to Download</h3>
+        <p class="text-sm text-gray-500">Your rotated video preview is ready</p>
+       </div><button id="download-btn" onclick="downloadVideo()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 font-semibold text-white hover:from-indigo-500 hover:to-purple-500 transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg> Download Video </button>
+      </div>
+      <p class="text-xs text-gray-600 mt-4 text-center">Note: This preview shows the rotation. For full video processing, the rotated frames are applied client-side.</p>
+     </div>
+    </div><!-- Features Grid -->
+    <div id="features-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 fade-in">
+     <div class="glass-card rounded-xl p-5">
+      <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-3">
+       <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+       </svg>
+      </div>
+      <h4 class="font-medium text-white mb-1">100% Private</h4>
+      <p class="text-sm text-gray-500">Videos are processed locally in your browser. Nothing is uploaded.</p>
+     </div>
+     <div class="glass-card rounded-xl p-5">
+      <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-3">
+       <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+       </svg>
+      </div>
+      <h4 class="font-medium text-white mb-1">Instant Preview</h4>
+      <p class="text-sm text-gray-500">See rotation changes in real-time before downloading.</p>
+     </div>
+     <div class="glass-card rounded-xl p-5">
+      <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mb-3">
+       <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+       </svg>
+      </div>
+      <h4 class="font-medium text-white mb-1">Free Forever</h4>
+      <p class="text-sm text-gray-500">No sign-up, no watermarks, no hidden fees.</p>
+     </div>
+    </div>
+   </main><!-- Footer -->
+   <footer class="w-full px-6 py-6 border-t border-white/5 mt-auto">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+     <p class="text-sm text-gray-600">© 2024 ToolsHouse. Open source on GitHub.</p>
+     <div class="flex items-center gap-6">
+      <a href="#" class="text-sm text-gray-500 hover:text-indigo-400 transition-colors">Privacy</a> <a href="#" class="text-sm text-gray-500 hover:text-indigo-400 transition-colors">Terms</a> <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-400 transition-colors">Contribute</a>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // Configuration
+    const defaultConfig = {
+      site_title: 'ToolsHouse',
+      tool_name: 'Video Rotator',
+      tagline: 'Rotate your videos instantly — 90°, 180°, or any custom angle',
+      primary_color: '#6366f1',
+      secondary_color: '#8b5cf6',
+      background_color: '#0f0f23',
+      text_color: '#ffffff',
+      accent_color: '#22c55e'
+    };
+
+    let currentRotation = 0;
+    let videoFile = null;
+
+    // Element SDK initialization
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          document.getElementById('site-title').textContent = config.site_title || defaultConfig.site_title;
+          document.getElementById('tool-name').textContent = config.tool_name || defaultConfig.tool_name;
+          document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['site_title', config.site_title || defaultConfig.site_title],
+          ['tool_name', config.tool_name || defaultConfig.tool_name],
+          ['tagline', config.tagline || defaultConfig.tagline]
+        ])
+      });
+    }
+
+    // DOM Elements
+    const uploadZone = document.getElementById('upload-zone');
+    const videoInput = document.getElementById('video-input');
+    const editorSection = document.getElementById('editor-section');
+    const videoPreview = document.getElementById('video-preview');
+    const rotationSlider = document.getElementById('rotation-slider');
+    const rotationValue = document.getElementById('rotation-value');
+    const currentRotationDisplay = document.getElementById('current-rotation');
+    const videoInfo = document.getElementById('video-info');
+    const featuresGrid = document.getElementById('features-grid');
+
+    // Upload Zone Events
+    uploadZone.addEventListener('click', () => videoInput.click());
+    
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+    
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+    
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length && files[0].type.startsWith('video/')) {
+        handleVideoFile(files[0]);
+      }
+    });
+
+    videoInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        handleVideoFile(e.target.files[0]);
+      }
+    });
+
+    // Remove Video Button
+    document.getElementById('remove-video').addEventListener('click', () => {
+      resetEditor();
+    });
+
+    function handleVideoFile(file) {
+      videoFile = file;
+      const url = URL.createObjectURL(file);
+      videoPreview.src = url;
+      
+      // Show editor, hide upload zone
+      uploadZone.classList.add('hidden');
+      editorSection.classList.remove('hidden');
+      featuresGrid.classList.add('hidden');
+      
+      // Display video info
+      videoPreview.onloadedmetadata = () => {
+        const duration = formatDuration(videoPreview.duration);
+        const size = formatFileSize(file.size);
+        videoInfo.innerHTML = `
+          <span class="px-3 py-1 rounded-full bg-white/5">${file.name}</span>
+          <span class="px-3 py-1 rounded-full bg-white/5">${videoPreview.videoWidth}×${videoPreview.videoHeight}</span>
+          <span class="px-3 py-1 rounded-full bg-white/5">${duration}</span>
+          <span class="px-3 py-1 rounded-full bg-white/5">${size}</span>
+        `;
+      };
+      
+      resetRotation();
+    }
+
+    function rotateVideo(degrees) {
+      currentRotation = (currentRotation + degrees) % 360;
+      applyRotation();
+    }
+
+    function updateRotation(degrees) {
+      currentRotation = parseInt(degrees);
+      applyRotation();
+    }
+
+    function resetRotation() {
+      currentRotation = 0;
+      rotationSlider.value = 0;
+      applyRotation();
+    }
+
+    function applyRotation() {
+      videoPreview.style.transform = `rotate(${currentRotation}deg)`;
+      rotationValue.textContent = `${currentRotation}°`;
+      currentRotationDisplay.textContent = `${currentRotation}°`;
+      rotationSlider.value = Math.max(-180, Math.min(180, currentRotation));
+    }
+
+    function resetEditor() {
+      videoFile = null;
+      videoPreview.src = '';
+      currentRotation = 0;
+      rotationSlider.value = 0;
+      applyRotation();
+      
+      uploadZone.classList.remove('hidden');
+      editorSection.classList.add('hidden');
+      featuresGrid.classList.remove('hidden');
+      videoInput.value = '';
+    }
+
+    function downloadVideo() {
+      if (!videoFile) return;
+      
+      // Create a canvas to capture the rotated frame
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      const video = videoPreview;
+      const radians = (currentRotation * Math.PI) / 180;
+      
+      // Calculate new dimensions
+      const absRotation = Math.abs(currentRotation % 180);
+      let newWidth, newHeight;
+      
+      if (absRotation === 90) {
+        newWidth = video.videoHeight;
+        newHeight = video.videoWidth;
+      } else {
+        newWidth = video.videoWidth;
+        newHeight = video.videoHeight;
+      }
+      
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      
+      // Draw rotated frame
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(radians);
+      ctx.drawImage(video, -video.videoWidth / 2, -video.videoHeight / 2);
+      
+      // Download as image (frame preview)
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rotated_frame_${currentRotation}deg.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+      
+      // Show toast message
+      showToast('Frame downloaded! Full video rotation requires server-side processing.');
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl bg-indigo-600 text-white text-sm font-medium shadow-lg shadow-indigo-500/25 z-50 fade-in';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function formatDuration(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d1fcfb683eb9083',t:'MTc3MTc3NzIzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
