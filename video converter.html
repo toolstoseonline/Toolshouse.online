@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Video Converter · MP4, AVI, MKV & more</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0b1f33 0%, #1b3a5c 100%);
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    /* main container for content */
+    .wrapper {
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    header {
+      padding: 2rem 1rem 1rem;
+    }
+
+    header h1 {
+      font-size: clamp(2.2rem, 8vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(to right, #fff, #d0e1ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 8px 16px rgba(0, 10, 30, 0.5);
+    }
+
+    header p {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      font-weight: 300;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(4px);
+      display: inline-block;
+      padding: 0.5rem 2rem;
+      border-radius: 60px;
+      margin-top: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* converter card */
+    .converter-box {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      color: #0a1f2f;
+      max-width: 560px;
+      margin: 2.5rem auto;
+      padding: 2.4rem 2.2rem;
+      border-radius: 36px;
+      box-shadow: 0 30px 45px -15px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.4);
+      transition: transform 0.2s ease;
+    }
+
+    .converter-box:hover {
+      transform: scale(1.01);
+    }
+
+    .converter-box h2 {
+      margin-bottom: 1.6rem;
+      font-size: 2rem;
+      font-weight: 600;
+      background: linear-gradient(145deg, #1e3c72, #2a5298);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.01em;
+    }
+
+    .file-area {
+      background: #f0f5fe;
+      border-radius: 40px;
+      padding: 0.5rem 1rem 0.5rem 1.8rem;
+      margin: 1.5rem 0 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px dashed #2a5298;
+      transition: background 0.2s;
+    }
+
+    .file-area:hover {
+      background: #e3ecfd;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      color: #1e3c72;
+      font-weight: 500;
+      padding: 0.5rem 0;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: #2a5298;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      margin-right: 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 4px 8px rgba(0,40,80,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: #1e3c72;
+    }
+
+    select {
+      padding: 1rem 1.5rem;
+      width: 100%;
+      margin: 0.8rem 0 1.8rem;
+      border-radius: 60px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafd;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #0f2b42;
+      cursor: pointer;
+      appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%232a5298" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 1.5rem center;
+      background-size: 1.3rem;
+    }
+
+    select:hover {
+      border-color: #2a5298;
+    }
+
+    .convert-btn {
+      background: linear-gradient(105deg, #1d3d6b, #2f5ca8);
+      border: none;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 600;
+      padding: 1rem 2rem;
+      width: 100%;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 15px 25px -8px #0f2b42;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(255,255,255,0.25);
+      margin-bottom: 1.5rem;
+    }
+
+    .convert-btn:hover {
+      background: linear-gradient(105deg, #143258, #234886);
+      box-shadow: 0 20px 30px -6px #091c30;
+      transform: scale(1.02);
+    }
+
+    .convert-btn:active {
+      transform: scale(0.98);
+    }
+
+    .formats {
+      margin-top: 1.2rem;
+      font-size: 1rem;
+      background: #eef3fc;
+      padding: 1rem 0.5rem;
+      border-radius: 60px;
+      color: #1d3a5c;
+      font-weight: 600;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem 1.2rem;
+    }
+
+    .formats span {
+      background: white;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .formats span::before {
+      content: "✔";
+      color: #2a5298;
+      font-weight: 700;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      padding: 1.4rem 1rem;
+      background: rgba(0, 10, 25, 0.4);
+      backdrop-filter: blur(5px);
+      font-size: 1rem;
+      border-radius: 60px;
+      width: 100%;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* small status */
+    .demo-note {
+      color: rgba(255,255,255,0.7);
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      background: rgba(0,0,0,0.2);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      display: inline-block;
+    }
+
+    /* responsive */
+    @media (max-width: 500px) {
+      .converter-box {
+        padding: 1.8rem 1.2rem;
+      }
+      .formats {
+        font-size: 0.85rem;
+        gap: 0.4rem;
+      }
+      .file-area {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <h1>🎬 Pro Video Converter</h1>
+    <p>MP4 · AVI · MKV · MOV & more — instant conversion</p>
+  </header>
+
+  <div class="converter-box">
+    <h2>⚡ select & convert</h2>
+
+    <!-- file input with modern style -->
+    <div class="file-area">
+      <input type="file" id="videoFile" accept="video/*" aria-label="Choose video file">
+    </div>
+
+    <!-- output format dropdown with extended options -->
+    <select id="formatSelect">
+      <option value="" disabled selected>— choose output format —</option>
+      <option value="MP4">📹 MP4 (H.264 / most compatible)</option>
+      <option value="AVI">🎞️ AVI (Windows legacy)</option>
+      <option value="MKV">📦 MKV (Matroska)</option>
+      <option value="MOV">🍎 MOV (Apple QuickTime)</option>
+      <option value="WMV">🪟 WMV (Windows Media)</option>
+      <option value="FLV">⚡ FLV (Flash video)</option>
+      <option value="WebM">🌐 WebM (HTML5)</option>
+      <option value="GIF">🖼️ GIF (animated)</option>
+      <option value="MP3">🎵 MP3 (audio only)</option>
+    </select>
+
+    <!-- main call to action (demo uses simulated conversion) -->
+    <button class="convert-btn" id="convertBtn">
+      <span>🔄</span> Convert Now
+    </button>
+
+    <!-- supported formats (quick badges) -->
+    <div class="formats">
+      <span>MP4</span> <span>AVI</span> <span>MKV</span> <span>MOV</span> <span>WMV</span> <span>FLV</span> <span>WebM</span> <span>GIF</span> <span>MP3</span>
+    </div>
+
+    <!-- additional info (file size hint) -->
+    <p style="margin-top:1.2rem; font-size:0.9rem; color:#3b5f8a;">⬆️ Max file size: 2GB (frontend demo)</p>
+  </div>
+
+  <!-- demo note / backend simulation -->
+  <div class="demo-note">
+    ⚙️ demo — conversion simulation (FFmpeg backend required for real transcoding)
+  </div>
+
+  <footer>
+    © 2026 Pro Video Converter · <strong>fast & secure</strong> · client-side preview
+  </footer>
+</div>
+
+<script>
+  (function() {
+    // UI elements
+    const fileInput = document.getElementById('videoFile');
+    const formatSelect = document.getElementById('formatSelect');
+    const convertBtn = document.getElementById('convertBtn');
+    const formatsBox = document.querySelector('.formats'); // not used for logic
+
+    // Helper: nice file size formatting
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // Show fancy alert but with rich info (simulated conversion)
+    function simulateConversion(file, targetFormat) {
+      if (!file) {
+        alert('📁 Please select a video file first.');
+        return;
+      }
+
+      // Validate if it's a video (basic)
+      if (!file.type.startsWith('video/') && !file.name.match(/\.(mp4|avi|mkv|mov|wmv|flv|webm|m4v|mpg|mpeg)$/i)) {
+        // Still allow, but warn (could be unsupported extension)
+        if (!confirm('⚠️ File does not look like a standard video. Try anyway?')) return;
+      }
+
+      const fileSize = file.size;
+      const sizeLimit = 2 * 1024 * 1024 * 1024; // 2GB for demo
+      if (fileSize > sizeLimit) {
+        alert('❌ File exceeds 2GB demo limit. Please choose a smaller file.');
+        return;
+      }
+
+      // get selected format text
+      const selectedOption = formatSelect.options[formatSelect.selectedIndex];
+      let formatText = targetFormat || 'unknown';
+      if (selectedOption && !selectedOption.disabled) {
+        formatText = selectedOption.value || 'MP4';
+      } else {
+        // fallback if nothing selected
+        if (!formatSelect.value) {
+          alert('📋 Please select an output format from the list.');
+          return;
+        }
+      }
+
+      // simulate a "conversion in progress" message with details
+      const fileName = file.name.length > 30 ? file.name.substr(0, 27) + '…' : file.name;
+      const fileSizeStr = formatFileSize(fileSize);
+
+      // fancy modern alert simulation (using alert because it's cross-platform)
+      alert(
+        `🎬 Pro Video Converter [SIMULATION]\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `File:       ${fileName}\n` +
+        `Size:       ${fileSizeStr}\n` +
+        `Convert to: ${formatText}\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `✅ Demo: conversion request received.\n` +
+        `⚙️ Real transcoding requires FFmpeg / backend.\n` +
+        `📀 Output would be ready in a few seconds.`
+      );
+
+      // bonus: you could log, but that's it.
+      console.log(`Simulated conversion: ${file.name} (${fileSizeStr}) → ${formatText}`);
+    }
+
+    // Event listener for convert button
+    convertBtn.addEventListener('click', function() {
+      const file = fileInput.files[0];
+      const format = formatSelect.value;
+
+      if (!format) {
+        alert('🎯 Please pick an output format from the dropdown.');
+        return;
+      }
+
+      simulateConversion(file, format);
+    });
+
+    // optional double click / touch for extra feedback (just for fun)
+    convertBtn.addEventListener('dblclick', function() {
+      if (fileInput.files[0]) {
+        alert('⚡ Turbo mode: conversion queued (still simulated)');
+      }
+    });
+
+    // allow "enter" on select? not necessary. But we can add a small effect for empty file.
+    // Also update placeholder if needed.
+
+    // dynamic note: if user selects GIF or MP3, show note (optional, but nice)
+    formatSelect.addEventListener('change', function() {
+      const val = formatSelect.value;
+      if (val === 'GIF') {
+        // we can do nothing, but could update something; keep unobtrusive
+      }
+    });
+
+    // drag & drop is out of scope but we can add a little shine on file select
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (file.size > 2 * 1024 * 1024 * 1024) {
+          alert('⚠️ File exceeds 2GB – conversion might fail in demo.');
+        }
+      }
+    });
+
+    // One more: pre-select format if user double-clicks formats badge? not needed.
+    // Ensure that the default select placeholder works
+    if (!formatSelect.value) {
+      // nothing preselected
+    }
+  })();
+</script>
+
+<!-- small note: accessibility and no external dependencies -->
+</body>
+</html>
