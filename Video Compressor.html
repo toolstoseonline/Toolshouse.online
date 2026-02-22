@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🎬 3D Video Compressor • Instant File Size Reduce</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 30% 40%, #0e1a2f, #030614);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            perspective: 1200px;
+        }
+
+        /* 3D Floating Card */
+        .card-3d {
+            max-width: 1200px;
+            width: 100%;
+            transform-style: preserve-3d;
+            animation: float3d 8s infinite alternate ease-in-out;
+        }
+
+        @keyframes float3d {
+            0% { transform: translateY(0px) rotateX(1deg) rotateY(-1deg); }
+            100% { transform: translateY(-25px) rotateX(4deg) rotateY(3deg); }
+        }
+
+        .glass-panel {
+            background: rgba(12, 20, 35, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(80, 140, 255, 0.25);
+            border-radius: 70px;
+            padding: 40px 35px;
+            box-shadow: 
+                0 50px 90px -20px #000000,
+                0 0 0 1px rgba(100, 160, 255, 0.2) inset,
+                0 30px 50px -20px #1e3f7a;
+            transform: rotateX(2deg) rotateY(2deg) translateZ(20px);
+            transition: 0.5s;
+        }
+
+        .glass-panel:hover {
+            transform: rotateX(1deg) rotateY(4deg) translateZ(35px);
+            border-color: #5f8effaa;
+            box-shadow: 0 70px 100px -15px #010515, 0 0 0 3px #4273d1 inset;
+        }
+
+        h1 {
+            font-size: clamp(36px, 8vw, 60px);
+            font-weight: 800;
+            background: linear-gradient(145deg, #ffffff, #b5d2ff, #d9ecff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 15px 30px #002a70;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            background: #1c3b70;
+            border-radius: 60px;
+            padding: 10px 28px;
+            font-size: 20px;
+            color: #d4e4ff;
+            border: 1px solid #6080dd;
+            box-shadow: 0 8px 12px #00000060;
+        }
+
+        .sub {
+            color: #b8d0ff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            border-left: 6px solid #4675e0;
+            padding-left: 25px;
+            background: linear-gradient(90deg, #141f3a, transparent);
+        }
+
+        /* Upload Zone */
+        .upload-area {
+            background: rgba(0, 10, 25, 0.6);
+            border: 4px dashed #2f5296;
+            border-radius: 60px;
+            padding: 55px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 35px;
+            box-shadow: 0 30px 40px -10px black;
+        }
+
+        .upload-area:hover {
+            border-color: #7096ff;
+            background: #0d1b36cc;
+            transform: scale(1.01);
+            box-shadow: 0 40px 50px -10px #00173d;
+        }
+
+        .upload-icon {
+            font-size: 90px;
+            filter: drop-shadow(0 15px 12px black);
+        }
+
+        /* Info Cards */
+        .info-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin: 35px 0;
+        }
+
+        .info-card {
+            flex: 1 1 240px;
+            background: #020b1ed9;
+            border-radius: 40px;
+            padding: 22px 15px;
+            border: 2px solid #2c4f94;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 20px 30px -10px black;
+            text-align: center;
+        }
+
+        .info-label {
+            color: #9bb6fc;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            word-break: break-word;
+        }
+
+        /* Slider */
+        .slider-box {
+            background: #0d1830f2;
+            border-radius: 70px;
+            padding: 30px 35px;
+            margin: 30px 0;
+            border: 2px solid #345bb0;
+            box-shadow: 0 20px 30px -5px #000000b3;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        input[type=range] {
+            flex: 5;
+            height: 14px;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #1b3e82, #77adff);
+            -webkit-appearance: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 6px 15px black, 0 0 0 6px #2a51a3;
+            cursor: pointer;
+        }
+
+        .level-tag {
+            background: #1f3d7a;
+            padding: 15px 40px;
+            border-radius: 70px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #e3f0ff;
+            border: 2px solid #7ba2ff;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .compress-btn {
+            background: linear-gradient(145deg, #2a4a8c, #133056);
+            border: none;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            padding: 28px 20px;
+            border-radius: 80px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.1s;
+            box-shadow: 0 35px 40px -10px black, 0 7px 0 #0e244a inset, 0 -5px 0 #5580dd inset;
+            margin: 25px 0 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .compress-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 20px 25px -5px black, 0 3px 0 #0a1b3a inset;
+        }
+
+        .compress-btn:disabled {
+            opacity: 0.4;
+            transform: none;
+            box-shadow: 0 15px 20px black;
+            pointer-events: none;
+        }
+
+        .download-btn {
+            background: linear-gradient(145deg, #1b6e41, #0d4025);
+            border: none;
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            padding: 24px 30px;
+            border-radius: 80px;
+            width: 100%;
+            box-shadow: 0 30px 35px -10px black, 0 6px 0 #279e5a inset;
+            cursor: pointer;
+            transition: 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .download-btn:active {
+            transform: translateY(7px);
+            box-shadow: 0 18px 20px -8px black;
+        }
+
+        /* Video Preview */
+        .preview-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin: 35px 0 15px;
+        }
+
+        .video-block {
+            flex: 1 1 300px;
+            background: #030b1d;
+            border-radius: 50px;
+            padding: 25px 20px;
+            border: 3px solid #2f5bb5;
+            box-shadow: 0 30px 30px -10px black;
+        }
+
+        .video-block h3 {
+            color: #c5d9ff;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 40px;
+            background: black;
+            border: 3px solid #4069c0;
+            max-height: 220px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            color: #8ba4e6;
+            font-size: 18px;
+            flex-wrap: wrap;
+        }
+
+        .loader {
+            width: 36px;
+            height: 36px;
+            border: 5px solid #ffffff80;
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="card-3d">
+        <div class="glass-panel">
+            <h1>
+                🎥 VIDEO COMPRESSOR 
+                <span class="badge">3D • PRO</span>
+            </h1>
+            <div class="sub">
+                ⚡ 100% browser me compress • Server nahi • Private • Fast
+            </div>
+
+            <!-- Upload Box -->
+            <div id="uploadBox" class="upload-area">
+                <div class="upload-icon">🎬</div>
+                <h2 style="color:#eef5ff; font-size:34px; margin:10px 0;">Drop video here</h2>
+                <p style="color:#aac2ff; font-size:22px;">MP4, MOV, WebM • 1GB tak</p>
+                <input type="file" id="fileElem" accept="video/*" hidden>
+            </div>
+
+            <!-- Info Cards (initially hidden) -->
+            <div id="infoContainer" class="info-grid" style="display: none;">
+                <div class="info-card">
+                    <div class="info-label">ORIGINAL</div>
+                    <div class="info-value" id="origFileName">video.mp4</div>
+                    <div id="origFileSize" style="color:#b2ccff; font-size:22px;">0 MB</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">COMPRESSED</div>
+                    <div class="info-value" id="compFileName">compressed</div>
+                    <div id="compFileSize" style="color:#b2ccff; font-size:22px;">—</div>
+                </div>
+            </div>
+
+            <!-- Compression Level Slider -->
+            <div class="slider-box">
+                <div class="slider-header">
+                    <span>🔧 COMPRESSION STRENGTH</span>
+                    <span id="strengthName">Balanced</span>
+                </div>
+                <div class="slider-wrapper">
+                    <input type="range" id="compressLevel" min="1" max="100" value="55">
+                    <span class="level-tag" id="levelValue">55%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color:#6b8ed6; margin-top: 20px; font-size: 18px;">
+                    <span>📦 Small size</span>
+                    <span>✨ High quality</span>
+                </div>
+            </div>
+
+            <!-- Compress Button -->
+            <button class="compress-btn" id="compressButton" disabled>
+                <span>⚙️</span> COMPRESS VIDEO <span>⚡</span>
+            </button>
+
+            <!-- Video Preview Section (hidden initially) -->
+            <div id="previewArea" class="preview-section" style="display: none;">
+                <div class="video-block">
+                    <h3>📼 Original</h3>
+                    <video id="originalPreview" controls></video>
+                </div>
+                <div class="video-block">
+                    <h3>✅ Compressed</h3>
+                    <video id="compressedPreview" controls></video>
+                </div>
+            </div>
+
+            <!-- Download Button (hidden) -->
+            <button class="download-btn" id="downloadBtn" style="display: none;">
+                ⬇️ DOWNLOAD COMPRESSED VIDEO
+            </button>
+
+            <!-- Feature List -->
+            <div class="features">
+                <span>📱 Mobile ready</span>
+                <span>📤 WhatsApp/Telegram</span>
+                <span>💾 80% size reduce</span>
+                <span>🚀 Fast loading</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Get all elements
+            const uploadBox = document.getElementById('uploadBox');
+            const fileElem = document.getElementById('fileElem');
+            const infoContainer = document.getElementById('infoContainer');
+            const origFileName = document.getElementById('origFileName');
+            const origFileSize = document.getElementById('origFileSize');
+            const compFileName = document.getElementById('compFileName');
+            const compFileSize = document.getElementById('compFileSize');
+            const compressLevel = document.getElementById('compressLevel');
+            const strengthName = document.getElementById('strengthName');
+            const levelValue = document.getElementById('levelValue');
+            const compressButton = document.getElementById('compressButton');
+            const previewArea = document.getElementById('previewArea');
+            const originalPreview = document.getElementById('originalPreview');
+            const compressedPreview = document.getElementById('compressedPreview');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            // Variables to store file data
+            let selectedFile = null;
+            let compressedBlob = null;
+            let compressedURL = null;
+
+            // Update slider
+            compressLevel.addEventListener('input', function(e) {
+                const val = e.target.value;
+                levelValue.textContent = val + '%';
+                
+                if (val < 30) {
+                    strengthName.textContent = 'Maximum Compress';
+                } else if (val < 60) {
+                    strengthName.textContent = 'Balanced';
+                } else {
+                    strengthName.textContent = 'High Quality';
+                }
+
+                // Update estimated size if file selected
+                if (selectedFile) {
+                    updateEstimate(val);
+                }
+            });
+
+            // Estimate compressed size
+            function updateEstimate(level) {
+                const origMB = selectedFile.size / (1024 * 1024);
+                // Level 1 = 10% size, Level 100 = 70% size
+                const ratio = 0.1 + (level / 100) * 0.6;
+                const estMB = (origMB * ratio).toFixed(2);
+                compFileSize.textContent = estMB + ' MB (est.)';
+            }
+
+            // Handle file selection
+            async function fileSelected(file) {
+                if (!file || !file.type.startsWith('video/')) {
+                    alert('Please select a valid video file');
+                    return;
+                }
+
+                selectedFile = file;
+                
+                // Show info container
+                infoContainer.style.display = 'flex';
+                
+                // Set original file info
+                let shortName = file.name.length > 20 ? file.name.substring(0, 15) + '…' : file.name;
+                origFileName.textContent = shortName;
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                origFileSize.textContent = sizeMB + ' MB';
+                compFileName.textContent = 'compressed_' + (file.name.length > 15 ? file.name.substring(0,8)+'…' : file.name);
+                
+                // Preview original video
+                const url = URL.createObjectURL(file);
+                originalPreview.src = url;
+                
+                // Hide previous compressed video
+                previewArea.style.display = 'none';
+                downloadBtn.style.display = 'none';
+                if (compressedURL) {
+                    URL.revokeObjectURL(compressedURL);
+                    compressedURL = null;
+                }
+                
+                // Update estimate
+                updateEstimate(compressLevel.value);
+                
+                // Enable compress button
+                compressButton.disabled = false;
+            }
+
+            // Event listeners for upload
+            uploadBox.addEventListener('click', () => fileElem.click());
+            
+            uploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadBox.style.borderColor = '#80aaff';
+                uploadBox.style.background = '#122543';
+            });
+            
+            uploadBox.addEventListener('dragleave', () => {
+                uploadBox.style.borderColor = '#2f5296';
+                uploadBox.style.background = 'rgba(0, 10, 25, 0.6)';
+            });
+            
+            uploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadBox.style.borderColor = '#2f5296';
+                const file = e.dataTransfer.files[0];
+                if (file) fileSelected(file);
+            });
+            
+            fileElem.addEventListener('change', (e) => {
+                if (e.target.files[0]) fileSelected(e.target.files[0]);
+            });
+
+            // COMPRESS BUTTON CLICK - Main functionality
+            compressButton.addEventListener('click', async function() {
+                if (!selectedFile) return;
+
+                // Disable button and show loading
+                compressButton.disabled = true;
+                const originalBtnText = compressButton.innerHTML;
+                compressButton.innerHTML = '<span class="loader"></span> COMPRESSING...';
+
+                try {
+                    const level = parseInt(compressLevel.value) / 100;
+                    
+                    // Create video element to process frames
+                    const video = document.createElement('video');
+                    video.preload = 'metadata';
+                    video.src = URL.createObjectURL(selectedFile);
+                    
+                    // Wait for video metadata
+                    await new Promise((resolve) => {
+                        video.onloadedmetadata = () => {
+                            URL.revokeObjectURL(video.src);
+                            resolve();
+                        };
+                    });
+                    
+                    // Set dimensions (max width 1280 to keep size reasonable)
+                    let width = video.videoWidth;
+                    let height = video.videoHeight;
+                    const maxDimension = 1280;
+                    
+                    if (width > maxDimension) {
+                        height = Math.floor(height * (maxDimension / width));
+                        width = maxDimension;
+                    }
+                    
+                    if (height > maxDimension) {
+                        width = Math.floor(width * (maxDimension / height));
+                        height = maxDimension;
+                    }
+                    
+                    // Create canvas for capturing frames
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Set video quality based on level
+                    // Higher level = higher bitrate
+                    const bitrate = Math.floor(500000 + (level * 3500000)); // 500kbps to 4mbps
+                    
+                    // Create stream and recorder
+                    const stream = canvas.captureStream(30); // 30 fps
+                    const recorder = new MediaRecorder(stream, {
+                        mimeType: 'video/webm;codecs=vp8,opus',
+                        videoBitsPerSecond: bitrate
+                    });
+                    
+                    const chunks = [];
+                    
+                    recorder.ondataavailable = (e) => chunks.push(e.data);
+                    recorder.onstop = () => {
+                        // Create blob from chunks
+                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        compressedBlob = blob;
+                        
+                        // Update compressed size
+                        const compMB = (blob.size / (1024 * 1024)).toFixed(2);
+                        compFileSize.textContent = compMB + ' MB';
+                        
+                        // Create URL and show preview
+                        if (compressedURL) URL.revokeObjectURL(compressedURL);
+                        compressedURL = URL.createObjectURL(blob);
+                        compressedPreview.src = compressedURL;
+                        
+                        // Show preview and download button
+                        previewArea.style.display = 'flex';
+                        downloadBtn.style.display = 'block';
+                        
+                        // Re-enable button
+                        compressButton.disabled = false;
+                        compressButton.innerHTML = originalBtnText;
+                    };
+                    
+                    // Start recording
+                    recorder.start();
+                    
+                    // Play video and capture frames
+                    video.currentTime = 0;
+                    video.play();
+                    
+                    const duration = video.duration;
+                    const fps = 30;
+                    const totalFrames = Math.floor(duration * fps);
+                    let frame = 0;
+                    
+                    // Function to capture frames
+                    const captureFrame = () => {
+                        if (frame < totalFrames) {
+                            video.currentTime = frame / fps;
+                            ctx.drawImage(video, 0, 0, width, height);
+                            frame++;
+                            setTimeout(captureFrame, 1000 / fps);
+                        } else {
+                            video.pause();
+                            recorder.stop();
+                        }
+                    };
+                    
+                    captureFrame();
+                    
+                } catch (error) {
+                    console.error('Compression error:', error);
+                    alert('Sorry, compression failed. Try with a smaller video or different format.');
+                    compressButton.disabled = false;
+                    compressButton.innerHTML = '<span>⚙️</span> COMPRESS VIDEO <span>⚡</span>';
+                }
+            });
+
+            // Download button click
+            downloadBtn.addEventListener('click', function() {
+                if (!compressedBlob) return;
+                
+                const link = document.createElement('a');
+                link.href = compressedURL;
+                link.download = selectedFile 
+                    ? `compressed_${selectedFile.name.replace(/\.[^/.]+$/, '')}.webm` 
+                    : 'compressed_video.webm';
+                link.click();
+            });
+
+        })();
+    </script>
+</body>
+</html>
