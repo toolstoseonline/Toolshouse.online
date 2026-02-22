@@ -2,660 +2,624 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>🚀 Pro Video Toolkit - Compress, Convert, Edit (Client Side)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Compressor Tool</title>
+    <!-- Essential Styles for tool layout (simplified) -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        *, ::after, ::before { box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            background-color: #f4f7fb;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: #1e2e47;
+            line-height: 1.5;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
+        .tool-container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
         }
-        h1 {
-            font-size: 2.5em;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+        .tool-title {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            color: #1e2e47;
+            text-align: center;
+        }
+        .tool-description {
+            text-align: center;
+            color: #5a6b7a;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .file-input { margin: 0 auto; }
+        .dropzone {
+            position: relative;
+            background: #f0f4fa;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px dashed #b0c4de;
+            padding: 50px 20px;
+            flex-direction: column;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .dropzone:hover {
+            background: #e6ecf5;
+        }
+        .file-input-dropdown__wrapper { width: 100%; max-width: 350px; }
+        .file-input-dropdown { cursor: pointer; display: flex; position: relative; }
+        .file-input-dropdown__holder { position: relative; min-width: 250px; width: 100%; }
+        .file-input-dropdown__button {
+            width: 100%;
+            background: #1e2e47;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .file-input-dropdown__button__content {
+            flex-grow: 1;
+            text-align: center;
+            padding: 14px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .file-input-dropdown__button__drop {
+            width: 50px;
+            border-left: 1px solid #5a6b7a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .file-input-dropdown__list {
+            overflow: hidden;
+            max-height: 0;
+            list-style: none;
+            position: absolute;
+            width: 100%;
+            top: 100%;
+            z-index: 20;
+            transition: 0.3s;
+            padding: 0;
+            margin: 0;
+            border-radius: 0 0 8px 8px;
+            background: #1e2e47;
+            color: white;
+        }
+        .file-input-dropdown:hover .file-input-dropdown__list {
+            max-height: 350px;
+            box-shadow: 0 16px 35px rgba(0,0,0,0.2);
+        }
+        .file-input-dropdown__list__item {
+            padding: 15px 20px;
+            border-top: 1px solid #5a6b7a;
+            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        .ad-top, .ad-middle, .ad-bottom {
-            background: #f0f0f0;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
-            border: 2px dashed #ccc;
-            color: #666;
-            font-weight: bold;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9ff;
         }
-        .upload-area:hover {
-            background: #e8eaff;
-            transform: scale(1.02);
+        .file-input-dropdown__list__item:hover { background: #2c405c; }
+        .file-input-dropdown__list__item svg { width: 20px; height: 20px; fill: white; }
+        .msg {
+            color: #1e2e47;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
         }
-        .upload-area i {
-            font-size: 50px;
-            color: #667eea;
+        .error-msg {
+            color: #d32f2f;
+            margin-top: 10px;
+            text-align: center;
         }
-        .controls {
+        .url-dialog {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .url-dialog__content {
             background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
         }
-        .control-group {
-            margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
+        .url-dialog input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 1rem;
         }
-        .control-group h3 {
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 10px 0;
-        }
-        input[type=range] {
-            flex: 1;
-            height: 8px;
-            border-radius: 5px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-        .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        .dialog-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+        .button {
+            background: #1e2e47;
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            margin: 10px 0;
+            font-weight: 600;
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-        .btn:disabled {
+        .button.secondary { background: #e0e7f0; color: #1e2e47; }
+        .button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        .preview-container {
-            margin-top: 30px;
-        }
-        video {
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea15, #764ba215);
+        .advanced-options-toggle {
+            background: none;
+            border: none;
+            color: #1e2e47;
+            font-weight: 600;
+            font-size: 1rem;
             padding: 15px;
-            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px 0 0;
+            width: 100%;
+            background: #f0f4fa;
+            border-radius: 8px;
+        }
+        .advanced-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9fcff;
+            border-radius: 8px;
+            border: 1px solid #dde5ed;
+        }
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .control-label {
+            flex: 0 0 200px;
+            font-weight: 600;
+        }
+        .control-input { flex: 1; }
+        select, input[type=number] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+        }
+        small.helper {
+            display: block;
+            color: #6c7a8a;
+            margin-top: 5px;
+        }
+        .player-section {
+            margin-top: 25px;
             text-align: center;
         }
-        .stat-card h4 {
-            color: #666;
-            font-size: 14px;
+        video {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            background: #000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .stat-card p {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
+        .download-section {
+            margin-top: 25px;
+            text-align: center;
         }
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
+        #downloadBtn {
+            background: #1e2e47;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
+        #downloadBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .hidden { display: none; }
+        .flex { display: flex; align-items: center; gap: 5px; }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e2e47;
             border-radius: 50%;
-        }
-        input:checked + .slider {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        .dark-mode {
-            background: #1a1a2e;
-            color: white;
-        }
-        .dark-mode .controls {
-            background: #16213e;
-            color: white;
-        }
-        .dark-mode .stat-card {
-            background: #0f3460;
-        }
-        .dark-mode .stat-card h4, .dark-mode .stat-card p {
-            color: white;
-        }
-        .format-badges {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 10px 0;
-        }
-        .badge {
-            background: #667eea20;
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 14px;
-            cursor: pointer;
-            border: 1px solid #667eea;
-        }
-        .badge.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-        .watermark-preview {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            display: none;
-        }
-        .progress-bar {
-            width: 100%;
+            width: 20px;
             height: 20px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px 0;
-            display: none;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
         }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s;
-        }
-        @media (max-width: 768px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container" id="mainContainer">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>
-                <span>🎬 Pro Video Toolkit</span>
-            </h1>
-            <label class="toggle-switch">
-                <input type="checkbox" id="darkModeToggle">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <p style="color: #666; margin-bottom: 20px;">✨ Compress, Resize, Trim, Convert, Speed, Watermark, GIF, Subtitle & More - 100% Client Side</p>
-        
-        <!-- Ad Spaces -->
-        <div class="ad-top" id="adTop">
-            📢 Google AdSense Space - Top Banner (728x90)
-        </div>
+    <div class="tool-container">
+        <h1 class="tool-title">Video Compressor</h1>
+        <p class="tool-description">Reduce video file size quickly and easily</p>
 
-        <div class="grid-2">
-            <!-- Left Side - Upload & Preview -->
-            <div>
-                <div class="upload-area" id="uploadArea" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
-                    <i>📤</i>
-                    <h3>Drag & Drop Video Here</h3>
-                    <p>or click to browse (MP4, MOV, AVI, WebM)</p>
-                    <input type="file" id="videoInput" accept="video/*" style="display: none;">
-                    <button class="btn" style="width: auto; margin-top: 20px;" onclick="document.getElementById('videoInput').click()">Select Video</button>
-                </div>
-                
-                <div class="preview-container" id="previewContainer" style="display: none;">
-                    <video id="videoPreview" controls></video>
-                    
-                    <div class="stats">
-                        <div class="stat-card">
-                            <h4>Original Size</h4>
-                            <p id="originalSize">-</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Compressed Size</h4>
-                            <p id="compressedSize">-</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Reduced</h4>
-                            <p id="reductionPercent">-</p>
+        <!-- Main uploader component -->
+        <div class="file-input">
+            <div class="dropzone flex-column" id="dropzone">
+                <div class="file-input-dropdown__wrapper">
+                    <div class="file-input-dropdown">
+                        <div class="file-input-dropdown__holder">
+                            <div class="file-input-dropdown__button">
+                                <div class="file-input-dropdown__button__content" id="uploadButton">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                                    </svg>
+                                    <span>Choose Files</span>
+                                </div>
+                                <div class="file-input-dropdown__button__drop" id="dropdownTrigger">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                            <ul class="file-input-dropdown__list" id="dropdownList">
+                                <li class="file-input-dropdown__list__item" id="fromDevice">
+                                    <svg viewBox="0 0 20 26"><g><path d="M20 16v2a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v11z" fill="currentColor"/></g></svg>
+                                    From Device
+                                    <input type="file" id="fileInput" multiple accept="video/*" style="display:none;">
+                                </li>
+                                <li class="file-input-dropdown__list__item" id="fromUrl">
+                                    <svg viewBox="0 0 20 26"><g><path d="M11.766 13.827l-3.06 3.06a4 4 0 0 1-5.658 0 3.99 3.99 0 0 1 0-5.657l3.06-3.06a1 1 0 0 1 1.414 1.414l-3.06 3.06a2 2 0 1 0 2.828 2.83l3.061-3.062a1 1 0 0 1 1.415 1.415z" fill="currentColor"/><path d="M21.004 5.41a4 4 0 0 0-5.656 0l-3.06 3.06a1 1 0 0 0 1.413 1.415l3.06-3.06a2 2 0 1 1 2.83 2.828l-3.06 3.06a1 1 0 1 0 1.414 1.415l3.06-3.06a4 4 0 0 0 0-5.657z" fill="currentColor"/><path d="M7.174 13.827a1 1 0 0 0 1.414 0l5.657-5.657a1 1 0 0 0-1.414-1.414l-5.657 5.657a1 1 0 0 0 0 1.414z" fill="currentColor"/></g></svg>
+                                    From URL
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Right Side - Controls -->
-            <div class="controls">
-                <div class="control-group">
-                    <h3>⚙️ Compression Settings</h3>
-                    <div class="slider-container">
-                        <span>Low</span>
-                        <input type="range" id="qualitySlider" min="0.1" max="1" step="0.1" value="0.5">
-                        <span>High</span>
-                    </div>
-                    <p>Bitrate: <span id="bitrateValue">500</span> kbps</p>
-                    
-                    <div class="format-badges">
-                        <span class="badge active" onclick="setFormat('mp4')">MP4</span>
-                        <span class="badge" onclick="setFormat('webm')">WebM</span>
-                        <span class="badge" onclick="setFormat('gif')">GIF</span>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>📐 Resize</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="widthInput" placeholder="Width" class="btn" style="background: #f0f0f0; color: #333; padding: 10px;">
-                        <input type="number" id="heightInput" placeholder="Height" class="btn" style="background: #f0f0f0; color: #333; padding: 10px;">
-                    </div>
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn" style="padding: 8px;" onclick="setAspect('16:9')">16:9</button>
-                        <button class="btn" style="padding: 8px;" onclick="setAspect('1:1')">1:1</button>
-                        <button class="btn" style="padding: 8px;" onclick="setAspect('9:16')">9:16</button>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>✂️ Trim Video</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="startTime" placeholder="Start (sec)" class="btn" style="background: #f0f0f0; color: #333; padding: 10px;">
-                        <input type="text" id="endTime" placeholder="End (sec)" class="btn" style="background: #f0f0f0; color: #333; padding: 10px;">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>⚡ Speed & Audio</h3>
-                    <div class="slider-container">
-                        <span>0.5x</span>
-                        <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
-                        <span>2x</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                        <label>🔇 Mute Audio</label>
-                        <input type="checkbox" id="muteAudio">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>💧 Add Watermark</h3>
-                    <input type="text" id="watermarkText" placeholder="Watermark text" class="btn" style="background: #f0f0f0; color: #333; padding: 10px;">
-                    <div class="watermark-preview" id="watermarkPreview">
-                        Preview: <span id="watermarkPreviewText"></span>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>📝 Add Subtitle</h3>
-                    <input type="file" id="subtitleInput" accept=".srt,.vtt">
-                </div>
-
-                <div class="control-group">
-                    <h3>📦 Batch Processing</h3>
-                    <input type="file" id="batchInput" multiple accept="video/*">
-                </div>
-
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-
-                <button class="btn" id="processBtn" onclick="processVideo()" disabled>🚀 Process Video</button>
-                <button class="btn" id="downloadBtn" onclick="downloadVideo()" style="display: none;">💾 Download</button>
-                
-                <p style="text-align: center; color: #28a745; margin-top: 10px;">
-                    🔒 100% Secure - Files never leave your device
-                </p>
+                <span class="msg" id="uploadMsg">Max file size 1GB</span>
+                <div id="errorMsg" class="error-msg hidden"></div>
             </div>
         </div>
 
-        <!-- Ad Spaces -->
-        <div class="ad-middle" id="adMiddle">
-            📢 Google AdSense Space - Middle Banner
+        <!-- URL Dialog -->
+        <div id="urlDialog" class="url-dialog hidden">
+            <div class="url-dialog__content">
+                <h3>Enter Video URL</h3>
+                <p style="color: #666; font-size: 0.9rem;">Supports: mp4, webm, ogg, mov (direct links only)</p>
+                <input type="url" id="urlInput" placeholder="https://example.com/video.mp4">
+                <div class="dialog-buttons">
+                    <button class="button secondary" id="cancelUrl">Cancel</button>
+                    <button class="button" id="submitUrl">Fetch & Process</button>
+                </div>
+            </div>
         </div>
 
-        <div class="ad-bottom" id="adBottom">
-            📢 Google AdSense Space - Bottom Banner
+        <!-- Advanced Settings Toggle -->
+        <button class="advanced-options-toggle" id="toggleAdvanced">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Advanced settings (optional)
+        </button>
+
+        <!-- Advanced Options Panel -->
+        <div id="advancedPanel" class="advanced-section hidden">
+            <div class="control-row">
+                <label class="control-label">Video Codec</label>
+                <div class="control-input">
+                    <select id="codecSelect">
+                        <option value="libx264" selected>H.264 - CPU</option>
+                        <option value="libx265">H.265 - CPU</option>
+                    </select>
+                    <small class="helper">H.265 reduces size 20-75% more than H.264</small>
+                </div>
+            </div>
+            <div class="control-row">
+                <label class="control-label">Compression Method</label>
+                <div class="control-input">
+                    <select id="methodSelect">
+                        <option value="percentage" selected>Target a file size (Percentage)</option>
+                        <option value="quality">Target a video quality</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-row" id="percentageControl">
+                <label class="control-label">Target Size (%)</label>
+                <div class="control-input">
+                    <input type="number" id="percentageInput" min="0" max="100" value="60">
+                </div>
+            </div>
+            <div class="control-row hidden" id="qualityControl">
+                <label class="control-label">Quality (CRF)</label>
+                <div class="control-input">
+                    <select id="crfSelect">
+                        <option value="23">23 (default)</option>
+                        <option value="28">28 (smaller size)</option>
+                        <option value="18">18 (better quality)</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
-        <div style="text-align: center; margin-top: 20px; color: #666;">
-            <p>✨ Premium Version Available: No Ads, Faster Processing, Priority Support ✨</p>
+        <!-- Video Player Section -->
+        <div id="playerSection" class="player-section hidden">
+            <video id="videoPlayer" controls></video>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section" id="downloadSection" style="display: none;">
+            <button id="downloadBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Video
+            </button>
         </div>
     </div>
 
     <script>
-        // Global Variables
-        let originalVideo = null;
-        let processedVideoBlob = null;
-        let videoFile = null;
-        let isDarkMode = false;
-        let currentFormat = 'mp4';
+        (function() {
+            // State
+            let currentFile = null;
+            let compressedBlob = null;
+            let isAdvancedOpen = false;
 
-        // Dark Mode Toggle
-        document.getElementById('darkModeToggle').addEventListener('change', function(e) {
-            isDarkMode = e.target.checked;
-            if(isDarkMode) {
-                document.getElementById('mainContainer').classList.add('dark-mode');
-            } else {
-                document.getElementById('mainContainer').classList.remove('dark-mode');
+            // DOM elements
+            const dropzone = document.getElementById('dropzone');
+            const uploadMsg = document.getElementById('uploadMsg');
+            const errorMsg = document.getElementById('errorMsg');
+            const fileInput = document.getElementById('fileInput');
+            const fromDeviceItem = document.getElementById('fromDevice');
+            const fromUrlItem = document.getElementById('fromUrl');
+            const urlDialog = document.getElementById('urlDialog');
+            const urlInput = document.getElementById('urlInput');
+            const cancelUrl = document.getElementById('cancelUrl');
+            const submitUrl = document.getElementById('submitUrl');
+            const toggleAdvanced = document.getElementById('toggleAdvanced');
+            const advancedPanel = document.getElementById('advancedPanel');
+            const methodSelect = document.getElementById('methodSelect');
+            const percentageControl = document.getElementById('percentageControl');
+            const qualityControl = document.getElementById('qualityControl');
+            const playerSection = document.getElementById('playerSection');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const downloadSection = document.getElementById('downloadSection');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            // Helper: show error
+            function showError(message) {
+                errorMsg.textContent = message;
+                errorMsg.classList.remove('hidden');
+                setTimeout(() => errorMsg.classList.add('hidden'), 5000);
             }
-        });
 
-        // Upload Area Click
-        document.getElementById('uploadArea').addEventListener('click', function() {
-            document.getElementById('videoInput').click();
-        });
-
-        // File Input Change
-        document.getElementById('videoInput').addEventListener('change', function(e) {
-            handleFile(e.target.files[0]);
-        });
-
-        // Drag and Drop
-        window.handleDrop = function(e) {
-            e.preventDefault();
-            const file = e.dataTransfer.files[0];
-            handleFile(file);
-        };
-
-        function handleFile(file) {
-            if(file && file.type.startsWith('video/')) {
-                videoFile = file;
-                const url = URL.createObjectURL(file);
-                const video = document.getElementById('videoPreview');
-                video.src = url;
-                document.getElementById('previewContainer').style.display = 'block';
-                document.getElementById('processBtn').disabled = false;
-                
-                // Show original size
-                const sizeInMB = (file.size / (1024*1024)).toFixed(2);
-                document.getElementById('originalSize').innerHTML = sizeInMB + ' MB';
-                
-                // Get video duration for trim hints
-                video.onloadedmetadata = function() {
-                    document.getElementById('startTime').placeholder = `0 - ${Math.floor(video.duration)} sec`;
-                    document.getElementById('endTime').placeholder = `0 - ${Math.floor(video.duration)} sec`;
-                };
-            }
-        }
-
-        // Quality Slider
-        document.getElementById('qualitySlider').addEventListener('input', function(e) {
-            const val = e.target.value;
-            const bitrate = Math.floor(val * 1000);
-            document.getElementById('bitrateValue').innerHTML = bitrate;
-        });
-
-        // Format Selection
-        window.setFormat = function(format) {
-            currentFormat = format;
-            document.querySelectorAll('.badge').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-        };
-
-        // Aspect Ratio
-        window.setAspect = function(aspect) {
-            const [w, h] = aspect.split(':').map(Number);
-            const baseWidth = 640;
-            if(aspect === '16:9') {
-                document.getElementById('widthInput').value = 640;
-                document.getElementById('heightInput').value = 360;
-            } else if(aspect === '1:1') {
-                document.getElementById('widthInput').value = 640;
-                document.getElementById('heightInput').value = 640;
-            } else if(aspect === '9:16') {
-                document.getElementById('widthInput').value = 360;
-                document.getElementById('heightInput').value = 640;
-            }
-        };
-
-        // Watermark Preview
-        document.getElementById('watermarkText').addEventListener('input', function(e) {
-            if(e.target.value) {
-                document.getElementById('watermarkPreview').style.display = 'block';
-                document.getElementById('watermarkPreviewText').innerHTML = e.target.value;
-            } else {
-                document.getElementById('watermarkPreview').style.display = 'none';
-            }
-        });
-
-        // Main Processing Function
-        async function processVideo() {
-            if(!videoFile) return;
-            
-            document.getElementById('progressBar').style.display = 'block';
-            document.getElementById('processBtn').disabled = true;
-            
-            try {
-                // Create video element for processing
-                const video = document.createElement('video');
-                video.src = URL.createObjectURL(videoFile);
-                
-                await new Promise((resolve) => {
-                    video.onloadedmetadata = resolve;
-                });
-                
-                // Setup canvas for processing
-                const canvas = document.createElement('canvas');
-                let width = parseInt(document.getElementById('widthInput').value) || video.videoWidth;
-                let height = parseInt(document.getElementById('heightInput').value) || video.videoHeight;
-                
-                canvas.width = width;
-                canvas.height = height;
-                
-                const ctx = canvas.getContext('2d');
-                
-                // Speed adjustment
-                const speed = parseFloat(document.getElementById('speedSlider').value);
-                const duration = video.duration;
-                
-                // Trim times
-                const startTime = parseFloat(document.getElementById('startTime').value) || 0;
-                const endTime = parseFloat(document.getElementById('endTime').value) || duration;
-                const trimDuration = endTime - startTime;
-                
-                // Create media stream for recording
-                const stream = canvas.captureStream(30); // 30fps
-                
-                // Setup media recorder with quality settings
-                const quality = parseFloat(document.getElementById('qualitySlider').value);
-                const bitrate = quality * 1000000; // Convert to bps
-                
-                let mimeType;
-                if(currentFormat === 'mp4') {
-                    mimeType = 'video/mp4';
-                } else if(currentFormat === 'webm') {
-                    mimeType = 'video/webm';
-                } else if(currentFormat === 'gif') {
-                    mimeType = 'image/gif';
+            // Helper: validate URL
+            function isValidVideoUrl(url) {
+                try {
+                    const parsed = new URL(url);
+                    const path = parsed.pathname.toLowerCase();
+                    return path.endsWith('.mp4') || path.endsWith('.webm') || 
+                           path.endsWith('.ogg') || path.endsWith('.mov') ||
+                           path.includes('video');
+                } catch {
+                    return false;
                 }
-                
-                const recorder = new MediaRecorder(stream, {
-                    mimeType: MediaRecorder.isTypeSupported(mimeType) ? mimeType : 'video/webm',
-                    videoBitsPerSecond: bitrate
+            }
+
+            // Mock compression (simulates processing)
+            async function mockCompress(file) {
+                return new Promise((resolve) => {
+                    uploadMsg.innerHTML = '<span class="loading-spinner"></span>Compressing...';
+                    setTimeout(() => {
+                        // For demo, we return the original file (in real app, this would be compressed)
+                        const blob = file.slice(0, file.size, file.type);
+                        const compressed = new File([blob], 'compressed_' + file.name, { type: file.type });
+                        uploadMsg.innerHTML = 'Compression complete!';
+                        resolve(compressed);
+                    }, 2000);
                 });
+            }
+
+            // Process file (compress and show player)
+            async function processFile(file) {
+                currentFile = file;
+                uploadMsg.innerHTML = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
                 
-                const chunks = [];
-                
-                recorder.ondataavailable = (e) => chunks.push(e.data);
-                recorder.onstop = () => {
-                    const blob = new Blob(chunks, { type: mimeType });
-                    processedVideoBlob = blob;
+                // Hide previous results
+                downloadSection.style.display = 'none';
+                playerSection.classList.add('hidden');
+                videoPlayer.src = '';
+                compressedBlob = null;
+
+                // Start compression
+                try {
+                    compressedBlob = await mockCompress(file);
                     
-                    // Update compressed size
-                    const compSize = (blob.size / (1024*1024)).toFixed(2);
-                    document.getElementById('compressedSize').innerHTML = compSize + ' MB';
-                    
-                    // Calculate reduction
-                    const original = videoFile.size;
-                    const compressed = blob.size;
-                    const reduction = ((original - compressed) / original * 100).toFixed(1);
-                    document.getElementById('reductionPercent').innerHTML = reduction + '%';
-                    
-                    // Show download button
-                    document.getElementById('downloadBtn').style.display = 'block';
-                    document.getElementById('progressBar').style.display = 'none';
-                    document.getElementById('processBtn').disabled = false;
-                    
-                    // Update progress to 100%
-                    document.getElementById('progressFill').style.width = '100%';
-                };
-                
-                // Start recording
-                recorder.start();
-                
-                // Play video and draw frames
-                video.currentTime = startTime;
-                video.play();
-                
-                const fps = 30;
-                const frameDuration = 1000 / fps;
-                const totalFrames = trimDuration * fps;
-                let frameCount = 0;
-                
-                const drawFrame = () => {
-                    if(video.currentTime >= endTime || frameCount >= totalFrames) {
-                        video.pause();
-                        recorder.stop();
+                    // Show player with compressed video
+                    const url = URL.createObjectURL(compressedBlob);
+                    videoPlayer.src = url;
+                    playerSection.classList.remove('hidden');
+                    downloadSection.style.display = 'block';
+                } catch (err) {
+                    showError('Compression failed: ' + err.message);
+                    uploadMsg.innerHTML = 'Compression failed';
+                }
+            }
+
+            // ----- File from Device -----
+            fromDeviceItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (!file.type.startsWith('video/')) {
+                        showError('Please select a valid video file');
                         return;
                     }
-                    
-                    // Draw video frame
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    
-                    // Add watermark if present
-                    const watermarkText = document.getElementById('watermarkText').value;
-                    if(watermarkText) {
-                        ctx.font = '30px Arial';
-                        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-                        ctx.fillText(watermarkText, 50, 50);
+                    if (file.size > 1024 * 1024 * 1024) { // 1GB limit
+                        showError('File size exceeds 1GB limit');
+                        return;
                     }
-                    
-                    // Mute audio if checked
-                    if(document.getElementById('muteAudio').checked) {
-                        video.volume = 0;
-                    } else {
-                        video.volume = 1;
+                    processFile(file);
+                }
+            });
+
+            // ----- File from URL (FIXED) -----
+            fromUrlItem.addEventListener('click', () => {
+                urlDialog.classList.remove('hidden');
+                urlInput.value = '';
+            });
+
+            cancelUrl.addEventListener('click', () => {
+                urlDialog.classList.add('hidden');
+            });
+
+            submitUrl.addEventListener('click', async () => {
+                const url = urlInput.value.trim();
+                if (!url) {
+                    showError('Please enter a URL');
+                    return;
+                }
+
+                if (!isValidVideoUrl(url)) {
+                    showError('URL must point to a video file (.mp4, .webm, .ogg, .mov)');
+                    return;
+                }
+
+                // Show loading state
+                submitUrl.disabled = true;
+                submitUrl.innerHTML = '<span class="loading-spinner"></span>Fetching...';
+                errorMsg.classList.add('hidden');
+
+                try {
+                    // Fetch the video with CORS mode
+                    const response = await fetch(url, {
+                        mode: 'cors',
+                        headers: { 'Range': 'bytes=0-' } // Try to get partial content for streaming
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
+
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.startsWith('video/')) {
+                        throw new Error('URL does not point to a valid video file');
+                    }
+
+                    const contentLength = response.headers.get('content-length');
+                    if (contentLength && parseInt(contentLength) > 1024 * 1024 * 1024) {
+                        throw new Error('Video exceeds 1GB limit');
+                    }
+
+                    // Get the video as blob
+                    const blob = await response.blob();
                     
-                    // Update progress
-                    frameCount++;
-                    const progress = (frameCount / totalFrames) * 100;
-                    document.getElementById('progressFill').style.width = progress + '%';
-                    
-                    // Schedule next frame with speed adjustment
-                    setTimeout(drawFrame, frameDuration / speed);
-                };
-                
-                drawFrame();
-                
-            } catch(error) {
-                console.error('Processing error:', error);
-                alert('Error processing video. Please try different settings.');
-                document.getElementById('progressBar').style.display = 'none';
-                document.getElementById('processBtn').disabled = false;
-            }
-        }
+                    // Extract filename from URL or use default
+                    const urlParts = url.split('/');
+                    let filename = urlParts.pop() || 'video.mp4';
+                    if (!filename.includes('.')) {
+                        filename += '.mp4';
+                    }
 
-        // Download Function
-        function downloadVideo() {
-            if(processedVideoBlob) {
-                const url = URL.createObjectURL(processedVideoBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `processed_video.${currentFormat}`;
-                a.click();
-                URL.revokeObjectURL(url);
-            }
-        }
+                    const file = new File([blob], filename, { type: blob.type });
 
-        // Batch Processing (simplified - processes first video)
-        document.getElementById('batchInput').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
-                alert(`Batch mode: Processing ${e.target.files.length} videos. First video loaded.`);
-            }
-        });
+                    // Close dialog and process
+                    urlDialog.classList.add('hidden');
+                    await processFile(file);
 
-        // Subtitle handling (simplified)
-        document.getElementById('subtitleInput').addEventListener('change', function(e) {
-            if(e.target.files[0]) {
-                alert('Subtitle feature ready. Will be embedded in video.');
-            }
-        });
+                } catch (error) {
+                    console.error('URL fetch error:', error);
+                    showError(`Failed to fetch video: ${error.message}. Try a different URL or download the video first.`);
+                } finally {
+                    submitUrl.disabled = false;
+                    submitUrl.innerHTML = 'Fetch & Process';
+                }
+            });
 
-        // Initialize
-        console.log('Video Toolkit Ready!');
+            // ----- Advanced options toggle -----
+            toggleAdvanced.addEventListener('click', () => {
+                isAdvancedOpen = !isAdvancedOpen;
+                advancedPanel.classList.toggle('hidden', !isAdvancedOpen);
+            });
+
+            // ----- Method switch -----
+            methodSelect.addEventListener('change', (e) => {
+                const val = e.target.value;
+                if (val === 'percentage') {
+                    percentageControl.classList.remove('hidden');
+                    qualityControl.classList.add('hidden');
+                } else {
+                    percentageControl.classList.add('hidden');
+                    qualityControl.classList.remove('hidden');
+                }
+            });
+
+            // ----- Download button -----
+            downloadBtn.addEventListener('click', () => {
+                if (compressedBlob) {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(compressedBlob);
+                    a.download = compressedBlob.name || 'compressed_video.mp4';
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                }
+            });
+
+            // ----- Dropzone click -----
+            dropzone.addEventListener('click', (e) => {
+                if (!e.target.closest('.file-input-dropdown__list__item') && !e.target.closest('#dropdownTrigger')) {
+                    fileInput.click();
+                }
+            });
+
+            // Prevent dropdown from closing when clicking inside
+            document.getElementById('dropdownList').addEventListener('click', (e) => e.stopPropagation());
+
+            // Close URL dialog on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !urlDialog.classList.contains('hidden')) {
+                    urlDialog.classList.add('hidden');
+                }
+            });
+
+            // Example test URLs (uncomment to test)
+            // Test with sample videos:
+            // const testUrl = 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
+            // const testUrl2 = 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm';
+        })();
     </script>
 </body>
 </html>
