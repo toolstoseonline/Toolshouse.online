@@ -1,467 +1,419 @@
-<!doctype html>
-<html lang="en" class="h-full">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Converter </title>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <title>aura • video converter</title>
+  <!-- Tailwind + Inter font (light) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'DM Sans', sans-serif; }
-    h1, h2, h3, .font-display { font-family: 'Space Grotesk', sans-serif; }
-    
-    .gradient-bg {
-      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    body {
+      background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 100%);
+      min-height: 100vh;
     }
-    
-    .glow-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* beautiful soft card with depth and subtle border */
+    .card-luxe {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 40px;
+      box-shadow: 0 30px 60px -20px rgba(0,15,40,0.2), 0 6px 12px -6px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.8);
+      transition: all 0.25s ease;
     }
-    
-    .glow-card:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(99, 102, 241, 0.4);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.3);
+    .card-luxe:hover {
+      box-shadow: 0 40px 70px -20px rgba(0,20,60,0.25), 0 8px 18px -8px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.85);
     }
-    
-    .format-pill {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      transition: all 0.3s ease;
+    .upload-area {
+      border: 2px dashed #cbd5e180;
+      background: rgba(255,255,255,0.5);
+      border-radius: 36px;
+      transition: all 0.2s;
+      cursor: pointer;
+      backdrop-filter: blur(2px);
     }
-    
-    .format-pill:hover {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(168, 85, 247, 0.4));
-      transform: scale(1.05);
+    .upload-area:hover {
+      border-color: #94a3b8;
+      background: #ffffffd9;
+      box-shadow: 0 12px 24px -16px #1e293b30;
     }
-    
-    .format-pill.active {
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      border-color: transparent;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.5);
+    .upload-area.drag-over {
+      border-color: #4f46e5;
+      background: #f5f3ff;
+      transform: scale(1.005);
     }
-    
-    .cta-button {
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-      background-size: 200% 200%;
-      animation: gradientShift 3s ease infinite;
-      transition: all 0.3s ease;
+    .pill-beauty {
+      background: #ffffffcc;
+      backdrop-filter: blur(2px);
+      color: #1e293b;
+      padding: 0.6rem 1.5rem;
+      border-radius: 60px;
+      font-weight: 520;
+      font-size: 0.95rem;
+      border: 1px solid #e2e8f0;
+      transition: 0.15s;
+      box-shadow: 0 4px 10px -6px #00000020;
+      cursor: pointer;
     }
-    
-    .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 35px -10px rgba(139, 92, 246, 0.6);
+    .pill-beauty.pill-active {
+      background: #1e293b;
+      color: white;
+      border-color: #1e293b;
+      box-shadow: 0 12px 20px -14px #0f172a;
+      font-weight: 550;
     }
-    
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+    .pill-beauty:not(.pill-active):hover {
+      background: white;
+      border-color: #b9c7da;
+      box-shadow: 0 8px 14px -10px #0f172a40;
     }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(2deg); }
+    .btn-glow {
+      background: #121826;
+      color: white;
+      font-weight: 600;
+      padding: 1rem 2.2rem;
+      border-radius: 60px;
+      transition: 0.18s;
+      box-shadow: 0 18px 30px -14px #0f172a, 0 0 0 1px #2d3a5e inset, 0 0 0 2px rgba(255,255,255,0.1) inset;
+      letter-spacing: 0.2px;
     }
-    
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+    .btn-glow:hover {
+      background: #1e293b;
+      transform: scale(1.02) translateY(-1px);
+      box-shadow: 0 28px 40px -16px #0f172a, 0 0 0 1px #4b5878 inset;
     }
-    
-    .float-animation {
-      animation: float 6s ease-in-out infinite;
+    .btn-glow:disabled {
+      opacity: 0.5;
+      filter: grayscale(0.5);
+      box-shadow: none;
+      transform: none;
+      pointer-events: none;
     }
-    
-    .upload-zone {
-      border: 2px dashed rgba(99, 102, 241, 0.4);
-      background: rgba(99, 102, 241, 0.05);
-      transition: all 0.3s ease;
-    }
-    
-    .upload-zone:hover, .upload-zone.dragover {
-      border-color: #6366f1;
-      background: rgba(99, 102, 241, 0.1);
-    }
-    
     .progress-bar {
-      background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
-      background-size: 200% 100%;
-      animation: progressShine 1.5s linear infinite;
+      background: #e9eef3;
+      border-radius: 100px;
+      height: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px #00000010;
     }
-    
-    @keyframes progressShine {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    .progress-fill {
+      background: linear-gradient(90deg, #334155, #0f172a);
+      border-radius: 100px;
+      width: 0%;
+      height: 100%;
+      transition: width 0.2s ease;
+      box-shadow: 0 0 12px #2563eb80;
     }
-    
-    .feature-icon {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
-      animation: pulse-glow 3s ease-in-out infinite;
+    .stat-badge {
+      background: #ffffffb0;
+      backdrop-filter: blur(3px);
+      border-radius: 60px;
+      padding: 0.3rem 1.2rem;
+      font-size: 0.85rem;
+      border: 1px solid #e9ecf0;
+      color: #334155;
+      font-weight: 500;
     }
-    
-    .stats-number {
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .footer-tag {
+      color: #687385;
     }
-    
-    .nav-blur {
-      background: rgba(15, 15, 26, 0.8);
-      backdrop-filter: blur(20px);
+    .file-chip {
+      background: #f1f5f9e0;
+      backdrop-filter: blur(2px);
+      border-radius: 100px;
+      border: 1px solid #ffffff;
+      padding: 0.65rem 1.4rem;
+      box-shadow: 0 6px 14px -12px black;
     }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* beautiful extra touch — micro interactions */
+    .download-btn {
+      background: #e9eff8;
+      color: #1e293b;
+      border-radius: 80px;
+      padding: 0.9rem 2.2rem;
+      font-weight: 600;
+      border: 1px solid #ffffff;
+      box-shadow: 0 8px 16px -16px #0f172a;
+      transition: 0.15s;
     }
-    
-    .animate-in {
-      animation: fadeInUp 0.6s ease-out forwards;
+    .download-btn:hover {
+      background: #dfe9f5;
+      border-color: #a3b8d0;
+      box-shadow: 0 16px 24px -20px #16325b;
     }
-    
-    .delay-100 { animation-delay: 0.1s; }
-    .delay-200 { animation-delay: 0.2s; }
-    .delay-300 { animation-delay: 0.3s; }
-    .delay-400 { animation-delay: 0.4s; }
+    .emoji-glow {
+      filter: drop-shadow(0 6px 8px #facc1540);
+    }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full gradient-bg text-white overflow-auto">
-  <div class="min-h-full w-full"><!-- Navigation -->
-   <nav class="nav-blur fixed top-0 left-0 right-0 z-50 border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-       </svg>
-      </div><span class="font-display font-bold text-xl">VideoConvert Pro</span>
-     </div>
-     <div class="hidden md:flex items-center gap-8"><a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a> <a href="#formats" class="text-gray-400 hover:text-white transition-colors">Formats</a> <a href="#converter" class="text-gray-400 hover:text-white transition-colors">Convert</a> <button class="cta-button px-5 py-2 rounded-full font-medium text-sm">Get Started</button>
-     </div>
-    </div>
-   </nav><!-- Hero Section -->
-   <section class="pt-32 pb-20 px-6">
-    <div class="max-w-7xl mx-auto">
-     <div class="grid lg:grid-cols-2 gap-12 items-center">
-      <div class="animate-in">
-       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-6"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> <span class="text-sm text-indigo-300">100% Free &amp; Secure</span>
-       </div>
-       <h1 id="hero-title" class="font-display text-5xl md:text-6xl font-bold leading-tight mb-6">Convert Videos<br><span class="stats-number">Instantly</span></h1>
-       <p id="hero-subtitle" class="text-xl text-gray-400 mb-8 max-w-lg">Transform your videos between MP4, AVI, MKV, MOV, WMV, FLV &amp; WebM formats with lightning speed. No installation required.</p>
-       <div class="flex flex-wrap gap-4"><a href="#converter" class="cta-button px-8 py-4 rounded-2xl font-semibold text-lg inline-flex items-center gap-2"> <span id="cta-button-text">Start Converting</span>
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-         </svg></a> <button class="px-8 py-4 rounded-2xl font-semibold border border-white/10 hover:bg-white/5 transition-colors"> Learn More </button>
-       </div>
-      </div>
-     
-     <div class="flex flex-wrap justify-center gap-4 animate-in delay-100">
-      <div class="format-pill px-6 py-3 rounded-2xl font-semibold cursor-pointer">
-       MP4
-      </div>
-      <div class="format-pill px-6 py-3 rounded-2xl font-semibold cursor-pointer">
-       AVI
-      </div>
-      <div class="format-pill px-6 py-3 rounded-2xl font-semibold cursor-pointer">
-       MKV
-      </div>
-      <div class="format-pill px-6 py-3 rounded-2xl font-semibold cursor-pointer">
-       MOV
-      </div>
-      <div class="format-pill px-6 py-3 rounded-2xl font-semibold cursor-pointer">
-       WMV
-      </div>
-      <div class="format-pill px-6 py-3 rounded-2xl font-semibold cursor-pointer">
-       FLV
-      </div>
-      <div class="format-pill px-6 py-3 rounded-2xl font-semibold cursor-pointer">
-       WebM
-      </div>
-    </div>
-   </section><!-- Converter Tool Section -->
-   <section id="converter" class="py-20 px-6">
-    <div class="max-w-4xl mx-auto">
-     <div class="text-center mb-12 animate-in">
-      <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Convert Your Video Now</h2>
-      <p class="text-gray-400">Select your file and choose the output format</p>
-     </div>
-     <div class="glow-card rounded-3xl p-8 animate-in delay-100"><!-- Upload Zone -->
-      <div id="upload-zone" class="upload-zone rounded-2xl p-12 text-center cursor-pointer mb-8"><input type="file" id="file-input" accept="video/*" class="hidden">
-       <div id="upload-content">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-indigo-500/20 flex items-center justify-center">
-         <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-         </svg>
-        </div>
-        <p class="text-xl font-semibold mb-2">Drag &amp; Drop your video here</p>
-        <p class="text-gray-400 mb-4">or click to browse</p>
-        <p class="text-sm text-gray-500">Supports: MP4, AVI, MKV, MOV, WMV, FLV, WebM</p>
-       </div>
-       <div id="file-info" class="hidden">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
-         <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-         </svg>
-        </div>
-        <p id="file-name" class="text-xl font-semibold mb-2"></p>
-        <p id="file-size" class="text-gray-400"></p>
-       </div>
-      </div><!-- Format Selection -->
-      <div class="mb-8"><label class="block text-sm font-medium text-gray-300 mb-4">Select Output Format</label>
-       <div class="grid grid-cols-4 md:grid-cols-7 gap-3" id="format-selector"><button data-format="mp4" class="format-pill active px-4 py-3 rounded-xl text-sm font-semibold">MP4</button> <button data-format="avi" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold">AVI</button> <button data-format="mkv" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold">MKV</button> <button data-format="mov" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold">MOV</button> <button data-format="wmv" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold">WMV</button> <button data-format="flv" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold">FLV</button> <button data-format="webm" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold">WebM</button>
-       </div>
-      </div><!-- Quality Selection -->
-      <div class="mb-8"><label class="block text-sm font-medium text-gray-300 mb-4">Quality Settings</label>
-       <div class="grid grid-cols-3 gap-3" id="quality-selector"><button data-quality="high" class="format-pill active px-4 py-3 rounded-xl text-sm font-semibold"> <span class="block">High</span> <span class="text-xs text-gray-400">Best Quality</span> </button> <button data-quality="medium" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold"> <span class="block">Medium</span> <span class="text-xs text-gray-400">Balanced</span> </button> <button data-quality="low" class="format-pill px-4 py-3 rounded-xl text-sm font-semibold"> <span class="block">Low</span> <span class="text-xs text-gray-400">Smallest Size</span> </button>
-       </div>
-      </div><!-- Progress Bar (Hidden by default) -->
-      <div id="progress-container" class="hidden mb-8">
-       <div class="flex justify-between text-sm mb-2"><span class="text-gray-400">Converting...</span> <span id="progress-percent" class="text-indigo-400">0%</span>
-       </div>
-       <div class="h-3 bg-white/10 rounded-full overflow-hidden">
-        <div id="progress-bar" class="progress-bar h-full rounded-full transition-all duration-300" style="width: 0%"></div>
-       </div>
-      </div><!-- Convert Button --> <button id="convert-btn" class="cta-button w-full py-4 rounded-2xl font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled> Select a file to convert </button> <!-- Success Message (Hidden by default) -->
-      <div id="success-message" class="hidden mt-8 text-center">
-       <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
-        <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-        </svg>
-       </div>
-       <p class="text-xl font-semibold mb-2 text-green-400">Conversion Complete!</p>
-       <p class="text-gray-400 mb-6">Your video has been converted successfully</p><button id="download-btn" class="cta-button px-8 py-3 rounded-xl font-semibold inline-flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-        </svg> Download Converted Video </button>
-      </div>
-     </div>
-    </div>
-   </section><!-- Footer -->
-   <footer class="py-12 px-6 border-t border-white/5">
-    <div class="max-w-7xl mx-auto">
-     <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-3">
-       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-       </div><span class="font-display font-bold">VideoConvert Pro</span>
-      </div>
-      <p class="text-gray-400 text-sm">© 2024 VideoConvert Pro. All rights reserved.</p>
-     </div>
-    </div>
-   </footer>
+</head>
+<body class="antialiased text-slate-700 flex flex-col">
+
+  <!-- minimalist header with beautiful simplicity -->
+  <div class="max-w-6xl mx-auto px-6 pt-10 pb-3 w-full flex items-center gap-2">
+    <div class="w-11 h-11 bg-gradient-to-tr from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">◉</div>
+    <span class="font-semibold text-slate-800 text-2xl tracking-tight">convert</span>
+    <span class="text-slate-400 text-sm ml-2 bg-white/40 px-4 py-1.5 rounded-full border border-white/50">video edition</span>
   </div>
+
+  <!-- main container -->
+  <main class="max-w-6xl mx-auto px-6 pb-20 w-full">
+    
+    <!-- headline with air & elegance -->
+    <div class="mb-10 mt-2">
+      <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-slate-900 drop-shadow-sm">clean video.<br><span class="text-slate-500/90">any format, any quality.</span></h1>
+      <p class="text-slate-500 text-xl mt-4 max-w-2xl italic font-light">drag, click, convert — no uploads, pure browser elegance.</p>
+    </div>
+
+    <!-- main card – beautiful floating glassmorph -->
+    <div class="card-luxe p-8 md:p-10 w-full">
+
+      <!-- upload zone + file preview integrated (beautiful) -->
+      <div id="uploadZone" class="upload-area p-14 text-center flex flex-col items-center justify-center gap-3 relative overflow-hidden">
+        <input type="file" id="fileInput" accept="video/*,.mp4,.avi,.mkv,.mov,.wmv,.flv,.webm" class="hidden">
+        <!-- subtle bg decoration -->
+        <div class="absolute w-40 h-40 bg-indigo-50/40 rounded-full blur-3xl -top-10 -right-10"></div>
+        <div class="w-20 h-20 rounded-[32px] bg-white/80 backdrop-blur flex items-center justify-center text-4xl shadow-inner border border-white/60 text-slate-700 emoji-glow">⤴️</div>
+        <p class="text-2xl font-medium text-slate-800 mt-2">drop or click</p>
+        <p class="text-sm text-slate-400/90 px-6 py-1 rounded-full bg-white/40">video up to 500mb · mp4, mov, avi, mkv …</p>
+        
+        <!-- file info appears here elegantly -->
+        <div id="fileInfoBlock" class="hidden w-full mt-6 flex justify-center">
+          <div class="file-chip flex items-center gap-4 px-6 py-3">
+            <span class="text-3xl">🎬</span>
+            <div class="text-left">
+              <p id="fileNameDisplay" class="font-semibold text-slate-800 max-w-xs truncate">video.mp4</p>
+              <p id="fileSizeDisplay" class="text-xs text-slate-400">0 KB</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- format & quality inline with beautiful pill design -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-11">
+        <div>
+          <label class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3 block">output format</label>
+          <div id="formatSelector" class="flex flex-wrap gap-2">
+            <button data-format="mp4" class="pill-beauty pill-active">MP4</button>
+            <button data-format="mov" class="pill-beauty">MOV</button>
+            <button data-format="avi" class="pill-beauty">AVI</button>
+            <button data-format="mkv" class="pill-beauty">MKV</button>
+            <button data-format="webm" class="pill-beauty">WebM</button>
+            <button data-format="wmv" class="pill-beauty">WMV</button>
+            <button data-format="flv" class="pill-beauty">FLV</button>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3 block">quality profile</label>
+          <div id="qualitySelector" class="flex gap-2">
+            <button data-quality="high" class="pill-beauty pill-active">High · 4K</button>
+            <button data-quality="medium" class="pill-beauty">Medium · 1080p</button>
+            <button data-quality="low" class="pill-beauty">Low · 480p</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- progress bar + stats wrapper (minimal but beautiful) -->
+      <div id="progressWrap" class="hidden mt-10">
+        <div class="flex justify-between items-center mb-2 text-sm">
+          <span class="font-medium text-slate-500 flex items-center gap-2"><span class="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></span> transcoding</span>
+          <span id="progressPercent" class="bg-white/70 px-4 py-1.5 rounded-full text-slate-700 border border-slate-200/60">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- action row: convert + download with beautiful grouping -->
+      <div class="mt-12 flex flex-col sm:flex-row items-center gap-6">
+        <button id="convertBtn" class="btn-glow w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed" disabled>✨ select video</button>
+        
+        <div id="downloadBlock" class="hidden flex items-center gap-5 bg-white/70 pl-6 pr-2 py-2 rounded-full border border-white/80 shadow-sm">
+          <span class="text-emerald-700 font-medium flex items-center gap-1"><span class="text-xl">✓</span> converted</span>
+          <button id="downloadBtn" class="download-btn flex items-center gap-2 text-base">⬇ download</button>
+        </div>
+      </div>
+
+      <!-- privacy micro statement (quiet beauty) -->
+      <div class="mt-10 text-center">
+        <span class="stat-badge inline-flex items-center gap-2">🔒 100% client-side · simulation only</span>
+      </div>
+    </div>
+
+    <!-- supported formats small row (beautiful subtle) -->
+    <div class="mt-10 flex flex-wrap gap-3 items-center text-sm">
+      <span class="text-slate-400">supports</span>
+      <span class="bg-white/60 px-4 py-1.5 rounded-full border border-white/70 text-slate-600">MP4</span>
+      <span class="bg-white/60 px-4 py-1.5 rounded-full border border-white/70 text-slate-600">AVI</span>
+      <span class="bg-white/60 px-4 py-1.5 rounded-full border border-white/70 text-slate-600">MKV</span>
+      <span class="bg-white/60 px-4 py-1.5 rounded-full border border-white/70 text-slate-600">MOV</span>
+      <span class="bg-white/60 px-4 py-1.5 rounded-full border border-white/70 text-slate-600">WebM</span>
+      <span class="text-slate-300 ml-2">+ more</span>
+    </div>
+  </main>
+
+  <!-- elegant footer -->
+  <footer class="max-w-6xl mx-auto px-6 pb-8 w-full mt-10 flex flex-wrap justify-between items-center text-sm text-slate-400 border-t border-slate-200/60 pt-7">
+    <span>© clean video converter · no data, no tracking</span>
+    <span class="flex gap-4">
+      <span>design with ✦</span>
+      <span>v2.0</span>
+    </span>
+  </footer>
+
   <script>
-    const defaultConfig = {
-      hero_title: 'Convert Videos Instantly',
-      hero_subtitle: 'Transform your videos between MP4, AVI, MKV, MOV, WMV, FLV & WebM formats with lightning speed. No installation required.',
-      features_title: 'Why Choose VideoConvert Pro?',
-      cta_button_text: 'Start Converting',
-      background_color: '#0f0f1a',
-      surface_color: '#1a1a2e',
-      text_color: '#ffffff',
-      primary_action: '#6366f1',
-      secondary_action: '#a855f7'
-    };
+    (function() {
+      // DOM elements
+      const uploadZone = document.getElementById('uploadZone');
+      const fileInput = document.getElementById('fileInput');
+      const fileInfoBlock = document.getElementById('fileInfoBlock');
+      const fileNameDisplay = document.getElementById('fileNameDisplay');
+      const fileSizeDisplay = document.getElementById('fileSizeDisplay');
+      const convertBtn = document.getElementById('convertBtn');
+      const formatSelector = document.getElementById('formatSelector');
+      const qualitySelector = document.getElementById('qualitySelector');
+      const progressWrap = document.getElementById('progressWrap');
+      const progressFill = document.getElementById('progressFill');
+      const progressPercent = document.getElementById('progressPercent');
+      const downloadBlock = document.getElementById('downloadBlock');
+      const downloadBtn = document.getElementById('downloadBtn');
 
-    let selectedFile = null;
-    let selectedFormat = 'mp4';
-    let selectedQuality = 'high';
+      // state
+      let selectedFile = null;
+      let currentFormat = 'mp4';
+      let currentQuality = 'high';
+      let conversionFinished = false;
 
-    // Element SDK Integration
-    async function initElementSdk() {
-      if (window.elementSdk) {
-        await window.elementSdk.init({
-          defaultConfig,
-          onConfigChange: async (config) => {
-            document.getElementById('hero-title').innerHTML = (config.hero_title || defaultConfig.hero_title).replace('Instantly', '<br><span class="stats-number">Instantly</span>');
-            document.getElementById('hero-subtitle').textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
-            document.getElementById('features-title').textContent = config.features_title || defaultConfig.features_title;
-            document.getElementById('cta-button-text').textContent = config.cta_button_text || defaultConfig.cta_button_text;
-            
-            const bgColor = config.background_color || defaultConfig.background_color;
-            const surfaceColor = config.surface_color || defaultConfig.surface_color;
-            const textColor = config.text_color || defaultConfig.text_color;
-            const primaryAction = config.primary_action || defaultConfig.primary_action;
-            const secondaryAction = config.secondary_action || defaultConfig.secondary_action;
-            
-            document.body.style.background = `linear-gradient(135deg, ${bgColor} 0%, ${surfaceColor} 50%, ${bgColor} 100%)`;
-            document.body.style.color = textColor;
-            
-            document.querySelectorAll('.cta-button').forEach(btn => {
-              btn.style.background = `linear-gradient(135deg, ${primaryAction} 0%, ${secondaryAction} 100%)`;
-            });
-          },
-          mapToCapabilities: (config) => ({
-            recolorables: [
-              { get: () => config.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
-              { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => window.elementSdk.setConfig({ surface_color: v }) },
-              { get: () => config.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
-              { get: () => config.primary_action || defaultConfig.primary_action, set: (v) => window.elementSdk.setConfig({ primary_action: v }) },
-              { get: () => config.secondary_action || defaultConfig.secondary_action, set: (v) => window.elementSdk.setConfig({ secondary_action: v }) }
-            ],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-          }),
-          mapToEditPanelValues: (config) => new Map([
-            ['hero_title', config.hero_title || defaultConfig.hero_title],
-            ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
-            ['features_title', config.features_title || defaultConfig.features_title],
-            ['cta_button_text', config.cta_button_text || defaultConfig.cta_button_text]
-          ])
-        });
+      // helper format bytes
+      function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
       }
-    }
 
-    // File Upload Handling
-    const uploadZone = document.getElementById('upload-zone');
-    const fileInput = document.getElementById('file-input');
-    const uploadContent = document.getElementById('upload-content');
-    const fileInfo = document.getElementById('file-info');
-    const fileName = document.getElementById('file-name');
-    const fileSize = document.getElementById('file-size');
-    const convertBtn = document.getElementById('convert-btn');
-
-    uploadZone.addEventListener('click', () => fileInput.click());
-    
-    uploadZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadZone.classList.add('dragover');
-    });
-    
-    uploadZone.addEventListener('dragleave', () => {
-      uploadZone.classList.remove('dragover');
-    });
-    
-    uploadZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadZone.classList.remove('dragover');
-      const files = e.dataTransfer.files;
-      if (files.length > 0) handleFile(files[0]);
-    });
-    
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) handleFile(e.target.files[0]);
-    });
-
-    function handleFile(file) {
-      const validTypes = ['video/mp4', 'video/x-msvideo', 'video/x-matroska', 'video/quicktime', 'video/x-ms-wmv', 'video/x-flv', 'video/webm'];
-      const validExtensions = ['.mp4', '.avi', '.mkv', '.mov', '.wmv', '.flv', '.webm'];
-      
-      const hasValidExtension = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
-      
-      if (file.type.startsWith('video/') || hasValidExtension) {
-        selectedFile = file;
-        uploadContent.classList.add('hidden');
-        fileInfo.classList.remove('hidden');
-        fileName.textContent = file.name;
-        fileSize.textContent = formatFileSize(file.size);
-        convertBtn.disabled = false;
-        convertBtn.textContent = `Convert to ${selectedFormat.toUpperCase()}`;
-      }
-    }
-
-    function formatFileSize(bytes) {
-      if (bytes === 0) return '0 Bytes';
-      const k = 1024;
-      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    // Format Selection
-    document.getElementById('format-selector').addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
-      if (btn) {
-        document.querySelectorAll('#format-selector button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedFormat = btn.dataset.format;
+      function resetUIafterFile() {
+        progressWrap.classList.add('hidden');
+        downloadBlock.classList.add('hidden');
+        convertBtn.classList.remove('hidden');
+        conversionFinished = false;
         if (selectedFile) {
-          convertBtn.textContent = `Convert to ${selectedFormat.toUpperCase()}`;
+          convertBtn.disabled = false;
+          convertBtn.innerText = `⟳ convert to ${currentFormat.toUpperCase()}`;
+        } else {
+          convertBtn.disabled = true;
+          convertBtn.innerText = '✨ select video';
         }
       }
-    });
 
-    // Quality Selection
-    document.getElementById('quality-selector').addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
-      if (btn) {
-        document.querySelectorAll('#quality-selector button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedQuality = btn.dataset.quality;
-      }
-    });
-
-    // Convert Button
-    convertBtn.addEventListener('click', () => {
-      if (!selectedFile) return;
-      
-      const progressContainer = document.getElementById('progress-container');
-      const progressBar = document.getElementById('progress-bar');
-      const progressPercent = document.getElementById('progress-percent');
-      const successMessage = document.getElementById('success-message');
-      
-      progressContainer.classList.remove('hidden');
-      convertBtn.disabled = true;
-      convertBtn.textContent = 'Converting...';
-      
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 15;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-          
-          setTimeout(() => {
-            progressContainer.classList.add('hidden');
-            successMessage.classList.remove('hidden');
-            convertBtn.classList.add('hidden');
-          }, 500);
+      // handle file
+      function handleFile(file) {
+        if (!file) return;
+        const validExt = ['.mp4','.avi','.mkv','.mov','.wmv','.flv','.webm'];
+        const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+        if (!validExt.includes(ext) && !file.type.startsWith('video/')) {
+          alert('kindly pick a video file (mp4, mov, avi, mkv, webm …)');
+          return;
         }
-        progressBar.style.width = `${progress}%`;
-        progressPercent.textContent = `${Math.round(progress)}%`;
-      }, 300);
-    });
+        selectedFile = file;
+        fileNameDisplay.innerText = file.name;
+        fileSizeDisplay.innerText = formatBytes(file.size);
+        fileInfoBlock.classList.remove('hidden');
+        resetUIafterFile();
+      }
 
-    // Download Button (Demo)
-    document.getElementById('download-btn').addEventListener('click', () => {
-      const newFileName = selectedFile.name.replace(/\.[^/.]+$/, '') + '.' + selectedFormat;
-      
-      // Create demo blob for download simulation
-      const demoContent = `Demo conversion of ${selectedFile.name} to ${selectedFormat} format`;
-      const blob = new Blob([demoContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = newFileName + '.txt';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-
-    // Smooth scroll for navigation
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
+      // upload zone drag / click
+      uploadZone.addEventListener('click', () => fileInput.click());
+      uploadZone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        uploadZone.classList.add('drag-over');
       });
-    });
+      uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('drag-over');
+      });
+      uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('drag-over');
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+      });
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) handleFile(e.target.files[0]);
+      });
 
-    // Initialize
-    initElementSdk();
+      // format pills
+      formatSelector.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          formatSelector.querySelectorAll('button').forEach(b => b.classList.remove('pill-active'));
+          btn.classList.add('pill-active');
+          currentFormat = btn.dataset.format;
+          if (selectedFile && !conversionFinished) {
+            convertBtn.innerText = `⟳ convert to ${currentFormat.toUpperCase()}`;
+          }
+        });
+      });
+
+      // quality pills
+      qualitySelector.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          qualitySelector.querySelectorAll('button').forEach(b => b.classList.remove('pill-active'));
+          btn.classList.add('pill-active');
+          currentQuality = btn.dataset.quality;
+        });
+      });
+
+      // convert action (simulated progress)
+      convertBtn.addEventListener('click', function() {
+        if (!selectedFile || conversionFinished) return;
+
+        downloadBlock.classList.add('hidden');
+        progressWrap.classList.remove('hidden');
+        convertBtn.disabled = true;
+        convertBtn.innerText = 'converting …';
+
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 8 + Math.random() * 12;
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            progressFill.style.width = '100%';
+            progressPercent.innerText = '100%';
+
+            setTimeout(() => {
+              progressWrap.classList.add('hidden');
+              downloadBlock.classList.remove('hidden');
+              convertBtn.classList.add('hidden');
+              conversionFinished = true;
+            }, 300);
+          }
+          progressFill.style.width = progress + '%';
+          progressPercent.innerText = Math.floor(progress) + '%';
+        }, 200);
+      });
+
+      // download demo
+      downloadBtn.addEventListener('click', function() {
+        if (!selectedFile) return;
+        const nameWithoutExt = selectedFile.name.replace(/\.[^/.]+$/, '');
+        const newName = `${nameWithoutExt}.${currentFormat}`;
+        const content = `✨ demo conversion — ${selectedFile.name} → .${currentFormat} (${currentQuality} quality). this is a simulated client-side file. original size: ${formatBytes(selectedFile.size)}.`;
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = newName + '.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // extra reset if file changed (manual)
+      fileInput.addEventListener('click', () => { /* handled by change */ });
+      resetUIafterFile();
+    })();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d208c39375c9083',t:'MTc3MTc4NDk1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
