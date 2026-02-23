@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live currency converter · real time</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(145deg, #0b1729 0%, #1d2b42 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            margin: 0;
+            color: #eef4ff;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(4px);
+            color: #151e2f;
+            padding: 2rem 2rem 2.2rem;
+            border-radius: 2.5rem;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: scale(1.01);
+        }
+        h2 {
+            font-weight: 600;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #0f172a;
+        }
+        h2 span {
+            font-size: 1.9rem;
+        }
+        .sub {
+            color: #3b4a62;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #2563eb;
+            padding-left: 1rem;
+            background: #f0f4fe;
+            border-radius: 0 1rem 1rem 0;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+        .amount-field {
+            background: #f8fafd;
+            border-radius: 2rem;
+            padding: 0.2rem 1.5rem;
+            border: 1px solid #d9e2ef;
+            margin-bottom: 1rem;
+        }
+        .amount-field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #3f5575;
+            margin-top: 0.5rem;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 0.8rem 0;
+            font-size: 2rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: #0f172a;
+            outline: none;
+        }
+        input[type="number"]:focus {
+            outline: none;
+        }
+        input[type="number"]::placeholder {
+            color: #a7bbd5;
+            font-weight: 400;
+            font-size: 1.8rem;
+        }
+        .currency-row {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            margin: 1.2rem 0 1rem;
+        }
+        .currency-picker {
+            flex: 1;
+            background: #f1f5fb;
+            border-radius: 2rem;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid #d3e0f0;
+            transition: border 0.2s;
+        }
+        .currency-picker:hover {
+            border-color: #2563eb;
+        }
+        .currency-picker label {
+            display: block;
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            color: #4c6182;
+            font-weight: 500;
+        }
+        select {
+            width: 100%;
+            padding: 0.6rem 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            color: #0a1a2b;
+            outline: none;
+            cursor: pointer;
+        }
+        .swap-btn {
+            background: white;
+            border: 1px solid #ccdcef;
+            border-radius: 4rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            transition: all 0.2s;
+            cursor: pointer;
+            color: #1e3a6b;
+            flex-shrink: 0;
+            margin-top: 0.8rem;
+        }
+        .swap-btn:hover {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            transform: rotate(180deg);
+        }
+        .action {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0 1.2rem;
+        }
+        button {
+            flex: 1;
+            padding: 1rem 0.5rem;
+            border: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            border-radius: 3rem;
+            background: #1e2b45;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 6px 14px rgba(28, 51, 94, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        button.convert-btn {
+            background: #2563eb;
+        }
+        button.convert-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-3px);
+        }
+        button.swap-action-btn {
+            background: #334155;
+        }
+        button.swap-action-btn:hover {
+            background: #1f2a3c;
+            transform: translateY(-3px);
+        }
+        .result-box {
+            background: #e9eff9;
+            border-radius: 1.8rem;
+            padding: 1.5rem 1.8rem;
+            margin-top: 1.8rem;
+            border: 1px solid #ceddec;
+        }
+        .result {
+            font-size: 2rem;
+            font-weight: 700;
+            word-break: break-word;
+            color: #0b2d4b;
+            line-height: 1.3;
+        }
+        .update {
+            font-size: 0.85rem;
+            color: #597191;
+            margin-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-top: 1px dashed #b3c7e0;
+            padding-top: 0.9rem;
+        }
+        .credit {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #a0bbd5;
+            margin-top: 1rem;
+        }
+        .error-message {
+            color: #b91c1c;
+            background: #fee2e2;
+            border-radius: 3rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>
+            <span>💱</span> Live exchange
+        </h2>
+        <div class="sub">
+            rates via · <strong>open er-api</strong> (hourly updated)
+        </div>
+
+        <!-- amount -->
+        <div class="amount-field">
+            <label>Amount</label>
+            <input type="number" id="amount" placeholder="1.00" value="1.00" step="any" min="0">
+        </div>
+
+        <!-- currency selects + swap UI -->
+        <div class="currency-row">
+            <div class="currency-picker">
+                <label>From</label>
+                <select id="fromCurrency"></select>
+            </div>
+            <div class="swap-btn" id="swapIcon" title="swap currencies">↔️</div>
+            <div class="currency-picker">
+                <label>To</label>
+                <select id="toCurrency"></select>
+            </div>
+        </div>
+
+        <!-- action buttons -->
+        <div class="action">
+            <button class="convert-btn" id="convertBtn">💰 Convert</button>
+            <button class="swap-action-btn" id="swapBtn">🔁 Swap</button>
+        </div>
+
+        <!-- result panel -->
+        <div class="result-box">
+            <div class="result" id="result">—</div>
+            <div class="update" id="updateTime">fetching rates …</div>
+        </div>
+        <div class="credit">⚡ live from exchangerate-api.com (v6)</div>
+    </div>
+
+    <script>
+        (function() {
+            // use a reliable free CORS-friendly endpoint
+            const BASE_URL = "https://open.er-api.com/v6/latest/";
+
+            // DOM elements
+            const amountInput = document.getElementById('amount');
+            const fromSelect = document.getElementById('fromCurrency');
+            const toSelect = document.getElementById('toCurrency');
+            const resultDiv = document.getElementById('result');
+            const updateDiv = document.getElementById('updateTime');
+            const convertBtn = document.getElementById('convertBtn');
+            const swapBtn = document.getElementById('swapBtn');
+            const swapIcon = document.getElementById('swapIcon');
+
+            // in-memory cache for base rates (usd as default fallback)
+            let cachedRates = null;
+            let cachedTimestamp = '';
+
+            // --- initial load: populate selects using USD as base (reliable) ---
+            async function loadCurrencies() {
+                try {
+                    // we only need the list of currency codes – any base works.
+                    // use USD because it's always available
+                    const response = await fetch(BASE_URL + 'USD');
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    
+                    if (data.result !== 'success' && !data.rates) {
+                        throw new Error('API error: ' + (data.error || 'unknown'));
+                    }
+
+                    const rates = data.rates;  // e.g. {USD:1, EUR:0.92, ...}
+                    cachedRates = rates;       // keep for later if needed, but we'll refetch per conversion
+                    
+                    // populate both selects with currency codes, sorted
+                    const currencies = Object.keys(rates).sort();
+                    
+                    // clear existing (just in case)
+                    fromSelect.innerHTML = '';
+                    toSelect.innerHTML = '';
+
+                    for (let code of currencies) {
+                        const optionFrom = document.createElement('option');
+                        optionFrom.value = code;
+                        optionFrom.textContent = code;
+                        fromSelect.appendChild(optionFrom);
+
+                        const optionTo = document.createElement('option');
+                        optionTo.value = code;
+                        optionTo.textContent = code;
+                        toSelect.appendChild(optionTo);
+                    }
+
+                    // set default selections: USD -> PKR (if exists)
+                    if (currencies.includes('USD')) fromSelect.value = 'USD';
+                    else fromSelect.value = currencies[0] || 'EUR';
+                    
+                    if (currencies.includes('PKR')) toSelect.value = 'PKR';
+                    else if (currencies.includes('EUR')) toSelect.value = 'EUR';
+                    else toSelect.value = currencies[Math.min(1, currencies.length-1)] || 'USD';
+
+                    // show last update info from USD call
+                    if (data.time_last_update_utc) {
+                        updateDiv.innerHTML = `📅 ${data.time_last_update_utc}`;
+                    } else {
+                        updateDiv.innerHTML = `🕒 rates loaded (${new Date().toLocaleString()})`;
+                    }
+
+                } catch (err) {
+                    console.warn('Error loading currencies:', err);
+                    updateDiv.innerHTML = '⚠️ using fallback data — offline mode';
+                    // fallback currency list (common ones)
+                    const fallbackCurrencies = ['USD','EUR','GBP','JPY','PKR','INR','CAD','AUD','CHF','CNY'];
+                    fromSelect.innerHTML = '';
+                    toSelect.innerHTML = '';
+                    for (let code of fallbackCurrencies) {
+                        fromSelect.add(new Option(code, code));
+                        toSelect.add(new Option(code, code));
+                    }
+                    fromSelect.value = 'USD';
+                    toSelect.value = 'PKR';
+                    // dummy rates will be fetched during convert with error handling
+                }
+            }
+
+            // --- main conversion function ---
+            async function convertCurrency() {
+                const amount = parseFloat(amountInput.value);
+                if (isNaN(amount) || amount < 0) {
+                    resultDiv.innerText = '❌ enter a valid amount';
+                    return;
+                }
+
+                const from = fromSelect.value;
+                const to = toSelect.value;
+
+                if (!from || !to) {
+                    resultDiv.innerText = 'select currencies';
+                    return;
+                }
+
+                // show loading state
+                resultDiv.innerText = '⟳ fetching rate...';
+
+                try {
+                    // Fetch latest rates based on 'from' currency (most accurate)
+                    const response = await fetch(BASE_URL + from);
+                    if (!response.ok) throw new Error(`status ${response.status}`);
+
+                    const data = await response.json();
+                    
+                    // api v6 returns "rates" object, and time info
+                    if (!data.rates) {
+                        throw new Error('invalid response structure');
+                    }
+
+                    const rate = data.rates[to];
+                    if (rate === undefined) {
+                        throw new Error(`rate for ${to} not found`);
+                    }
+
+                    const converted = amount * rate;
+                    
+                    // format currency display
+                    resultDiv.innerText = `${amount.toFixed(2)} ${from}  =  ${converted.toFixed(4)} ${to}`;
+                    
+                    // update timestamp
+                    if (data.time_last_update_utc) {
+                        updateDiv.innerHTML = `📅 last update: ${data.time_last_update_utc}`;
+                    } else {
+                        updateDiv.innerHTML = `🕒 conversion at ${new Date().toLocaleTimeString()}`;
+                    }
+
+                } catch (error) {
+                    console.warn('Conversion error:', error);
+                    resultDiv.innerHTML = `⚠️ conversion error — try again`;
+                    updateDiv.innerHTML = '⏳ using potentially outdated rates';
+
+                    // fallback: try to use cachedRates if possible? but they are for USD only – approximate conversion
+                    if (cachedRates && cachedRates[from] && cachedRates[to]) {
+                        // approximate via USD cross: (1 / USDrate_from) * USDrate_to
+                        const usdRateFrom = cachedRates[from];   // e.g. 1 USD = 0.85 EUR? wait: cachedRates are from USD base: rates["EUR"] = 0.85 means 1 USD = 0.85 EUR
+                        const usdRateTo = cachedRates[to];
+                        if (usdRateFrom && usdRateTo) {
+                            const crossRate = usdRateTo / usdRateFrom;
+                            const converted = amount * crossRate;
+                            resultDiv.innerHTML = `${amount.toFixed(2)} ${from}  ≈  ${converted.toFixed(4)} ${to} (approx)`;
+                            updateDiv.innerHTML += ' · approximate (cached)';
+                        } else {
+                            resultDiv.innerText = '— conversion unavailable';
+                        }
+                    } else {
+                        // last resort — show empty
+                        resultDiv.innerText = '—';
+                    }
+                }
+            }
+
+            // --- swap currencies ---
+            function swapCurrencies() {
+                const fromVal = fromSelect.value;
+                const toVal = toSelect.value;
+                // swap values
+                fromSelect.value = toVal;
+                toSelect.value = fromVal;
+                // optional: trigger convert automatically? we just swap, then user can convert.
+                // for better UX we also run conversion (many users expect it)
+                convertCurrency();
+            }
+
+            // --- event bindings ---
+            convertBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                convertCurrency();
+            });
+
+            swapBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                swapCurrencies();
+            });
+
+            swapIcon.addEventListener('click', (e) => {
+                e.preventDefault();
+                swapCurrencies();
+            });
+
+            // press enter in amount field triggers convert
+            amountInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    convertCurrency();
+                }
+            });
+
+            // optional: if selects change, we might not auto-convert but it's fine.
+            // we'll also trigger convert when both are selected? not necessary, but we can add a small convenience: double click select? no.
+            // but for smoothness, we can attach to change? but avoid too many requests.
+            // let's attach convert to change of any select? maybe not, but user can press convert.
+            // However, to make it lively, we can convert on select change if we want. I'll keep it minimal: they press convert.
+
+            // But we also want a friendly "live" feeling: after swap we auto-convert, that's already inside swapCurrencies.
+            // convert on initial load with defaults? Yes, show default conversion
+            async function initialConvertAfterLoad() {
+                // wait a tick for selects to populate
+                setTimeout(() => {
+                    convertCurrency();
+                }, 100);
+            }
+
+            // load everything
+            loadCurrencies().then(() => {
+                initialConvertAfterLoad();
+            }).catch(e => {
+                console.warn('load failed, but we use fallback');
+                initialConvertAfterLoad(); // try convert with fallback selects (they have values)
+            });
+
+            // extra: handle network errors on convert gracefully
+            window.convertCurrency = convertCurrency; // (just for debugging)
+        })();
+    </script>
+</body>
+</html>
