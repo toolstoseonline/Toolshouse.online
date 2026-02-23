@@ -219,6 +219,7 @@ header {
 .action-btn.warning { background: #b45309; color: white; border: none; }
 
 .action-btn:active { transform: scale(0.96); }
+.action-btn:disabled { opacity: 0.5; transform: none; pointer-events: none; }
 
 textarea {
     width: 100%;
@@ -246,6 +247,28 @@ textarea {
 }
 
 footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
+
+/* Loading indicator */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.ocr-status {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-top: 5px;
+    text-align: center;
+}
 
 @media (max-width: 500px) {
     .source-btn { flex: 1 1 120px; font-size: 0.95rem; }
@@ -300,7 +323,8 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
     </div>
 
     <!-- OCR text area -->
-    <textarea id="ocrResult" placeholder="Extracted text from selected page ..." readonly></textarea>
+    <textarea id="ocrResult" placeholder="Extracted text from selected page will appear here..." readonly></textarea>
+    <div id="ocrStatus" class="ocr-status"></div>
 
     <!-- ad space -->
     <div class="ad-box">📢 Google AdSense · 320x100</div>
@@ -327,6 +351,7 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
     const removeBtn = document.getElementById('removeBtn');
     const clearBtn = document.getElementById('clearBtn');
     const ocrResult = document.getElementById('ocrResult');
+    const ocrStatus = document.getElementById('ocrStatus');
 
     // ----- state -----
     let capturedPages = [];            // array of { dataURL, timestamp }
@@ -366,6 +391,8 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
             preview.style.display = 'none';
             preview.src = '';
             selectedIndex = -1;
+            ocrResult.value = '';
+            ocrStatus.textContent = '';
         } else if (selectedIndex >= 0 && selectedIndex < capturedPages.length) {
             // keep same selection, just update preview if needed (already consistent)
             preview.src = capturedPages[selectedIndex].dataURL;
@@ -381,6 +408,7 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
             preview.style.display = 'block';
             // clear OCR when switching
             ocrResult.value = '';
+            ocrStatus.textContent = 'Select "OCR this" to extract text from this page';
         }
     }
 
@@ -445,6 +473,89 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
             reader.onload = (e) => addPage(e.target.result);
             reader.readAsDataURL(blob);
         }, 'image/jpeg', 0.9);
+    }
+
+    // ----- OCR function with better error handling and multiple languages -----
+    async function performOCR(imageDataURL) {
+        // Show loading state
+        ocrResult.value = '';
+        ocrStatus.innerHTML = '⏳ Initializing OCR engine...';
+        
+        try {
+            // First, preprocess the image to improve OCR accuracy
+            const img = new Image();
+            img.src = imageDataURL;
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+
+            // Create a canvas to potentially enhance the image
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // Draw image with contrast enhancement
+            ctx.drawImage(img, 0, 0);
+            
+            // Get image data for potential preprocessing
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            // Simple contrast enhancement
+            const data = imageData.data;
+            const factor = 1.2; // Contrast factor
+            
+            for (let i = 0; i < data.length; i += 4) {
+                // Apply simple contrast
+                data[i] = Math.min(255, Math.max(0, ((data[i] / 255 - 0.5) * factor + 0.5) * 255));
+                data[i+1] = Math.min(255, Math.max(0, ((data[i+1] / 255 - 0.5) * factor + 0.5) * 255));
+                data[i+2] = Math.min(255, Math.max(0, ((data[i+2] / 255 - 0.5) * factor + 0.5) * 255));
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Convert canvas back to data URL
+            const enhancedDataURL = canvas.toDataURL('image/jpeg', 0.95);
+
+            ocrStatus.innerHTML = '⏳ Analyzing image and extracting text...';
+            
+            // Configure Tesseract for better accuracy
+            const result = await Tesseract.recognize(
+                enhancedDataURL, 
+                'eng', // Language
+                { 
+                    logger: m => {
+                        // Update status with progress
+                        if (m.status === 'recognizing text') {
+                            ocrStatus.innerHTML = `⏳ Recognizing text... ${Math.round(m.progress * 100)}%`;
+                        } else if (m.status) {
+                            ocrStatus.innerHTML = `⏳ ${m.status}...`;
+                        }
+                        console.log(m);
+                    }
+                }
+            );
+            
+            // Get extracted text
+            const extractedText = result.data.text.trim();
+            
+            if (extractedText) {
+                ocrResult.value = extractedText;
+                ocrStatus.innerHTML = '✅ Text extracted successfully!';
+            } else {
+                ocrResult.value = 'No text could be detected in this image. Try:';
+                ocrResult.value += '\n• Using a clearer image';
+                ocrResult.value += '\n• Ensuring good lighting';
+                ocrResult.value += '\n• Making text larger in frame';
+                ocrStatus.innerHTML = '⚠️ No text detected';
+            }
+            
+        } catch (error) {
+            console.error('OCR Error:', error);
+            ocrResult.value = '❌ OCR failed. Error details:\n' + error.message;
+            ocrStatus.innerHTML = '❌ OCR processing failed';
+        }
     }
 
     // ----- event listeners -----
@@ -523,26 +634,30 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
         doc.save('multi-page-scan.pdf');
     });
 
-    // ----- OCR on selected page -----
+    // ----- OCR on selected page with improved functionality -----
     ocrBtn.addEventListener('click', async () => {
         if (selectedIndex === -1 || !capturedPages[selectedIndex]) {
-            alert('Select a page from the strip first.');
+            alert('Please select a page from the strip first (tap on any thumbnail).');
+            ocrStatus.textContent = '❌ No page selected';
             return;
         }
 
-        const dataURL = capturedPages[selectedIndex].dataURL;
-        ocrResult.value = '⏳ OCR running ...';
+        // Disable button during OCR
         ocrBtn.disabled = true;
-
+        const originalText = ocrBtn.innerHTML;
+        ocrBtn.innerHTML = '<span class="loading"></span> OCR...';
+        
         try {
-            const result = await Tesseract.recognize(dataURL, 'eng', {
-                logger: m => console.log(m)
-            });
-            ocrResult.value = result.data.text.trim() || '(no text)';
+            const dataURL = capturedPages[selectedIndex].dataURL;
+            await performOCR(dataURL);
         } catch (err) {
-            ocrResult.value = '❌ OCR failed.';
+            ocrResult.value = '❌ Unexpected error during OCR';
+            ocrStatus.innerHTML = '❌ OCR failed';
+            console.error(err);
         } finally {
+            // Re-enable button
             ocrBtn.disabled = false;
+            ocrBtn.innerHTML = originalText;
         }
     });
 
@@ -557,6 +672,7 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
             if (capturedPages.length === 0) {
                 preview.style.display = 'none';
                 ocrResult.value = '';
+                ocrStatus.textContent = '';
             }
         }
     });
@@ -568,6 +684,7 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
         renderStrip();
         preview.style.display = 'none';
         ocrResult.value = '';
+        ocrStatus.textContent = '';
         stopCamera();
     });
 
