@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age Calculator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#42275a,#734b6d);
+    text-align:center;
+    padding:30px;
+    color:white;
+}
+.container{
+    background:white;
+    color:black;
+    padding:25px;
+    border-radius:15px;
+    max-width:600px;
+    margin:auto;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+h1{
+    font-size:48px;
+    font-weight:300;
+    margin-bottom:10px;
+    color:#42275a;
+    text-shadow:2px 2px 4px rgba(0,0,0,0.1);
+    letter-spacing:2px;
+}
+.subtitle{
+    font-size:18px;
+    color:#734b6d;
+    margin-bottom:25px;
+    font-weight:300;
+}
+input{
+    padding:10px;
+    margin:10px;
+    width:80%;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+button{
+    padding:10px 20px;
+    margin:10px;
+    border:none;
+    border-radius:8px;
+    background:#42275a;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#734b6d;
+}
+.result{
+    margin-top:20px;
+    font-size:16px;
+    font-weight:bold;
+}
+.date-section{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+.date-box{
+    flex:1;
+    text-align:left;
+}
+.date-box label{
+    display:block;
+    margin-bottom:5px;
+    font-weight:bold;
+}
+.date-box input{
+    width:90%;
+    margin:0;
+}
+.current-date-btn{
+    background:#734b6d;
+    padding:5px 10px;
+    font-size:12px;
+    margin-top:5px;
+}
+.number-highlight{
+    font-size:72px;
+    font-weight:100;
+    color:#42275a;
+    margin:10px 0;
+    text-shadow:3px 3px 5px rgba(0,0,0,0.1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>🎂 AGE CALCULATOR</h1>
+<div class="subtitle">Calculate the difference between any two dates</div>
+
+<div class="date-section">
+    <div class="date-box">
+        <label>Start Date:</label>
+        <input type="date" id="startDate">
+        <br>
+        <button class="current-date-btn" onclick="setCurrentDate('startDate')">Set as Today</button>
+    </div>
+    
+    <div class="date-box">
+        <label>End Date:</label>
+        <input type="date" id="endDate">
+        <br>
+        <button class="current-date-btn" onclick="setCurrentDate('endDate')">Set as Today</button>
+    </div>
+</div>
+
+<br>
+<button onclick="calculateDifference()">Calculate Difference</button>
+
+<div class="result" id="result"></div>
+</div>
+
+<script>
+function setCurrentDate(elementId){
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = String(today.getMonth() + 1).padStart(2, '0');
+    let day = String(today.getDate()).padStart(2, '0');
+    document.getElementById(elementId).value = `${year}-${month}-${day}`;
+}
+
+function calculateDifference(){
+    let startDate = new Date(document.getElementById("startDate").value);
+    let endDate = new Date(document.getElementById("endDate").value);
+    
+    if(!startDate.getTime() || !endDate.getTime()){
+        alert("Please select both start and end dates!");
+        return;
+    }
+    
+    if(endDate < startDate){
+        alert("End date should be after start date!");
+        return;
+    }
+
+    let diff = endDate - startDate;
+
+    let seconds = Math.floor(diff / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    let days = Math.floor(hours / 24);
+    let weeks = Math.floor(days / 7);
+    let months = Math.floor(days / 30.4375);
+    let years = Math.floor(days / 365.25);
+    
+    // Calculate remaining days after years
+    let remainingDays = days % 365.25;
+    let exactMonths = Math.floor(remainingDays / 30.4375);
+    let exactDays = Math.floor(remainingDays % 30.4375);
+
+    document.getElementById("result").innerHTML =
+        "📅 Date Difference Results:<br><br>" +
+        "<span class='number-highlight'>" + years + "</span> Years<br>" +
+        "Total Months: " + months + "<br>" +
+        "Total Weeks: " + weeks + "<br>" +
+        "Total Days: " + days + "<br>" +
+        "Total Hours: " + hours + "<br>" +
+        "Total Minutes: " + minutes + "<br>" +
+        "Total Seconds: " + seconds + "<br><br>" +
+        "📊 Exact Difference:<br>" +
+        years + " years, " + exactMonths + " months, and " + exactDays + " days";
+}
+</script>
+
+</body>
+</html>
