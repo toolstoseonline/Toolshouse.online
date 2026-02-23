@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Merger - Combine Tracks</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    background:#fff;
+    width:480px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+input[type="file"]{
+    margin:10px 0;
+}
+
+audio{
+    width:100%;
+    margin-top:10px;
+}
+
+button{
+    margin-top:15px;
+    padding:10px;
+    width:100%;
+    border:none;
+    border-radius:8px;
+    background:#0072ff;
+    color:#fff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#0057cc;
+}
+
+.download-btn{
+    background:#28a745;
+}
+
+.download-btn:hover{
+    background:#218838;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Audio Merger</h1>
+    <p>Combine Multiple Tracks</p>
+
+    <input type="file" id="upload" accept="audio/*" multiple>
+
+    <audio id="preview" controls></audio>
+
+    <button onclick="mergeAudio()">Merge Tracks</button>
+    <button class="download-btn" onclick="downloadMerged()">Download Merged Audio</button>
+</div>
+
+<script>
+let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let buffers = [];
+let mergedBlob = null;
+
+document.getElementById("upload").addEventListener("change", async function(e){
+    const files = e.target.files;
+    buffers = [];
+
+    for(let file of files){
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = await audioContext.decodeAudioData(arrayBuffer);
+        buffers.push(buffer);
+    }
+
+    alert(files.length + " audio files loaded successfully!");
+});
+
+async function mergeAudio(){
+    if(buffers.length === 0){
+        alert("Upload audio files first!");
+        return;
+    }
+
+    let totalLength = buffers.reduce((sum, b) => sum + b.length, 0);
+    let numberOfChannels = buffers[0].numberOfChannels;
+    let sampleRate = buffers[0].sampleRate;
+
+    let mergedBuffer = audioContext.createBuffer(
+        numberOfChannels,
+        totalLength,
+        sampleRate
+    );
+
+    let offset = 0;
+
+    for(let buffer of buffers){
+        for(let channel = 0; channel < numberOfChannels; channel++){
+            mergedBuffer.getChannelData(channel)
+                .set(buffer.getChannelData(channel), offset);
+        }
+        offset += buffer.length;
+    }
+
+    const offlineContext = new OfflineAudioContext(
+        mergedBuffer.numberOfChannels,
+        mergedBuffer.length,
+        mergedBuffer.sampleRate
+    );
+
+    const source = offlineContext.createBufferSource();
+    source.buffer = mergedBuffer;
+    source.connect(offlineContext.destination);
+    source.start();
+
+    const renderedBuffer = await offlineContext.startRendering();
+    const wav = bufferToWave(renderedBuffer, renderedBuffer.length);
+
+    mergedBlob = new Blob([wav], {type:"audio/wav"});
+    document.getElementById("preview").src = URL.createObjectURL(mergedBlob);
+
+    alert("Audio Merged Successfully!");
+}
+
+function downloadMerged(){
+    if(!mergedBlob){
+        alert("Merge audio first!");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(mergedBlob);
+    link.download = "merged-audio.wav";
+    link.click();
+}
+
+function bufferToWave(abuffer, len){
+    let numOfChan = abuffer.numberOfChannels,
+        length = len * numOfChan * 2 + 44,
+        buffer = new ArrayBuffer(length),
+        view = new DataView(buffer),
+        channels = [],
+        offset = 0,
+        pos = 0;
+
+    setUint32(0x46464952);
+    setUint32(length - 8);
+    setUint32(0x45564157);
+
+    setUint32(0x20746d66);
+    setUint32(16);
+    setUint16(1);
+    setUint16(numOfChan);
+    setUint32(abuffer.sampleRate);
+    setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16);
+
+    setUint32(0x61746164);
+    setUint32(length - pos - 4);
+
+    for(let i = 0; i < abuffer.numberOfChannels; i++)
+        channels.push(abuffer.getChannelData(i));
+
+    while(pos < length){
+        for(let i = 0; i < numOfChan; i++){
+            let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+            sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+            view.setInt16(pos, sample, true);
+            pos += 2;
+        }
+        offset++;
+    }
+
+    return buffer;
+
+    function setUint16(data){
+        view.setUint16(pos, data, true);
+        pos += 2;
+    }
+
+    function setUint32(data){
+        view.setUint32(pos, data, true);
+        pos += 4;
+    }
+}
+</script>
+
+</body>
+</html>
