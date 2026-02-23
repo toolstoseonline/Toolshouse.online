@@ -216,7 +216,6 @@ header {
 
 .action-btn.primary { background: #2563eb; color: white; border: none; }
 .action-btn.secondary { background: #059669; color: white; border: none; }
-.action-btn.share { background: #8b5cf6; color: white; border: none; }
 .action-btn.warning { background: #b45309; color: white; border: none; }
 
 .action-btn:active { transform: scale(0.96); }
@@ -271,33 +270,6 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
     text-align: center;
 }
 
-/* Share notification */
-.share-notification {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1e293b;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-size: 0.95rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 1000;
-    animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-    from {
-        bottom: -50px;
-        opacity: 0;
-    }
-    to {
-        bottom: 20px;
-        opacity: 1;
-    }
-}
-
 @media (max-width: 500px) {
     .source-btn { flex: 1 1 120px; font-size: 0.95rem; }
     .action-btn { font-size: 0.95rem; padding: 14px 4px; }
@@ -346,7 +318,6 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
     <div class="action-grid">
         <button class="action-btn primary" id="pdfBtn">📥 PDF all</button>
         <button class="action-btn secondary" id="ocrBtn">🔍 OCR this</button>
-        <button class="action-btn share" id="shareBtn">📤 Share</button>
         <button class="action-btn" id="removeBtn">🗑️ Remove last</button>
         <button class="action-btn warning" id="clearBtn">🔄 Clear all</button>
     </div>
@@ -377,7 +348,6 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
     const pagesStrip = document.getElementById('pagesStrip');
     const pdfBtn = document.getElementById('pdfBtn');
     const ocrBtn = document.getElementById('ocrBtn');
-    const shareBtn = document.getElementById('shareBtn');
     const removeBtn = document.getElementById('removeBtn');
     const clearBtn = document.getElementById('clearBtn');
     const ocrResult = document.getElementById('ocrResult');
@@ -396,18 +366,6 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
         }
         cameraContainer.style.display = 'none';
         cameraFeed.srcObject = null;
-    }
-
-    // ----- helper: show notification -----
-    function showNotification(message, duration = 3000) {
-        const notification = document.createElement('div');
-        notification.className = 'share-notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, duration);
     }
 
     // ----- render thumbnail strip & update preview selection -----
@@ -600,71 +558,6 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
         }
     }
 
-    // ----- Share function -----
-    async function handleShare() {
-        if (capturedPages.length === 0) {
-            alert('No pages to share. Add some images first.');
-            return;
-        }
-
-        // Check if Web Share API is supported
-        if (!navigator.share) {
-            // Fallback for browsers that don't support Web Share
-            showNotification('📋 Link copied to clipboard! (Share not supported in this browser)');
-            
-            // Create a shareable text with page count
-            const shareText = `Multi-Page Scanner: I have ${capturedPages.length} page${capturedPages.length > 1 ? 's' : ''} scanned. Create your own PDF scanner at: ${window.location.href}`;
-            
-            // Copy to clipboard as fallback
-            navigator.clipboard.writeText(shareText).catch(err => {
-                console.error('Clipboard error:', err);
-                alert('Sharing not supported. You can save the PDF manually.');
-            });
-            return;
-        }
-
-        try {
-            // Prepare share data
-            const shareData = {
-                title: 'Multi-Page Scanner',
-                text: `I have ${capturedPages.length} page${capturedPages.length > 1 ? 's' : ''} scanned with Multi-Page Scanner app.`,
-                url: window.location.href,
-            };
-
-            // If there's a selected image, try to share it as a file
-            if (selectedIndex !== -1 && capturedPages[selectedIndex]) {
-                const dataURL = capturedPages[selectedIndex].dataURL;
-                
-                // Convert dataURL to Blob
-                const response = await fetch(dataURL);
-                const blob = await response.blob();
-                
-                // Create a File object
-                const file = new File([blob], `scan-page-${selectedIndex + 1}.jpg`, { 
-                    type: 'image/jpeg' 
-                });
-
-                // Try to share with file
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    shareData.files = [file];
-                }
-            }
-
-            // Share
-            await navigator.share(shareData);
-            showNotification('✅ Shared successfully!');
-            
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                console.error('Share error:', err);
-                showNotification('❌ Sharing failed');
-                
-                // Fallback to clipboard
-                navigator.clipboard.writeText(`Check out Multi-Page Scanner app: ${window.location.href}`).catch(() => {});
-            }
-        }
-    }
-
     // ----- event listeners -----
     // live camera button: open preview
     liveCamBtn.addEventListener('click', (e) => {
@@ -767,9 +660,6 @@ footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
             ocrBtn.innerHTML = originalText;
         }
     });
-
-    // ----- Share button handler -----
-    shareBtn.addEventListener('click', handleShare);
 
     // ----- remove last page -----
     removeBtn.addEventListener('click', () => {
