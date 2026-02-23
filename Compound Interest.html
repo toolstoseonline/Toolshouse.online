@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compound Interest Calculator 📈</title>
+<!-- Chart.js for dynamic chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+body{
+    font-family: 'Inter', 'Arial', sans-serif;
+    background: linear-gradient(145deg, #0f2b4b, #1b3a6b);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 16px;
+}
+.container{
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    color: #1a2b3c;
+    padding: 28px 24px;
+    border-radius: 32px;
+    max-width: 700px;
+    width: 100%;
+    margin: auto;
+    box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.45);
+    transition: all 0.2s;
+}
+h2{
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #0a2647;
+}
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 10px;
+}
+label {
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-left: 8px;
+    margin-bottom: 4px;
+    color: #1e3a5f;
+}
+input, select{
+    padding: 14px 18px;
+    margin: 6px 0 10px 0;
+    width: 100%;
+    border-radius: 40px;
+    border: 1.5px solid #d9e2ef;
+    background: white;
+    font-size: 1rem;
+    transition: 0.2s;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0,20,40,0.04);
+}
+input:focus, select:focus {
+    border-color: #2a5298;
+    box-shadow: 0 4px 12px rgba(42,82,152,0.25);
+}
+button{
+    padding: 16px 28px;
+    margin: 16px 0 12px 0;
+    border: none;
+    border-radius: 60px;
+    background: #1e3c72;
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.15s;
+    box-shadow: 0 10px 18px -8px #0f2b4b;
+}
+button:hover{
+    background: #143157;
+    transform: scale(1.02);
+    box-shadow: 0 14px 24px -6px #091c36;
+}
+.result{
+    margin-top: 20px;
+    font-weight: 600;
+    background: #eef3fc;
+    padding: 18px;
+    border-radius: 28px;
+    font-size: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: #0a2647;
+    border: 1px solid #bdd3f0;
+}
+.result span {
+    font-weight: 400;
+    font-size: 1rem;
+    color: #1e3c72;
+}
+canvas{
+    margin-top: 28px;
+    background: #fafcff;
+    border-radius: 32px;
+    padding: 16px 8px 8px 8px;
+    max-height: 280px;
+    width: 100% !important;
+    height: auto !important;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.02), 0 8px 18px -8px #021125;
+}
+/* small tweak for mobile */
+@media (max-width: 480px) {
+    .container { padding: 20px; }
+    h2 { font-size: 1.7rem; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>📊 Compound Interest<br><span style="font-size: 1rem; font-weight: 400;">see your money grow</span></h2>
+
+    <div class="input-group">
+        <label>💰 Initial investment ($)</label>
+        <input type="number" id="principal" placeholder="e.g. 5000" value="5000" step="any">
+    </div>
+
+    <div class="input-group">
+        <label>📉 Annual interest rate (%)</label>
+        <input type="number" id="rate" placeholder="e.g. 7.5" value="7" step="any">
+    </div>
+
+    <div class="input-group">
+        <label>⏳ Duration (years)</label>
+        <input type="number" id="years" placeholder="e.g. 10" value="10" min="1" step="1">
+    </div>
+
+    <div class="input-group">
+        <label>🔄 Compounding frequency</label>
+        <select id="compound">
+            <option value="1">Yearly</option>
+            <option value="4" selected>Quarterly</option>
+            <option value="12">Monthly</option>
+            <option value="365">Daily (approx.)</option>
+        </select>
+    </div>
+
+    <button onclick="calculate()">🚀 Calculate growth</button>
+
+    <div class="result" id="result">
+        <span>⟡ Final amount: </span><strong id="finalVal">$10,035.42</strong>
+        <span>⟡ Total interest: </span><strong id="interestVal">$5,035.42</strong>
+    </div>
+
+    <canvas id="growthChart" width="400" height="200"></canvas>
+</div>
+
+<script>
+    let chart; // hold chart instance
+
+    // formatting helpers
+    function formatMoney(amount) {
+        return '$' + Number(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+
+    function calculate(){
+        // get references
+        const principalInput = document.getElementById("principal");
+        const rateInput = document.getElementById("rate");
+        const yearsInput = document.getElementById("years");
+        const compoundSelect = document.getElementById("compound");
+        const finalSpan = document.getElementById("finalVal");
+        const interestSpan = document.getElementById("interestVal");
+
+        // parse values
+        let P = parseFloat(principalInput.value);
+        let rPercent = parseFloat(rateInput.value);
+        let t = parseFloat(yearsInput.value);
+        let n = parseInt(compoundSelect.value, 10);
+
+        // validation
+        if (isNaN(P) || P < 0) {
+            alert("Please enter a valid positive initial investment.");
+            return;
+        }
+        if (isNaN(rPercent) || rPercent < 0) {
+            alert("Please enter a valid interest rate (>=0).");
+            return;
+        }
+        if (isNaN(t) || t <= 0) {
+            alert("Duration must be greater than 0.");
+            return;
+        }
+        if (isNaN(n) || n < 1) {
+            n = 1; // fallback
+        }
+
+        const r = rPercent / 100; // decimal rate
+
+        // pre-allocate arrays for chart
+        let labels = [];
+        let data = [];
+
+        // Compute year by year (including year 0 for starting point)
+        for (let year = 0; year <= t; year++) {
+            // compound formula A = P * (1 + r/n)^(n*year)
+            // use Math.pow for clarity
+            let amount = P * Math.pow((1 + r / n), n * year);
+            // round to two decimals for display, but keep full for chart consistency
+            let rounded = Math.round(amount * 100) / 100;
+            labels.push("Year " + year);
+            data.push(rounded);
+        }
+
+        let finalAmount = data[data.length - 1];
+        let totalInterest = finalAmount - P;
+
+        // update result fields
+        finalSpan.innerText = formatMoney(finalAmount);
+        interestSpan.innerText = formatMoney(totalInterest);
+
+        // chart handling: destroy old if exists
+        if (chart) {
+            chart.destroy();
+        }
+
+        // get canvas context
+        const ctx = document.getElementById('growthChart').getContext('2d');
+
+        // create new chart
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Portfolio value ($)',
+                    data: data,
+                    borderColor: '#1e3c72',
+                    backgroundColor: 'rgba(30, 60, 114, 0.08)',
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointHoverRadius: 9,
+                    pointBackgroundColor: '#2a5298',
+                    tension: 0.1,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { usePointStyle: true, boxWidth: 8, color: '#102a44' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let val = context.raw;
+                                return ' $' + val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toFixed(0);
+                            }
+                        },
+                        grid: { color: '#d9e2ef' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    // initial calculation when page loads to show default chart + values
+    window.addEventListener('load', function() {
+        calculate();
+    });
+</script>
+<!-- optional note: Compound selection now includes daily -->
+</body>
+</html>
