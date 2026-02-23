@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Converter – JPG, PNG, WEBP</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#4e73df,#1cc88a);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:15px;
+    box-sizing:border-box;
+}
+
+.container{
+    background:#fff;
+    width:100%;
+    max-width:420px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+h1{
+    margin-bottom:15px;
+    color:#333;
+}
+
+input[type="file"]{
+    margin:15px 0;
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    box-sizing:border-box;
+}
+
+select,button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+button{
+    background:#4e73df;
+    color:white;
+    border:none;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#2e59d9;
+}
+
+button:focus{
+    outline:2px solid #4e73df;
+    outline-offset:2px;
+}
+
+img{
+    max-width:100%;
+    margin-top:15px;
+    border-radius:10px;
+    border:1px solid #eee;
+}
+
+.download-btn{
+    display:none;
+    margin-top:10px;
+    background:#1cc88a;
+}
+
+.download-btn:hover{
+    background:#17a673;
+}
+
+.footer{
+    margin-top:15px;
+    font-size:13px;
+    color:#777;
+}
+
+.quality-control{
+    margin-top:10px;
+    text-align:left;
+}
+
+.quality-control label{
+    display:block;
+    margin-bottom:5px;
+    color:#555;
+    font-size:14px;
+}
+
+.quality-control input{
+    width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Image Converter</h1>
+    <p>Convert JPG, PNG, WEBP instantly</p>
+
+    <input type="file" id="upload" accept="image/*" aria-label="Choose image file">
+    
+    <select id="format" aria-label="Select output format">
+        <option value="image/jpeg">Convert to JPG</option>
+        <option value="image/png">Convert to PNG</option>
+        <option value="image/webp">Convert to WEBP</option>
+    </select>
+
+    <div class="quality-control">
+        <label for="quality">Quality (for JPG/WEBP): <span id="qualityValue">92%</span></label>
+        <input type="range" id="quality" min="0.1" max="1" step="0.01" value="0.92">
+    </div>
+
+    <button onclick="convertImage()" aria-label="Convert image">Convert Image</button>
+
+    <img id="preview" alt="Image preview">
+
+    <a id="downloadLink" aria-label="Download link">
+        <button class="download-btn" id="downloadBtn">Download Image</button>
+    </a>
+
+    <div class="footer">Fast • Secure • Free</div>
+</div>
+
+<script>
+let uploadedImage = null;
+
+// Quality slider display
+document.getElementById('quality').addEventListener('input', function(e) {
+    document.getElementById('qualityValue').textContent = Math.round(e.target.value * 100) + '%';
+});
+
+document.getElementById("upload").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    // Hide download button on new upload
+    document.getElementById("downloadBtn").style.display = "none";
+    
+    // Clear preview
+    document.getElementById("preview").src = "";
+
+    // Check file size (optional - limit to 10MB)
+    if(file.size > 10 * 1024 * 1024) {
+        alert("File is too large. Please upload an image under 10MB.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event){
+        uploadedImage = new Image();
+        uploadedImage.onload = function() {
+            document.getElementById("preview").src = uploadedImage.src;
+            document.getElementById("preview").alt = file.name;
+        }
+        uploadedImage.onerror = function() {
+            alert("Error loading image. Please try another file.");
+            uploadedImage = null;
+            document.getElementById("preview").src = "";
+        }
+        uploadedImage.src = event.target.result;
+    };
+    
+    reader.onerror = function() {
+        alert("Error reading file. Please try again.");
+    };
+    
+    reader.readAsDataURL(file);
+});
+
+function convertImage(){
+    if(!uploadedImage){
+        alert("Please upload an image first!");
+        return;
+    }
+
+    // Check if image is fully loaded
+    if(!uploadedImage.complete || uploadedImage.naturalWidth === 0){
+        alert("Image not fully loaded. Please try again.");
+        return;
+    }
+
+    try {
+        const format = document.getElementById("format").value;
+        const quality = parseFloat(document.getElementById("quality").value);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set canvas dimensions to match image
+        canvas.width = uploadedImage.naturalWidth;
+        canvas.height = uploadedImage.naturalHeight;
+
+        // Draw image to canvas
+        ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+
+        // Convert to selected format
+        let converted;
+        if(format === 'image/jpeg' || format === 'image/webp') {
+            converted = canvas.toDataURL(format, quality);
+        } else {
+            converted = canvas.toDataURL(format, 1.0); // PNG is lossless
+        }
+
+        const downloadLink = document.getElementById("downloadLink");
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        downloadLink.href = converted;
+        
+        // Set correct file extension based on format
+        let extension = format.split('/')[1];
+        // Handle jpeg extension
+        if(extension === 'jpeg') extension = 'jpg';
+        
+        // Generate filename with timestamp
+        const timestamp = new Date().getTime();
+        downloadLink.download = `converted-image-${timestamp}.${extension}`;
+
+        // Show download button
+        downloadBtn.style.display = "block";
+        
+        // Optional: Show success message
+        console.log('Conversion successful!');
+        
+    } catch (error) {
+        alert("Error converting image. Please try again.");
+        console.error("Conversion error:", error);
+    }
+}
+
+// Handle keyboard accessibility
+document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape' && document.getElementById('downloadBtn').style.display === 'block') {
+        document.getElementById('downloadBtn').style.display = 'none';
+    }
+});
+</script>
+
+</body>
+</html>
