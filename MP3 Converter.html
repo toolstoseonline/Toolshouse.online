@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Any to MP3 Converter & Combiner</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.0/lame.min.js"></script>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+.container{
+    background:white;
+    color:black;
+    padding:20px;
+    border-radius:15px;
+    max-width:600px;
+    margin:auto;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+h1{margin-bottom:10px;}
+input{
+    margin:15px 0;
+}
+button{
+    padding:10px 20px;
+    margin:10px;
+    border:none;
+    border-radius:8px;
+    background:#2a5298;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#1e3c72;
+}
+.progress{
+    width:100%;
+    background:#ddd;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:15px;
+}
+.progress-bar{
+    height:20px;
+    width:0%;
+    background:#2a5298;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>🎵 MP3 Converter & Combiner</h1>
+
+<input type="file" id="audioInput" multiple accept="audio/*"><br>
+
+<button onclick="convertToMP3()">Convert to MP3</button>
+<button onclick="combineToMP3()">Combine & Download MP3</button>
+
+<div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<p id="status"></p>
+</div>
+
+<script>
+
+function updateProgress(percent){
+    document.getElementById("progressBar").style.width = percent + "%";
+}
+
+async function readFile(file){
+    return new Promise((resolve)=>{
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+async function convertToMP3(){
+    const files = document.getElementById("audioInput").files;
+    if(files.length === 0){
+        alert("Please select audio file!");
+        return;
+    }
+
+    const audioContext = new AudioContext();
+    const file = files[0];
+    const arrayBuffer = await readFile(file);
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    encodeMP3(audioBuffer);
+}
+
+async function combineToMP3(){
+    const files = document.getElementById("audioInput").files;
+    if(files.length < 2){
+        alert("Select at least 2 files to combine!");
+        return;
+    }
+
+    const audioContext = new AudioContext();
+    let buffers = [];
+
+    for(let i=0;i<files.length;i++){
+        document.getElementById("status").innerText = "Processing file " + (i+1);
+        const arrayBuffer = await readFile(files[i]);
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        buffers.push(audioBuffer);
+        updateProgress((i/files.length)*50);
+    }
+
+    const totalLength = buffers.reduce((acc,b)=> acc + b.length,0);
+    const outputBuffer = audioContext.createBuffer(
+        buffers[0].numberOfChannels,
+        totalLength,
+        buffers[0].sampleRate
+    );
+
+    let offset = 0;
+    buffers.forEach(buffer=>{
+        for(let channel=0; channel<buffer.numberOfChannels; channel++){
+            outputBuffer.getChannelData(channel)
+                .set(buffer.getChannelData(channel), offset);
+        }
+        offset += buffer.length;
+    });
+
+    encodeMP3(outputBuffer);
+}
+
+function encodeMP3(audioBuffer){
+
+    const mp3encoder = new lamejs.Mp3Encoder(
+        audioBuffer.numberOfChannels,
+        audioBuffer.sampleRate,
+        128
+    );
+
+    let mp3Data = [];
+    const samples = audioBuffer.getChannelData(0);
+    const sampleBlockSize = 1152;
+
+    for(let i=0; i<samples.length; i+=sampleBlockSize){
+        const sampleChunk = samples.subarray(i, i+sampleBlockSize);
+        const mp3buf = mp3encoder.encodeBuffer(
+            floatTo16BitPCM(sampleChunk)
+        );
+        if(mp3buf.length > 0){
+            mp3Data.push(mp3buf);
+        }
+        updateProgress((i/samples.length)*100);
+    }
+
+    const mp3buf = mp3encoder.flush();
+    if(mp3buf.length > 0){
+        mp3Data.push(mp3buf);
+    }
+
+    const blob = new Blob(mp3Data, {type:'audio/mp3'});
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "output.mp3";
+    a.click();
+
+    document.getElementById("status").innerText = "Download Ready!";
+    updateProgress(100);
+}
+
+function floatTo16BitPCM(input){
+    const output = new Int16Array(input.length);
+    for(let i=0; i<input.length; i++){
+        let s = Math.max(-1, Math.min(1, input[i]));
+        output[i] = s < 0 ? s*0x8000 : s*0x7FFF;
+    }
+    return output;
+}
+
+</script>
+
+</body>
+</html>
