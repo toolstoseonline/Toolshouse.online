@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GST Calculator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#11998e,#38ef7d);
+    text-align:center;
+    padding:30px;
+}
+.container{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    max-width:500px;
+    margin:auto;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+h1{
+    margin-bottom:20px;
+}
+input, select{
+    padding:10px;
+    margin:10px;
+    width:80%;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+button{
+    padding:10px 20px;
+    margin:10px;
+    border:none;
+    border-radius:8px;
+    background:#11998e;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#0f7f73;
+}
+.result{
+    margin-top:20px;
+    font-size:18px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>💰 GST Calculator</h1>
+
+<input type="number" id="amount" placeholder="Enter Amount">
+
+<select id="gstRate">
+    <option value="5">5%</option>
+    <option value="12">12%</option>
+    <option value="18">18%</option>
+    <option value="28">28%</option>
+</select>
+<br>
+
+<button onclick="addGST()">Add GST</button>
+<button onclick="removeGST()">Remove GST</button>
+
+<div class="result" id="result"></div>
+</div>
+
+<script>
+function addGST(){
+    let amount = parseFloat(document.getElementById("amount").value);
+    let rate = parseFloat(document.getElementById("gstRate").value);
+
+    if(isNaN(amount)){
+        alert("Please enter valid amount!");
+        return;
+    }
+
+    let gstAmount = (amount * rate) / 100;
+    let total = amount + gstAmount;
+
+    document.getElementById("result").innerHTML =
+        "GST Amount: " + gstAmount.toFixed(2) + "<br>Total Amount: " + total.toFixed(2);
+}
+
+function removeGST(){
+    let amount = parseFloat(document.getElementById("amount").value);
+    let rate = parseFloat(document.getElementById("gstRate").value);
+
+    if(isNaN(amount)){
+        alert("Please enter valid amount!");
+        return;
+    }
+
+    let original = amount / (1 + rate/100);
+    let gstAmount = amount - original;
+
+    document.getElementById("result").innerHTML =
+        "Original Amount: " + original.toFixed(2) + "<br>GST Included: " + gstAmount.toFixed(2);
+}
+</script>
+
+</body>
+</html>
