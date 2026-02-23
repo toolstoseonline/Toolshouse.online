@@ -1,434 +1,90 @@
-<!doctype html>
-<html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF to Word Converter</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.5); }
-        }
-        
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-        
-        .float-animation { animation: float 3s ease-in-out infinite; }
-        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-        .spin { animation: spin 1s linear infinite; }
-        
-        .drop-zone {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
-            border: 2px dashed rgba(99, 102, 241, 0.4);
-            transition: all 0.3s ease;
-        }
-        
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: rgba(99, 102, 241, 0.8);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-            transform: scale(1.02);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .preview-container {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        }
-        
-        .toast {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-    </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-auto"><!-- Toast Container -->
-  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
-  <div class="min-h-full flex items-center justify-center p-6">
-   <div class="w-full max-w-lg"><!-- Main Card -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 pulse-glow"><!-- Header -->
-     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-4 float-animation">
-       <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-       </svg>
-      </div>
-      <h1 id="titleText" class="text-2xl font-bold text-gray-800 mb-2">PDF to Word Converter</h1>
-      <p class="text-gray-500 text-sm">Transform your PDFs into editable Word documents</p>
-     </div><!-- Drop Zone -->
-     <div id="dropZone" class="drop-zone rounded-2xl p-8 text-center cursor-pointer mb-6"><input type="file" id="fileInput" class="hidden" accept="application/pdf">
-      <div id="uploadPrompt">
-       <svg class="w-12 h-12 mx-auto mb-4 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-       </svg>
-       <p id="uploadText" class="text-gray-600 font-medium mb-1">Drag &amp; Drop your PDF here</p>
-       <p class="text-gray-400 text-sm">or click to browse files</p>
-      </div>
-      <div id="fileInfo" class="hidden">
-       <div class="flex items-center justify-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-         <svg class="w-5 h-5 text-red-500" fill="currentColor" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z" />
-         </svg>
-        </div>
-        <div class="text-left">
-         <p id="fileName" class="text-gray-700 font-medium text-sm truncate max-w-[200px]"></p>
-         <p id="fileSize" class="text-gray-400 text-xs"></p>
-        </div><button id="removeFile" class="ml-2 w-8 h-8 rounded-full bg-gray-100 hover:bg-red-100 flex items-center justify-center transition-colors">
-         <svg class="w-4 h-4 text-gray-500 hover:text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-         </svg></button>
-       </div>
-      </div>
-     </div><!-- Preview -->
-     <div id="previewContainer" class="hidden preview-container rounded-xl p-4 mb-6">
-      <p class="text-xs text-gray-500 mb-2 font-medium">Preview (Page 1)</p>
-      <canvas id="previewCanvas" class="w-full rounded-lg shadow-inner"></canvas>
-     </div><!-- Convert Button --> <button id="convertBtn" class="btn-primary w-full py-4 rounded-xl text-white font-semibold text-lg disabled:opacity-50" disabled> <span id="btnContent" class="flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-       </svg><span id="buttonText">Convert to Word</span> </span> <span id="loadingContent" class="hidden flex items-center justify-center gap-2">
-       <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full spin"></div> Converting... </span> </button> <!-- Footer -->
-     <p class="text-center text-gray-400 text-xs mt-6">Secure conversion • No data stored • Instant download</p>
-    </div>
-   </div>
-  </div>
-  <script>
-        // PDF.js worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        
-        // Default configuration
-        const defaultConfig = {
-            title_text: 'PDF to Word Converter',
-            upload_text: 'Drag & Drop your PDF here',
-            button_text: 'Convert to Word',
-            primary_color: '#6366f1',
-            secondary_color: '#a855f7',
-            background_color: '#1e1b4b',
-            text_color: '#1f2937',
-            surface_color: '#ffffff',
-            font_family: 'Plus Jakarta Sans',
-            font_size: 16
-        };
-        
-        let config = { ...defaultConfig };
-        let pdfFile = null;
-        let pdfDoc = null;
-        
-        // DOM Elements
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const uploadPrompt = document.getElementById('uploadPrompt');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileSize = document.getElementById('fileSize');
-        const removeFile = document.getElementById('removeFile');
-        const previewContainer = document.getElementById('previewContainer');
-        const previewCanvas = document.getElementById('previewCanvas');
-        const convertBtn = document.getElementById('convertBtn');
-        const btnContent = document.getElementById('btnContent');
-        const loadingContent = document.getElementById('loadingContent');
-        
-        // Toast notification
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            
-            const colors = {
-                success: 'bg-green-500',
-                error: 'bg-red-500',
-                info: 'bg-indigo-500',
-                warning: 'bg-amber-500'
-            };
-            
-            toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium max-w-xs`;
-            toast.textContent = message;
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-10px)';
-                toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-        
-        // File handling
-        dropZone.addEventListener('click', () => fileInput.click());
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
-        
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-over');
-        });
-        
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            handleFile(e.dataTransfer.files[0]);
-        });
-        
-        fileInput.addEventListener('change', (e) => {
-            handleFile(e.target.files[0]);
-        });
-        
-        removeFile.addEventListener('click', (e) => {
-            e.stopPropagation();
-            resetUpload();
-        });
-        
-        function resetUpload() {
-            pdfFile = null;
-            pdfDoc = null;
-            fileInput.value = '';
-            uploadPrompt.classList.remove('hidden');
-            fileInfo.classList.add('hidden');
-            previewContainer.classList.add('hidden');
-            convertBtn.disabled = true;
-        }
-        
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / 1048576).toFixed(1) + ' MB';
-        }
-        
-        async function handleFile(file) {
-            if (!file) return;
-            
-            if (file.type !== 'application/pdf') {
-                showToast('Please upload a valid PDF file', 'error');
-                return;
-            }
-            
-            if (file.size > 50 * 1024 * 1024) {
-                showToast('File size must be under 50MB', 'error');
-                return;
-            }
-            
-            pdfFile = file;
-            
-            // Update UI
-            uploadPrompt.classList.add('hidden');
-            fileInfo.classList.remove('hidden');
-            fileName.textContent = file.name;
-            fileSize.textContent = formatFileSize(file.size);
-            convertBtn.disabled = false;
-            
-            // Load PDF preview
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                
-                const page = await pdfDoc.getPage(1);
-                const scale = 0.5;
-                const viewport = page.getViewport({ scale });
-                
-                previewCanvas.width = viewport.width;
-                previewCanvas.height = viewport.height;
-                
-                await page.render({
-                    canvasContext: previewCanvas.getContext('2d'),
-                    viewport: viewport
-                }).promise;
-                
-                previewContainer.classList.remove('hidden');
-                showToast('PDF loaded successfully!', 'success');
-                
-            } catch (err) {
-                console.error('PDF load error:', err);
-                showToast('Failed to load PDF preview', 'error');
-            }
-        }
-        
-        // Convert to Word
-        convertBtn.addEventListener('click', async () => {
-            if (!pdfFile || !pdfDoc) {
-                showToast('Please upload a PDF first', 'warning');
-                return;
-            }
-            
-            // Show loading state
-            btnContent.classList.add('hidden');
-            loadingContent.classList.remove('hidden');
-            convertBtn.disabled = true;
-            
-            try {
-                let fullText = '';
-                
-                // Extract text from all pages
-                for (let i = 1; i <= pdfDoc.numPages; i++) {
-                    const page = await pdfDoc.getPage(i);
-                    const content = await page.getTextContent();
-                    
-                    let pageText = '';
-                    let lastY = null;
-                    
-                    content.items.forEach(item => {
-                        // Add line breaks when Y position changes significantly
-                        if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
-                            pageText += '\n';
-                        }
-                        pageText += item.str + ' ';
-                        lastY = item.transform[5];
-                    });
-                    
-                    fullText += pageText + '\n\n--- Page ' + i + ' ---\n\n';
-                }
-                
-                if (!fullText.trim()) {
-                    showToast('No extractable text found in PDF. The PDF may contain only images.', 'warning');
-                    return;
-                }
-                
-                // Create Word-compatible HTML document
-                const docContent = `
-                    <html xmlns:o="urn:schemas-microsoft-com:office:office" 
-                          xmlns:w="urn:schemas-microsoft-com:office:word" 
-                          xmlns="http://www.w3.org/TR/REC-html40">
-                    <head>
-                        <meta charset="utf-8">
-                        <title>${pdfFile.name.replace('.pdf', '')}</title>
-                        <style>
-                            body { 
-                                font-family: Arial, sans-serif; 
-                                font-size: 12pt; 
-                                line-height: 1.6;
-                                margin: 1in;
-                            }
-                            p { margin-bottom: 12pt; }
-                        </style>
-                    </head>
-                    <body>
-                        ${fullText.split('\n').map(line => line.trim() ? `<p>${escapeHtml(line)}</p>` : '').join('')}
-                    </body>
-                    </html>
-                `;
-                
-                // Create and download file
-                const blob = new Blob([docContent], { type: 'application/msword' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = pdfFile.name.replace('.pdf', '.doc');
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showToast('Conversion complete! Downloading...', 'success');
-                
-            } catch (err) {
-                console.error('Conversion error:', err);
-                showToast('Conversion failed. Please try again.', 'error');
-            } finally {
-                // Reset button state
-                btnContent.classList.remove('hidden');
-                loadingContent.classList.add('hidden');
-                convertBtn.disabled = false;
-            }
-        });
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Element SDK Integration
-        async function onConfigChange(cfg) {
-            config = { ...defaultConfig, ...cfg };
-            
-            document.getElementById('titleText').textContent = config.title_text || defaultConfig.title_text;
-            document.getElementById('uploadText').textContent = config.upload_text || defaultConfig.upload_text;
-            document.getElementById('buttonText').textContent = config.button_text || defaultConfig.button_text;
-            
-            // Apply font
-            const fontFamily = config.font_family || defaultConfig.font_family;
-            document.body.style.fontFamily = `${fontFamily}, sans-serif`;
-        }
-        
-        function mapToCapabilities(cfg) {
-            return {
-                recolorables: [
-                    {
-                        get: () => cfg.background_color || defaultConfig.background_color,
-                        set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
-                    },
-                    {
-                        get: () => cfg.surface_color || defaultConfig.surface_color,
-                        set: (v) => { cfg.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }
-                    },
-                    {
-                        get: () => cfg.text_color || defaultConfig.text_color,
-                        set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
-                    },
-                    {
-                        get: () => cfg.primary_color || defaultConfig.primary_color,
-                        set: (v) => { cfg.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); }
-                    },
-                    {
-                        get: () => cfg.secondary_color || defaultConfig.secondary_color,
-                        set: (v) => { cfg.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); }
-                    }
-                ],
-                borderables: [],
-                fontEditable: {
-                    get: () => cfg.font_family || defaultConfig.font_family,
-                    set: (v) => { cfg.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-                },
-                fontSizeable: {
-                    get: () => cfg.font_size || defaultConfig.font_size,
-                    set: (v) => { cfg.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-                }
-            };
-        }
-        
-        function mapToEditPanelValues(cfg) {
-            return new Map([
-                ['title_text', cfg.title_text || defaultConfig.title_text],
-                ['upload_text', cfg.upload_text || defaultConfig.upload_text],
-                ['button_text', cfg.button_text || defaultConfig.button_text]
-            ]);
-        }
-        
-        // Initialize SDK
-        if (window.elementSdk) {
-            window.elementSdk.init({
-                defaultConfig,
-                onConfigChange,
-                mapToCapabilities,
-                mapToEditPanelValues
-            });
-        }
-    </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d273e9af4f990aa',t:'MTc3MTg1NTE3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+(<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 7]> <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 8]> <html class="no-js ie8 oldie" lang="en-US"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US"> <!--<![endif]-->
+<head>
+<title>Attention Required! | Cloudflare</title>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" id="cf_styles-css" href="/cdn-cgi/styles/cf.errors.css" />
+<!--[if lt IE 9]><link rel="stylesheet" id='cf_styles-ie-css' href="/cdn-cgi/styles/cf.errors.ie.css" /><![endif]-->
+<style>body{margin:0;padding:0}</style>
+
+
+<!--[if gte IE 10]><!-->
+<script>
+if (!navigator.cookieEnabled) {
+window.addEventListener('DOMContentLoaded', function () {
+var cookieEl = document.getElementById('cookie-alert');
+cookieEl.style.display = 'block';
+})
+}
+</script>
+<!--<![endif]-->
+
+</head>
+<body>
+<div id="cf-wrapper">
+<div class="cf-alert cf-alert-error cf-cookie-error" id="cookie-alert" data-translate="enable_cookies">Please enable cookies.</div>
+<div id="cf-error-details" class="cf-error-details-wrapper">
+<div class="cf-wrapper cf-header cf-error-overview">
+<h1 data-translate="block_headline">Sorry, you have been blocked</h1>
+<h2 class="cf-subheadline"><span data-translate="unable_to_access">You are unable to access</span> chatgptfree.ai</h2>
+</div><!-- /.header -->
+
+<div class="cf-section cf-highlight">
+<div class="cf-wrapper">
+<div class="cf-screenshot-container cf-screenshot-full">
+
+<span class="cf-no-screenshot error"></span>
+
+</div>
+</div>
+</div><!-- /.captcha-container -->
+
+<div class="cf-section cf-wrapper">
+<div class="cf-columns two">
+<div class="cf-column">
+<h2 data-translate="blocked_why_headline">Why have I been blocked?</h2>
+
+<p data-translate="blocked_why_detail">This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data.</p>
+</div>
+
+<div class="cf-column">
+<h2 data-translate="blocked_resolve_headline">What can I do to resolve this?</h2>
+
+<p data-translate="blocked_resolve_detail">You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page.</p>
+</div>
+</div>
+</div><!-- /.section -->
+
+<div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
+<p class="text-13">
+<span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9d276fceca12fd9a</strong></span>
+<span class="cf-footer-separator sm:hidden">&bull;</span>
+<span id="cf-footer-item-ip" class="cf-footer-item hidden sm:block sm:mb-1">
+Your IP:
+<button type="button" id="cf-footer-ip-reveal" class="cf-footer-ip-reveal-btn">Click to reveal</button>
+<span class="hidden" id="cf-footer-ip">103.115.198.235</span>
+<span class="cf-footer-separator sm:hidden">&bull;</span>
+</span>
+<span class="cf-footer-item sm:block sm:mb-1"><span>Performance &amp; security by</span> <a rel="noopener noreferrer" href="https://www.cloudflare.com/5xx-error-landing" id="brand_link" target="_blank">Cloudflare</a></span>
+
+</p>
+<script>(function(){function d(){var b=a.getElementById("cf-footer-item-ip"),c=a.getElementById("cf-footer-ip-reveal");b&&"classList"in b&&(b.classList.remove("hidden"),c.addEventListener("click",function(){c.classList.add("hidden");a.getElementById("cf-footer-ip").classList.remove("hidden")}))}var a=document;document.addEventListener&&a.addEventListener("DOMContentLoaded",d)})();</script>
+</div><!-- /.error-footer -->
+
+</div><!-- /#cf-error-details -->
+</div><!-- /#cf-wrapper -->
+
+<script>
+window._cf_translation = {};
+
+
+</script>
+</body>
+</html>)
