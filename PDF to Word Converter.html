@@ -1,851 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to Word Converter | Convert PDF to Word Documents Online</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            animation: gradientShift 10s ease infinite;
-            background-size: 400% 400%;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Navigation */
-        nav {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            cursor: pointer;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: #667eea;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .cta-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white !important;
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .cta-button::after {
-            display: none;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1400px;
-            margin: 3rem auto;
-            padding: 0 5%;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            color: white;
-            margin-bottom: 4rem;
-            animation: fadeInUp 1s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        /* Upload Area */
-        .upload-area {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            border: 3px dashed #cbd5e0;
-            margin-bottom: 3rem;
-            cursor: pointer;
-            animation: fadeInUp 1s ease 0.2s both;
-        }
-
-        .upload-area:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-            border-color: #667eea;
-        }
-
-        .upload-area.dragover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .upload-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-        }
-
-        .upload-area h2 {
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-area p {
-            color: #666;
-            margin-bottom: 1rem;
-        }
-
-        .browse-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .browse-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        /* File Info */
-        .file-info {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .file-details {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .file-icon {
-            font-size: 2rem;
-        }
-
-        .file-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.25rem;
-        }
-
-        .file-size {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            width: 100%;
-            height: 10px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 2rem 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0;
-            transition: width 0.3s ease;
-            border-radius: 10px;
-        }
-
-        /* Convert Button */
-        .convert-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-        }
-
-        .convert-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .convert-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Features Section */
-        .features {
-            margin: 5rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            animation: fadeInUp 1s ease;
-            animation-fill-mode: both;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .feature-card:nth-child(1) { animation-delay: 0.1s; }
-        .feature-card:nth-child(2) { animation-delay: 0.2s; }
-        .feature-card:nth-child(3) { animation-delay: 0.3s; }
-        .feature-card:nth-child(4) { animation-delay: 0.4s; }
-        .feature-card:nth-child(5) { animation-delay: 0.5s; }
-        .feature-card:nth-child(6) { animation-delay: 0.6s; }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .feature-card h3 {
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card p {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        /* How It Works */
-        .how-it-works {
-            margin: 5rem 0;
-        }
-
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .step {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-
-        .step:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .step-number {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0 auto 1rem;
-        }
-
-        .step h3 {
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .step p {
-            color: #666;
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: white;
-            border-radius: 10px;
-            padding: 1rem 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success {
-            border-left: 4px solid #48bb78;
-        }
-
-        .toast.error {
-            border-left: 4px solid #f56565;
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 4rem 5% 2rem;
-            margin-top: 5rem;
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-        }
-
-        .footer-section h4 {
-            color: #333;
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-section ul li a {
-            color: #666;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-section ul li a:hover {
-            color: #667eea;
-        }
-
-        .copyright {
-            text-align: center;
-            color: #666;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .upload-area {
-                padding: 2rem;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .steps-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF to Word Converter</title>
+
+<!-- PDF.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#4e73df,#1cc88a);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.container{
+    background:#fff;
+    padding:30px;
+    border-radius:15px;
+    width:90%;
+    max-width:450px;
+    text-align:center;
+    box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+h1{
+    margin-bottom:20px;
+}
+input{
+    margin:15px 0;
+}
+button{
+    background:#4e73df;
+    color:#fff;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
+}
+button:hover{
+    background:#2e59d9;
+}
+#status{
+    margin-top:15px;
+    font-size:14px;
+    color:#555;
+}
+</style>
 </head>
+
 <body>
-    <nav>
-        <div class="nav-container">
-            <div class="logo">PDFtoWord</div>
-            <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#" class="cta-button">Sign Up Free</a>
-            </div>
-        </div>
-    </nav>
 
-    <div class="container">
-        <div class="hero">
-            <h1>Convert PDF to Word Instantly</h1>
-            <p>Free, fast, and secure online PDF to Word conversion</p>
-        </div>
+<div class="container">
+    <h1>PDF to Word Converter</h1>
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <br>
+    <button onclick="convertPDF()">Convert to Word</button>
+    <p id="status"></p>
+</div>
 
-        <!-- Upload Area -->
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📄</div>
-            <h2>Drag & Drop Your PDF Here</h2>
-            <p>or</p>
-            <input type="file" id="fileInput" accept=".pdf" hidden>
-            <button class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse Files</button>
-            <p style="margin-top: 1rem; font-size: 0.9rem;">Maximum file size: 50MB</p>
-        </div>
+<script>
+async function convertPDF(){
+    const fileInput = document.getElementById('pdfFile');
+    const status = document.getElementById('status');
 
-        <!-- File Info (Hidden by default) -->
-        <div id="fileInfo" class="file-info" style="display: none;">
-            <div class="file-details">
-                <span class="file-icon">📄</span>
-                <div>
-                    <div class="file-name" id="fileName"></div>
-                    <div class="file-size" id="fileSize"></div>
-                </div>
-            </div>
-            <div class="progress-container" id="progressContainer" style="display: none;">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            <button class="convert-btn" id="convertBtn" disabled>Convert to Word</button>
-        </div>
+    if(!fileInput.files.length){
+        alert("Please upload a PDF file.");
+        return;
+    }
 
-        <!-- Features Section -->
-        <section id="features" class="features">
-            <h2 class="section-title">Why Choose Our Converter?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Lightning Fast</h3>
-                    <p>Convert your PDF files to Word documents in seconds with our optimized conversion engine</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Secure & Private</h3>
-                    <p>Your files are automatically deleted from our servers after conversion. 100% secure</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>High Accuracy</h3>
-                    <p>Advanced OCR technology ensures perfect formatting and text recognition</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💻</div>
-                    <h3>No Installation</h3>
-                    <p>Works directly in your browser. No software download required</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3>All Platforms</h3>
-                    <p>Works on Windows, Mac, Linux, and mobile devices. Any browser supported</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Mobile Friendly</h3>
-                    <p>Fully responsive design that works perfectly on smartphones and tablets</p>
-                </div>
-            </div>
-        </section>
+    const file = fileInput.files[0];
+    const reader = new FileReader();
 
-        <!-- How It Works -->
-        <section id="how-it-works" class="how-it-works">
-            <h2 class="section-title">How It Works</h2>
-            <div class="steps-grid">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Upload PDF</h3>
-                    <p>Drag and drop your PDF file or click to browse from your device</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Convert</h3>
-                    <p>Click convert and watch as we transform your PDF to Word format</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Download</h3>
-                    <p>Download your converted Word document instantly</p>
-                </div>
-            </div>
-        </section>
-    </div>
+    reader.onload = async function(){
+        const typedarray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Tools</h4>
-                <ul>
-                    <li><a href="#">PDF to Word</a></li>
-                    <li><a href="#">PDF to Excel</a></li>
-                    <li><a href="#">PDF to PPT</a></li>
-                    <li><a href="#">PDF to JPG</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Company</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Cookie Policy</a></li>
-                    <li><a href="#">GDPR</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2024 PDFtoWord Converter. All rights reserved.</p>
-        </div>
-    </footer>
+        let fullText = "";
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-    </div>
-
-    <script>
-        // DOM Elements
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileSize = document.getElementById('fileSize');
-        const convertBtn = document.getElementById('convertBtn');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressBar = document.getElementById('progressBar');
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toastMessage');
-
-        let selectedFile = null;
-
-        // Drag and drop functionality
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                handleFileSelect(file);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                handleFileSelect(file);
-            }
-        });
-
-        // Handle file selection
-        function handleFileSelect(file) {
-            // Validate file type
-            if (file.type !== 'application/pdf') {
-                showToast('Please select a PDF file', 'error');
-                return;
-            }
-
-            // Validate file size (50MB limit)
-            const maxSize = 50 * 1024 * 1024; // 50MB in bytes
-            if (file.size > maxSize) {
-                showToast('File size exceeds 50MB limit', 'error');
-                return;
-            }
-
-            selectedFile = file;
-            
-            // Display file info
-            fileName.textContent = file.name;
-            fileSize.textContent = formatFileSize(file.size);
-            fileInfo.style.display = 'block';
-            convertBtn.disabled = false;
-            
-            // Reset progress
-            progressContainer.style.display = 'none';
-            progressBar.style.width = '0%';
-            
-            showToast('File uploaded successfully!', 'success');
+        for(let i = 1; i <= pdf.numPages; i++){
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            const strings = content.items.map(item => item.str);
+            fullText += strings.join(" ") + "\n\n";
         }
 
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
+        downloadWord(fullText);
+        status.innerText = "Conversion Complete!";
+    };
 
-        // Convert button click handler
-        convertBtn.addEventListener('click', () => {
-            if (!selectedFile) return;
-            
-            convertBtn.disabled = true;
-            progressContainer.style.display = 'block';
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 30;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // Simulate conversion completion
-                    setTimeout(() => {
-                        progressBar.style.width = '100%';
-                        showToast('Conversion complete! Downloading...', 'success');
-                        
-                        // Simulate download
-                        setTimeout(() => {
-                            progressContainer.style.display = 'none';
-                            convertBtn.disabled = false;
-                            
-                            // Reset for next file
-                            selectedFile = null;
-                            fileInfo.style.display = 'none';
-                            fileInput.value = '';
-                            
-                            showToast('File downloaded successfully!', 'success');
-                        }, 1000);
-                    }, 500);
-                }
-                progressBar.style.width = progress + '%';
-            }, 200);
-            
-            // Add spinner to button
-            convertBtn.innerHTML = '<span class="spinner"></span>Converting...';
-            
-            // Restore button text after conversion
-            setTimeout(() => {
-                convertBtn.innerHTML = 'Convert to Word';
-            }, 3000);
-        });
+    reader.readAsArrayBuffer(file);
+    status.innerText = "Converting...";
+}
 
-        // Show toast notification
-        function showToast(message, type) {
-            toastMessage.textContent = message;
-            toast.className = 'toast ' + type;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
+function downloadWord(text){
+    const header = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+        xmlns:w='urn:schemas-microsoft-com:office:word' 
+        xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'></head><body>`;
+    const footer = "</body></html>";
 
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+    const sourceHTML = header + text.replace(/\n/g,"<br>") + footer;
 
-        // Feature card hover effect
-        const cards = document.querySelectorAll('.feature-card');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-10px) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) scale(1)';
-            });
-        });
+    const blob = new Blob(['\ufeff', sourceHTML], {
+        type: 'application/msword'
+    });
 
-        // Step card hover effect
-        const steps = document.querySelectorAll('.step');
-        steps.forEach(step => {
-            step.addEventListener('mouseenter', () => {
-                step.style.transform = 'translateY(-5px)';
-            });
-            
-            step.addEventListener('mouseleave', () => {
-                step.style.transform = 'translateY(0)';
-            });
-        });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "converted.doc";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
 
-        // Logo click - scroll to top
-        document.querySelector('.logo').addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Mobile menu toggle (simple version)
-        if (window.innerWidth <= 768) {
-            const navLinks = document.querySelector('.nav-links');
-            const logo = document.querySelector('.logo');
-            
-            logo.addEventListener('click', () => {
-                navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            });
-        }
-    </script>
 </body>
 </html>
