@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan EMI Calculator · clean results</title>
+<style>
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+}
+body {
+  background: linear-gradient(145deg, #0b1c24 0%, #1c3e4f 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 16px;
+}
+.container {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(2px);
+  color: #1e2b32;
+  padding: 32px 28px;
+  border-radius: 32px;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: 0 20px 40px -8px rgba(0,0,0,0.5), 0 8px 16px rgba(0,20,30,0.6);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+h2 {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  font-size: 2rem;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f2a33;
+  border-left: 6px solid #2c5364;
+  padding-left: 18px;
+}
+.subhead {
+  text-align: left;
+  margin: 4px 0 20px 0;
+  color: #3e5f6b;
+  font-weight: 400;
+  font-size: 0.95rem;
+  padding-left: 24px;
+}
+.input-group {
+  margin-bottom: 18px;
+  text-align: left;
+}
+label {
+  display: block;
+  margin-left: 6px;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #1d3d4b;
+  font-size: 0.95rem;
+}
+.input-icon {
+  display: flex;
+  align-items: center;
+  background: #f2f7fa;
+  border-radius: 60px;
+  border: 1px solid #bcd4df;
+  transition: 0.15s;
+  padding: 0 8px;
+}
+.input-icon:focus-within {
+  border-color: #2c5364;
+  box-shadow: 0 0 0 3px rgba(44,83,100,0.25);
+  background: white;
+}
+.input-icon input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #0b262f;
+  outline: none;
+}
+.input-icon input::placeholder {
+  color: #8faebd;
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+button {
+  width: 100%;
+  padding: 18px 20px;
+  margin: 16px 0 10px 0;
+  border: none;
+  border-radius: 60px;
+  background: #1f4b5c;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 8px 0 #0b2a33, 0 6px 16px rgba(0,0,0,0.3);
+  transition: 0.1s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+button:active {
+  transform: translateY(6px);
+  box-shadow: 0 2px 0 #0b2a33, 0 8px 18px rgba(0,0,0,0.2);
+}
+button:hover {
+  background: #256d84;
+}
+.result-card {
+  background: #e4f1f7;
+  border-radius: 28px;
+  padding: 22px 20px;
+  margin-top: 28px;
+  text-align: center;
+  border: 1px solid #bddae8;
+  box-shadow: inset 0 1px 4px white, 0 6px 10px rgba(0, 30, 40, 0.2);
+}
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.35rem;
+  font-weight: 500;
+  padding: 10px 8px;
+  border-bottom: 1px dashed #8fb7c9;
+}
+.result-item:last-child {
+  border-bottom: none;
+}
+.result-item .label {
+  color: #144f62;
+}
+.result-item .value {
+  font-weight: 700;
+  background: white;
+  padding: 5px 18px;
+  border-radius: 40px;
+  color: #033b49;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+#result {
+  font-size: 0;
+}
+.asterisk {
+  text-align: left;
+  font-size: 0.8rem;
+  color: #466b79;
+  margin-top: 16px;
+  padding-left: 10px;
+}
+.asterisk i {
+  font-style: normal;
+  background: #c4dee9;
+  padding: 2px 12px;
+  border-radius: 30px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>💰 EMI <span style="font-weight:300; font-size:1.3rem;">calculator</span></h2>
+  <div class="subhead">✦ no symbols · clean results ✦</div>
+
+  <!-- Loan amount - plain input -->
+  <div class="input-group">
+    <label>🔹 Loan amount</label>
+    <div class="input-icon">
+      <input type="number" id="loanAmount" placeholder="e.g. 5000" step="any" value="">
+    </div>
+  </div>
+
+  <!-- Annual interest rate (%) -->
+  <div class="input-group">
+    <label>🔹 Annual interest rate (%)</label>
+    <div class="input-icon">
+      <input type="number" id="interestRate" placeholder="e.g. 8.5" step="any" value="">
+    </div>
+  </div>
+
+  <!-- Loan tenure (years) -->
+  <div class="input-group">
+    <label>🔹 Loan tenure (years)</label>
+    <div class="input-icon">
+      <input type="number" id="loanTenure" placeholder="e.g. 5" step="any" value="">
+    </div>
+  </div>
+
+  <button onclick="calculateEMI()">
+    <span>=</span> CALCULATE EMI <span>→</span>
+  </button>
+
+  <!-- result area with absolutely NO currency symbols, just numbers like your image -->
+  <div class="result-card" id="result">
+    <div class="result-item">
+      <span class="label">Monthly EMI</span>
+      <span class="value" id="emiValue">—</span>
+    </div>
+    <div class="result-item">
+      <span class="label">Total interest</span>
+      <span class="value" id="interestValue">—</span>
+    </div>
+    <div class="result-item">
+      <span class="label">Total payment</span>
+      <span class="value" id="totalValue">—</span>
+    </div>
+  </div>
+
+  <div class="asterisk">
+    <i>⚡ results shown as plain numbers · no ¥ ₹ $ ⚡</i>
+  </div>
+</div>
+
+<script>
+(function() {
+  const loanInput = document.getElementById('loanAmount');
+  const rateInput = document.getElementById('interestRate');
+  const yearsInput = document.getElementById('loanTenure');
+
+  const emiSpan = document.getElementById('emiValue');
+  const interestSpan = document.getElementById('interestValue');
+  const totalSpan = document.getElementById('totalValue');
+
+  // format with 2 decimals and thousands separator, but WITHOUT any currency symbol
+  function formatPlainNumber(value) {
+    // handle potential negative or NaN, but our validation prevents that
+    return value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  }
+
+  window.calculateEMI = function() {
+    // read values as string and convert to number
+    let P = parseFloat(loanInput.value);
+    let annualRate = parseFloat(rateInput.value);
+    let years = parseFloat(yearsInput.value);
+
+    // strict validation: fields must be filled, positive numbers
+    if (isNaN(P) || isNaN(annualRate) || isNaN(years) || 
+        loanInput.value.trim() === '' || rateInput.value.trim() === '' || yearsInput.value.trim() === '' ||
+        P <= 0 || annualRate <= 0 || years <= 0) {
+
+      emiSpan.innerText = '—';
+      interestSpan.innerText = '—';
+      totalSpan.innerText = '—';
+      
+      alert('Please enter all values correctly!\n\n• Amount must be > 0\n• Interest rate > 0\n• Tenure > 0');
+      return;
+    }
+
+    // --- EMI calculation ---
+    let monthlyRate = annualRate / 12 / 100;
+    let months = years * 12;
+
+    let EMI;
+    if (monthlyRate === 0) {
+      // practically never happens because rate>0, but keep safe
+      EMI = P / months;
+    } else {
+      EMI = (P * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+            (Math.pow(1 + monthlyRate, months) - 1);
+    }
+
+    let totalPayment = EMI * months;
+    let totalInterest = totalPayment - P;
+
+    // update result fields using plain formatter (no symbol)
+    emiSpan.innerText = formatPlainNumber(EMI);
+    interestSpan.innerText = formatPlainNumber(totalInterest);
+    totalSpan.innerText = formatPlainNumber(totalPayment);
+  };
+
+  // Enter key triggers calculation
+  [loanInput, rateInput, yearsInput].forEach(input => {
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        calculateEMI();
+      }
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
