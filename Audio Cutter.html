@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Cutter - Trim MP3</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#ff6a00,#ee0979);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    background:#fff;
+    width:450px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+input[type="file"]{
+    margin:10px 0;
+}
+
+input[type="number"]{
+    width:100%;
+    padding:8px;
+    margin-top:8px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+button{
+    margin-top:15px;
+    padding:10px;
+    width:100%;
+    border:none;
+    border-radius:8px;
+    background:#ff6a00;
+    color:#fff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#e65c00;
+}
+
+audio{
+    width:100%;
+    margin-top:10px;
+}
+
+.download-btn{
+    background:#28a745;
+}
+
+.download-btn:hover{
+    background:#218838;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Audio Cutter</h1>
+    <p>Trim MP3 Easily</p>
+
+    <input type="file" id="upload" accept="audio/mp3">
+
+    <audio id="audio" controls></audio>
+
+    <input type="number" id="startTime" placeholder="Start Time (seconds)">
+    <input type="number" id="endTime" placeholder="End Time (seconds)">
+
+    <button onclick="trimAudio()">Trim Audio</button>
+    <button class="download-btn" onclick="downloadAudio()">Download Trimmed MP3</button>
+</div>
+
+<script>
+let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let audioBuffer = null;
+let trimmedBlob = null;
+
+document.getElementById("upload").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event){
+        audioContext.decodeAudioData(event.target.result, function(buffer){
+            audioBuffer = buffer;
+        });
+    };
+    reader.readAsArrayBuffer(file);
+
+    document.getElementById("audio").src = URL.createObjectURL(file);
+});
+
+function trimAudio(){
+    if(!audioBuffer){
+        alert("Upload audio first!");
+        return;
+    }
+
+    const start = parseFloat(document.getElementById("startTime").value);
+    const end = parseFloat(document.getElementById("endTime").value);
+
+    if(isNaN(start) || isNaN(end) || start >= end){
+        alert("Enter valid start and end times!");
+        return;
+    }
+
+    const sampleRate = audioBuffer.sampleRate;
+    const startOffset = start * sampleRate;
+    const endOffset = end * sampleRate;
+    const frameCount = endOffset - startOffset;
+
+    const newBuffer = audioContext.createBuffer(
+        audioBuffer.numberOfChannels,
+        frameCount,
+        sampleRate
+    );
+
+    for(let channel = 0; channel < audioBuffer.numberOfChannels; channel++){
+        const oldData = audioBuffer.getChannelData(channel);
+        const newData = newBuffer.getChannelData(channel);
+
+        for(let i = 0; i < frameCount; i++){
+            newData[i] = oldData[i + startOffset];
+        }
+    }
+
+    const offlineContext = new OfflineAudioContext(
+        newBuffer.numberOfChannels,
+        newBuffer.length,
+        newBuffer.sampleRate
+    );
+
+    const source = offlineContext.createBufferSource();
+    source.buffer = newBuffer;
+    source.connect(offlineContext.destination);
+    source.start();
+
+    offlineContext.startRendering().then(function(renderedBuffer){
+        const wav = bufferToWave(renderedBuffer, renderedBuffer.length);
+        trimmedBlob = new Blob([wav], {type:"audio/wav"});
+        alert("Audio Trimmed Successfully!");
+    });
+}
+
+function downloadAudio(){
+    if(!trimmedBlob){
+        alert("Trim audio first!");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(trimmedBlob);
+    link.download = "trimmed-audio.wav";
+    link.click();
+}
+
+function bufferToWave(abuffer, len){
+    let numOfChan = abuffer.numberOfChannels,
+        length = len * numOfChan * 2 + 44,
+        buffer = new ArrayBuffer(length),
+        view = new DataView(buffer),
+        channels = [],
+        i,
+        sample,
+        offset = 0,
+        pos = 0;
+
+    setUint32(0x46464952);
+    setUint32(length - 8);
+    setUint32(0x45564157);
+
+    setUint32(0x20746d66);
+    setUint32(16);
+    setUint16(1);
+    setUint16(numOfChan);
+    setUint32(abuffer.sampleRate);
+    setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16);
+
+    setUint32(0x61746164);
+    setUint32(length - pos - 4);
+
+    for(i = 0; i < abuffer.numberOfChannels; i++)
+        channels.push(abuffer.getChannelData(i));
+
+    while(pos < length){
+        for(i = 0; i < numOfChan; i++){
+            sample = Math.max(-1, Math.min(1, channels[i][offset]));
+            sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+            view.setInt16(pos, sample, true);
+            pos += 2;
+        }
+        offset++;
+    }
+
+    return buffer;
+
+    function setUint16(data){
+        view.setUint16(pos, data, true);
+        pos += 2;
+    }
+
+    function setUint32(data){
+        view.setUint32(pos, data, true);
+        pos += 4;
+    }
+}
+</script>
+
+</body>
+</html>
