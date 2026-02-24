@@ -3,105 +3,537 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme Generator</title>
+    <title>Meme Generator · English + South Asian languages</title>
     <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: linear-gradient(145deg, #1e1e2f 0%, #2a2a40 100%);
             margin: 0;
-            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .card {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 48px;
+            padding: 30px 25px;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
         }
         h1 {
             text-align: center;
+            font-weight: 700;
+            font-size: 2.4rem;
+            margin: 0 0 12px 0;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ffd966, #ffb347, #ff8c42);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            word-break: break-word;
+        }
+        .canvas-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 20px;
         }
         #memeCanvas {
-            border: 1px solid #ccc;
-            margin: 20px auto;
-            display: block;
-            max-width: 100%;
+            width: 100%;
+            height: auto;
+            max-width: 650px;
+            border-radius: 28px;
+            background: #222;
+            box-shadow: 0 20px 30px -5px black, 0 0 0 2px #ffb347 inset;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
-        .controls {
+        #memeCanvas:hover {
+            transform: scale(1.01);
+        }
+        .control-panel {
+            background: rgba(20, 20, 35, 0.7);
+            border-radius: 36px;
+            padding: 25px 20px;
+            border: 1px solid rgba(255,200,100,0.4);
+            backdrop-filter: blur(8px);
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .input-group label {
+            color: #ffd966;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .input-group input, .input-group select {
+            background: rgba(10, 10, 20, 0.8);
+            border: 2px solid #ffb347;
+            border-radius: 60px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            color: white;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-group input::placeholder {
+            color: #aaa;
+            font-weight: 300;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: #ffdd99;
+            box-shadow: 0 0 15px #f90;
+            background: #1e1e30;
+        }
+        .input-group select option {
+            background: #222;
+            color: white;
+        }
+        .font-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 60px;
+            padding: 8px 15px;
+            margin: 10px 0 5px;
+            border: 1px dashed #ffb347;
+        }
+        .font-controls span {
+            color: #ffd29e;
+            font-weight: 500;
+        }
+        .font-controls input[type="range"] {
+            flex: 2;
+            min-width: 120px;
+            background: #333;
+            height: 6px;
+            border-radius: 10px;
+            accent-color: #ff9800;
+        }
+        .font-controls input[type="color"] {
+            width: 48px;
+            height: 42px;
+            border-radius: 30px;
+            border: 2px solid #ffb347;
+            background: transparent;
+            cursor: pointer;
+            padding: 2px;
+        }
+        .font-controls input[type="number"] {
+            width: 75px;
+            background: #1e1e2f;
+            border: 2px solid #f90;
+            border-radius: 40px;
+            color: white;
+            padding: 8px;
             text-align: center;
         }
-        input[type="file"] {
-            margin: 10px 0;
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
         }
-        .text-input {
-            width: 90%;
-            margin: 10px 0;
-            padding: 10px;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
+        .btn {
+            background: linear-gradient(145deg, #2b2b4b, #1f1f35);
+            border: none;
+            border-radius: 60px;
+            padding: 15px 30px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
             cursor: pointer;
+            box-shadow: 0 10px 15px -5px #00000080, 0 0 0 1px #ffb347 inset;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1 1 auto;
+            justify-content: center;
+        }
+        .btn:hover {
+            background: linear-gradient(145deg, #3d3d66, #2a2a48);
+            box-shadow: 0 15px 20px -5px black, 0 0 0 2px #ffcc66 inset;
+            transform: translateY(-3px);
+        }
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 5px 10px -3px black;
+        }
+        .upload-area {
+            display: flex;
+            align-items: center;
+            background: #1a1a2e;
+            border-radius: 60px;
+            border: 2px dashed #ffaa33;
+            padding: 4px 10px 4px 20px;
+        }
+        .upload-area label {
+            font-weight: 600;
+            color: #ffdb9d;
+            margin-right: 12px;
+        }
+        .file-name {
+            color: #ccc;
+            font-size: 0.9rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+        #imageUpload {
+            display: none;
+        }
+        .fake-upload {
+            background: #ffb347;
+            color: #1a1a2e;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .fake-upload:hover {
+            background: #ffc966;
+        }
+        footer {
+            text-align: center;
+            color: #aaa;
+            margin-top: 18px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
+    <div class="card">
+        <!-- Title changed to simple English "Meme Generator" as requested -->
+        <h1>🎭 Meme Generator</h1>
+        <!-- Canvas display -->
+        <div class="canvas-wrapper">
+            <canvas id="memeCanvas" width="650" height="500"></canvas>
+        </div>
 
-    <h1>Meme Generator</h1>
-    <canvas id="memeCanvas" width="500" height="500"></canvas>
-    <div class="controls">
-        <input type="file" id="imageUpload" accept="image/*">
-        <input type="text" id="topText" class="text-input" placeholder="Top Text">
-        <input type="text" id="bottomText" class="text-input" placeholder="Bottom Text">
-        <button id="generateButton">Generate Meme</button>
-        <button id="downloadButton">Download Meme</button>
+        <div class="control-panel">
+            <!-- Image upload + language row (Urdu & all IN/PK included) -->
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>📁 IMAGE</label>
+                    <div class="upload-area">
+                        <span class="file-name" id="fileNameDisplay">No file chosen</span>
+                        <label for="imageUpload" class="fake-upload">Browse</label>
+                        <input type="file" id="imageUpload" accept="image/*">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>🗣️ LANGUAGE</label>
+                    <select id="languageSelect">
+                        <!-- Pakistani & North Indian languages -->
+                        <option value="ur" selected>🇵🇰 Urdu (اردو)</option>
+                        <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+                        <option value="bn">🇧🇩 Bengali (বাংলা)</option>
+                        <option value="pa">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
+                        <option value="gu">🇮🇳 Gujarati (ગુજરાતી)</option>
+                        <option value="mr">🇮🇳 Marathi (मराठी)</option>
+                        <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+                        <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+                        <option value="ml">🇮🇳 Malayalam (മലയാളം)</option>
+                        <option value="kn">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+                        <option value="or">🇮🇳 Odia (ଓଡ଼ିଆ)</option>
+                        <option value="as">🇮🇳 Assamese (অসমীয়া)</option>
+                        <option value="sd">🇵🇰 Sindhi (سنڌي)</option>
+                        <option value="ps">🇵🇰 Pashto (پښتو)</option>
+                        <option value="bal">🇵🇰 Balochi (بلوچی)</option>
+                        <!-- other international -->
+                        <option value="en">🇬🇧 English</option>
+                        <option value="es">🇪🇸 Spanish</option>
+                        <option value="ar">🇸🇦 Arabic</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Top & Bottom text -->
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>⬆️ TOP TEXT</label>
+                    <input type="text" id="topText" class="text-input" placeholder="Top text" value="SUCH MEME">
+                </div>
+                <div class="input-group">
+                    <label>⬇️ BOTTOM TEXT</label>
+                    <input type="text" id="bottomText" class="text-input" placeholder="Bottom text" value="VERY OPTIONS">
+                </div>
+            </div>
+
+            <!-- 🔧 FONT & STYLE OPTIONS (more option) -->
+            <div class="font-controls">
+                <span>🎨 Font:</span>
+                <select id="fontFamilySelect">
+                    <option value="Impact">Impact (classic)</option>
+                    <option value="Arial Black">Arial Black</option>
+                    <option value="Comic Sans MS">Comic Sans</option>
+                    <option value="'Segoe UI'">Segoe UI</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="'Noto Sans'">Noto Sans (best Urdu)</option>
+                    <option value="'Noto Nastaliq Urdu'">Noto Nastaliq Urdu</option>
+                    <option value="'Noto Sans Devanagari'">Noto Sans Devanagari</option>
+                    <option value="'Mangal'">Mangal (Hindi)</option>
+                    <option value="'Nirmala UI'">Nirmala UI (Indic)</option>
+                </select>
+                <span>🔤 Size:</span>
+                <input type="range" id="fontSizeRange" min="20" max="100" value="48" step="1">
+                <input type="number" id="fontSizeNumber" value="48" min="20" max="100" step="1">
+                <span>⬜ Stroke:</span>
+                <input type="range" id="strokeWidthRange" min="0" max="12" value="4" step="0.5">
+                <span>🎨 Fill:</span>
+                <input type="color" id="fillColor" value="#ffffff">
+                <span>✒️ Stroke:</span>
+                <input type="color" id="strokeColor" value="#000000">
+            </div>
+
+            <!-- ACTION BUTTONS (all labels in English now) -->
+            <div class="button-row">
+                <button class="btn" id="generateButton">✨ GENERATE</button>
+                <button class="btn" id="downloadButton">📥 DOWNLOAD</button>
+                <button class="btn" id="resetImageButton">🔄 RESET IMAGE</button>
+            </div>
+            <footer>⚡ Urdu, Hindi, Bengali, Punjabi + 10 more · click canvas to redraw</footer>
+        </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('memeCanvas');
-        const ctx = canvas.getContext('2d');
-        let img = new Image();
+        (function() {
+            // DOM elements
+            const canvas = document.getElementById('memeCanvas');
+            const ctx = canvas.getContext('2d');
+            const fileInput = document.getElementById('imageUpload');
+            const fileNameSpan = document.getElementById('fileNameDisplay');
+            const topTextInput = document.getElementById('topText');
+            const bottomTextInput = document.getElementById('bottomText');
+            const generateBtn = document.getElementById('generateButton');
+            const downloadBtn = document.getElementById('downloadButton');
+            const resetImageBtn = document.getElementById('resetImageButton');
+            const languageSelect = document.getElementById('languageSelect');
+            const fontFamilySelect = document.getElementById('fontFamilySelect');
+            const fontSizeRange = document.getElementById('fontSizeRange');
+            const fontSizeNumber = document.getElementById('fontSizeNumber');
+            const strokeWidthRange = document.getElementById('strokeWidthRange');
+            const fillColorPicker = document.getElementById('fillColor');
+            const strokeColorPicker = document.getElementById('strokeColor');
 
-        document.getElementById('imageUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    img.src = event.target.result;
+            // ------------- LANGUAGE PLACEHOLDERS (English descriptions remain, but placeholder text in native scripts) ----------
+            const languagePlaceholders = {
+                // Pakistani & north Indian
+                ur: { top: "اوپر والا متن", bottom: "نیچے والا متن" },
+                sd: { top: "مٿيون متن", bottom: "ھيٺيون متن" },     // Sindhi
+                ps: { top: "پورتنى متن", bottom: "لاندنى متن" },     // Pashto
+                bal: { top: "نبشتہ گونی", bottom: "نبشتہ ہیزی" },    // Balochi (simple)
+                // Indian official
+                hi: { top: "ऊपर वाला पाठ", bottom: "नीचे वाला पाठ" },
+                bn: { top: "উপরের লেখা", bottom: "নিচের লেখা" },
+                pa: { top: "ਉੱਤੇ ਵਾਲਾ ਲਿਖਤ", bottom: "ਹੇਠਾਂ ਵਾਲਾ ਲਿਖਤ" },
+                gu: { top: "ઉપરનું લખાણ", bottom: "નીચેનું લખાણ" },
+                mr: { top: "वरचा मजकूर", bottom: "खालचा मजकूर" },
+                ta: { top: "மேல் உரை", bottom: "கீழ் உரை" },
+                te: { top: "పై వాక్యం", bottom: "కింది వాక్యం" },
+                ml: { top: "മുകളിലെ വാചകം", bottom: "താഴെയുള്ള വാചകം" },
+                kn: { top: "ಮೇಲಿನ ಪಠ್ಯ", bottom: "ಕೆಳಗಿನ ಪಠ್ಯ" },
+                or: { top: "ଉପର ଲେଖା", bottom: "ତଳ ଲେଖା" },
+                as: { top: "ওপৰৰ লিখনি", bottom: "তলৰ লিখনি" },
+                // additional international
+                en: { top: "TOP TEXT", bottom: "BOTTOM TEXT" },
+                es: { top: "TEXTO SUPERIOR", bottom: "TEXTO INFERIOR" },
+                ar: { top: "النص العلوي", bottom: "النص السفلي" }
+            };
+
+            // current image object
+            let currentImg = new Image();
+            let userImageLoaded = false;
+
+            // Draw neutral gradient if no user image
+            function drawDefaultGradient() {
+                const w = canvas.width, h = canvas.height;
+                const grad = ctx.createLinearGradient(0, 0, w*0.8, h);
+                grad.addColorStop(0, '#1a2a3a');
+                grad.addColorStop(0.6, '#2e4b3e');
+                grad.addColorStop(1, '#5e3e5e');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+                ctx.font = 'bold 28px "Noto Sans", "Segoe UI", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ffffff80';
+                ctx.strokeStyle = '#00000060';
+                ctx.lineWidth = 1.5;
+                ctx.fillText('📸 upload an image', w/2, h/2-20);
+                ctx.fillText('Urdu · हिन्दी · বাংলা · اردو', w/2, h/2+30);
+            }
+
+            drawDefaultGradient(); // initial draw
+
+            // sync font size
+            function syncFontSize() {
+                fontSizeNumber.value = fontSizeRange.value;
+            }
+            fontSizeRange.addEventListener('input', syncFontSize);
+            fontSizeNumber.addEventListener('input', function() {
+                let val = parseInt(this.value, 10);
+                if (isNaN(val)) val = 48;
+                val = Math.min(100, Math.max(20, val));
+                fontSizeRange.value = val;
+                this.value = val;
+                redrawCanvas();
+            });
+
+            // Update placeholders based on language
+            function updatePlaceholders() {
+                const lang = languageSelect.value;
+                const texts = languagePlaceholders[lang] || languagePlaceholders.ur;
+                topTextInput.placeholder = texts.top;
+                bottomTextInput.placeholder = texts.bottom;
+            }
+            languageSelect.addEventListener('change', updatePlaceholders);
+            updatePlaceholders(); // urdu initially
+
+            // File upload
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    fileNameSpan.textContent = file.name.length > 28 ? file.name.substr(0,25)+'…' : file.name;
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        currentImg.src = event.target.result;
+                        userImageLoaded = true;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileNameSpan.textContent = 'No file chosen';
                 }
-                reader.readAsDataURL(file);
+            });
+
+            // image loading
+            currentImg.onload = function() {
+                redrawCanvas();
+            };
+            currentImg.onerror = function() {
+                userImageLoaded = false;
+                drawDefaultGradient();
+                drawTextOverlay();
+            };
+
+            // Main draw: background + text
+            function redrawCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (userImageLoaded && currentImg.src && currentImg.complete && currentImg.naturalWidth > 0) {
+                    try {
+                        ctx.drawImage(currentImg, 0, 0, canvas.width, canvas.height);
+                    } catch (e) {
+                        drawDefaultGradient();
+                    }
+                } else {
+                    drawDefaultGradient();
+                }
+                drawTextOverlay();
             }
-        });
 
-        img.onload = function() {
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            drawText();
-        };
+            // draw text with current settings
+            function drawTextOverlay() {
+                const topText = topTextInput.value.trim();
+                const bottomText = bottomTextInput.value.trim();
+                if (!topText && !bottomText) return;
 
-        document.getElementById('generateButton').addEventListener('click', function() {
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            drawText();
-        });
+                // font construction with fallback for indic/urdu
+                let fontFamily = fontFamilySelect.value;
+                let finalFont = `${fontFamily}, 'Noto Sans', 'Nirmala UI', 'Mangal', 'Segoe UI', sans-serif`;
+                // special fallback for nastaliq
+                if (fontFamily.includes('Nastaliq')) {
+                    finalFont = `${fontFamily}, 'Noto Nastaliq Urdu', 'Noto Sans', sans-serif`;
+                }
 
-        function drawText() {
-            const topText = document.getElementById('topText').value;
-            const bottomText = document.getElementById('bottomText').value;
-            ctx.font = '40px Impact';
-            ctx.textAlign = 'center';
-            ctx.fillStyle = 'white';
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 5;
+                const fontSize = fontSizeRange.value + 'px';
+                ctx.font = `900 ${fontSize} ${finalFont}`; // 900 for bold
+                ctx.textAlign = 'center';
+                ctx.fillStyle = fillColorPicker.value;
+                ctx.strokeStyle = strokeColorPicker.value;
+                ctx.lineWidth = parseFloat(strokeWidthRange.value);
 
-            if (topText) {
-                ctx.fillText(topText, canvas.width / 2, 50);
-                ctx.strokeText(topText, canvas.width / 2, 50);
+                // top Y
+                if (topText) {
+                    ctx.fillText(topText, canvas.width / 2, 70);
+                    if (ctx.lineWidth > 0) ctx.strokeText(topText, canvas.width / 2, 70);
+                }
+                // bottom Y
+                if (bottomText) {
+                    const yPos = canvas.height - 40;
+                    ctx.fillText(bottomText, canvas.width / 2, yPos);
+                    if (ctx.lineWidth > 0) ctx.strokeText(bottomText, canvas.width / 2, yPos);
+                }
             }
-            if (bottomText) {
-                ctx.fillText(bottomText, canvas.width / 2, canvas.height - 20);
-                ctx.strokeText(bottomText, canvas.width / 2, canvas.height - 20);
-            }
-        }
 
-        document.getElementById('downloadButton').addEventListener('click', function() {
-            const link = document.createElement('a');
-            link.download = 'meme.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        });
+            // full render wrapper
+            function fullRender() {
+                redrawCanvas();
+            }
+
+            // Event listeners
+            generateBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fullRender();
+            });
+
+            canvas.addEventListener('click', function() {
+                fullRender();
+            });
+
+            downloadBtn.addEventListener('click', function() {
+                const link = document.createElement('a');
+                link.download = 'meme.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+
+            resetImageBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                fileNameSpan.textContent = 'No file chosen';
+                userImageLoaded = false;
+                currentImg = new Image();   // fresh image
+                drawDefaultGradient();
+                drawTextOverlay();           // keep text on gradient
+            });
+
+            // live update on any control
+            const liveElements = [fontFamilySelect, fontSizeRange, fontSizeNumber, strokeWidthRange, fillColorPicker, strokeColorPicker, topTextInput, bottomTextInput];
+            liveElements.forEach(el => el.addEventListener('input', function() {
+                redrawCanvas();
+            }));
+
+            // final initialization
+            window.addEventListener('load', function() {
+                fullRender();
+            });
+
+        })();
     </script>
 </body>
 </html>
