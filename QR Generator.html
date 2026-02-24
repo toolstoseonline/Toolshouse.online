@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator - Create QR Codes Online</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#00c6ff,#0072ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+.container{
+    background:#fff;
+    padding:25px;
+    width:350px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.2);
+    text-align:center;
+}
+h2{
+    margin-bottom:15px;
+}
+input, select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+button{
+    width:100%;
+    padding:10px;
+    background:#0072ff;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:10px;
+}
+#qrcode{
+    margin-top:20px;
+}
+.download-btn{
+    background:#00c851;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📱 QR Code Generator</h2>
+
+    <select id="type">
+        <option value="text">Text</option>
+        <option value="url">Website URL</option>
+        <option value="phone">Phone Number</option>
+        <option value="email">Email</option>
+    </select>
+
+    <input type="text" id="data" placeholder="Enter your content here">
+
+    <button onclick="generateQR()">Generate QR Code</button>
+
+    <div id="qrcode"></div>
+
+    <button class="download-btn" onclick="downloadQR()">Download QR Code</button>
+</div>
+
+<script>
+let qr;
+
+function generateQR(){
+    const type = document.getElementById("type").value;
+    let data = document.getElementById("data").value;
+
+    if(data.trim() === ""){
+        alert("Please enter some data!");
+        return;
+    }
+
+    if(type === "phone"){
+        data = "tel:" + data;
+    }
+    if(type === "email"){
+        data = "mailto:" + data;
+    }
+
+    document.getElementById("qrcode").innerHTML = "";
+
+    qr = new QRCode(document.getElementById("qrcode"), {
+        text: data,
+        width: 200,
+        height: 200
+    });
+}
+
+function downloadQR(){
+    const img = document.querySelector("#qrcode img");
+    if(!img){
+        alert("Generate QR Code first!");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = img.src;
+    link.download = "qrcode.png";
+    link.click();
+}
+</script>
+
+</body>
+</html>
