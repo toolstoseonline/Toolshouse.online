@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Voiceover Generator - Urdu Hindi</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+.container{
+    background:#fff;
+    width:420px;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.4);
+}
+h2{
+    text-align:center;
+}
+textarea{
+    width:100%;
+    height:100px;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    resize:none;
+}
+select,input{
+    width:100%;
+    padding:8px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+button{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#203a43;
+    color:#fff;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎙 AI Voiceover Generator</h2>
+
+    <textarea id="text" placeholder="Enter text here..."></textarea>
+
+    <label>Select Language</label>
+    <select id="language">
+        <option value="en-US">English (US)</option>
+        <option value="ur-PK">Urdu</option>
+        <option value="hi-IN">Hindi</option>
+    </select>
+
+    <label>Select Voice</label>
+    <select id="voiceSelect"></select>
+
+    <label>Speed</label>
+    <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
+
+    <label>Pitch</label>
+    <input type="range" id="pitch" min="0.5" max="2" value="1" step="0.1">
+
+    <button onclick="speakText()">Generate Speech</button>
+    <button onclick="downloadAudio()">Download Audio</button>
+    <button onclick="stopSpeech()">Stop</button>
+</div>
+
+<script>
+let voices = [];
+let mediaRecorder;
+let audioChunks = [];
+
+const voiceSelect = document.getElementById("voiceSelect");
+
+function loadVoices(){
+    voices = speechSynthesis.getVoices();
+    filterVoices();
+}
+
+function filterVoices(){
+    const selectedLang = document.getElementById("language").value;
+    voiceSelect.innerHTML = "";
+
+    const filtered = voices.filter(v => v.lang === selectedLang);
+
+    if(filtered.length === 0){
+        voices.forEach((voice,i)=>{
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = voice.name + " (" + voice.lang + ")";
+            voiceSelect.appendChild(option);
+        });
+    } else {
+        filtered.forEach((voice,i)=>{
+            const option = document.createElement("option");
+            option.value = voices.indexOf(voice);
+            option.textContent = voice.name + " (" + voice.lang + ")";
+            voiceSelect.appendChild(option);
+        });
+    }
+}
+
+speechSynthesis.onvoiceschanged = loadVoices;
+document.getElementById("language").addEventListener("change", filterVoices);
+
+function speakText(){
+    const text = document.getElementById("text").value;
+    if(text.trim()===""){
+        alert("Enter text first");
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.voice = voices[voiceSelect.value];
+    utterance.rate = document.getElementById("rate").value;
+    utterance.pitch = document.getElementById("pitch").value;
+
+    speechSynthesis.speak(utterance);
+}
+
+function stopSpeech(){
+    speechSynthesis.cancel();
+}
+
+// Download Audio (Record system speech)
+async function downloadAudio(){
+    const stream = await navigator.mediaDevices.getDisplayMedia({audio:true});
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = event=>{
+        audioChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = ()=>{
+        const blob = new Blob(audioChunks,{type:"audio/webm"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "voiceover.webm";
+        a.click();
+    };
+
+    mediaRecorder.start();
+    speakText();
+
+    setTimeout(()=>{
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track=>track.stop());
+    },5000);
+}
+</script>
+
+</body>
+</html>
