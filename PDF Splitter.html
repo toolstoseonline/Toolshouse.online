@@ -21,41 +21,45 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#ff9966,#ff5e62);
+    background:linear-gradient(135deg,#667eea,#764ba2);
 }
 
 .card{
     background:white;
     width:95%;
-    max-width:650px;
-    padding:35px;
+    max-width:900px;
+    padding:30px;
     border-radius:20px;
     box-shadow:0 25px 50px rgba(0,0,0,0.2);
     text-align:center;
 }
 
-h2{
-    margin-bottom:20px;
-}
-
 .drop-area{
-    border:2px dashed #ff5e62;
+    border:2px dashed #764ba2;
     padding:25px;
     border-radius:15px;
     cursor:pointer;
-    transition:0.3s;
+    margin-bottom:15px;
 }
 
-.drop-area:hover{
-    background:#fff0f0;
+.preview-container{
+    margin-top:20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    justify-content:center;
+    max-height:400px;
+    overflow:auto;
 }
 
-input[type="text"]{
-    margin-top:15px;
-    width:100%;
-    padding:10px;
-    border-radius:10px;
-    border:1px solid #ccc;
+.page-box{
+    text-align:center;
+}
+
+canvas{
+    width:150px;
+    border-radius:8px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
 
 button{
@@ -64,49 +68,10 @@ button{
     width:100%;
     border:none;
     border-radius:12px;
-    background:#ff5e62;
+    background:#764ba2;
     color:white;
     font-size:16px;
     cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(0,0,0,0.2);
-}
-
-.preview-container{
-    margin-top:20px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
-}
-
-canvas{
-    width:120px;
-    border-radius:8px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-}
-
-.loader{
-    display:none;
-    margin-top:15px;
-}
-
-.loader div{
-    width:25px;
-    height:25px;
-    border:4px solid #ff5e62;
-    border-top:4px solid transparent;
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-    margin:auto;
-}
-
-@keyframes spin{
-    100%{transform:rotate(360deg);}
 }
 </style>
 </head>
@@ -114,30 +79,24 @@ canvas{
 <body>
 
 <div class="card">
-    <h2>PDF Splitter - Extract Pages</h2>
+    <h2>PDF Splitter - Select Pages</h2>
 
     <div class="drop-area" id="dropArea">
-        Drag & Drop PDF Here<br>or Click to Upload
+        Click or Drag PDF Here
         <input type="file" id="fileInput" hidden accept="application/pdf">
     </div>
 
-    <input type="text" id="pageNumbers" placeholder="Enter pages (example: 1,3,5-7)">
-
     <div class="preview-container" id="previewContainer"></div>
 
-    <button onclick="splitPDF()">Split PDF</button>
-
-    <div class="loader"><div></div></div>
+    <button onclick="splitPDF()">Download Selected Pages</button>
 </div>
 
 <script>
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const previewContainer = document.getElementById("previewContainer");
-const loader = document.querySelector(".loader");
 
 let pdfFile = null;
-let totalPages = 0;
 
 dropArea.addEventListener("click",()=>fileInput.click());
 
@@ -154,7 +113,7 @@ dropArea.addEventListener("drop",(e)=>{
 
 function handleFile(file){
     if(!file || file.type !== "application/pdf"){
-        alert("Please upload a valid PDF.");
+        alert("Upload valid PDF");
         return;
     }
 
@@ -165,16 +124,28 @@ function handleFile(file){
     reader.onload = function(){
         const typedarray = new Uint8Array(this.result);
         pdfjsLib.getDocument(typedarray).promise.then(pdf=>{
-            totalPages = pdf.numPages;
-
-            for(let i=1;i<=Math.min(totalPages,5);i++){
+            for(let i=1;i<=pdf.numPages;i++){
                 pdf.getPage(i).then(page=>{
-                    const viewport = page.getViewport({scale:0.3});
+                    const viewport = page.getViewport({scale:0.4});
                     const canvas = document.createElement("canvas");
                     const context = canvas.getContext("2d");
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
-                    previewContainer.appendChild(canvas);
+
+                    const pageBox = document.createElement("div");
+                    pageBox.className = "page-box";
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.value = i-1;
+
+                    pageBox.appendChild(canvas);
+                    pageBox.appendChild(document.createElement("br"));
+                    pageBox.appendChild(document.createTextNode("Page "+i));
+                    pageBox.appendChild(document.createElement("br"));
+                    pageBox.appendChild(checkbox);
+
+                    previewContainer.appendChild(pageBox);
 
                     page.render({
                         canvasContext: context,
@@ -187,44 +158,26 @@ function handleFile(file){
     reader.readAsArrayBuffer(file);
 }
 
-function parsePages(input){
-    const pages = new Set();
-    const parts = input.split(",");
-
-    parts.forEach(part=>{
-        if(part.includes("-")){
-            const [start,end] = part.split("-").map(Number);
-            for(let i=start;i<=end;i++) pages.add(i-1);
-        }else{
-            pages.add(Number(part)-1);
-        }
-    });
-
-    return Array.from(pages).filter(p=>p>=0 && p<totalPages);
-}
-
 async function splitPDF(){
     if(!pdfFile){
-        alert("Upload PDF first.");
+        alert("Upload PDF first");
         return;
     }
 
-    const input = document.getElementById("pageNumbers").value;
-    if(!input){
-        alert("Enter page numbers.");
+    const checked = document.querySelectorAll("input[type='checkbox']:checked");
+
+    if(checked.length === 0){
+        alert("Select at least one page");
         return;
     }
-
-    loader.style.display="block";
 
     const { PDFDocument } = PDFLib;
     const bytes = await pdfFile.arrayBuffer();
     const pdfDoc = await PDFDocument.load(bytes);
     const newPdf = await PDFDocument.create();
 
-    const pagesToExtract = parsePages(input);
-
-    for(const pageIndex of pagesToExtract){
+    for(const cb of checked){
+        const pageIndex = Number(cb.value);
         const [copiedPage] = await newPdf.copyPages(pdfDoc,[pageIndex]);
         newPdf.addPage(copiedPage);
     }
@@ -234,10 +187,8 @@ async function splitPDF(){
 
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "split.pdf";
+    link.download = "selected-pages.pdf";
     link.click();
-
-    loader.style.display="none";
 }
 </script>
 
