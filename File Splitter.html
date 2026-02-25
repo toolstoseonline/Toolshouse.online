@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>File Splitter - Split Large Files</title>
+<title>Multi‑Range PDF Splitter</title>
+
+<!-- pdf-lib + font-awesome (icons) -->
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <style>
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Segoe UI, sans-serif;
+font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
 }
 
 body{
@@ -18,96 +22,199 @@ min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#667eea,#764ba2);
+background:linear-gradient(145deg,#3b2b5c,#4a3f6e);
 padding:20px;
 }
 
 .card{
 background:#fff;
 width:100%;
-max-width:600px;
+max-width:720px;
 padding:30px;
-border-radius:20px;
-box-shadow:0 25px 50px rgba(0,0,0,0.2);
+border-radius:30px;
+box-shadow:0 30px 60px rgba(0,0,0,0.3);
 text-align:center;
+transition: all 0.2s;
 }
 
 h2{
-margin-bottom:20px;
+margin-bottom:10px;
+color:#2d1b44;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
 }
-
-.drop-area{
-border:2px dashed #764ba2;
-padding:25px;
-border-radius:15px;
-cursor:pointer;
-transition:0.3s;
-}
-
-.drop-area:hover{
-background:#f3f0ff;
-}
-
-.file-info{
-margin-top:15px;
-font-size:14px;
-text-align:left;
-}
-
-input,button{
-margin-top:15px;
-padding:12px;
-width:100%;
-border:none;
-border-radius:12px;
-font-size:16px;
-}
-
-input{
-border:1px solid #ccc;
-}
-
-button{
-background:#764ba2;
-color:white;
-cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:translateY(-2px);
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
-}
-
-.parts{
-margin-top:15px;
-max-height:150px;
-overflow:auto;
-text-align:left;
-font-size:14px;
-}
-
-.part-item{
-padding:5px 0;
-border-bottom:1px solid #eee;
-cursor:pointer;
+h2 i{
 color:#764ba2;
 }
 
-.part-item:hover{
-text-decoration:underline;
+.drop-area{
+border:2px dashed #8a6ebb;
+background:#faf8ff;
+padding:28px 20px;
+border-radius:22px;
+cursor:pointer;
+transition:0.25s;
+margin:15px 0 8px 0;
+}
+.drop-area:hover{
+background:#ede9ff;
+border-color:#5f3b8c;
+}
+.drop-area i{
+font-size: 40px;
+color:#7b56b3;
+margin-bottom: 8px;
+}
+
+.file-info{
+margin-top:12px;
+padding:12px 16px;
+background:#f2edff;
+border-radius:40px;
+font-size:15px;
+text-align:left;
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+align-items: center;
+font-weight:500;
+color:#2d1b44;
+}
+
+.range-panel{
+background:#f8f4ff;
+border-radius:28px;
+padding:20px 16px 16px;
+margin:20px 0 18px;
+}
+
+.range-header{
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 14px;
+padding: 0 6px;
+}
+.range-header span{
+font-weight:600;
+color:#3b2b5c;
+font-size:1.1rem;
+}
+.range-actions button{
+background:transparent;
+border:none;
+color:#6b46a3;
+font-size:1.3rem;
+width:40px;
+height:40px;
+border-radius:50%;
+cursor:pointer;
+transition:0.2s;
+}
+.range-actions button:hover{
+background:#d9ceff;
+}
+
+.range-row{
+display: flex;
+gap:12px;
+margin-bottom:14px;
+align-items: center;
+background:#ffffff;
+padding:10px 16px;
+border-radius:60px;
+box-shadow:0 2px 8px rgba(0,0,0,0.02);
+border:1px solid #e4d8ff;
+}
+.range-row input{
+flex:1;
+min-width:0;
+padding:12px 14px;
+border:none;
+background:#f3edff;
+border-radius:40px;
+font-size:15px;
+outline:none;
+transition:0.15s;
+}
+.range-row input:focus{
+background:#e7dbff;
+box-shadow:0 0 0 2px #b89eff;
+}
+.range-row button{
+width:44px;
+height:44px;
+border-radius:50%;
+background:white;
+border:1px solid #dac7ff;
+color:#a45a9e;
+font-size:1.2rem;
+cursor:pointer;
+transition:0.2s;
+flex-shrink:0;
+}
+.range-row button:hover{
+background:#ffe6f3;
+border-color:#b584b7;
+}
+.remove-range{
+color:#b0416b;
+}
+.remove-range:hover{
+background:#ffe2eb !important;
+}
+
+.quick-presets{
+display: flex;
+flex-wrap: wrap;
+gap:8px;
+margin:16px 0 12px;
+justify-content: center;
+}
+.quick-presets button{
+background:#e5d9ff;
+border:none;
+border-radius:50px;
+padding:8px 18px;
+font-size:14px;
+font-weight:500;
+color:#3d2b5e;
+cursor:pointer;
+display: inline-flex;
+align-items: center;
+gap:6px;
+transition:0.2s;
+border:1px solid transparent;
+}
+.quick-presets button:hover{
+background:#cfbcff;
+border-color:#9b84ca;
+}
+
+#splitBtn{
+background:#5f3b9a;
+margin-top:12px;
+padding:16px;
+border-radius:50px;
+font-weight:600;
+font-size:1.2rem;
+letter-spacing:0.5px;
+}
+#splitBtn i{
+margin-right:8px;
 }
 
 .loader{
 display:none;
-margin-top:15px;
+margin:16px auto 5px;
 }
-
 .loader div{
-width:25px;
-height:25px;
-border:4px solid #764ba2;
-border-top:4px solid transparent;
+width:42px;
+height:42px;
+border:5px solid #cbb5ff;
+border-top:5px solid #4a2c78;
 border-radius:50%;
 animation:spin 1s linear infinite;
 margin:auto;
@@ -117,8 +224,21 @@ margin:auto;
 100%{transform:rotate(360deg);}
 }
 
-@media(max-width:500px){
+.total-badge{
+background:#d4c2ff;
+padding:6px 20px;
+border-radius:40px;
+font-size:0.9rem;
+font-weight:600;
+color:#2b1640;
+}
+
+/* responsive */
+@media (max-width:550px){
 .card{padding:20px;}
+.range-row{flex-wrap:wrap; background:transparent; box-shadow:none; padding:0;}
+.range-row input{width:100%;}
+.range-row button{width:48%; border-radius:40px;}
 }
 </style>
 </head>
@@ -126,111 +246,288 @@ margin:auto;
 <body>
 
 <div class="card">
-<h2>File Splitter - Split Large Files</h2>
+<h2><i class="fas fa-cut"></i> Multi‑Range PDF Splitter</h2>
 
 <div class="drop-area" id="dropArea">
-Drag & Drop File Here<br>or Click to Upload
-<input type="file" id="fileInput" hidden>
+<i class="fas fa-cloud-upload-alt"></i><br>
+Drag &amp; Drop PDF or Click to Browse
+<input type="file" id="fileInput" hidden accept="application/pdf">
 </div>
 
-<div class="file-info" id="fileInfo"></div>
+<div class="file-info" id="fileInfo">
+<span><i class="far fa-file-pdf"></i> No file selected</span>
+<span class="total-badge">—</span>
+</div>
 
-<input type="number" id="sizeInput" placeholder="Enter split size in MB (e.g. 5)" min="1">
+<div class="range-panel" id="rangePanel">
+<div class="range-header">
+<span><i class="fas fa-layer-group"></i> Custom page ranges</span>
+<div class="range-actions">
+<button id="addRangeBtn" title="Add new range"><i class="fas fa-plus-circle"></i></button>
+<button id="clearAllBtn" title="Remove all ranges"><i class="fas fa-trash-alt"></i></button>
+</div>
+</div>
 
-<button id="splitBtn">Split File</button>
+<!-- dynamic range rows will appear here -->
+<div id="rangesContainer"></div>
 
+<!-- quick presets -->
+<div class="quick-presets">
+<button id="presetFirst10"><i class="fas fa-forward"></i> First 10</button>
+<button id="presetLast5"><i class="fas fa-backward"></i> Last 5</button>
+<button id="presetOdd"><i class="fas fa-sort-numeric-up-alt"></i> Odd pages</button>
+<button id="presetEven"><i class="fas fa-sort-numeric-down-alt"></i> Even pages</button>
+</div>
+</div>
+
+<button id="splitBtn"><i class="fas fa-scissors"></i> Extract selected ranges</button>
 <div class="loader"><div></div></div>
-
-<div class="parts" id="partsContainer"></div>
-
 </div>
 
 <script>
-const dropArea=document.getElementById("dropArea");
-const fileInput=document.getElementById("fileInput");
-const fileInfo=document.getElementById("fileInfo");
-const splitBtn=document.getElementById("splitBtn");
-const sizeInput=document.getElementById("sizeInput");
-const loader=document.querySelector(".loader");
-const partsContainer=document.getElementById("partsContainer");
+const { PDFDocument } = PDFLib;
 
-let selectedFile=null;
+// DOM elements
+const dropArea = document.getElementById('dropArea');
+const fileInput = document.getElementById('fileInput');
+const fileInfo = document.getElementById('fileInfo');
+const splitBtn = document.getElementById('splitBtn');
+const loader = document.querySelector('.loader');
+const rangesContainer = document.getElementById('rangesContainer');
+const addRangeBtn = document.getElementById('addRangeBtn');
+const clearAllBtn = document.getElementById('clearAllBtn');
+const presetFirst10 = document.getElementById('presetFirst10');
+const presetLast5 = document.getElementById('presetLast5');
+const presetOdd = document.getElementById('presetOdd');
+const presetEven = document.getElementById('presetEven');
 
-dropArea.addEventListener("click",()=>fileInput.click());
+// State
+let selectedFile = null;
+let totalPages = 0;
 
-dropArea.addEventListener("dragover",(e)=>e.preventDefault());
+// ---------- helper: render file info ----------
+function updateFileInfo() {
+  if (!selectedFile) {
+    fileInfo.innerHTML = `<span><i class="far fa-file-pdf"></i> No file selected</span>
+    <span class="total-badge">—</span>`;
+    return;
+  }
+  fileInfo.innerHTML = `<span><i class="far fa-file-pdf"></i> ${selectedFile.name}</span>
+  <span class="total-badge">${totalPages} page${totalPages !== 1 ? 's' : ''}</span>`;
+}
 
-dropArea.addEventListener("drop",(e)=>{
-e.preventDefault();
-handleFile(e.dataTransfer.files[0]);
+// ---------- range row management ----------
+function createRangeRow(fromVal = '', toVal = '') {
+  const row = document.createElement('div');
+  row.className = 'range-row';
+
+  const fromInput = document.createElement('input');
+  fromInput.type = 'number';
+  fromInput.placeholder = 'From';
+  fromInput.min = 1;
+  fromInput.value = fromVal;
+  fromInput.classList.add('range-from');
+
+  const toInput = document.createElement('input');
+  toInput.type = 'number';
+  toInput.placeholder = 'To';
+  toInput.min = 1;
+  toInput.value = toVal;
+  toInput.classList.add('range-to');
+
+  const removeBtn = document.createElement('button');
+  removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+  removeBtn.classList.add('remove-range');
+  removeBtn.setAttribute('title', 'Remove range');
+  removeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    row.remove();
+  });
+
+  row.appendChild(fromInput);
+  row.appendChild(toInput);
+  row.appendChild(removeBtn);
+  return row;
+}
+
+// add empty row
+addRangeBtn.addEventListener('click', () => {
+  rangesContainer.appendChild(createRangeRow('', ''));
 });
 
-fileInput.addEventListener("change",(e)=>{
-handleFile(e.target.files[0]);
+// clear all rows
+clearAllBtn.addEventListener('click', () => {
+  rangesContainer.innerHTML = '';
+  // keep one empty row by default?
+  // but we can also keep it clean, user can add via button. For UX we add one placeholder if none
+  if (rangesContainer.children.length === 0) {
+    rangesContainer.appendChild(createRangeRow('', ''));
+  }
 });
 
-function handleFile(file){
-if(!file){
-alert("No file selected");
-return;
-}
-selectedFile=file;
-fileInfo.innerHTML=
-"<strong>Name:</strong> "+file.name+
-"<br><strong>Size:</strong> "+(file.size/1024/1024).toFixed(2)+" MB";
-partsContainer.innerHTML="";
-}
-
-splitBtn.addEventListener("click",()=>{
-if(!selectedFile){
-alert("Upload a file first");
-return;
+// ---------- collect ranges from rows ----------
+function getRangesFromInput() {
+  const rows = document.querySelectorAll('.range-row');
+  const ranges = [];
+  for (let row of rows) {
+    const from = parseInt(row.querySelector('.range-from').value, 10);
+    const to = parseInt(row.querySelector('.range-to').value, 10);
+    if (!isNaN(from) && !isNaN(to) && from > 0 && to > 0 && from <= to) {
+      ranges.push({ from, to });
+    }
+  }
+  return ranges;
 }
 
-const sizeMB=parseInt(sizeInput.value);
-if(!sizeMB || sizeMB<=0){
-alert("Enter valid split size in MB");
-return;
+// ---------- validate ranges against totalPages ----------
+function validateRanges(ranges, total) {
+  if (!total) return false;
+  for (let r of ranges) {
+    if (r.from < 1 || r.to > total || r.from > r.to) return false;
+  }
+  return ranges.length > 0;
 }
 
-loader.style.display="block";
+// ---------- load PDF and get total pages ----------
+async function handleFile(file) {
+  if (!file || file.type !== 'application/pdf') {
+    alert('Please select a valid PDF file.');
+    return false;
+  }
+  selectedFile = file;
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdfDoc = await PDFDocument.load(arrayBuffer);
+    totalPages = pdfDoc.getPageCount();
+    updateFileInfo();
+    return true;
+  } catch (err) {
+    alert('Failed to read PDF. It may be corrupted or password protected.');
+    selectedFile = null;
+    totalPages = 0;
+    updateFileInfo();
+    return false;
+  }
+}
 
-setTimeout(()=>{
-splitFile(selectedFile,sizeMB);
-loader.style.display="none";
-},300);
+// ---------- drag & drop ----------
+dropArea.addEventListener('click', () => fileInput.click());
+
+dropArea.addEventListener('dragover', (e) => e.preventDefault());
+dropArea.addEventListener('drop', async (e) => {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file) await handleFile(file);
 });
 
-function splitFile(file,sizeMB){
-partsContainer.innerHTML="";
-const chunkSize=sizeMB*1024*1024;
-let start=0;
-let partNumber=1;
-
-while(start<file.size){
-const chunk=file.slice(start,start+chunkSize);
-const partName=file.name+".part"+partNumber;
-
-const div=document.createElement("div");
-div.className="part-item";
-div.textContent=partName;
-div.addEventListener("click",()=>{
-downloadChunk(chunk,partName);
+fileInput.addEventListener('change', async (e) => {
+  if (e.target.files[0]) await handleFile(e.target.files[0]);
 });
-partsContainer.appendChild(div);
 
-start+=chunkSize;
-partNumber++;
-}
+// ---------- preset actions (require loaded PDF) ----------
+function applyPreset(generatorFn) {
+  if (!totalPages) {
+    alert('Please load a PDF first.');
+    return;
+  }
+  const ranges = generatorFn(totalPages);
+  rangesContainer.innerHTML = '';
+  ranges.forEach(r => {
+    rangesContainer.appendChild(createRangeRow(r.from, r.to));
+  });
 }
 
-function downloadChunk(blob,name){
-const link=document.createElement("a");
-link.href=URL.createObjectURL(blob);
-link.download=name;
-link.click();
-}
+presetFirst10.addEventListener('click', () => {
+  applyPreset((total) => {
+    const last = Math.min(10, total);
+    return last > 0 ? [{ from: 1, to: last }] : [];
+  });
+});
+
+presetLast5.addEventListener('click', () => {
+  applyPreset((total) => {
+    if (total === 0) return [];
+    const start = Math.max(1, total - 4);
+    return [{ from: start, to: total }];
+  });
+});
+
+presetOdd.addEventListener('click', () => {
+  applyPreset((total) => {
+    const ranges = [];
+    for (let i = 1; i <= total; i += 2) {
+      ranges.push({ from: i, to: i });
+    }
+    return ranges;
+  });
+});
+
+presetEven.addEventListener('click', () => {
+  applyPreset((total) => {
+    const ranges = [];
+    for (let i = 2; i <= total; i += 2) {
+      ranges.push({ from: i, to: i });
+    }
+    return ranges;
+  });
+});
+
+// ---------- main split logic ----------
+splitBtn.addEventListener('click', async () => {
+  if (!selectedFile) {
+    alert('Upload a PDF file first.');
+    return;
+  }
+
+  const ranges = getRangesFromInput();
+  if (!validateRanges(ranges, totalPages)) {
+    alert(`Please enter at least one valid range (1–${totalPages}) and ensure "From" ≤ "To".`);
+    return;
+  }
+
+  loader.style.display = 'block';
+  splitBtn.disabled = true;
+
+  try {
+    const arrayBuffer = await selectedFile.arrayBuffer();
+    const pdfDoc = await PDFDocument.load(arrayBuffer);
+    const newPdf = await PDFDocument.create();
+
+    // flatten all page indices from all ranges (in order of entry)
+    const indicesToCopy = [];
+    for (let range of ranges) {
+      for (let i = range.from; i <= range.to; i++) {
+        indicesToCopy.push(i - 1);  // zero‑based
+      }
+    }
+
+    // copy unique pages preserving order (duplicates are allowed? we keep as many as user specified)
+    // if user writes overlapping ranges we still copy those pages multiple times
+    const pages = await newPdf.copyPages(pdfDoc, indicesToCopy);
+    pages.forEach(page => newPdf.addPage(page));
+
+    const pdfBytes = await newPdf.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    // generate descriptive name
+    const baseName = selectedFile.name.replace('.pdf', '') || 'document';
+    link.download = `Split_${baseName}_${ranges.length}range.pdf`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    alert('Error while splitting: ' + error.message);
+  } finally {
+    loader.style.display = 'none';
+    splitBtn.disabled = false;
+  }
+});
+
+// initialise with one empty range row for convenience
+rangesContainer.appendChild(createRangeRow('', ''));
+
+// if user clicks on drop area background but not on button etc — fine
+
 </script>
-
 </body>
 </html>
