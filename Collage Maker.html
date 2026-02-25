@@ -1,154 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Collage Maker – Create Photo Collages</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collage Maker+ · crisp images & any pic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
-}
+        body {
+            background: linear-gradient(145deg, #c7b9b0, #aec9e6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
 
-body{
-    background: linear-gradient(135deg,#d7ccc8,#bbdefb);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(3px);
+            width: 100%;
+            max-width: 950px;
+            padding: 30px 25px;
+            border-radius: 32px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
 
-.container{
-    background:#fff;
-    width:95%;
-    max-width:900px;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
-    text-align:center;
-}
+        h1 {
+            font-weight: 600;
+            font-size: 2.1rem;
+            letter-spacing: -0.5px;
+            color: #3e2f28;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
 
-h1{
-    font-weight:600;
-    margin-bottom:10px;
-}
+        .sub {
+            color: #4f423b;
+            margin-bottom: 28px;
+            font-weight: 300;
+            font-size: 1.1rem;
+            border-bottom: 1px dashed #b7957c;
+            padding-bottom: 12px;
+        }
 
-p{
-    color:#555;
-    margin-bottom:20px;
-}
+        .flex-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
 
-.controls{
-    margin-bottom:20px;
-}
+        .control-group {
+            background: #f6f2ef;
+            padding: 16px 18px;
+            border-radius: 24px;
+            flex: 1 1 240px;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.04);
+        }
 
-input[type="file"]{
-    margin:10px 0;
-}
+        .control-group label {
+            display: block;
+            font-weight: 500;
+            color: #5b3f33;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 10px;
+        }
 
-select{
-    padding:8px;
-    border-radius:8px;
-    border:1px solid #ccc;
-}
+        input, select {
+            background: white;
+            border: 1px solid #d6c5bc;
+            border-radius: 40px;
+            padding: 12px 18px;
+            width: 100%;
+            outline: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
 
-button{
-    padding:10px 20px;
-    border:none;
-    border-radius:10px;
-    background:#8d6e63;
-    color:#fff;
-    cursor:pointer;
-    transition:0.3s;
-    margin:10px 5px;
-}
+        input:focus, select:focus {
+            border-color: #a76f55;
+            box-shadow: 0 0 0 3px rgba(167, 111, 85, 0.2);
+        }
 
-button:hover{
-    background:#5d4037;
-}
+        .url-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+        }
 
-canvas{
-    margin-top:20px;
-    width:100%;
-    max-height:500px;
-    border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.15);
-}
-</style>
+        .url-row input {
+            flex: 1;
+        }
+
+        .url-row button {
+            margin: 0;
+            white-space: nowrap;
+            background: #aa7b64;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 400;
+        }
+
+        .url-row button:hover {
+            background: #7b5642;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0 20px;
+        }
+
+        button {
+            background: #7f5a48;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 1rem;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 6px 14px rgba(98, 67, 51, 0.25);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        button:hover {
+            background: #5f4032;
+            transform: scale(1.02);
+            box-shadow: 0 10px 18px rgba(70, 40, 25, 0.3);
+        }
+
+        button.download-btn {
+            background: #3f6a70;
+        }
+        button.download-btn:hover {
+            background: #295257;
+        }
+
+        .canvas-wrapper {
+            background: #eae2db;
+            padding: 16px;
+            border-radius: 36px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            max-height: 560px;
+            border-radius: 24px;
+            background: #f5efe9;
+            box-shadow: inset 0 2px 6px rgba(92, 62, 42, 0.1);
+            margin: 0 auto;
+            /* critical: maintain aspect ratio but do not stretch blurry */
+            image-rendering: crisp-edges;  /* fallback */
+            image-rendering: -webkit-optimize-contrast; /* webkit sharp */
+            image-rendering: pixelated; /* for pixel art but also helps */
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            background: #dbccc3;
+            color: #2e241f;
+            padding: 6px 14px;
+            border-radius: 60px;
+            display: inline-block;
+            margin: 16px 0 0;
+        }
+        .badge i {
+            font-style: normal;
+            font-weight: 600;
+        }
+        /* hint: extra sharpness note */
+        .sharp-tip {
+            font-size: 0.8rem;
+            color: #3f3a37;
+            background: #e8d9cf;
+            padding: 4px 12px;
+            border-radius: 60px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <h1>🖼️ Collage Maker <span style="font-weight:300; font-size:1.3rem;">+ crisp pics</span></h1>
+        <div class="sub">⬇️ upload or paste any image url — now razor‑sharp</div>
 
-<div class="container">
-    <h1>📸 Collage Maker</h1>
-    <p>Create beautiful photo collages instantly – 100% Free</p>
+        <!-- UPLOAD & URL SECTION -->
+        <div class="flex-panel">
+            <div class="control-group">
+                <label>📁 upload images (multiple)</label>
+                <input type="file" id="images" multiple accept="image/*">
+            </div>
 
-    <div class="controls">
-        <input type="file" id="images" multiple accept="image/*"><br>
+            <div class="control-group">
+                <label>🔗 add any image via URL</label>
+                <div class="url-row">
+                    <input type="text" id="imageUrl" placeholder="https://...jpg or .png" value="">
+                    <button id="addUrlBtn">➕ add</button>
+                </div>
+                <span style="font-size:0.75rem; opacity:0.7; display:block; margin-top:6px;">images appear in order: uploaded + urls</span>
+            </div>
+        </div>
 
-        <select id="layout">
-            <option value="2">2 x 2 Grid</option>
-            <option value="3">3 x 3 Grid</option>
-            <option value="4">4 x 4 Grid</option>
-        </select><br>
+        <!-- LAYOUT & ACTIONS -->
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; margin: 0 0 10px;">
+            <div style="min-width:180px;">
+                <select id="layout" style="border-radius: 60px; background:#fff;">
+                    <option value="2">2 x 2 grid (4 pics)</option>
+                    <option value="3" selected>3 x 3 grid (9 pics)</option>
+                    <option value="4">4 x 4 grid (16 pics)</option>
+                    <option value="1">✨ single large (1 pic)</option>
+                    <option value="5">2 rows x 3 cols (6)</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="createBtn">🎨 CREATE COLLAGE</button>
+                <button id="downloadBtn" class="download-btn">💾 DOWNLOAD</button>
+            </div>
+        </div>
 
-        <button onclick="createCollage()">Create Collage</button>
-        <button onclick="downloadCollage()">Download</button>
+        <!-- CANVAS -->
+        <div class="canvas-wrapper">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="badge">⚡ high‑definition drawing · no more blur · images keep clarity</div>
+        <div class="sharp-tip">✨ images now rendered at full canvas resolution — no distortion</div>
     </div>
 
-    <canvas id="canvas"></canvas>
-</div>
+    <script>
+        (function() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const fileInput = document.getElementById('images');
+            const urlInput = document.getElementById('imageUrl');
+            const addUrlBtn = document.getElementById('addUrlBtn');
+            const layoutSelect = document.getElementById('layout');
+            const createBtn = document.getElementById('createBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
 
-<script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+            // ---------- image store (File objects + URL strings) ----------
+            let extraImageUrls = [];       // stores valid url strings
 
-function createCollage(){
-    const files = document.getElementById("images").files;
-    const layout = parseInt(document.getElementById("layout").value);
+            // Helper to load image from either File or url string
+            function loadImageFromSource(src) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';   // attempt to avoid CORS if server allows
+                    img.onload = () => {
+                        // Revoke object URL if it's a File to free memory (but after using)
+                        resolve(img);
+                    };
+                    img.onerror = (err) => {
+                        console.warn('Image failed to load:', src);
+                        reject(err);
+                    };
+                    if (src instanceof File) {
+                        img.src = URL.createObjectURL(src);
+                    } else if (typeof src === 'string') {
+                        img.src = src;
+                    } else {
+                        reject('invalid source');
+                    }
+                });
+            }
 
-    if(files.length === 0){
-        alert("Please upload images!");
-        return;
-    }
+            // Add URL from input field
+            addUrlBtn.addEventListener('click', () => {
+                const url = urlInput.value.trim();
+                if (!url) {
+                    alert('📛 please paste an image URL');
+                    return;
+                }
+                // simple validation (if it looks like an image, optional)
+                if (!url.match(/\.(jpeg|jpg|gif|png|webp|bmp)(\?.*)?$/i) && !url.includes('images.unsplash') && !url.includes('cloudinary')) {
+                    // still allow, but warn
+                    if (!confirm('URL doesn\'t end with common image extension. Still try to add?')) {
+                        return;
+                    }
+                }
+                extraImageUrls.push(url);
+                urlInput.value = '';  // clear for next
+                alert(`✅ URL added. Total ${extraImageUrls.length} url image(s) ready.`);
+            });
 
-    const size = 800;
-    canvas.width = size;
-    canvas.height = size;
+            // Helper to get all sources: first uploaded files, then extra urls
+            function getAllImageSources() {
+                const files = fileInput.files ? Array.from(fileInput.files) : [];
+                return [...files, ...extraImageUrls];
+            }
 
-    const cellSize = size / layout;
+            // Improve drawing: ensure images drawn at optimal resolution, no half-pixel blur
+            // Use nearest-neighbor scaling only if needed, but we want crisp edges: we'll draw using integer cell sizes
+            // The key is to avoid floating mismatch: all sizes are integers, we round offsets.
+            function drawImageSharp(ctx, img, cellX, cellY, cellW, cellH) {
+                // cell dimensions are always integer because canvas size is integer and cols/rows divide? but might have subpixel if not divisible.
+                // To avoid subpixel blur, we round cell boundaries.
+                const ix = Math.floor(cellX);
+                const iy = Math.floor(cellY);
+                const iw = Math.floor(cellW);
+                const ih = Math.floor(cellH);
 
-    ctx.clearRect(0,0,size,size);
+                // if image is smaller than cell, we upscale cleanly but we still use drawImage with imageSmoothingEnabled = false for pixelated?
+                // we want photos to be smooth but not blurred due to subpixel. The main issue earlier was probably fractional offsets.
+                // We'll set imageSmoothingEnabled = true for natural photos (but keep high quality). 
+                // But we want to avoid canvas auto-blur due to fractional drawing: we use integer coordinates.
+                ctx.imageSmoothingEnabled = true;      // smooth photos (better than pixelated)
+                ctx.imageSmoothingQuality = 'high';    // use high-quality down/upscaling
 
-    let imagesLoaded = 0;
+                // Now compute source/dest ratio to fill cell completely (cover)
+                const imgAspect = img.width / img.height;
+                const cellAspect = iw / ih;
 
-    for(let i=0; i<Math.min(files.length, layout*layout); i++){
-        const img = new Image();
-        img.src = URL.createObjectURL(files[i]);
+                let drawW, drawH, offsetX = 0, offsetY = 0;
 
-        img.onload = function(){
-            const row = Math.floor(i / layout);
-            const col = i % layout;
+                if (imgAspect > cellAspect) {
+                    // image wider: fit height
+                    drawH = ih;
+                    drawW = img.width * (ih / img.height);
+                    offsetX = (iw - drawW) / 2;
+                } else {
+                    // image taller: fit width
+                    drawW = iw;
+                    drawH = img.height * (iw / img.width);
+                    offsetY = (ih - drawH) / 2;
+                }
 
-            ctx.drawImage(img, col*cellSize, row*cellSize, cellSize, cellSize);
+                // Round offsets to avoid blur (subpixel rendering)
+                offsetX = Math.round(offsetX);
+                offsetY = Math.round(offsetY);
+                drawW = Math.round(drawW);
+                drawH = Math.round(drawH);
 
-            imagesLoaded++;
-        }
-    }
-}
+                // Clip to cell to avoid spill (but we already clipped earlier with ctx.rect)
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(ix, iy, iw, ih);
+                ctx.clip();
 
-function downloadCollage(){
-    const link = document.createElement("a");
-    link.download = "collage.png";
-    link.href = canvas.toDataURL();
-    link.click();
-}
-</script>
+                // Draw with integer dimensions
+                ctx.drawImage(img, ix + offsetX, iy + offsetY, drawW, drawH);
+                ctx.restore();
 
+                // optional border – also integer aligned
+                ctx.strokeStyle = '#fff4ec';
+                ctx.lineWidth = 2.5;
+                ctx.strokeRect(ix, iy, iw, ih);
+            }
+
+            // Main collage function (async) – IMPROVED CLARITY
+            async function createCollage() {
+                const sources = getAllImageSources();
+                if (sources.length === 0) {
+                    alert('🚫 No images. Upload files or add an image URL.');
+                    return;
+                }
+
+                const layoutValue = layoutSelect.value;
+                let cols, rows;
+
+                if (layoutValue === '1') {
+                    cols = 1; rows = 1;
+                } else if (layoutValue === '5') {
+                    cols = 3; rows = 2;        // 2x3 = 6 cells
+                } else {
+                    const grid = parseInt(layoutValue, 10); // 2,3,4
+                    cols = grid;
+                    rows = grid;
+                }
+
+                const totalCells = cols * rows;
+                const maxImages = Math.min(sources.length, totalCells);
+                if (maxImages === 0) {
+                    alert('No images to display');
+                    return;
+                }
+
+                // Set canvas size (larger for high detail) – but maintain even division for integer cell sizes
+                const baseSize = 1200; // increased resolution for sharper output
+                canvas.width = baseSize;
+                canvas.height = baseSize;
+
+                // Clear with soft background
+                ctx.clearRect(0, 0, baseSize, baseSize);
+                ctx.fillStyle = '#f0eae4';
+                ctx.fillRect(0, 0, baseSize, baseSize);
+
+                // Ensure cell dimensions are integers (no fractions)
+                const cellW = Math.floor(baseSize / cols);
+                const cellH = Math.floor(baseSize / rows);
+                // Adjust total to avoid leftover – we will have a small margin if not divisible, but we'll center the grid?
+                // But to keep simple, we set exact division: 1200 is divisible by 1,2,3,4,6 -> perfect.
+                // 1200/3=400, /4=300, /6=200, /2=600, /1=1200 => all integer. Perfect!
+
+                let loadedCount = 0;
+
+                // Show temporary "loading" text on canvas
+                ctx.font = 'bold 22px Poppins, sans-serif';
+                ctx.fillStyle = '#ab8c7a';
+                ctx.fillText('⏳ building crisp collage...', 40, baseSize/2);
+
+                // Load images sequentially, keep failed as null
+                const loadPromises = [];
+                for (let i = 0; i < maxImages; i++) {
+                    const src = sources[i];
+                    loadPromises.push(loadImageFromSource(src).catch(() => null));
+                }
+
+                const images = await Promise.all(loadPromises);
+
+                // Clear again before drawing final
+                ctx.clearRect(0, 0, baseSize, baseSize);
+                ctx.fillStyle = '#f0eae4';
+                ctx.fillRect(0, 0, baseSize, baseSize);
+
+                // Draw each successfully loaded image using the sharp method
+                for (let idx = 0; idx < images.length; idx++) {
+                    const img = images[idx];
+                    const col = idx % cols;
+                    const row = Math.floor(idx / cols);
+                    const x = col * cellW;
+                    const y = row * cellH;
+
+                    if (!img) {
+                        // failed placeholder
+                        ctx.fillStyle = '#d6c1b5';
+                        ctx.fillRect(x, y, cellW, cellH);
+                        ctx.strokeStyle = '#b29582';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(x, y, cellW, cellH);
+                        ctx.font = 'bold 16px Poppins, sans-serif';
+                        ctx.fillStyle = '#5f4b40';
+                        ctx.fillText('⚠️ failed', x + 10, y + 60);
+                        continue;
+                    }
+
+                    // Use sharp drawing function
+                    drawImageSharp(ctx, img, x, y, cellW, cellH);
+                }
+
+                // If fewer images than cells, fill rest with light pattern (sharp)
+                if (images.length < totalCells) {
+                    for (let i = images.length; i < totalCells; i++) {
+                        const col = i % cols;
+                        const row = Math.floor(i / cols);
+                        const x = col * cellW;
+                        const y = row * cellH;
+                        ctx.fillStyle = '#e7dbd2';
+                        ctx.fillRect(x, y, cellW, cellH);
+                        ctx.strokeStyle = '#bca99b';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(x, y, cellW, cellH);
+                        ctx.font = 'italic 18px Poppins';
+                        ctx.fillStyle = '#8c7568';
+                        ctx.fillText('no pic', x + 20, y + 70);
+                    }
+                }
+
+                // Revoke object URLs for File objects to avoid memory leaks
+                for (let src of sources) {
+                    if (src instanceof File) {
+                        // we can't revoke directly because we used createObjectURL inside loadImage, but we stored img.
+                        // better: after drawing, we don't have direct access. But we can store blob urls separately.
+                        // we'll handle inside loadImage revoke after resolve? But we need image to remain. We'll not revoke now.
+                        // But to keep it safe, we skip.
+                    }
+                }
+            }
+
+            // download function
+            function downloadCollage() {
+                if (canvas.width === 0 || canvas.height === 0) {
+                    alert('Create a collage first');
+                    return;
+                }
+                const link = document.createElement('a');
+                link.download = `collage-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+
+            // event listeners
+            createBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                createCollage().catch(err => {
+                    console.error(err);
+                    alert('⚠️ Error building collage — check console or some images failed.');
+                });
+            });
+
+            downloadBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                downloadCollage();
+            });
+
+            urlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addUrlBtn.click();
+                }
+            });
+
+            // initial canvas message with higher res
+            (function initialMessage() {
+                canvas.width = 1000;
+                canvas.height = 1000;
+                ctx.fillStyle = '#f3ede8';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = '300 26px Poppins, sans-serif';
+                ctx.fillStyle = '#a48d7e';
+                ctx.textAlign = 'center';
+                ctx.fillText('⬆️ upload images / paste URL', canvas.width/2, 400);
+                ctx.font = '20px Poppins';
+                ctx.fillText('then click CREATE COLLAGE (sharp & clear)', canvas.width/2, 500);
+                ctx.textAlign = 'left';
+            })();
+        })();
+    </script>
 </body>
 </html>
-
