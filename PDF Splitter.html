@@ -3,194 +3,397 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Splitter Tool</title>
+<title>PDF Splitter · select & download pages</title>
 
+<!-- PDF.js for rendering previews -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<!-- pdf-lib for creating new PDF -->
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
 }
 
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#667eea,#764ba2);
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(145deg, #2b2d42 0%, #1e1f2e 100%);
+    padding: 1rem;
 }
 
-.card{
-    background:white;
-    width:95%;
-    max-width:900px;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 25px 50px rgba(0,0,0,0.2);
-    text-align:center;
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(2px);
+    width: 100%;
+    max-width: 1000px;
+    padding: 2rem 1.8rem;
+    border-radius: 2.5rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    text-align: center;
 }
 
-.drop-area{
-    border:2px dashed #764ba2;
-    padding:25px;
-    border-radius:15px;
-    cursor:pointer;
-    margin-bottom:15px;
+h2 {
+    font-weight: 600;
+    color: #1e1f2e;
+    margin-bottom: 1.4rem;
+    letter-spacing: -0.5px;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+h2::after {
+    content: '📄';
+    font-size: 1.8rem;
+    filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2));
 }
 
-.preview-container{
-    margin-top:20px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
-    justify-content:center;
-    max-height:400px;
-    overflow:auto;
+.drop-area {
+    border: 3px dashed #4a4e8f;
+    background: #f0f2fe;
+    padding: 2.2rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #2b2d42;
+    transition: all 0.2s ease;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.05);
 }
 
-.page-box{
-    text-align:center;
+.drop-area:hover {
+    background: #e5e9ff;
+    border-color: #764ba2;
+    transform: scale(1.01);
 }
 
-canvas{
-    width:150px;
-    border-radius:8px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+.preview-container {
+    margin-top: 1.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 0.8rem 0.4rem;
+    background: rgba(230, 230, 250, 0.3);
+    border-radius: 2rem;
+    scrollbar-width: thin;
+    scrollbar-color: #9b87c5 #e0daf0;
 }
 
-button{
-    margin-top:20px;
-    padding:12px;
-    width:100%;
-    border:none;
-    border-radius:12px;
-    background:#764ba2;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
+.preview-container::-webkit-scrollbar {
+    width: 8px;
+}
+.preview-container::-webkit-scrollbar-track {
+    background: #e0daf0;
+    border-radius: 10px;
+}
+.preview-container::-webkit-scrollbar-thumb {
+    background: #6b4e9e;
+    border-radius: 10px;
+}
+
+.page-box {
+    background: white;
+    padding: 0.8rem 0.5rem 0.7rem 0.5rem;
+    border-radius: 1.8rem;
+    box-shadow: 0 10px 18px rgba(78, 40, 120, 0.25);
+    transition: transform 0.15s;
+    border: 1px solid rgba(255,255,255,0.7);
+    width: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-box:hover {
+    transform: translateY(-4px);
+}
+
+canvas {
+    width: 150px;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 0 5px 12px rgba(88, 47, 130, 0.4);
+    background: #faf9ff;
+    border: 1px solid white;
+}
+
+.page-box br {
+    display: none;
+}
+
+.page-box input[type="checkbox"] {
+    margin-top: 6px;
+    width: 22px;
+    height: 22px;
+    accent-color: #6b3fa0;
+    cursor: pointer;
+    transform: scale(1.1);
+    border-radius: 6px;
+}
+
+.page-box span {  /* for page label */
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1f1a2e;
+    background: #e3d9ff;
+    padding: 0.2rem 0.8rem;
+    border-radius: 40px;
+    margin: 4px 0 2px 0;
+    display: inline-block;
+}
+
+/* restructure text nodes via JS is messy — we'll generate clean inside js */
+/* but we keep style for manually created elements */
+.page-box .page-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1f1a2e;
+    background: #e3d9ff;
+    padding: 0.2rem 0.8rem;
+    border-radius: 40px;
+    margin: 6px 0 4px 0;
+    display: inline-block;
+}
+
+button {
+    margin-top: 2rem;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    border: none;
+    border-radius: 3rem;
+    background: linear-gradient(135deg, #4a4e8f, #764ba2);
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(98, 54, 155, 0.5);
+    transition: 0.15s;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+button:hover {
+    background: linear-gradient(135deg, #5b61b5, #8e5fc9);
+    transform: scale(1.01);
+    box-shadow: 0 15px 25px rgba(98, 54, 155, 0.7);
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 5px 12px #5f3b8c;
+}
+
+/* file hint */
+.small-note {
+    margin-top: 0.5rem;
+    color: #4f4370;
+    font-weight: 400;
+    background: #dbd0ee;
+    padding: 0.3rem 1rem;
+    border-radius: 40px;
+    display: inline-block;
+    font-size: 0.85rem;
 }
 </style>
 </head>
-
 <body>
 
 <div class="card">
-    <h2>PDF Splitter - Select Pages</h2>
+    <h2>PDF Splitter</h2>
 
     <div class="drop-area" id="dropArea">
-        Click or Drag PDF Here
+        📂 Click or drag PDF here
         <input type="file" id="fileInput" hidden accept="application/pdf">
     </div>
+    <div class="small-note">✨ select pages, then download</div>
 
     <div class="preview-container" id="previewContainer"></div>
 
-    <button onclick="splitPDF()">Download Selected Pages</button>
+    <button id="downloadBtn">⬇ Download selected pages</button>
 </div>
 
 <script>
-const dropArea = document.getElementById("dropArea");
-const fileInput = document.getElementById("fileInput");
-const previewContainer = document.getElementById("previewContainer");
+(function() {
+    const dropArea = document.getElementById("dropArea");
+    const fileInput = document.getElementById("fileInput");
+    const previewContainer = document.getElementById("previewContainer");
+    const downloadBtn = document.getElementById("downloadBtn");
 
-let pdfFile = null;
+    let pdfFile = null;            // raw File object
+    let pdfDocument = null;        // pdf.js doc (for page count & previews)
 
-dropArea.addEventListener("click",()=>fileInput.click());
+    // ---------- trigger file picker ----------
+    dropArea.addEventListener("click", (e) => {
+        // avoid if clicking on hyperlink or inside preview (but preview is separate)
+        fileInput.click();
+    });
 
-fileInput.addEventListener("change",(e)=>{
-    handleFile(e.target.files[0]);
-});
+    fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+            handleFile(e.target.files[0]);
+        }
+        // reset input so selecting same file again triggers change
+        fileInput.value = '';
+    });
 
-dropArea.addEventListener("dragover",(e)=>e.preventDefault());
+    // drag & drop
+    dropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropArea.style.background = "#dcd9f0";
+        dropArea.style.borderColor = "#9f7aea";
+    });
+    dropArea.addEventListener("dragleave", () => {
+        dropArea.style.background = "#f0f2fe";
+        dropArea.style.borderColor = "#4a4e8f";
+    });
+    dropArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropArea.style.background = "#f0f2fe";
+        dropArea.style.borderColor = "#4a4e8f";
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleFile(e.dataTransfer.files[0]);
+        }
+    });
 
-dropArea.addEventListener("drop",(e)=>{
-    e.preventDefault();
-    handleFile(e.dataTransfer.files[0]);
-});
+    // ---------- core handler ----------
+    function handleFile(file) {
+        if (!file || file.type !== "application/pdf") {
+            alert("❌ Please upload a valid PDF file.");
+            return;
+        }
 
-function handleFile(file){
-    if(!file || file.type !== "application/pdf"){
-        alert("Upload valid PDF");
-        return;
+        pdfFile = file;
+        previewContainer.innerHTML = ""; // clear previous previews
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const typedArray = new Uint8Array(evt.target.result);
+
+            // load with pdf.js to get page count and render previews
+            pdfjsLib.getDocument(typedArray).promise.then(pdf => {
+                pdfDocument = pdf;     // store reference (not strictly needed later but handy)
+                const totalPages = pdf.numPages;
+
+                // generate previews page by page (preserve order)
+                for (let i = 1; i <= totalPages; i++) {
+                    renderPagePreview(pdf, i, typedArray); // pass typedArray only if needed? we have pdf obj
+                }
+            }).catch(err => {
+                alert("Failed to load PDF: " + err.message);
+            });
+        };
+        reader.readAsArrayBuffer(file);
     }
 
-    pdfFile = file;
-    previewContainer.innerHTML="";
+    function renderPagePreview(pdf, pageNumber, optionalArrayBuffer) {
+        pdf.getPage(pageNumber).then(page => {
+            const viewport = page.getViewport({ scale: 0.4 }); // nice thumbnail size
 
-    const reader = new FileReader();
-    reader.onload = function(){
-        const typedarray = new Uint8Array(this.result);
-        pdfjsLib.getDocument(typedarray).promise.then(pdf=>{
-            for(let i=1;i<=pdf.numPages;i++){
-                pdf.getPage(i).then(page=>{
-                    const viewport = page.getViewport({scale:0.4});
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
+            // create elements
+            const pageBox = document.createElement("div");
+            pageBox.className = "page-box";
 
-                    const pageBox = document.createElement("div");
-                    pageBox.className = "page-box";
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
 
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.value = i-1;
+            // page label
+            const labelSpan = document.createElement("span");
+            labelSpan.className = "page-label";
+            labelSpan.textContent = `Page ${pageNumber}`;
 
-                    pageBox.appendChild(canvas);
-                    pageBox.appendChild(document.createElement("br"));
-                    pageBox.appendChild(document.createTextNode("Page "+i));
-                    pageBox.appendChild(document.createElement("br"));
-                    pageBox.appendChild(checkbox);
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            // we store the zero-based page index (for pdf-lib)
+            checkbox.value = pageNumber - 1;   // page index
+            // optionally add attribute for debugging
+            checkbox.setAttribute("data-pagenum", pageNumber);
 
-                    previewContainer.appendChild(pageBox);
+            // build structure
+            pageBox.appendChild(canvas);
+            pageBox.appendChild(labelSpan);
+            pageBox.appendChild(checkbox);
 
-                    page.render({
-                        canvasContext: context,
-                        viewport: viewport
-                    });
-                });
-            }
+            previewContainer.appendChild(pageBox);
+
+            // render PDF page into canvas
+            const renderTask = page.render({
+                canvasContext: ctx,
+                viewport: viewport
+            });
+            renderTask.catch(err => {
+                console.warn("Preview render error page " + pageNumber, err);
+            });
+        }).catch(err => {
+            console.warn("Could not load page " + pageNumber, err);
         });
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-async function splitPDF(){
-    if(!pdfFile){
-        alert("Upload PDF first");
-        return;
     }
 
-    const checked = document.querySelectorAll("input[type='checkbox']:checked");
+    // ---------- split & download using pdf-lib ----------
+    downloadBtn.addEventListener("click", async function() {
+        if (!pdfFile) {
+            alert("📌 Please upload a PDF first.");
+            return;
+        }
 
-    if(checked.length === 0){
-        alert("Select at least one page");
-        return;
-    }
+        const checkboxes = document.querySelectorAll("#previewContainer input[type='checkbox']");
+        const checked = Array.from(checkboxes).filter(cb => cb.checked);
 
-    const { PDFDocument } = PDFLib;
-    const bytes = await pdfFile.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes);
-    const newPdf = await PDFDocument.create();
+        if (checked.length === 0) {
+            alert("✋ Select at least one page to download.");
+            return;
+        }
 
-    for(const cb of checked){
-        const pageIndex = Number(cb.value);
-        const [copiedPage] = await newPdf.copyPages(pdfDoc,[pageIndex]);
-        newPdf.addPage(copiedPage);
-    }
+        try {
+            // read file as arrayBuffer for pdf-lib
+            const arrayBuffer = await pdfFile.arrayBuffer();
 
-    const newBytes = await newPdf.save();
-    const blob = new Blob([newBytes], {type:"application/pdf"});
+            const { PDFDocument } = PDFLib; // from global PDFLib (loaded via umd)
+            const originalPdf = await PDFDocument.load(arrayBuffer);
+            const newPdf = await PDFDocument.create();
 
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "selected-pages.pdf";
-    link.click();
-}
+            // copy selected pages (by index stored in value)
+            for (const cb of checked) {
+                const pageIndex = parseInt(cb.value, 10); // 0-based
+                // copyPages expects array of page indices
+                const [copiedPage] = await newPdf.copyPages(originalPdf, [pageIndex]);
+                newPdf.addPage(copiedPage);
+            }
+
+            // save and trigger download
+            const pdfBytes = await newPdf.save();
+            const blob = new Blob([pdfBytes], { type: "application/pdf" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "selected-pages.pdf";   // you can modify filename
+            link.click();
+
+            // cleanup object URL
+            setTimeout(() => URL.revokeObjectURL(link.href), 200);
+
+        } catch (err) {
+            console.error(err);
+            alert("Something went wrong: " + err.message);
+        }
+    });
+
+    // optional: reset preview if needed. Keep it simple.
+})();
 </script>
 
+<!-- one more small improvement: ensure page numbers are visible & checkboxes -->
+<!-- also add some extra info: total pages etc -->
 </body>
 </html>
