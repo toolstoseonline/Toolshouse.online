@@ -20,11 +20,12 @@
 }
 
 body{
-    height:100vh;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
     background:linear-gradient(135deg,#667eea,#764ba2);
+    padding:15px;
 }
 
 .card{
@@ -41,6 +42,7 @@ body{
 h2{
     margin-bottom:25px;
     color:#333;
+    font-size:1.8rem;
 }
 
 .file-input{
@@ -48,21 +50,23 @@ h2{
 }
 
 input[type="file"]{
-    padding:10px;
+    padding:12px;
     border:2px dashed #764ba2;
     border-radius:12px;
     width:100%;
     cursor:pointer;
     transition:0.3s;
+    background:#f9f9f9;
 }
 
 input[type="file"]:hover{
     background:#f3f0ff;
+    border-color:#5a3796;
 }
 
 button{
     width:100%;
-    padding:12px;
+    padding:14px;
     border:none;
     border-radius:12px;
     background:#764ba2;
@@ -71,18 +75,57 @@ button{
     font-weight:600;
     cursor:pointer;
     transition:0.3s;
+    margin-bottom:15px;
 }
 
-button:hover{
+button:hover:not(:disabled){
     background:#5a3796;
     transform:translateY(-2px);
     box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+button:disabled{
+    background:#b19cd9;
+    cursor:not-allowed;
+    opacity:0.7;
+}
+
+.loading{
+    margin:15px 0;
+    color:#764ba2;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+}
+
+.spinner{
+    width:20px;
+    height:20px;
+    border:3px solid #f3f3f3;
+    border-top:3px solid #764ba2;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
 }
 
 .footer-text{
     margin-top:15px;
     font-size:13px;
     color:#888;
+}
+
+.warning{
+    color:#e67e22;
+    font-size:12px;
+    margin-top:8px;
+    text-align:left;
+    padding-left:5px;
 }
 
 @keyframes fadeIn{
@@ -94,6 +137,10 @@ button:hover{
     .card{
         padding:30px 20px;
     }
+    
+    h2{
+        font-size:1.5rem;
+    }
 }
 </style>
 
@@ -102,63 +149,132 @@ button:hover{
 <body>
 
 <div class="card">
-    <h2>Word (.docx) to PDF Converter</h2>
+    <h2>📄 Word to PDF Converter</h2>
 
     <div class="file-input">
         <input type="file" id="fileInput" accept=".docx">
+        <div class="warning">Max file size: 10MB (larger files may take time)</div>
     </div>
 
-    <button onclick="convert()">Convert to PDF</button>
+    <button onclick="convert()" id="convertBtn">Convert to PDF</button>
+    
+    <div id="loading" class="loading" style="display:none;">
+        <div class="spinner"></div>
+        <span>Converting... Please wait</span>
+    </div>
 
     <div class="footer-text">
-        Fast • Secure • No Upload to Server
+        ⚡ Fast • 🔒 Secure • ☁️ No Upload to Server
     </div>
 </div>
 
 <script>
 async function convert() {
-
-    const file = document.getElementById("fileInput").files[0];
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+    const convertBtn = document.getElementById("convertBtn");
+    const loadingDiv = document.getElementById("loading");
 
     if (!file) {
-        alert("Please upload a DOCX file.");
+        alert("📂 Please upload a DOCX file.");
         return;
     }
 
-    if (!file.name.endsWith(".docx")) {
-        alert("Only DOCX supported.");
+    if (!file.name.toLowerCase().endsWith(".docx")) {
+        alert("❌ Only DOCX files are supported.");
         return;
     }
+
+    // Check file size (10MB limit warning)
+    if (file.size > 10 * 1024 * 1024) {
+        const proceed = confirm("⚠️ File is larger than 10MB. Conversion may take time. Continue?");
+        if (!proceed) return;
+    }
+
+    // Disable button and show loading
+    convertBtn.disabled = true;
+    loadingDiv.style.display = "flex";
 
     const reader = new FileReader();
 
     reader.onload = async function(e) {
-
         try {
-
             const arrayBuffer = e.target.result;
 
+            // Extract text from DOCX
             const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-
             const text = result.value;
 
+            if (!text.trim()) {
+                alert("⚠️ No text found in the document.");
+                return;
+            }
+
+            // Create PDF with multiple pages
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF();
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
 
-            const lines = pdf.splitTextToSize(text, 180);
-            pdf.text(lines, 10, 10);
+            // PDF settings
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 15;
+            const maxLineWidth = pageWidth - (margin * 2);
+            const lineHeight = 7; // mm per line
+            let y = margin;
 
-            pdf.save(file.name.replace(".docx", "") + ".pdf");
+            // Split text into lines that fit the page width
+            const lines = pdf.splitTextToSize(text, maxLineWidth);
+
+            // Add lines to PDF with pagination
+            for (let i = 0; i < lines.length; i++) {
+                // Check if we need a new page (leaving bottom margin)
+                if (y > pageHeight - margin) {
+                    pdf.addPage();
+                    y = margin;
+                }
+                
+                pdf.text(lines[i], margin, y);
+                y += lineHeight;
+            }
+
+            // Generate filename
+            const fileName = file.name.replace(/\.docx$/i, "") + ".pdf";
+            
+            // Save the PDF
+            pdf.save(fileName);
+            
+            // Success message
+            setTimeout(() => {
+                alert("✅ Conversion complete! PDF downloaded.");
+            }, 100);
 
         } catch (error) {
-            alert("Conversion failed.");
-            console.error(error);
+            alert("❌ Conversion failed. Please check the file and try again.");
+            console.error("Conversion error:", error);
+        } finally {
+            // Re-enable button and hide loading
+            convertBtn.disabled = false;
+            loadingDiv.style.display = "none";
         }
+    };
 
+    reader.onerror = function() {
+        alert("❌ Error reading file.");
+        convertBtn.disabled = false;
+        loadingDiv.style.display = "none";
     };
 
     reader.readAsArrayBuffer(file);
 }
+
+// Optional: Clear file input when clicking on it again
+document.getElementById('fileInput').addEventListener('click', function() {
+    this.value = '';
+});
 </script>
 
 </body>
