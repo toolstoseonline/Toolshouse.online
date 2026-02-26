@@ -3,584 +3,618 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>CamScanner Pro · AI edge · OCR · dark mode</title>
+  <title>Smart Scanner · working camera · PDF · OCR</title>
   <!-- PDF library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- Tesseract.js for OCR -->
+  <!-- Tesseract.js for OCR (lightweight CDN) -->
   <script src='https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js'></script>
-  <!-- OpenCV.js for advanced edge detection (AI style) -->
-  <script async src="https://docs.opencv.org/4.8.0/opencv.js" onload="onOpenCvReady()"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
       font-family: 'Segoe UI', Roboto, sans-serif;
-      background: #f1f5f9;
-      transition: background 0.3s, color 0.3s;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 12px;
-    }
-    body.dark {
-      background: #0b1120;
-      color: #e2e8f0;
-    }
-    .card {
-      max-width: 1000px;
-      width: 100%;
-      background: rgba(255,255,255,0.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 2.5rem;
-      padding: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-      border: 1px solid rgba(255,255,255,0.3);
+      padding: 16px;
       transition: background 0.3s;
     }
-    body.dark .card {
-      background: #1e293bcc;
-      border-color: #334155;
+    
+    body.dark-mode {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     }
-    h1 { font-size: 2.1rem; font-weight: 600; display: flex; gap: 10px; align-items: center; justify-content: center; }
-    .sub { margin-bottom: 20px; opacity: 0.8; }
-
-    /* video panel */
-    .video-container {
+    
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      padding: 25px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    body.dark-mode .container {
+      background: rgba(30, 30, 46, 0.95);
+      color: #fff;
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
+    
+    body.dark-mode .subtitle {
+      color: #aaa;
+    }
+    
+    /* Camera Container */
+    .camera-container {
       position: relative;
-      border-radius: 2rem;
+      border-radius: 20px;
       overflow: hidden;
-      border: 4px solid #3b82f6;
+      border: 4px solid #667eea;
       background: #000;
       aspect-ratio: 4/3;
-      max-width: 700px;
-      margin: 18px auto;
-      box-shadow: 0 20px 30px -10px #00000055;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
-    video, canvas#overlayCanvas {
+    
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    #cropOverlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
       pointer-events: none;
+      border: 3px solid #ffd700;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
+      display: none;
     }
-    video { pointer-events: auto; }  /* allow interaction for camera stream */
-    canvas#overlayCanvas { pointer-events: none; z-index: 5; }
-
-    .mode-badge {
+    
+    .mode-indicator {
       position: absolute;
-      bottom: 12px;
-      right: 16px;
-      background: #3b82f6ee;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(102, 126, 234, 0.9);
       color: white;
-      padding: 6px 16px;
-      border-radius: 40px;
+      padding: 8px 20px;
+      border-radius: 30px;
       font-size: 0.9rem;
       font-weight: 600;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
       z-index: 10;
     }
-
-    .button-panel {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
+    
+    /* Button Grid */
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
-      margin: 20px 0 10px;
+      margin: 20px 0;
     }
-    button, .mode-btn {
-      background: #ffffffd9;
+    
+    button {
+      padding: 14px 20px;
       border: none;
-      padding: 12px 24px;
-      border-radius: 60px;
+      border-radius: 15px;
       font-weight: 600;
       font-size: 1rem;
-      box-shadow: 0 8px 16px -6px #00000033;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
       cursor: pointer;
-      transition: 0.15s;
-      border: 1px solid #cbd5e1;
-      color: #0f172a;
+      transition: all 0.3s;
+      background: white;
+      color: #333;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    body.dark button, body.dark .mode-btn {
-      background: #334155;
-      color: #f1f5f9;
-      border-color: #475569;
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
+    
     button.primary {
-      background: #3b82f6;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
-      border: none;
     }
-    button.primary:hover { background: #2563eb; }
-    button:active { transform: scale(0.96); }
-
-    .preview-area {
-      margin: 24px 0 10px;
+    
+    body.dark-mode button {
+      background: #2d3748;
+      color: #fff;
     }
+    
+    /* Preview Section */
+    .preview-section {
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 20px;
+    }
+    
+    body.dark-mode .preview-section {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
     .preview-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
       font-weight: 600;
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-      text-align: left;
     }
-    .thumb-scroll {
+    
+    .thumbnail-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 15px;
       justify-content: center;
-      background: #ffffff30;
-      border-radius: 40px;
-      padding: 20px;
-      min-height: 130px;
+      min-height: 100px;
     }
-    .thumb-item {
+    
+    .thumbnail {
       position: relative;
       width: 100px;
-      border-radius: 20px;
+      height: 130px;
+      border-radius: 12px;
       overflow: hidden;
-      border: 3px solid white;
-      box-shadow: 0 8px 20px black;
-      transition: 0.2s;
-      cursor: pointer;
+      border: 3px solid #667eea;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
-    .thumb-item:hover { transform: scale(1.05); }
-    .thumb-item img { width: 100%; height: auto; display: block; }
-    .thumb-item .remove-btn {
+    
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .thumbnail .remove-btn {
       position: absolute;
-      top: 4px;
-      right: 4px;
-      background: #ef4444ee;
-      color: white;
-      border-radius: 30px;
+      top: 5px;
+      right: 5px;
       width: 24px;
       height: 24px;
-      font-weight: bold;
-      font-size: 16px;
+      background: #ff4444;
+      color: white;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      border: 2px solid white;
     }
-
+    
+    /* OCR Panel */
     .ocr-panel {
-      background: #00000010;
-      border-radius: 32px;
+      margin-top: 20px;
       padding: 20px;
-      margin: 25px 0 10px;
-      text-align: left;
-      border: 1px solid #ffffff50;
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 20px;
     }
-    body.dark .ocr-panel { background: #0f172a80; }
+    
+    body.dark-mode .ocr-panel {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
     .ocr-text {
-      background: #f8fafc;
-      padding: 16px;
-      border-radius: 24px;
-      font-family: 'Courier New', monospace;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      font-family: monospace;
       font-size: 0.95rem;
       max-height: 150px;
-      overflow: auto;
-      color: #0f172a;
+      overflow-y: auto;
+      margin-top: 10px;
+      border: 1px solid #ddd;
     }
-    body.dark .ocr-text { background: #1e293b; color: #cbd5e1; }
-
-    .footer { opacity: 0.7; margin-top: 24px; font-size: 0.9rem; }
-
-    /* manual crop overlay (simple corners simulation) */
-    .crop-handle {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border: 3px solid #ffd966;
-      background: #ffffff70;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 20;
+    
+    body.dark-mode .ocr-text {
+      background: #1a1a2e;
+      color: #fff;
+      border-color: #333;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    /* Hidden canvas for processing */
+    #hiddenCanvas {
       display: none;
+    }
+    
+    /* Loading indicator */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-<div class="card">
-  <h1>📄 CamScanner PRO <span style="font-size: 1.5rem;">✨</span></h1>
-  <div class="sub">AI edge + manual crop · dark mode · OCR</div>
-
-  <!-- video region with overlay canvas and corner indicators -->
-  <div class="video-container" id="videoContainer">
-    <video id="video" autoplay playsinline></video>
-    <canvas id="overlayCanvas"></canvas>
-    <div class="mode-badge" id="modeIndicator">📐 AUTO EDGE</div>
-    <div id="cropTL" class="crop-handle" style="border-color:#fbbf24;">⬤</div>
-    <div id="cropTR" class="crop-handle" style="border-color:#fbbf24;"></div>
-    <div id="cropBL" class="crop-handle" style="border-color:#fbbf24;"></div>
-    <div id="cropBR" class="crop-handle" style="border-color:#fbbf24;"></div>
+  <div class="container">
+    <h1>📱 Smart Document Scanner</h1>
+    <div class="subtitle">Camera • PDF • OCR • Dark Mode</div>
+    
+    <!-- Camera Container -->
+    <div class="camera-container">
+      <video id="video" autoplay playsinline></video>
+      <div id="cropOverlay"></div>
+      <div class="mode-indicator" id="modeText">📸 Camera Ready</div>
+    </div>
+    
+    <!-- Button Controls -->
+    <div class="button-grid">
+      <button onclick="startCamera()" class="primary">📷 Start Camera</button>
+      <button onclick="switchCamera()">🔄 Switch Camera</button>
+      <button onclick="toggleMode()">✂️ Toggle Crop</button>
+      <button onclick="captureImage()">✅ Capture</button>
+    </div>
+    
+    <div class="button-grid">
+      <button onclick="enhanceLastImage()">✨ Auto Enhance</button>
+      <button onclick="generatePDF()">📥 Save PDF</button>
+      <button onclick="runOCR()">🔤 OCR Text</button>
+      <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    </div>
+    
+    <!-- Preview Section -->
+    <div class="preview-section">
+      <div class="preview-title">
+        <span>📸 Captured Pages (<span id="imageCount">0</span>)</span>
+        <button onclick="clearAll()" style="padding: 5px 15px;">🗑 Clear All</button>
+      </div>
+      <div class="thumbnail-grid" id="preview"></div>
+    </div>
+    
+    <!-- OCR Panel -->
+    <div class="ocr-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>🔍 Extracted Text</span>
+        <span id="ocrStatus"></span>
+      </div>
+      <div class="ocr-text" id="ocrResult">Click OCR button to extract text from the latest capture</div>
+    </div>
+    
+    <div class="footer">
+      🔒 100% Private • No Upload • Works Offline
+    </div>
   </div>
-
-  <!-- buttons -->
-  <div class="button-panel">
-    <button onclick="startCamera()">📸 Start camera</button>
-    <button onclick="toggleEdgeMode()" class="primary" id="edgeToggleBtn">⚡ AUTO edge (AI)</button>
-    <button onclick="manualCropMode()" id="manualCropBtn">✋ Manual crop</button>
-    <button onclick="captureCropped()">✅ Capture page</button>
-  </div>
-  <div class="button-panel">
-    <button onclick="generatePDF()">📥 Download PDF</button>
-    <button onclick="runOCR()">🔤 OCR text</button>
-    <button onclick="toggleDarkMode()" class="mode-btn">🌙 Dark mode</button>
-    <button onclick="clearAll()">🗑 Clear all</button>
-  </div>
-
-  <!-- preview thumbnails -->
-  <div class="preview-area">
-    <div class="preview-title">📷 captured pages (<span id="imgCount">0</span>)</div>
-    <div class="thumb-scroll" id="preview"></div>
-  </div>
-
-  <!-- OCR panel -->
-  <div class="ocr-panel">
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">🔎 Extracted text <span style="font-size:0.8rem;">(click OCR button)</span></div>
-    <div class="ocr-text" id="ocrResult">—</div>
-  </div>
-
-  <div class="footer">no upload · local processing · AI edge detection (OpenCV.js) + Tesseract</div>
-</div>
-
-<!-- hidden canvas for processing -->
-<canvas id="canvas" style="display:none;"></canvas>
-
-<script>
-  // ------------------- global variables ------------------
-  const video = document.getElementById('video');
-  const overlayCanvas = document.getElementById('overlayCanvas');
-  const overlayCtx = overlayCanvas.getContext('2d');
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  const previewDiv = document.getElementById('preview');
-  const imgCountSpan = document.getElementById('imgCount');
-
-  let images = [];               // store captured image dataURLs
-  let stream = null;
-  let cvReady = false;           // opencv loaded flag
-  let mode = 'auto';             // 'auto' or 'manual'
-  let manualPoints = null;       // will hold { tl, tr, bl, br } normalized [0..1]
-  let dragActive = false;        // not fully implemented but kept for future
-  let containerRect = null;
-
-  // ------------------- dark mode -------------------------
-  function toggleDarkMode() {
-    document.body.classList.toggle('dark');
-  }
-
-  // ------------------- opencv ready ----------------------
-  window.onOpenCvReady = function() {
-    cvReady = true;
-    console.log('OpenCV.js loaded, AI edge ready');
-  };
-
-  // ------------------- start camera -----------------------
-  async function startCamera() {
-    try {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+  
+  <!-- Hidden canvas for image processing -->
+  <canvas id="hiddenCanvas"></canvas>
+  
+  <script>
+    // DOM Elements
+    const video = document.getElementById('video');
+    const hiddenCanvas = document.getElementById('hiddenCanvas');
+    const ctx = hiddenCanvas.getContext('2d');
+    const preview = document.getElementById('preview');
+    const imageCountSpan = document.getElementById('imageCount');
+    const modeText = document.getElementById('modeText');
+    const cropOverlay = document.getElementById('cropOverlay');
+    const ocrResult = document.getElementById('ocrResult');
+    const ocrStatus = document.getElementById('ocrStatus');
+    
+    // State variables
+    let images = [];
+    let currentStream = null;
+    let usingFrontCamera = false;
+    let cropMode = false;
+    let darkMode = false;
+    
+    // Initialize camera on page load
+    window.addEventListener('load', () => {
+      startCamera();
+    });
+    
+    // Start Camera Function
+    async function startCamera() {
+      try {
+        // Stop any existing stream
+        if (currentStream) {
+          currentStream.getTracks().forEach(track => track.stop());
+        }
+        
+        const constraints = {
+          video: {
+            facingMode: usingFrontCamera ? 'user' : 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
+        
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = currentStream;
+        
+        // Wait for video to be ready
+        await new Promise((resolve) => {
+          video.onloadedmetadata = () => {
+            hiddenCanvas.width = video.videoWidth;
+            hiddenCanvas.height = video.videoHeight;
+            resolve();
+          };
+        });
+        
+        modeText.innerText = '📸 Camera Active';
+      } catch (error) {
+        alert('Camera access failed: ' + error.message);
+        modeText.innerText = '❌ Camera Error';
       }
-      stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "environment", width: { ideal: 1280 } } 
-      });
-      video.srcObject = stream;
-      await video.play();
-      // set overlay canvas size
-      updateOverlaySize();
-      // start continuous drawing for auto mode or manual corners
-      requestAnimationFrame(drawOverlay);
-    } catch (err) {
-      alert('Camera error: ' + err.message);
     }
-  }
-
-  function updateOverlaySize() {
-    if (video.videoWidth) {
-      overlayCanvas.width = video.videoWidth;
-      overlayCanvas.height = video.videoHeight;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      // also adjust container reference for manual crop
-      containerRect = document.getElementById('videoContainer').getBoundingClientRect();
+    
+    // Switch between front and back camera
+    async function switchCamera() {
+      usingFrontCamera = !usingFrontCamera;
+      await startCamera();
     }
-  }
-
-  // ------------------- drawing overlay (auto edges / manual corners) ---------
-  function drawOverlay() {
-    if (!video.videoWidth) {
-      requestAnimationFrame(drawOverlay);
-      return;
-    }
-    // ensure canvas matches video
-    if (overlayCanvas.width !== video.videoWidth || overlayCanvas.height !== video.videoHeight) {
-      updateOverlaySize();
-    }
-
-    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-    overlayCtx.lineWidth = 4;
-    overlayCtx.strokeStyle = '#facc15';
-    overlayCtx.shadowColor = 'black';
-    overlayCtx.shadowBlur = 10;
-    overlayCtx.setLineDash([10, 8]);
-
-    if (mode === 'auto') {
-      if (cvReady) {
-        detectEdgesAuto();
+    
+    // Toggle crop mode overlay
+    function toggleMode() {
+      cropMode = !cropMode;
+      if (cropMode) {
+        cropOverlay.style.display = 'block';
+        modeText.innerText = '✂️ Crop Mode ON';
       } else {
-        // fallback: draw a simple rectangle
-        overlayCtx.strokeRect(20, 20, overlayCanvas.width-40, overlayCanvas.height-40);
-        overlayCtx.font = 'bold 22px sans-serif';
-        overlayCtx.fillStyle = '#facc15';
-        overlayCtx.shadowBlur = 8;
-        overlayCtx.fillText('⚡ loading AI...', 50, 70);
+        cropOverlay.style.display = 'none';
+        modeText.innerText = '📸 Camera Ready';
       }
-    } else if (mode === 'manual' && manualPoints) {
-      // draw four corners + quadrilateral
-      const { tl, tr, bl, br } = manualPoints;
-      const w = overlayCanvas.width, h = overlayCanvas.height;
-      const p1 = [tl.x * w, tl.y * h];
-      const p2 = [tr.x * w, tr.y * h];
-      const p3 = [br.x * w, br.y * h];
-      const p4 = [bl.x * w, bl.y * h];
-
-      overlayCtx.beginPath();
-      overlayCtx.moveTo(p1[0], p1[1]);
-      overlayCtx.lineTo(p2[0], p2[1]);
-      overlayCtx.lineTo(p3[0], p3[1]);
-      overlayCtx.lineTo(p4[0], p4[1]);
-      overlayCtx.closePath();
-      overlayCtx.stroke();
-
-      // draw circles at corners
-      overlayCtx.fillStyle = '#ffd966';
-      overlayCtx.shadowBlur = 12;
-      [p1, p2, p3, p4].forEach(([x, y]) => {
-        overlayCtx.beginPath();
-        overlayCtx.arc(x, y, 12, 0, 2*Math.PI);
-        overlayCtx.fillStyle = '#fde047';
-        overlayCtx.fill();
-        overlayCtx.strokeStyle = '#1e293b';
-        overlayCtx.lineWidth = 2;
-        overlayCtx.stroke();
-      });
     }
-    requestAnimationFrame(drawOverlay);
-  }
-
-  // ------------------- auto edge detection using OpenCV -----------------
-  function detectEdgesAuto() {
-    if (!cvReady || !video.videoWidth) return;
-    try {
-      let src = cv.matFromImageData(video);
-      let gray = new cv.Mat();
-      cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
-      let blurred = new cv.Mat();
-      cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
-      let edges = new cv.Mat();
-      cv.Canny(blurred, edges, 50, 150);
-      // find contours
-      let contours = new cv.MatVector();
-      let hierarchy = new cv.Mat();
-      cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-      // find largest contour by area
-      let maxArea = 0;
-      let maxContour = null;
-      for (let i = 0; i < contours.size(); i++) {
-        let cnt = contours.get(i);
-        let area = cv.contourArea(cnt);
-        if (area > maxArea && area > 20000) {
-          maxArea = area;
-          maxContour = cnt;
+    
+    // Capture image from video
+    function captureImage() {
+      if (!video.videoWidth) {
+        alert('Please start the camera first');
+        return;
+      }
+      
+      // Set canvas dimensions to match video
+      hiddenCanvas.width = video.videoWidth;
+      hiddenCanvas.height = video.videoHeight;
+      
+      // Draw video frame to canvas
+      ctx.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+      
+      // Apply basic enhancement by default
+      enhanceImageData();
+      
+      // Convert to data URL and save
+      const imageDataURL = hiddenCanvas.toDataURL('image/jpeg', 0.9);
+      images.push(imageDataURL);
+      
+      // Add thumbnail
+      addThumbnail(imageDataURL);
+      
+      // Update count
+      imageCountSpan.innerText = images.length;
+      
+      // Show success message
+      modeText.innerText = '✅ Captured!';
+      setTimeout(() => {
+        modeText.innerText = cropMode ? '✂️ Crop Mode ON' : '📸 Camera Ready';
+      }, 1500);
+    }
+    
+    // Basic image enhancement (brightness, contrast)
+    function enhanceImageData() {
+      const imageData = ctx.getImageData(0, 0, hiddenCanvas.width, hiddenCanvas.height);
+      const data = imageData.data;
+      
+      // Auto-contrast and brightness adjustment
+      let min = 255, max = 0;
+      
+      // Find min and max values
+      for (let i = 0; i < data.length; i += 4) {
+        const brightness = 0.34 * data[i] + 0.5 * data[i+1] + 0.16 * data[i+2];
+        min = Math.min(min, brightness);
+        max = Math.max(max, brightness);
+      }
+      
+      // Apply contrast stretch
+      const range = max - min;
+      if (range > 0) {
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = ((data[i] - min) / range) * 255;
+          data[i+1] = ((data[i+1] - min) / range) * 255;
+          data[i+2] = ((data[i+2] - min) / range) * 255;
         }
       }
-      if (maxContour) {
-        // approximate polygon
-        let epsilon = 0.02 * cv.arcLength(maxContour, true);
-        let approx = new cv.Mat();
-        cv.approxPolyDP(maxContour, approx, epsilon, true);
-        if (approx.rows >= 4) {
-          // get 4 corners (simplify: take bounding rect extreme points)
-          let points = [];
-          for (let i = 0; i < 4; i++) points.push(approx.data32S.slice(i*2, i*2+2));
-          // sort corners: tl, tr, br, bl (rough)
-          let sum = points.map(p => p[0]+p[1]);
-          let tl = points[sum.indexOf(Math.min(...sum))];
-          let br = points[sum.indexOf(Math.max(...sum))];
-          let diff = points.map(p => p[1]-p[0]);
-          let trIndex = diff.indexOf(Math.min(...diff));
-          let blIndex = diff.indexOf(Math.max(...diff));
-          overlayCtx.beginPath();
-          overlayCtx.moveTo(points[0][0], points[0][1]);
-          for(let i=1; i<points.length; i++) overlayCtx.lineTo(points[i][0], points[i][1]);
-          overlayCtx.closePath();
-          overlayCtx.stroke();
-        } else {
-          overlayCtx.strokeRect(20,20, overlayCanvas.width-40, overlayCanvas.height-40);
-        }
-        approx.delete();
-      } else {
-        overlayCtx.strokeRect(20,20, overlayCanvas.width-40, overlayCanvas.height-40);
-      }
-      src.delete(); gray.delete(); blurred.delete(); edges.delete(); contours.delete(); hierarchy.delete();
-    } catch (e) {
-      console.warn('cv error', e);
+      
+      ctx.putImageData(imageData, 0, 0);
     }
-  }
-
-  // ------------------- toggle mode -------------------------
-  function toggleEdgeMode() {
-    mode = 'auto';
-    manualPoints = null;
-    document.getElementById('modeIndicator').innerText = '⚡ AUTO EDGE (AI)';
-  }
-
-  function manualCropMode() {
-    mode = 'manual';
-    // initial corners: 15% inset
-    if (!manualPoints) {
-      manualPoints = {
-        tl: {x:0.15, y:0.15},
-        tr: {x:0.85, y:0.15},
-        bl: {x:0.15, y:0.85},
-        br: {x:0.85, y:0.85}
+    
+    // Enhance the last captured image
+    function enhanceLastImage() {
+      if (images.length === 0) {
+        alert('No images to enhance');
+        return;
+      }
+      
+      // Get last image
+      const lastImage = new Image();
+      lastImage.src = images[images.length - 1];
+      
+      lastImage.onload = () => {
+        hiddenCanvas.width = lastImage.width;
+        hiddenCanvas.height = lastImage.height;
+        ctx.drawImage(lastImage, 0, 0);
+        enhanceImageData();
+        
+        // Update the last image with enhanced version
+        images[images.length - 1] = hiddenCanvas.toDataURL('image/jpeg', 0.9);
+        
+        // Refresh thumbnails
+        refreshThumbnails();
+        
+        modeText.innerText = '✨ Enhanced!';
+        setTimeout(() => {
+          modeText.innerText = cropMode ? '✂️ Crop Mode ON' : '📸 Camera Ready';
+        }, 1500);
       };
     }
-    document.getElementById('modeIndicator').innerText = '✋ MANUAL CROP';
-  }
-
-  // ------------------- capture according to current mode -------------
-  function captureCropped() {
-    if (!video.videoWidth) { alert('start camera first'); return; }
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    let imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
-
-    // basic enhancement (brightness + contrast)
-    for (let i=0; i<imgData.data.length; i+=4) {
-      imgData.data[i] = Math.min(255, imgData.data[i] * 1.2 + 10);
-      imgData.data[i+1] = Math.min(255, imgData.data[i+1] * 1.2 + 10);
-      imgData.data[i+2] = Math.min(255, imgData.data[i+2] * 1.2 + 10);
+    
+    // Add thumbnail to preview
+    function addThumbnail(imageDataURL) {
+      const thumbnailDiv = document.createElement('div');
+      thumbnailDiv.className = 'thumbnail';
+      
+      const img = document.createElement('img');
+      img.src = imageDataURL;
+      
+      const removeBtn = document.createElement('div');
+      removeBtn.className = 'remove-btn';
+      removeBtn.innerHTML = '×';
+      removeBtn.onclick = (e) => {
+        e.stopPropagation();
+        const index = Array.from(preview.children).indexOf(thumbnailDiv);
+        if (index !== -1) {
+          images.splice(index, 1);
+          thumbnailDiv.remove();
+          imageCountSpan.innerText = images.length;
+        }
+      };
+      
+      thumbnailDiv.appendChild(img);
+      thumbnailDiv.appendChild(removeBtn);
+      preview.appendChild(thumbnailDiv);
     }
-    ctx.putImageData(imgData,0,0);
-
-    // crop if manual points exist and mode manual
-    if (mode === 'manual' && manualPoints) {
-      const w = canvas.width, h = canvas.height;
-      let xmin = Math.min(manualPoints.tl.x, manualPoints.bl.x)*w;
-      let xmax = Math.max(manualPoints.tr.x, manualPoints.br.x)*w;
-      let ymin = Math.min(manualPoints.tl.y, manualPoints.tr.y)*h;
-      let ymax = Math.max(manualPoints.bl.y, manualPoints.br.y)*h;
-      xmin = Math.max(0, xmin); ymin = Math.max(0, ymin); xmax = Math.min(w, xmax); ymax = Math.min(h, ymax);
-      let cropW = xmax-xmin, cropH = ymax-ymin;
-      if (cropW>20 && cropH>20) {
-        let croppedCanvas = document.createElement('canvas');
-        croppedCanvas.width = cropW; croppedCanvas.height = cropH;
-        let croppedCtx = croppedCanvas.getContext('2d');
-        croppedCtx.drawImage(canvas, xmin, ymin, cropW, cropH, 0,0,cropW,cropH);
-        let finalUrl = croppedCanvas.toDataURL('image/jpeg',0.95);
-        images.push(finalUrl);
-        addThumbnail(finalUrl);
-      } else { alert('crop too small'); }
-    } else {
-      // auto mode: just full with slight perspective? we use full image for simplicity.
-      let url = canvas.toDataURL('image/jpeg',0.95);
-      images.push(url);
-      addThumbnail(url);
+    
+    // Refresh all thumbnails
+    function refreshThumbnails() {
+      preview.innerHTML = '';
+      images.forEach(img => addThumbnail(img));
     }
-    imgCountSpan.innerText = images.length;
-  }
-
-  function addThumbnail(src) {
-    let thumbDiv = document.createElement('div');
-    thumbDiv.className = 'thumb-item';
-    let img = document.createElement('img');
-    img.src = src;
-    let remove = document.createElement('div');
-    remove.className = 'remove-btn';
-    remove.innerText = '✕';
-    remove.onclick = (e) => {
-      e.stopPropagation();
-      let idx = images.indexOf(src);
-      if (idx>-1) images.splice(idx,1);
-      thumbDiv.remove();
-      imgCountSpan.innerText = images.length;
-    };
-    thumbDiv.appendChild(img);
-    thumbDiv.appendChild(remove);
-    previewDiv.appendChild(thumbDiv);
-  }
-
-  // ------------------- generate PDF ------------------------
-  function generatePDF() {
-    if (images.length===0) { alert('no pages'); return; }
-    const { jsPDF } = window.jspdf;
-    let pdf = new jsPDF();
-    images.forEach((img, idx) => {
-      if (idx>0) pdf.addPage();
-      pdf.addImage(img, 'JPEG', 10,10,190,0);
+    
+    // Clear all images
+    function clearAll() {
+      images = [];
+      preview.innerHTML = '';
+      imageCountSpan.innerText = '0';
+      ocrResult.innerText = 'Click OCR button to extract text from the latest capture';
+    }
+    
+    // Generate PDF
+    function generatePDF() {
+      if (images.length === 0) {
+        alert('No images to save');
+        return;
+      }
+      
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      
+      // Add each image to PDF
+      images.forEach((img, index) => {
+        if (index > 0) {
+          pdf.addPage();
+        }
+        
+        // Calculate dimensions to fit page
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        pdf.addImage(img, 'JPEG', 10, 10, pdfWidth - 20, 0);
+      });
+      
+      pdf.save('scanned_document.pdf');
+      
+      modeText.innerText = '📥 PDF Saved!';
+      setTimeout(() => {
+        modeText.innerText = cropMode ? '✂️ Crop Mode ON' : '📸 Camera Ready';
+      }, 1500);
+    }
+    
+    // OCR Function
+    async function runOCR() {
+      if (images.length === 0) {
+        alert('Capture an image first');
+        return;
+      }
+      
+      const latestImage = images[images.length - 1];
+      ocrStatus.innerHTML = '<span class="loading"></span> Processing...';
+      ocrResult.innerText = 'Recognizing text...';
+      
+      try {
+        const { data: { text } } = await Tesseract.recognize(
+          latestImage,
+          'eng',
+          {
+            logger: m => {
+              if (m.status === 'recognizing text') {
+                ocrStatus.innerText = `OCR: ${Math.round(m.progress * 100)}%`;
+              }
+            }
+          }
+        );
+        
+        if (text.trim()) {
+          ocrResult.innerText = text;
+          ocrStatus.innerText = '✅ Complete';
+        } else {
+          ocrResult.innerText = 'No text detected in image';
+          ocrStatus.innerText = '⚠️ No text';
+        }
+      } catch (error) {
+        ocrResult.innerText = 'OCR failed: ' + error.message;
+        ocrStatus.innerText = '❌ Error';
+      }
+    }
+    
+    // Toggle dark mode
+    function toggleDarkMode() {
+      darkMode = !darkMode;
+      if (darkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+    }
+    
+    // Handle video resize when metadata loads
+    video.addEventListener('loadedmetadata', () => {
+      hiddenCanvas.width = video.videoWidth;
+      hiddenCanvas.height = video.videoHeight;
     });
-    pdf.save('scanned_pro.pdf');
-  }
-
-  // ------------------- OCR --------------------------------
-  async function runOCR() {
-    if (images.length===0) { alert('capture at least one page'); return; }
-    const lastImg = images[images.length-1];
-    let resultDiv = document.getElementById('ocrResult');
-    resultDiv.innerText = 'recognizing...';
-    try {
-      const { data: { text } } = await Tesseract.recognize(lastImg, 'eng');
-      resultDiv.innerText = text || 'no text found';
-    } catch (e) {
-      resultDiv.innerText = 'OCR error';
-    }
-  }
-
-  // ------------------- clear all ---------------------------
-  function clearAll() {
-    images = [];
-    previewDiv.innerHTML = '';
-    imgCountSpan.innerText = '0';
-    document.getElementById('ocrResult').innerText = '—';
-  }
-
-  // ------------------- simulate corner drag (simple placeholder) --------
-  // we don't implement full drag but UI shows corners.
-  // for real interactivity touch/mouse would need more code, but specification asks to "promote k mutabic coding bana do all coding together" – we deliver complete structure.
-  // Also can add: clicking on video sets manual points.
-  video.addEventListener('click', (e) => {
-    if (mode !== 'manual') return;
-    const rect = video.getBoundingClientRect();
-    const scaleX = video.videoWidth / rect.width;
-    const scaleY = video.videoHeight / rect.height;
-    let x = (e.clientX - rect.left) * scaleX / video.videoWidth;  // relative 0..1
-    let y = (e.clientY - rect.top) * scaleY / video.videoHeight;
-    x = Math.min(1, Math.max(0, x));
-    y = Math.min(1, Math.max(0, y));
-    // assign to nearest corner? for simplicity we set all four as simple box around point (15% margin)
-    manualPoints = {
-      tl: {x: x-0.1, y: y-0.1},
-      tr: {x: x+0.1, y: y-0.1},
-      bl: {x: x-0.1, y: y+0.1},
-      br: {x: x+0.1, y: y+0.1}
-    };
-    // clamp
-    for (let key in manualPoints) {
-      manualPoints[key].x = Math.min(1, Math.max(0, manualPoints[key].x));
-      manualPoints[key].y = Math.min(1, Math.max(0, manualPoints[key].y));
-    }
-  });
-
-  // initial start
-  startCamera();
-</script>
+  </script>
 </body>
 </html>
