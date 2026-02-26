@@ -1,696 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Multi‑Page Scanner · Camera to PDF</title>
-
-<!-- jsPDF for multi‑page PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- Tesseract OCR -->
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(145deg, #dbeafe 0%, #fef3c7 100%);
-    min-height: 100vh;
-    padding: 12px 12px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-header {
-    text-align: center;
-    padding: 16px 5px 8px;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1e3a8a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.badge {
-    background: #2563eb;
-    color: white;
-    font-size: 0.8rem;
-    padding: 4px 14px;
-    border-radius: 40px;
-    font-weight: 500;
-}
-
-.container {
-    max-width: 700px;
-    width: 100%;
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(12px);
-    padding: 22px 18px 28px;
-    border-radius: 38px;
-    box-shadow: 0 20px 40px rgba(0,20,50,0.25);
-    border: 1px solid rgba(255,255,255,0.8);
-}
-
-/* source buttons */
-.source-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.source-btn {
-    flex: 1 1 140px;
-    background: #ffffffdd;
-    border: 1.5px solid #2563eb60;
-    padding: 14px 10px;
-    border-radius: 36px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #1e3a8a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
-    transition: all 0.2s;
-    cursor: pointer;
-    backdrop-filter: blur(4px);
-}
-
-.source-btn:active { background: #2563eb20; }
-.source-btn input { display: none; }
-
-.upload-box {
-    border: 2.5px dashed #2563eb;
-    padding: 30px 15px;
-    text-align: center;
-    border-radius: 34px;
-    cursor: pointer;
-    background: #f9faff;
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #1e40af;
-    margin: 10px 0 15px;
-    transition: background 0.2s;
-}
-
-.upload-box.highlight { background: #e6f0ff; }
-
-/* camera preview + controls */
-#cameraContainer {
-    margin: 15px 0 10px;
-    border-radius: 36px;
-    overflow: hidden;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.3);
-    display: none;
-    background: #000;
-    border: 3px solid white;
-}
-
-#cameraFeed {
-    width: 100%;
-    max-height: 340px;
-    object-fit: cover;
-    display: block;
-}
-
-.camera-actions {
-    display: flex;
-    gap: 12px;
-    margin: 12px 0 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.camera-btn {
-    background: #1e293b;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 24px;
-    font-weight: 600;
-    font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 10px #00000040;
-    flex: 1 1 auto;
-}
-
-/* captured pages strip */
-.pages-strip {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding: 10px 5px 15px;
-    margin: 15px 0 5px;
-    scrollbar-width: thin;
-    white-space: nowrap;
-}
-
-.page-thumb {
-    flex: 0 0 auto;
-    width: 90px;
-    height: 110px;
-    border-radius: 20px;
-    border: 3px solid white;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-    background: #f1f5f9;
-    object-fit: cover;
-    cursor: pointer;
-    transition: transform 0.1s;
-}
-
-.page-thumb:hover { transform: scale(1.02); }
-
-/* main preview (selected image) */
-#preview {
-    max-width: 100%;
-    max-height: 260px;
-    margin: 8px 0 10px;
-    border-radius: 28px;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
-    background: #f1f5f9;
-    object-fit: contain;
-    display: none;
-    border: 3px solid white;
-}
-
-.action-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 15px 0 15px;
-    justify-content: center;
-}
-
-.action-btn {
-    flex: 1 1 130px;
-    padding: 16px 8px;
-    border: none;
-    border-radius: 40px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    box-shadow: 0 8px 16px rgba(0,40,80,0.2);
-    transition: 0.1s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: white;
-    color: #1e3a8a;
-    border: 1px solid #a5b4fc;
-}
-
-.action-btn.primary { background: #2563eb; color: white; border: none; }
-.action-btn.secondary { background: #059669; color: white; border: none; }
-.action-btn.warning { background: #b45309; color: white; border: none; }
-
-.action-btn:active { transform: scale(0.96); }
-.action-btn:disabled { opacity: 0.5; transform: none; pointer-events: none; }
-
-textarea {
-    width: 100%;
-    height: 140px;
-    margin-top: 18px;
-    padding: 18px;
-    border-radius: 28px;
-    border: 1.5px solid #cbd5e1;
-    font-family: 'Segoe UI', monospace;
-    font-size: 1rem;
-    resize: vertical;
-    background: white;
-}
-
-.ad-box {
-    margin-top: 28px;
-    padding: 16px 8px;
-    text-align: center;
-    background: #f8fafc;
-    border-radius: 32px;
-    color:#334155;
-    font-weight: 500;
-    border: 1px solid #e2e8f0;
-    font-size: 1rem;
-}
-
-footer { margin-top: 16px; color: #334155; font-size: 0.85rem; }
-
-/* Loading indicator */
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.ocr-status {
-    font-size: 0.9rem;
-    color: #4b5563;
-    margin-top: 5px;
-    text-align: center;
-}
-
-@media (max-width: 500px) {
-    .source-btn { flex: 1 1 120px; font-size: 0.95rem; }
-    .action-btn { font-size: 0.95rem; padding: 14px 4px; }
-}
-</style>
-</head>
-<body>
-
-<header>
-    📸 Multi‑Scan <span class="badge">multiple photos → PDF</span>
-</header>
-
-<div class="container">
-
-    <!-- source row: camera (live) / gallery / native camera -->
-    <div class="source-row">
-        <label class="source-btn" id="liveCamBtn">🎥 Live camera
-            <input type="file" id="cameraCapture" accept="image/*" capture="environment" hidden>
-        </label>
-        <label class="source-btn" id="galleryBtn">🖼️ Gallery
-            <input type="file" id="galleryInput" accept="image/*" multiple hidden>
-        </label>
-    </div>
-
-    <!-- drop zone -->
-    <div class="upload-box" id="uploadBox">
-        ⬆️ Tap or drop images (multiple allowed)
-    </div>
-
-    <!-- live camera preview -->
-    <div id="cameraContainer">
-        <video id="cameraFeed" autoplay playsinline></video>
-        <div class="camera-actions">
-            <button class="camera-btn" id="captureBtn">📸 Capture page</button>
-            <button class="camera-btn" id="closeCamBtn">✖️ Close</button>
-        </div>
-    </div>
-
-    <!-- thumbnail strip for captured pages -->
-    <div class="pages-strip" id="pagesStrip"></div>
-
-    <!-- selected image preview (full size) -->
-    <img id="preview" alt="preview">
-
-    <!-- action buttons -->
-    <div class="action-grid">
-        <button class="action-btn primary" id="pdfBtn">📥 PDF all</button>
-        <button class="action-btn secondary" id="ocrBtn">🔍 OCR this</button>
-        <button class="action-btn" id="removeBtn">🗑️ Remove last</button>
-        <button class="action-btn warning" id="clearBtn">🔄 Clear all</button>
-    </div>
-
-    <!-- OCR text area -->
-    <textarea id="ocrResult" placeholder="Extracted text from selected page will appear here..." readonly></textarea>
-    <div id="ocrStatus" class="ocr-status"></div>
-
-    <!-- ad space -->
-    <div class="ad-box">📢 Google AdSense · 320x100</div>
-</div>
-
-<footer>⚡ tap image in strip to select · multiple pages in one PDF</footer>
-
-<script>
-(function() {
-    // ----- DOM elements -----
-    const liveCamBtn = document.getElementById('liveCamBtn');
-    const cameraCapture = document.getElementById('cameraCapture');
-    const galleryBtn = document.getElementById('galleryBtn');
-    const galleryInput = document.getElementById('galleryInput');
-    const uploadBox = document.getElementById('uploadBox');
-    const cameraContainer = document.getElementById('cameraContainer');
-    const cameraFeed = document.getElementById('cameraFeed');
-    const captureBtn = document.getElementById('captureBtn');
-    const closeCamBtn = document.getElementById('closeCamBtn');
-    const preview = document.getElementById('preview');
-    const pagesStrip = document.getElementById('pagesStrip');
-    const pdfBtn = document.getElementById('pdfBtn');
-    const ocrBtn = document.getElementById('ocrBtn');
-    const removeBtn = document.getElementById('removeBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const ocrResult = document.getElementById('ocrResult');
-    const ocrStatus = document.getElementById('ocrStatus');
-
-    // ----- state -----
-    let capturedPages = [];            // array of { dataURL, timestamp }
-    let selectedIndex = -1;            // index of page shown in preview
-    let cameraStream = null;           // active camera stream
-
-    // ----- helper: stop camera -----
-    function stopCamera() {
-        if (cameraStream) {
-            cameraStream.getTracks().forEach(track => track.stop());
-            cameraStream = null;
-        }
-        cameraContainer.style.display = 'none';
-        cameraFeed.srcObject = null;
-    }
-
-    // ----- render thumbnail strip & update preview selection -----
-    function renderStrip() {
-        let html = '';
-        capturedPages.forEach((page, idx) => {
-            html += `<img src="${page.dataURL}" class="page-thumb" data-index="${idx}" title="Page ${idx+1}">`;
-        });
-        pagesStrip.innerHTML = html;
-
-        // attach click event to each thumbnail
-        document.querySelectorAll('.page-thumb').forEach(thumb => {
-            thumb.addEventListener('click', (e) => {
-                const index = parseInt(thumb.dataset.index, 10);
-                selectPage(index);
-            });
-        });
-
-        // if we have pages and no selected index, select first
-        if (capturedPages.length > 0 && (selectedIndex < 0 || selectedIndex >= capturedPages.length)) {
-            selectPage(0);
-        } else if (capturedPages.length === 0) {
-            preview.style.display = 'none';
-            preview.src = '';
-            selectedIndex = -1;
-            ocrResult.value = '';
-            ocrStatus.textContent = '';
-        } else if (selectedIndex >= 0 && selectedIndex < capturedPages.length) {
-            // keep same selection, just update preview if needed (already consistent)
-            preview.src = capturedPages[selectedIndex].dataURL;
-            preview.style.display = 'block';
-        }
-    }
-
-    // select a specific page by index
-    function selectPage(index) {
-        if (index >= 0 && index < capturedPages.length) {
-            selectedIndex = index;
-            preview.src = capturedPages[selectedIndex].dataURL;
-            preview.style.display = 'block';
-            // clear OCR when switching
-            ocrResult.value = '';
-            ocrStatus.textContent = 'Select "OCR this" to extract text from this page';
-        }
-    }
-
-    // add a new page (from dataURL)
-    function addPage(dataURL) {
-        capturedPages.push({ dataURL, timestamp: Date.now() });
-        renderStrip();
-        // auto-select the new page
-        selectPage(capturedPages.length - 1);
-    }
-
-    // ----- handle files from gallery / drop (multiple) -----
-    function handleFiles(files) {
-        if (!files || files.length === 0) return;
-        // convert FileList to array
-        const fileArray = Array.from(files).filter(f => f.type.startsWith('image/'));
-        if (fileArray.length === 0) {
-            alert('No valid images');
-            return;
-        }
-
-        let loaded = 0;
-        fileArray.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                addPage(e.target.result);
-                loaded++;
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    // ----- camera handling (live) -----
-    async function startCamera() {
-        try {
-            stopCamera();
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: 'environment' } 
-            });
-            cameraStream = stream;
-            cameraFeed.srcObject = stream;
-            cameraContainer.style.display = 'block';
-        } catch (err) {
-            alert('Camera not available. Use gallery.');
-        }
-    }
-
-    // capture from live feed
-    function captureFromCamera() {
-        if (!cameraStream) return;
-
-        const canvas = document.createElement('canvas');
-        const track = cameraStream.getVideoTracks()[0];
-        const settings = track.getSettings();
-        canvas.width = settings.width || 1280;
-        canvas.height = settings.height || 720;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob((blob) => {
-            const reader = new FileReader();
-            reader.onload = (e) => addPage(e.target.result);
-            reader.readAsDataURL(blob);
-        }, 'image/jpeg', 0.9);
-    }
-
-    // ----- OCR function with better error handling and multiple languages -----
-    async function performOCR(imageDataURL) {
-        // Show loading state
-        ocrResult.value = '';
-        ocrStatus.innerHTML = '⏳ Initializing OCR engine...';
-        
-        try {
-            // First, preprocess the image to improve OCR accuracy
-            const img = new Image();
-            img.src = imageDataURL;
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-            });
-
-            // Create a canvas to potentially enhance the image
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            
-            // Draw image with contrast enhancement
-            ctx.drawImage(img, 0, 0);
-            
-            // Get image data for potential preprocessing
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            
-            // Simple contrast enhancement
-            const data = imageData.data;
-            const factor = 1.2; // Contrast factor
-            
-            for (let i = 0; i < data.length; i += 4) {
-                // Apply simple contrast
-                data[i] = Math.min(255, Math.max(0, ((data[i] / 255 - 0.5) * factor + 0.5) * 255));
-                data[i+1] = Math.min(255, Math.max(0, ((data[i+1] / 255 - 0.5) * factor + 0.5) * 255));
-                data[i+2] = Math.min(255, Math.max(0, ((data[i+2] / 255 - 0.5) * factor + 0.5) * 255));
-            }
-            
-            ctx.putImageData(imageData, 0, 0);
-            
-            // Convert canvas back to data URL
-            const enhancedDataURL = canvas.toDataURL('image/jpeg', 0.95);
-
-            ocrStatus.innerHTML = '⏳ Analyzing image and extracting text...';
-            
-            // Configure Tesseract for better accuracy
-            const result = await Tesseract.recognize(
-                enhancedDataURL, 
-                'eng', // Language
-                { 
-                    logger: m => {
-                        // Update status with progress
-                        if (m.status === 'recognizing text') {
-                            ocrStatus.innerHTML = `⏳ Recognizing text... ${Math.round(m.progress * 100)}%`;
-                        } else if (m.status) {
-                            ocrStatus.innerHTML = `⏳ ${m.status}...`;
-                        }
-                        console.log(m);
-                    }
-                }
-            );
-            
-            // Get extracted text
-            const extractedText = result.data.text.trim();
-            
-            if (extractedText) {
-                ocrResult.value = extractedText;
-                ocrStatus.innerHTML = '✅ Text extracted successfully!';
-            } else {
-                ocrResult.value = 'No text could be detected in this image. Try:';
-                ocrResult.value += '\n• Using a clearer image';
-                ocrResult.value += '\n• Ensuring good lighting';
-                ocrResult.value += '\n• Making text larger in frame';
-                ocrStatus.innerHTML = '⚠️ No text detected';
-            }
-            
-        } catch (error) {
-            console.error('OCR Error:', error);
-            ocrResult.value = '❌ OCR failed. Error details:\n' + error.message;
-            ocrStatus.innerHTML = '❌ OCR processing failed';
-        }
-    }
-
-    // ----- event listeners -----
-    // live camera button: open preview
-    liveCamBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        startCamera();
-    });
-
-    // capture button inside camera
-    captureBtn.addEventListener('click', captureFromCamera);
-    closeCamBtn.addEventListener('click', stopCamera);
-
-    // gallery button: trigger multiple file picker
-    galleryBtn.addEventListener('click', () => galleryInput.click());
-    galleryInput.addEventListener('change', (e) => {
-        handleFiles(e.target.files);
-        galleryInput.value = '';
-    });
-
-    // native camera capture (single photo via input) - also add as page
-    cameraCapture.addEventListener('change', (e) => {
-        if (e.target.files.length) handleFiles(e.target.files);
-        cameraCapture.value = '';
-    });
-
-    // drag & drop zone
-    uploadBox.addEventListener('click', () => galleryInput.click());
-    uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); uploadBox.classList.add('highlight'); });
-    uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('highlight'));
-    uploadBox.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadBox.classList.remove('highlight');
-        handleFiles(e.dataTransfer.files);
-    });
-
-    // ----- PDF generation (ALL pages) -----
-    pdfBtn.addEventListener('click', async () => {
-        if (capturedPages.length === 0) {
-            alert('No pages captured.');
-            return;
-        }
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF(); // start with first page
-
-        for (let i = 0; i < capturedPages.length; i++) {
-            const dataURL = capturedPages[i].dataURL;
-
-            // if not first page, add a new page
-            if (i > 0) doc.addPage();
-
-            // get image dimensions (using a temporary image)
-            const img = new Image();
-            img.src = dataURL;
-            await new Promise(r => { img.onload = r; }); // wait for load
-
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-
-            const imgWidth = img.width;
-            const imgHeight = img.height;
-
-            const maxWidth = pageWidth - 20;
-            const maxHeight = pageHeight - 20;
-            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
-
-            const drawWidth = imgWidth * ratio;
-            const drawHeight = imgHeight * ratio;
-            const xOffset = (pageWidth - drawWidth) / 2;
-            const yOffset = (pageHeight - drawHeight) / 2;
-
-            doc.addImage(dataURL, 'JPEG', xOffset, yOffset, drawWidth, drawHeight, undefined, 'FAST');
-        }
-
-        doc.save('multi-page-scan.pdf');
-    });
-
-    // ----- OCR on selected page with improved functionality -----
-    ocrBtn.addEventListener('click', async () => {
-        if (selectedIndex === -1 || !capturedPages[selectedIndex]) {
-            alert('Please select a page from the strip first (tap on any thumbnail).');
-            ocrStatus.textContent = '❌ No page selected';
-            return;
-        }
-
-        // Disable button during OCR
-        ocrBtn.disabled = true;
-        const originalText = ocrBtn.innerHTML;
-        ocrBtn.innerHTML = '<span class="loading"></span> OCR...';
-        
-        try {
-            const dataURL = capturedPages[selectedIndex].dataURL;
-            await performOCR(dataURL);
-        } catch (err) {
-            ocrResult.value = '❌ Unexpected error during OCR';
-            ocrStatus.innerHTML = '❌ OCR failed';
-            console.error(err);
-        } finally {
-            // Re-enable button
-            ocrBtn.disabled = false;
-            ocrBtn.innerHTML = originalText;
-        }
-    });
-
-    // ----- remove last page -----
-    removeBtn.addEventListener('click', () => {
-        if (capturedPages.length > 0) {
-            capturedPages.pop();
-            if (selectedIndex >= capturedPages.length) {
-                selectedIndex = capturedPages.length - 1;
-            }
-            renderStrip();
-            if (capturedPages.length === 0) {
-                preview.style.display = 'none';
-                ocrResult.value = '';
-                ocrStatus.textContent = '';
-            }
-        }
-    });
-
-    // ----- clear all pages -----
-    clearBtn.addEventListener('click', () => {
-        capturedPages = [];
-        selectedIndex = -1;
-        renderStrip();
-        preview.style.display = 'none';
-        ocrResult.value = '';
-        ocrStatus.textContent = '';
-        stopCamera();
-    });
-
-    // cleanup camera on page unload
-    window.addEventListener('beforeunload', stopCamera);
-})();
-</script>
-</body>
+<html data-n-head-ssr lang="en" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+  <head >
+    <title>CamScanner: text and image scanning and recognition, PDF to Word, document format conversion, online editor</title><meta data-n-head="ssr" charset="utf-8"><meta data-n-head="ssr" name="viewport" content="width=device-width, initial-scale=1,user-scalable=0,viewport-fit=cover"><meta data-n-head="ssr" name="format-detection" content="telephone=no"><meta data-n-head="ssr" data-hid="description" name="description" content="CamScanner provides the most intelligent document management solution; pdf converter, pdf editor, pdf to word, pdf to excel, pdf to ppt, pdf to image, pdf to document, document editing, document image scanning. A Portable Scanner, efficiency improvement A weapon to make work and study more efficient, scanning, filing, uploading, searching, easy collection and management of data, free scanning and archiving, Efficiency and sharing, PDF online conversion, editing, scanning, editing, management, one-stop platform."><meta data-n-head="ssr" data-hid="og:type" name="og:type" content="website"><meta data-n-head="ssr" data-hid="og:site_name" name="og:site_name" content="CamScanner: text and image scanning and recognition, PDF to Word, document format conversion, online editor"><meta data-n-head="ssr" data-hid="og:image" name="og:image" content="https://static-cdn.camscanner.com/camscanner-seo/img/logo-192.8385d18.png"><meta data-n-head="ssr" data-hid="og:title" name="og:title" content="CamScanner: text and image scanning and recognition, PDF to Word, document format conversion, online editor"><meta data-n-head="ssr" data-hid="og:description" name="og:description" content="CamScanner provides the most intelligent document management solution; pdf converter, pdf editor, pdf to word, pdf to excel, pdf to ppt, pdf to image, pdf to document, document editing, document image scanning. A Portable Scanner, efficiency improvement A weapon to make work and study more efficient, scanning, filing, uploading, searching, easy collection and management of data, free scanning and archiving, Efficiency and sharing, PDF online conversion, editing, scanning, editing, management, one-stop platform."><meta data-n-head="ssr" data-hid="twitter:title" name="twitter:title" content="CamScanner: text and image scanning and recognition, PDF to Word, document format conversion, online editor"><meta data-n-head="ssr" data-hid="twitter:description" name="twitter:description" content="CamScanner provides the most intelligent document management solution; pdf converter, pdf editor, pdf to word, pdf to excel, pdf to ppt, pdf to image, pdf to document, document editing, document image scanning. A Portable Scanner, efficiency improvement A weapon to make work and study more efficient, scanning, filing, uploading, searching, easy collection and management of data, free scanning and archiving, Efficiency and sharing, PDF online conversion, editing, scanning, editing, management, one-stop platform."><meta data-n-head="ssr" data-hid="twitter:image" name="twitter:image" content="https://static-cdn.camscanner.com/camscanner-seo/img/logo-192.8385d18.png"><meta data-n-head="ssr" data-hid="twitter:card" name="twitter:card" content="summary"><meta data-n-head="ssr" data-hid="i18n-og" property="og:locale" content="en"><meta data-n-head="ssr" data-hid="i18n-og-alt-zh-CN" property="og:locale:alternate" content="zh_CN"><meta data-n-head="ssr" data-hid="i18n-og-alt-zh-TW" property="og:locale:alternate" content="zh_TW"><meta data-n-head="ssr" data-hid="i18n-og-alt-id" property="og:locale:alternate" content="id"><meta data-n-head="ssr" data-hid="i18n-og-alt-es" property="og:locale:alternate" content="es"><link data-n-head="ssr" rel="icon" type="image/png" href="/favicon.png"><link data-n-head="ssr" data-hid="i18n-alt-en" rel="alternate" href="https://www.camscanner.com/" hreflang="en"><link data-n-head="ssr" data-hid="i18n-alt-zh" rel="alternate" href="https://www.camscanner.com/zh" hreflang="zh"><link data-n-head="ssr" data-hid="i18n-alt-zh-CN" rel="alternate" href="https://www.camscanner.com/zh" hreflang="zh-CN"><link data-n-head="ssr" data-hid="i18n-alt-zh-TW" rel="alternate" href="https://www.camscanner.com/zh-tw" hreflang="zh-TW"><link data-n-head="ssr" data-hid="i18n-alt-id" rel="alternate" href="https://www.camscanner.com/in-id" hreflang="id"><link data-n-head="ssr" data-hid="i18n-alt-es" rel="alternate" href="https://www.camscanner.com/es-es" hreflang="es"><link data-n-head="ssr" data-hid="i18n-xd" rel="alternate" href="https://www.camscanner.com/" hreflang="x-default"><link data-n-head="ssr" data-hid="i18n-can" rel="canonical" href="https://www.camscanner.com/"><script data-n-head="ssr" type="application/ld+json">{"@context":"http://schema.org","@type":"Organization","name":"CamScanner","url":"https://www.camscanner.com/","logo":"https://static-cdn.camscanner.com/camscanner-seo/img/logo-192.8385d18.png"}</script><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/3c91ad1.js" as="script"><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/dd2520b.js" as="script"><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/css/6aed8d2.css" as="style"><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/f0b1d06.js" as="script"><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/css/7cd5c41.css" as="style"><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/34be165.js" as="script"><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/css/866a338.css" as="style"><link rel="preload" href="https://static-cdn.camscanner.com/camscanner-seo/1f0f510.js" as="script"><link rel="stylesheet" href="https://static-cdn.camscanner.com/camscanner-seo/css/6aed8d2.css"><link rel="stylesheet" href="https://static-cdn.camscanner.com/camscanner-seo/css/7cd5c41.css"><link rel="stylesheet" href="https://static-cdn.camscanner.com/camscanner-seo/css/866a338.css">
+  </head>
+  <body >
+    <div data-server-rendered="true" id="__nuxt"><!----><div id="__layout"><div data-v-72cce226><header data-v-37acb865 data-v-72cce226><!----> <!----> <div class="header-content" data-v-37acb865><button class="btn-menu icon-ic_list" data-v-37acb865></button> <a href="/" aria-current="page" class="logo nuxt-link-exact-active nuxt-link-active" data-v-37acb865></a> <nav data-v-37acb865><ul class="header-link-list" data-v-37acb865><li class="header-link-item" data-v-37acb865><a href="/download" class="header-link func" data-v-37acb865>
+            Features
+          </a> <div class="icon-arrow-down" data-v-37acb865></div> <div class="active-line" data-v-37acb865></div></li><li class="header-link-item" data-v-37acb865><a rel="nofollow" href="/login" target="_self" class="header-link convert" data-v-37acb865>
+            Converter
+          </a> <div class="icon-arrow-down" data-v-37acb865></div> <div class="active-line" data-v-37acb865></div></li><li class="header-link-item" data-v-37acb865><a rel="nofollow" href="/login" target="_self" class="header-link pdftool" data-v-37acb865>
+            PDF Tools
+          </a> <div class="icon-arrow-down" data-v-37acb865></div> <div class="active-line" data-v-37acb865></div></li><li class="header-link-item" data-v-37acb865><a rel="nofollow" href="/user/premium/index" target="_self" class="header-link premium" data-v-37acb865>
+            Premium
+          </a> <!----> <div class="active-line" data-v-37acb865></div></li><li class="header-link-item" data-v-37acb865><a href="/download" class="header-link download" data-v-37acb865>
+            Download
+          </a> <!----> <div class="active-line" data-v-37acb865></div></li><li class="header-link-item" data-v-37acb865><a href="/smartdevice" class="header-link smartdevice" data-v-37acb865>
+            Smart Tech
+          </a> <!----> <div class="active-line" data-v-37acb865></div></li><li class="header-link-item" data-v-37acb865><a href="https://dev.camscanner.com" target="_blank" class="header-link api" data-v-37acb865>
+            API
+          </a> <!----> <div class="active-line" data-v-37acb865></div></li> <!----></ul></nav> <div class="header-right" data-v-37acb865><!----> <a rel="nofollow" href="/login" class="web-site" data-v-37acb865>
+        Online Tools
+      </a> <a href="/login" rel="nofollow" class="login_register" data-v-770a1648 data-v-37acb865>
+  Sign In
+</a></div></div> <div class="tool-list-wrapper" data-v-37acb865><ul class="tool-list" data-v-37acb865><li class="tool-item" data-v-37acb865><a href="/pdf-to-word" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_pdfword" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PDF to Word</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/pdf-to-excel" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_pdfexcel" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PDF to Excel</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/pdf-to-ppt" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_pdfppt" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PDF to PPT</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/pdf-to-pic" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_pdfjpg" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PDF to JPG</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/word-to-pdf" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_wordpdf" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Word to PDF</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/excel-to-pdf" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_excelpdf" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Excel to PDF</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/ppt-to-pdf" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_pptpdf" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PPT to PDF</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/pic-to-pdf" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_jpgpdf" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Image to PDF</span> <!----></a></li><li class="tool-item" data-v-37acb865><a rel="nofollow" href="/webocr" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_jpgtext" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Image to Text</span> <i class="hot" data-v-37acb865></i></a></li><li class="tool-item" data-v-37acb865><a href="/merge-pdf" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_margepdf" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Merge PDF</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/extract-pdf-pages" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_splitpdf" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Split PDF</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/delete-pdf-pages" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_delpage" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Delete PDF Pages</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/sort-pdf-pages" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_sortpage" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Sort PDF Pages</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/rotate-pdf" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_retatepdf" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Rotate PDF</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_signature" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PDF Signature</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_addwatermark" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PDF Watermark</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_pdfpassword" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>PDF Password</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_trans" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Smart Translation</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_layout" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Image to Word</span> <i class="hot" data-v-37acb865></i></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_tabreduc" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Image to Excel</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_bookscan" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Scan Books</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_scandocs" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Scan Documents</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_idcard" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Scan ID Card</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_imtotext" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>Image to Text</span> <!----></a></li><li class="tool-item" data-v-37acb865><a href="/download" class="tool-item-link" data-v-37acb865><i class="tool-item-icon tab_idphoto" data-v-37acb865></i> <span class="tool-item-text" data-v-37acb865>ID Photo Maker</span> <!----></a></li></ul></div></header> <div class="main" data-v-4e82bc37 data-v-72cce226><div class="top_wrap" data-v-4e82bc37><!----></div> <div class="video_part" data-v-4e82bc37><h1 class="title" data-v-4e82bc37>
+      Boost your productivity with CamScanner
+    </h1> <h2 class="desc" data-v-4e82bc37>
+      Take care of work and study at home or on the go with easy-to-use features.
+    </h2> <div class="video_wrap" data-v-4e82bc37><div class="video_info video_left_info" data-v-4e82bc37><div class="info" data-v-4e82bc37><div class="info_text" data-v-4e82bc37><div class="info_title" data-v-4e82bc37>
+              Scan in a Snap
+            </div> <div class="info_desc" data-v-4e82bc37>
+              Capture documents, forms, slides, and whiteboards into high-quality PDFs using your mobile phone. With various capture modes, you can get the best scans every time.
+            </div></div> <div class="info_image scan" data-v-4e82bc37><div class="info_mask" data-v-4e82bc37></div></div></div> <div class="info" data-v-4e82bc37><div class="info_text" data-v-4e82bc37><div class="info_title" data-v-4e82bc37>
+              AI-Enhanced Scans
+            </div> <div class="info_desc" data-v-4e82bc37>
+              Use advanced technology to automatically remove background from your scans, flatten pages, and provide filters to retouch and improve the scans.
+            </div></div> <div class="info_image crop" data-v-4e82bc37><div class="info_mask" data-v-4e82bc37></div></div></div> <div class="info" data-v-4e82bc37><div class="info_text" data-v-4e82bc37><div class="info_title" data-v-4e82bc37>
+              Export, Share, Print, and Fax
+            </div> <div class="info_desc" data-v-4e82bc37>
+              Export and share easily. Enjoy the convenience of wireless printing and send faxes to over 30 countries worldwide.
+            </div></div> <div class="info_image print" data-v-4e82bc37><div class="info_mask" data-v-4e82bc37></div></div></div></div> <div class="video" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/videos/scan_en.5cb7eb9.mp4" class="video_content" style="display:none;" data-v-4e82bc37> <video src="https://static-cdn.camscanner.com/camscanner-seo/videos/scan_en.5cb7eb9.mp4" muted="muted" autoplay="autoplay" loop="loop" controls="controls" class="video_content" style="display:;" data-v-4e82bc37></video> <div class="phone_bg" data-v-4e82bc37></div></div> <div class="video_info video_right_info" data-v-4e82bc37><div class="info" data-v-4e82bc37><div class="info_image ocr" data-v-4e82bc37><div class="info_mask" data-v-4e82bc37></div></div> <div class="info_text" data-v-4e82bc37><div class="info_title" data-v-4e82bc37>
+              Extract Text
+            </div> <div class="info_desc" data-v-4e82bc37>
+              Instantly convert text from images into editable text. Supports recognition in 41 languages, including English, Chinese, Japanese, and Korean.
+            </div></div></div> <div class="info" data-v-4e82bc37><div class="info_image sync" data-v-4e82bc37><div class="info_mask" data-v-4e82bc37></div></div> <div class="info_text" data-v-4e82bc37><div class="info_title" data-v-4e82bc37>
+              Sync Across Devices
+            </div> <div class="info_desc" data-v-4e82bc37>
+              Sync and back up files for easy access on all your devices, anytime, anywhere.
+            </div></div></div> <div class="info" data-v-4e82bc37><div class="info_image share" data-v-4e82bc37><div class="info_mask" data-v-4e82bc37></div></div> <div class="info_text" data-v-4e82bc37><div class="info_title" data-v-4e82bc37>
+              Do More with Your Scans
+            </div> <div class="info_desc" data-v-4e82bc37>
+              Merge, split, add or delete pages, rearrange page order, compress, e-sign, and add watermarks to PDF files.
+            </div></div></div></div></div></div> <h2 class="title spe-title" data-v-4e82bc37>
+    Scan, Edit, and Manage Files All in One Place
+  </h2> <div class="intro_wrap" data-v-4e82bc37><div class="center" data-v-4e82bc37><div class="intro" data-v-4e82bc37><div class="desc-box mag" data-v-4e82bc37><div class="intro_title" data-v-4e82bc37>
+            Boost Efficiency
+          </div> <div class="intro_desc" data-v-4e82bc37>
+            Manage files across multiple devices: phones, tablets, and computers. Share documents via link, email, or other methods, like Facebook, WhatsApp, and more.
+          </div> <a href="/download" class="intro_btn" data-v-4e82bc37>
+            Learn More
+          </a></div> <div class="intro_image scan" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/pic01.3d6be18.png" data-v-4e82bc37></div></div></div> <div class="center" data-v-4e82bc37><div class="intro" data-v-4e82bc37><div class="intro_image" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/image2_e.c580078.png" data-v-4e82bc37></div> <div class="desc-box scan" data-v-4e82bc37><div class="intro_title" data-v-4e82bc37>
+            Create HD Scans
+          </div> <div class="intro_desc" data-v-4e82bc37>
+            Automatically crop and enhance scans to generate high-quality PDFs, and offer filters to improve document appearance.
+          </div> <a href="/download" class="intro_btn" data-v-4e82bc37>
+            Learn More
+          </a></div></div></div> <div class="center" data-v-4e82bc37><div class="intro" data-v-4e82bc37><div class="desc-box type" data-v-4e82bc37><div class="intro_title" data-v-4e82bc37>
+            Convert from Any Format
+          </div> <div class="intro_desc" data-v-4e82bc37>
+            Accurately extract text from images or turn documents into various formats with just a tap: PDF, Word, Excel, PPT, and image files.
+          </div> <a href="/download" class="intro_btn" data-v-4e82bc37>
+            Learn More
+          </a></div> <div class="intro_image type" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/image3_e.4a33e4f.png" data-v-4e82bc37></div></div></div> <div class="center" data-v-4e82bc37><div class="intro" data-v-4e82bc37><div class="intro_image" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/image4_e.62e185b.png" data-v-4e82bc37></div> <div class="desc-box edit" data-v-4e82bc37><div class="intro_title" data-v-4e82bc37>
+            Edit, Sign, Secure, and More
+          </div> <div class="intro_desc" data-v-4e82bc37>
+            More than a scanner, it lets you annotate, sign, password-protect, and watermark your documents. Manage your documents securely and effortlessly.
+          </div> <a href="/download" class="intro_btn" data-v-4e82bc37>
+            Learn More
+          </a></div></div></div></div> <div class="tools_box" data-v-4e82bc37><div class="tools_main" data-v-4e82bc37><a href="/pdf-to-word" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_word" data-v-4e82bc37></i> <div data-v-4e82bc37>PDF to Word</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/pdf-to-excel" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_excel" data-v-4e82bc37></i> <div data-v-4e82bc37>PDF to Excel</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/pdf-to-ppt" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_ppt" data-v-4e82bc37></i> <div data-v-4e82bc37>PDF to PPT</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/pdf-to-pic" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_foto" data-v-4e82bc37></i> <div data-v-4e82bc37>PDF to JPG</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/word-to-pdf" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_word_pdf" data-v-4e82bc37></i> <div data-v-4e82bc37>Word to PDF</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/excel-to-pdf" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_excel_pdf" data-v-4e82bc37></i> <div data-v-4e82bc37>Excel to PDF</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/ppt-to-pdf" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_ppt_pdf" data-v-4e82bc37></i> <div data-v-4e82bc37>PPT to PDF</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/pic-to-pdf" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_foto_pdf" data-v-4e82bc37></i> <div data-v-4e82bc37>Image to PDF</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/merge-pdf" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_merge" data-v-4e82bc37></i> <div data-v-4e82bc37>Merge PDF</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/extract-pdf-pages" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_extract" data-v-4e82bc37></i> <div data-v-4e82bc37>Split PDF</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/delete-pdf-pages" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_delete" data-v-4e82bc37></i> <div data-v-4e82bc37>Delete PDF Pages</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/sort-pdf-pages" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_sort" data-v-4e82bc37></i> <div data-v-4e82bc37>Sort PDF Pages</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/rotate-pdf" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_pdf_rotate" data-v-4e82bc37></i> <div data-v-4e82bc37>Rotate PDF</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_write" data-v-4e82bc37></i> <div data-v-4e82bc37>PDF Signature</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_watermark" data-v-4e82bc37></i> <div data-v-4e82bc37>PDF Watermark</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_lock" data-v-4e82bc37></i> <div data-v-4e82bc37>PDF Password</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_5" data-v-4e82bc37></i> <div data-v-4e82bc37>Smart Translation</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_6" data-v-4e82bc37></i> <div data-v-4e82bc37>Image to Word</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_7" data-v-4e82bc37></i> <div data-v-4e82bc37>Image to Excel</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_8" data-v-4e82bc37></i> <div data-v-4e82bc37>Scan Books</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_1" data-v-4e82bc37></i> <div data-v-4e82bc37>Scan Documents</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_2" data-v-4e82bc37></i> <div data-v-4e82bc37>Scan ID Card</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_3" data-v-4e82bc37></i> <div data-v-4e82bc37>Image to Text</div></div></a></div><div class="tools_main" data-v-4e82bc37><a href="/download" data-v-4e82bc37><div class="text_wrap" data-v-4e82bc37><i class="back_img icon_4" data-v-4e82bc37></i> <div data-v-4e82bc37>ID Photo Maker</div></div></a></div></div> <div data-v-0cffb2cc data-v-4e82bc37><h1 class="blog_title" data-v-0cffb2cc>Trending News</h1> <div class="blog_box" data-v-0cffb2cc><div class="blog_item" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/2026/01/23/camscanner-strengthens-its-desktop-workflow-with-offline-editing-to-boost-workplace-productivity-for-professional-users/" target="_blank" class="blog_item_link" data-v-0cffb2cc>CamScanner Strengthens Its Desktop Workflow With Offline Editing to Boost Workplace Productivity for Professional Users</a> <img src="https://app-static.camscanner.com/13r9.76jde81bz.017e454c3010cb4a85cee57fd4025f15.png" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src = 'https://app-static.camscanner.com/an.76f6zvwrl.d845b34ce4d3059821f33369593a2e1e.png'" class="blog_image" data-v-0cffb2cc> <h2 class="blog_title" data-v-0cffb2cc>CamScanner Strengthens Its Desktop Workflow With Offline Editing to Boost Workplace Productivity for Professional Users</h2> <div class="blog_tags" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/category/desktop/" target="_blank" class="blog_tag" data-v-0cffb2cc>desktop</a><a href="https://www.camscanner.com/blog/category/offline-editing/" target="_blank" class="blog_tag" data-v-0cffb2cc>offline editing</a><a href="https://www.camscanner.com/blog/category/remote-work/" target="_blank" class="blog_tag" data-v-0cffb2cc>remote work</a></div> <div class="blog_time" data-v-0cffb2cc>01/23/2026</div></div><div class="blog_item" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/2025/11/18/camscanner-empowers-students-worldwide-during-international-education-week/" target="_blank" class="blog_item_link" data-v-0cffb2cc>CamScanner Empowers Students Worldwide During International Education Week</a> <img src="https://app-static.camscanner.com/13r9.76f8gvi2y.d61c5fe9c46693403cabf24180314139.jpg" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src = 'https://app-static.camscanner.com/an.76f6zvwrl.d845b34ce4d3059821f33369593a2e1e.png'" class="blog_image" data-v-0cffb2cc> <h2 class="blog_title" data-v-0cffb2cc>CamScanner Empowers Students Worldwide During International Education Week</h2> <div class="blog_tags" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/category/college-students/" target="_blank" class="blog_tag" data-v-0cffb2cc>college students</a><a href="https://www.camscanner.com/blog/category/campus-empowerment-program/" target="_blank" class="blog_tag" data-v-0cffb2cc> campus empowerment program</a></div> <div class="blog_time" data-v-0cffb2cc>11/18/2025</div></div><div class="blog_item" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/2025/11/10/camscanner-a-leader-in-data-security-for-digital-document-management/" target="_blank" class="blog_item_link" data-v-0cffb2cc>CamScanner: A Leader in Data Security for Digital Document Management</a> <img src="https://app-static.camscanner.com/13r9.76f8c46ji.20c2040e0be2713e36686c818b309727.jpg" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src = 'https://app-static.camscanner.com/an.76f6zvwrl.d845b34ce4d3059821f33369593a2e1e.png'" class="blog_image" data-v-0cffb2cc> <h2 class="blog_title" data-v-0cffb2cc>CamScanner: A Leader in Data Security for Digital Document Management</h2> <div class="blog_tags" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/category/data-security/" target="_blank" class="blog_tag" data-v-0cffb2cc>data-security</a></div> <div class="blog_time" data-v-0cffb2cc>11/10/2025</div></div></div> <div class="blog_box_mobile" data-v-0cffb2cc><div class="evaluation_item right" data-v-0cffb2cc><span class="outer" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/2026/01/23/camscanner-strengthens-its-desktop-workflow-with-offline-editing-to-boost-workplace-productivity-for-professional-users/" target="_blank" class="blog_item inner" data-v-0cffb2cc><img src="https://app-static.camscanner.com/13r9.76jde81bz.017e454c3010cb4a85cee57fd4025f15.png" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src = 'https://app-static.camscanner.com/an.76f6zvwrl.d845b34ce4d3059821f33369593a2e1e.png'" class="blog_image" data-v-0cffb2cc> <h1 class="blog_title" data-v-0cffb2cc>CamScanner Strengthens Its Desktop Workflow With Offline Editing to Boost Workplace Productivity for Professional Users</h1> <div class="blog_tags" data-v-0cffb2cc><span class="blog_tag" data-v-0cffb2cc>desktop</span><span class="blog_tag" data-v-0cffb2cc>offline editing</span><span class="blog_tag" data-v-0cffb2cc>remote work</span></div> <div class="blog_time" data-v-0cffb2cc>01/23/2026</div></a><a href="https://www.camscanner.com/blog/2025/11/18/camscanner-empowers-students-worldwide-during-international-education-week/" target="_blank" class="blog_item inner" style="display:none;" data-v-0cffb2cc><img src="https://app-static.camscanner.com/13r9.76f8gvi2y.d61c5fe9c46693403cabf24180314139.jpg" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src = 'https://app-static.camscanner.com/an.76f6zvwrl.d845b34ce4d3059821f33369593a2e1e.png'" class="blog_image" data-v-0cffb2cc> <h1 class="blog_title" data-v-0cffb2cc>CamScanner Empowers Students Worldwide During International Education Week</h1> <div class="blog_tags" data-v-0cffb2cc><span class="blog_tag" data-v-0cffb2cc>college students</span><span class="blog_tag" data-v-0cffb2cc> campus empowerment program</span></div> <div class="blog_time" data-v-0cffb2cc>11/18/2025</div></a><a href="https://www.camscanner.com/blog/2025/11/10/camscanner-a-leader-in-data-security-for-digital-document-management/" target="_blank" class="blog_item inner" style="display:none;" data-v-0cffb2cc><img src="https://app-static.camscanner.com/13r9.76f8c46ji.20c2040e0be2713e36686c818b309727.jpg" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src = 'https://app-static.camscanner.com/an.76f6zvwrl.d845b34ce4d3059821f33369593a2e1e.png'" class="blog_image" data-v-0cffb2cc> <h1 class="blog_title" data-v-0cffb2cc>CamScanner: A Leader in Data Security for Digital Document Management</h1> <div class="blog_tags" data-v-0cffb2cc><span class="blog_tag" data-v-0cffb2cc>data-security</span></div> <div class="blog_time" data-v-0cffb2cc>11/10/2025</div></a></span></div></div> <div class="blog_more" data-v-0cffb2cc><a href="https://www.camscanner.com/blog/" target="_blank" class="blog_more_text" data-v-0cffb2cc>View All</a></div></div> <div class="evaluation_box" data-v-4e82bc37><h2 class="title" data-v-4e82bc37>
+      A popular choice for users worldwide, downloaded over 700 million times
+    </h2> <div class="evaluation_wrap" data-v-4e82bc37><div class="arrow left_arrow" data-v-4e82bc37></div> <div class="evaluation_item right" data-v-4e82bc37><span class="outer" data-v-4e82bc37><div class="inner" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/portrait5.3687483.png" class="protrait" data-v-4e82bc37> <div class="occupation" data-v-4e82bc37>
+              Salesperson
+            </div> <div class="commit" data-v-4e82bc37>
+              I scan and send a lot of docs to my clients,That is why I have been using CamScanner heavily. It can detect the document edges and crop off the background. That is amazing. You have to try it!
+            </div></div><div class="inner" style="display:none;" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/portrait6.3de8ed8.png" class="protrait" data-v-4e82bc37> <div class="occupation" data-v-4e82bc37>
+              Auditor
+            </div> <div class="commit" data-v-4e82bc37>
+              CamScanner is a great app for auditors. You know when you are facing tons of books and statements, CamScanner makes your life a lot easier.
+            </div></div><div class="inner" style="display:none;" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/portrait7.557bc48.png" class="protrait" data-v-4e82bc37> <div class="occupation" data-v-4e82bc37>
+              Doctor
+            </div> <div class="commit" data-v-4e82bc37>
+              It is very convenient for me to scan my hand-written case histories and prescriptions into my phone and tablet so that I can discuss with my colleague
+            </div></div><div class="inner" style="display:none;" data-v-4e82bc37><img src="https://static-cdn.camscanner.com/camscanner-seo/img/portrait8.4b961e8.png" class="protrait" data-v-4e82bc37> <div class="occupation" data-v-4e82bc37>
+              Engineer
+            </div> <div class="commit" data-v-4e82bc37>
+              Use CamScanner to scan construction drawings, automatically correct the shooting angle, highlight key details, support manual fine-tuning of filters, add image annotations, electronic signatures, and assist various inspection and confirmation processes.
+            </div></div></span> <div class="dot_wrap" data-v-4e82bc37><div class="dot active" data-v-4e82bc37></div><div class="dot" data-v-4e82bc37></div><div class="dot" data-v-4e82bc37></div><div class="dot last" data-v-4e82bc37></div></div></div> <div class="arrow right_arrow" data-v-4e82bc37></div></div></div> <div class="orcode_box" data-v-4e82bc37><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGAQMAAACzVW0eAAAABlBMVEX///8AAABVwtN+AAABIUlEQVRYw+2Xy41FIQxDI1EAJdF6SroFRPIk9h00s30rL56FUMjZROQjiK8+1EarNiJO7AQSo/Qgs1XEEB5rdhcCZO1cQPuqyUZ5EaznVJz1hCHBE20spBVhtk9sxHBm3oWoS/IujDyIxDyvPz4LwltUekEFs+1BkiFrtIhl2BBlW6TkecKCBK+Tk29NE7/QgjC3pUqUO07vFoSQ9XiAbN7uNiwIcwsgGHvzNmwIltpiD1wMvJcFiaMrBB0AFuBDNFpqj0NPPJiQnU1uGbZ7eHiQCFUfF3vFiJzqtdFqIsOGUPTVjR1pQd4wD/B2sErSg9xfTiw9VZwIkHwRawePToQOPGcBGs9OZGbMfTeVDZH5+7+Bhp8H+ffLGduHfPWJfgAjkaJUgusySgAAAABJRU5ErkJggg==" data-v-4e82bc37> <div class="big_tit" style="font-size:18px;" data-v-4e82bc37>
+      Scan the QR code with your phone
+    </div> <div data-v-4e82bc37>to Get the app</div></div> <!----></div> <footer data-v-60bcd7d9 data-v-72cce226><div class="btn_wrap" data-v-60bcd7d9><a target="_blank" href="https://v3.camscanner.com/web/service?language=en-us" rel="nofollow" class="btn" data-v-60bcd7d9>
+      Terms of Service
+    </a> <div class="btn" data-v-60bcd7d9>
+      |
+    </div> <a target="_blank" href="https://v3.camscanner.com/web/privacy?language=en-us" rel="nofollow" class="btn" data-v-60bcd7d9>
+      Privacy Policy
+    </a> <!----> <!----> <!----> <!----> <!----> <div class="btn" data-v-60bcd7d9>
+      |
+    </div> <a href="/security-compliance" class="btn" data-v-60bcd7d9>
+      Security &amp; Compliance Center
+    </a> <div class="btn" data-v-60bcd7d9>
+      |
+    </div> <a target="_blank" href="/blog" class="btn" data-v-60bcd7d9>
+      Blog
+    </a> <!----> <!----> <div class="btn" data-v-60bcd7d9>
+      |
+    </div> <a target="_blank" href="https://dev.camscanner.com" class="btn" data-v-60bcd7d9>
+      API
+    </a></div> <div class="social_media" data-v-60bcd7d9><a rel="nofollow" target="_blank" href="https://www.instagram.com/camscanner_usa/" class="instagram" data-v-60bcd7d9></a> <a rel="nofollow" target="_blank" href="https://www.facebook.com/CamScannerMKT" class="facebook" data-v-60bcd7d9></a> <a rel="nofollow" target="_blank" href="https://twitter.com/CamScanner" class="twitter" data-v-60bcd7d9></a></div> <div class="separate_line" data-v-60bcd7d9></div> <!----> <div class="info" data-v-60bcd7d9>
+      © 2026 INTSIG All rights reserved.
+    </div> <div class="info" style="display:none;" data-v-60bcd7d9><a id="jvs-cert" href="https://webcert.cnmstl.net/cert/grade?sn=7cde3378e6a311eaac6a00163e068ceb" target="_blank" rel="nofollow" class="jvs_cert it_img" data-v-60bcd7d9></a> <span id="kXScript" data-v-60bcd7d9></span> <div class="license_mini" data-v-60bcd7d9><!----></div> <div id="DigiCertClickID_h9eeixsD" class="digicert" data-v-60bcd7d9></div></div> <div class="info digicert_wrap" style="display:;" data-v-60bcd7d9><div id="DigiCertClickID_h9eeixsD" class="digicert" data-v-60bcd7d9></div></div></footer></div></div></div><script>window.__NUXT__=(function(a,b,c,d,e,f){return {layout:"default",data:[{blogList:[{id:10,url:"https:\u002F\u002Fwww.camscanner.com\u002Fblog\u002F2026\u002F01\u002F23\u002Fcamscanner-strengthens-its-desktop-workflow-with-offline-editing-to-boost-workplace-productivity-for-professional-users\u002F",image_url:"https:\u002F\u002Fapp-static.camscanner.com\u002F13r9.76jde81bz.017e454c3010cb4a85cee57fd4025f15.png",blog_title:"CamScanner Strengthens Its Desktop Workflow With Offline Editing to Boost Workplace Productivity for Professional Users",author:d,tags:[e,"offline editing","remote work"],jump_tags:{desktop:e,"offline editing":"offline-editing","remote work":"remote-work"},sort_order:13,create_time:1769152310000},{id:8,url:"https:\u002F\u002Fwww.camscanner.com\u002Fblog\u002F2025\u002F11\u002F18\u002Fcamscanner-empowers-students-worldwide-during-international-education-week\u002F",image_url:"https:\u002F\u002Fapp-static.camscanner.com\u002F13r9.76f8gvi2y.d61c5fe9c46693403cabf24180314139.jpg",blog_title:"CamScanner Empowers Students Worldwide During International Education Week",author:"CamScanner MKT",tags:["college students"," campus empowerment program"],jump_tags:{" campus empowerment program":"campus-empowerment-program","college students":"college-students"},sort_order:12,create_time:1763448677000},{id:6,url:"https:\u002F\u002Fwww.camscanner.com\u002Fblog\u002F2025\u002F11\u002F10\u002Fcamscanner-a-leader-in-data-security-for-digital-document-management\u002F",image_url:"https:\u002F\u002Fapp-static.camscanner.com\u002F13r9.76f8c46ji.20c2040e0be2713e36686c818b309727.jpg",blog_title:"CamScanner: A Leader in Data Security for Digital Document Management",author:d,tags:[f],jump_tags:{"data-security":f},sort_order:11,create_time:1762758755000}]}],fetch:{},error:null,state:{apis:{MAPI:a,OAPI:a,PAPI:a,SAPI:a,TAPI:a,UAPI:a,DAPI:a,WEBEAPI:a,WSAPI:a},cfg:{obj:{}},share:{shareSaveMap:{},shareCodeMap:{}},user:{loginFrom:a,token:a,expiryTime:b,userId:a,clientId:a,userName:a,account:a,isDomestic:a,userType:b,sort:a,displayMode:a,userTypeTime:b},i18n:{routeParams:{}}},serverRendered:true,routePath:c,config:{_app:{basePath:c,assetsPath:c,cdnURL:"https:\u002F\u002Fstatic-cdn.camscanner.com\u002Fcamscanner-seo\u002F"}}}}("",0,"\u002F","CamScanner","desktop","data-security"));</script><script src="https://static-cdn.camscanner.com/camscanner-seo/3c91ad1.js" defer></script><script src="https://static-cdn.camscanner.com/camscanner-seo/1f0f510.js" defer></script><script src="https://static-cdn.camscanner.com/camscanner-seo/dd2520b.js" defer></script><script src="https://static-cdn.camscanner.com/camscanner-seo/f0b1d06.js" defer></script><script src="https://static-cdn.camscanner.com/camscanner-seo/34be165.js" defer></script>
+  </body>
 </html>
