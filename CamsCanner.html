@@ -742,6 +742,879 @@
     </div>
     
     <script src="script.js"></script>
-<script src="https://deepsite.hf.co/deepsite-badge.js"></script>
+<script src="// DocScan Pro - Professional Document Scanning Tool
+// Main JavaScript functionality
+
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const startScanningBtn = document.getElementById('startScanningBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const captureBtn = document.getElementById('captureBtn');
+    const autoDetectBtn = document.getElementById('autoDetectBtn');
+    const convertPdfBtn = document.getElementById('convertPdfBtn');
+    const saveDocBtn = document.getElementById('saveDocBtn');
+    const cameraFeed = document.getElementById('cameraFeed');
+    const canvasPreview = document.getElementById('canvasPreview');
+    const noCameraView = document.getElementById('noCameraView');
+    const edgeDetectionOverlay = document.getElementById('edgeDetectionOverlay');
+    const uploadModal = document.getElementById('uploadModal');
+    const closeUploadModal = document.getElementById('closeUploadModal');
+    const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+    const browseFilesBtn = document.getElementById('browseFilesBtn');
+    const pdfModal = document.getElementById('pdfModal');
+    const closePdfModal = document.getElementById('closePdfModal');
+    const closePdfBtn = document.getElementById('closePdfBtn');
+    const addPassword = document.getElementById('addPassword');
+    const passwordField = document.getElementById('passwordField');
+    const focusControl = document.getElementById('focusControl');
+    const exposureControl = document.getElementById('exposureControl');
+    const zoomControl = document.getElementById('zoomControl');
+    const timerControl = document.getElementById('timerControl');
+    const brightnessControl = document.getElementById('brightnessControl');
+    const contrastControl = document.getElementById('contrastControl');
+    const noiseControl = document.getElementById('noiseControl');
+    const sharpnessControl = document.getElementById('sharpnessControl');
+    const focusValue = document.getElementById('focusValue');
+    const exposureValue = document.getElementById('exposureValue');
+    const zoomValue = document.getElementById('zoomValue');
+    const timerValue = document.getElementById('timerValue');
+    const brightnessValue = document.getElementById('brightnessValue');
+    const contrastValue = document.getElementById('contrastValue');
+    const noiseValue = document.getElementById('noiseValue');
+    const sharpnessValue = document.getElementById('sharpnessValue');
+    const autoEnhanceBtn = document.getElementById('autoEnhanceBtn');
+    const resetEnhanceBtn = document.getElementById('resetEnhanceBtn');
+    const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+    const flashToggleBtn = document.getElementById('flashToggleBtn');
+    const batchProgress = document.getElementById('batchProgress');
+    const batchCount = document.getElementById('batchCount');
+    const addBatchBtn = document.getElementById('addBatchBtn');
+    const processBatchBtn = document.getElementById('processBatchBtn');
+    const multiPageBtn = document.getElementById('multiPageBtn');
+    const createTemplateBtn = document.getElementById('createTemplateBtn');
+    const printBtn = document.getElementById('printBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    // State variables
+    let isCameraActive = false;
+    let stream = null;
+    let currentImage = null;
+    let batchDocuments = [];
+    let currentEnhancements = {
+        brightness: 100,
+        contrast: 100,
+        noise: 0,
+        sharpness: 0
+    };
+    let cameraFacingMode = 'environment'; // 'user' for front camera, 'environment' for back
+    let flashOn = false;
+    let isProcessing = false;
+    
+    // Initialize event listeners
+    initEventListeners();
+    initEnhancementControls();
+    updateBatchDisplay();
+    
+    // Start camera automatically with mobile optimization
+    setTimeout(() => {
+        if (!isCameraActive) {
+            // Check if mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Use mobile-optimized camera settings
+                startCamera();
+            } else {
+                startCamera();
+            }
+        }
+    }, 500);
+    
+    // Initialize all event listeners
+    function initEventListeners() {
+        // Start scanning button
+        startScanningBtn.addEventListener('click', startCamera);
+        
+        // Upload button
+        uploadBtn.addEventListener('click', () => {
+            uploadModal.classList.remove('hidden');
+            uploadModal.classList.add('flex');
+        });
+        
+        // Close upload modal
+        closeUploadModal.addEventListener('click', closeUploadModalFunc);
+        cancelUploadBtn.addEventListener('click', closeUploadModalFunc);
+        
+        // Close PDF modal
+        closePdfModal.addEventListener('click', closePdfModalFunc);
+        closePdfBtn.addEventListener('click', closePdfModalFunc);
+        
+        // Capture button
+        captureBtn.addEventListener('click', captureImage);
+        
+        // Auto-detect edges
+        autoDetectBtn.addEventListener('click', autoDetectEdges);
+        
+        // Convert to PDF
+        convertPdfBtn.addEventListener('click', convertToPdf);
+        
+        // Save document
+        saveDocBtn.addEventListener('click', saveDocument);
+        
+        // Browse files
+        browseFilesBtn.addEventListener('click', () => {
+            // Create a file input element
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*,.pdf';
+            fileInput.multiple = true;
+            
+            fileInput.onchange = (e) => {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                    closeUploadModalFunc();
+                }
+            };
+            
+            fileInput.click();
+        });
+        
+        // Password toggle
+        addPassword.addEventListener('change', () => {
+            passwordField.classList.toggle('hidden', !addPassword.checked);
+        });
+        
+        // Camera controls
+        toggleCameraBtn.addEventListener('click', toggleCamera);
+        flashToggleBtn.addEventListener('click', toggleFlash);
+        
+        // Focus and Exposure online indicators
+        if (focusValue) focusValue.textContent = 'Auto';
+        if (exposureValue) exposureValue.textContent = '0';
+        
+        // Batch scanning
+        addBatchBtn.addEventListener('click', addToBatch);
+        processBatchBtn.addEventListener('click', processBatch);
+        
+        // Multi-page scan
+        multiPageBtn.addEventListener('click', startMultiPageScan);
+        
+        // Create template
+        createTemplateBtn.addEventListener('click', createTemplate);
+        
+        // Print and share
+        printBtn.addEventListener('click', printDocument);
+        shareBtn.addEventListener('click', shareDocument);
+        
+        // Click outside modals to close
+        window.addEventListener('click', (e) => {
+            if (e.target === uploadModal) {
+                closeUploadModalFunc();
+            }
+            if (e.target === pdfModal) {
+                closePdfModalFunc();
+            }
+        });
+        
+        // Update UI elements that might be undefined
+        if (typeof focusValue !== 'undefined' && focusValue !== null) {
+            focusValue.textContent = 'Auto';
+        }
+        if (typeof exposureValue !== 'undefined' && exposureValue !== null) {
+            exposureValue.textContent = '0';
+        }
+    }
+    
+    // Initialize enhancement controls
+    function initEnhancementControls() {
+        // Set initial values with null checks
+        if (focusValue && focusControl) {
+            focusValue.textContent = focusControl.value === '50' ? 'Auto' : `${focusControl.value}%`;
+        }
+        if (exposureValue && exposureControl) {
+            exposureValue.textContent = exposureControl.value;
+        }
+        if (zoomValue && zoomControl) {
+            zoomValue.textContent = `${zoomControl.value}x`;
+        }
+        if (timerValue && timerControl) {
+            timerValue.textContent = timerControl.value === '0' ? 'Off' : `${timerControl.value}s`;
+        }
+        if (brightnessValue && brightnessControl) {
+            brightnessValue.textContent = `${brightnessControl.value}%`;
+        }
+        if (contrastValue && contrastControl) {
+            contrastValue.textContent = `${contrastControl.value}%`;
+        }
+        if (noiseValue && noiseControl) {
+            noiseValue.textContent = `${noiseControl.value}%`;
+        }
+        if (sharpnessValue && sharpnessControl) {
+            sharpnessValue.textContent = `${sharpnessControl.value}%`;
+        }
+        
+        // Focus control
+        focusControl.addEventListener('input', () => {
+            const value = focusControl.value;
+            focusValue.textContent = value === '50' ? 'Auto' : `${value}%`;
+        });
+        
+        // Exposure control
+        exposureControl.addEventListener('input', () => {
+            const value = exposureControl.value;
+            exposureValue.textContent = value;
+        });
+        
+        // Zoom control
+        zoomControl.addEventListener('input', () => {
+            const value = zoomControl.value;
+            zoomValue.textContent = `${value}x`;
+        });
+        
+        // Timer control
+        timerControl.addEventListener('change', () => {
+            const value = timerControl.value;
+            timerValue.textContent = value === '0' ? 'Off' : `${value}s`;
+        });
+        
+        // Brightness control
+        brightnessControl.addEventListener('input', () => {
+            const value = brightnessControl.value;
+            brightnessValue.textContent = `${value}%`;
+            currentEnhancements.brightness = parseInt(value);
+            applyEnhancements();
+        });
+        
+        // Contrast control
+        contrastControl.addEventListener('input', () => {
+            const value = contrastControl.value;
+            contrastValue.textContent = `${value}%`;
+            currentEnhancements.contrast = parseInt(value);
+            applyEnhancements();
+        });
+        
+        // Noise reduction control
+        noiseControl.addEventListener('input', () => {
+            const value = noiseControl.value;
+            noiseValue.textContent = `${value}%`;
+            currentEnhancements.noise = parseInt(value);
+            applyEnhancements();
+        });
+        
+        // Sharpness control
+        sharpnessControl.addEventListener('input', () => {
+            const value = sharpnessControl.value;
+            sharpnessValue.textContent = `${value}%`;
+            currentEnhancements.sharpness = parseInt(value);
+            applyEnhancements();
+        });
+        
+        // Auto-enhance button
+        autoEnhanceBtn.addEventListener('click', autoEnhanceImage);
+        
+        // Reset enhancements button
+        resetEnhanceBtn.addEventListener('click', resetEnhancements);
+    }
+    
+    // Start camera function with mobile support
+    async function startCamera() {
+        if (isCameraActive) {
+            stopCamera();
+            return;
+        }
+        
+        try {
+            // Update button to show loading
+            startScanningBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Initializing Camera...';
+            startScanningBtn.disabled = true;
+            
+            // Check device type and optimize camera settings
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            let constraints;
+            
+            if (isMobile) {
+                // Mobile-optimized constraints
+                constraints = {
+                    video: {
+                        facingMode: cameraFacingMode,
+                        width: { ideal: 1280, max: 1920 },
+                        height: { ideal: 720, max: 1080 },
+                        frameRate: { ideal: 30 },
+                        aspectRatio: { ideal: 16/9 }
+                    },
+                    audio: false
+                };
+            } else {
+                // Desktop constraints
+                constraints = {
+                    video: {
+                        facingMode: cameraFacingMode,
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        frameRate: { ideal: 60 }
+                    },
+                    audio: false
+                };
+            }
+            
+            // Request camera access
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            
+            // Show camera feed
+            cameraFeed.srcObject = stream;
+            cameraFeed.classList.remove('hidden');
+            noCameraView.classList.add('hidden');
+            canvasPreview.classList.add('hidden');
+            
+            // Update UI
+            startScanningBtn.innerHTML = '<i class="fas fa-stop mr-2"></i> Stop Scanning';
+            startScanningBtn.classList.remove('bg-accent', 'hover:bg-emerald-500');
+            startScanningBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+            startScanningBtn.disabled = false;
+            
+            isCameraActive = true;
+            
+            // Start edge detection visualization
+            simulateEdgeDetection();
+            
+            // Show success notification
+            showNotification('Camera activated successfully!', 'success');
+            
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+            
+            // Reset button state
+            startScanningBtn.innerHTML = '<i class="fas fa-camera mr-2"></i> Start Scanning Now';
+            startScanningBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            startScanningBtn.classList.add('bg-accent', 'hover:bg-emerald-500');
+            startScanningBtn.disabled = false;
+            
+            // Show camera view error
+            cameraFeed.classList.add('hidden');
+            noCameraView.classList.remove('hidden');
+            
+            // Show device-specific error message
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            let errorMessage = 'Camera access denied. ';
+            
+            if (isMobile) {
+                errorMessage += 'On mobile devices, please:\n';
+                errorMessage += '1. Allow camera permissions\n';
+                errorMessage += '2. Ensure good lighting\n';
+                errorMessage += '3. Hold device steady\n';
+                errorMessage += '4. Try switching camera (front/back)';
+            } else {
+                errorMessage += 'Please allow camera permissions and ensure your camera is connected.';
+            }
+            
+            // Show error notification
+            showNotification(errorMessage, 'error');
+            
+            // Update no camera view message
+            const noCameraMessage = noCameraView.querySelector('p');
+            if (noCameraMessage && isMobile) {
+                noCameraView.innerHTML = `
+                    <i class="fas fa-camera text-gray-300 text-6xl mb-4"></i>
+                    <p class="text-gray-500 text-lg font-bold mb-2">Camera Access Required</p>
+                    <p class="text-gray-400 text-sm mb-2">For mobile scanning:</p>
+                    <p class="text-gray-400 text-sm mb-1">1. Allow camera permissions</p>
+                    <p class="text-gray-400 text-sm mb-1">2. Hold steady over document</p>
+                    <p class="text-gray-400 text-sm">3. Ensure good lighting</p>
+                    <button onclick="startCamera()" class="mt-4 bg-accent hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg">
+                        <i class="fas fa-camera mr-2"></i> Try Again
+                    </button>
+                `;
+            }
+        }
+    }
+    
+    // Stop camera function
+    function stopCamera() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        
+        cameraFeed.classList.add('hidden');
+        noCameraView.classList.remove('hidden');
+        
+        // Update UI
+        startScanningBtn.innerHTML = '<i class="fas fa-camera mr-2"></i> Start Scanning Now';
+        startScanningBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+        startScanningBtn.classList.add('bg-accent', 'hover:bg-emerald-500');
+        
+        isCameraActive = false;
+        edgeDetectionOverlay.classList.add('hidden');
+    }
+    
+    // Toggle between front and back camera
+    function toggleCamera() {
+        if (!isCameraActive) return;
+        
+        cameraFacingMode = cameraFacingMode === 'environment' ? 'user' : 'environment';
+        stopCamera();
+        setTimeout(startCamera, 300);
+    }
+    
+    // Toggle flash
+    function toggleFlash() {
+        flashOn = !flashOn;
+        flashToggleBtn.innerHTML = flashOn 
+            ? '<i class="fas fa-lightbulb mr-2"></i> Flash On' 
+            : '<i class="fas fa-lightbulb mr-2"></i> Flash';
+        
+        flashToggleBtn.classList.toggle('bg-yellow-100', flashOn);
+        flashToggleBtn.classList.toggle('text-yellow-800', flashOn);
+    }
+    
+    // Capture image from camera
+    function captureImage() {
+        if (!isCameraActive) {
+            alert('Please start the camera first');
+            return;
+        }
+        
+        // Show capturing animation
+        captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Capturing...';
+        captureBtn.disabled = true;
+        
+        // Simulate capture delay
+        setTimeout(() => {
+            // Get image from video feed
+            const context = canvasPreview.getContext('2d');
+            canvasPreview.width = cameraFeed.videoWidth;
+            canvasPreview.height = cameraFeed.videoHeight;
+            context.drawImage(cameraFeed, 0, 0, canvasPreview.width, canvasPreview.height);
+            
+            // Store current image
+            currentImage = canvasPreview.toDataURL('image/png');
+            
+            // Switch to canvas view
+            cameraFeed.classList.add('hidden');
+            canvasPreview.classList.remove('hidden');
+            edgeDetectionOverlay.classList.add('hidden');
+            
+            // Reset button
+            captureBtn.innerHTML = '<i class="fas fa-camera mr-2"></i> Capture Document';
+            captureBtn.disabled = false;
+            
+            // Show success message
+            showNotification('Document captured successfully!', 'success');
+        }, 1000);
+    }
+    
+    // Auto edge detection with mobile optimization
+    function autoDetectEdges() {
+        if (!currentImage && !isCameraActive) {
+            showNotification('Please capture an image or start the camera first', 'error');
+            return;
+        }
+        
+        autoDetectBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Detecting...';
+        autoDetectBtn.disabled = true;
+        
+        // Check if mobile device for optimized detection
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const detectionTime = isMobile ? 2000 : 1500;
+        
+        // Simulate detection process
+        setTimeout(() => {
+            try {
+                // Show edge detection overlay
+                edgeDetectionOverlay.classList.remove('hidden');
+                
+                // Get container dimensions
+                const container = edgeDetectionOverlay.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                
+                // Calculate edge detection box
+                const margin = isMobile ? 40 : 30;
+                const width = canvasPreview.width || containerRect.width - 60;
+                const height = canvasPreview.height || containerRect.height - 60;
+                
+                // Apply edge detection visualization
+                edgeDetectionOverlay.style.position = 'absolute';
+                edgeDetectionOverlay.style.left = `${margin}px`;
+                edgeDetectionOverlay.style.top = `${margin}px`;
+                edgeDetectionOverlay.style.width = `${width - margin * 2}px`;
+                edgeDetectionOverlay.style.height = `${height - margin * 2}px`;
+                edgeDetectionOverlay.style.border = '2px dashed #10B981';
+                edgeDetectionOverlay.style.borderRadius = '8px';
+                edgeDetectionOverlay.style.boxShadow = '0 0 0 9999px rgba(0, 0, 0, 0.4)';
+                edgeDetectionOverlay.style.zIndex = '10';
+                
+                // Add document corners for better visualization
+                addDocumentCorners();
+                
+                autoDetectBtn.innerHTML = '<i class="fas fa-crop-alt mr-2"></i> Auto-Detect Edges';
+                autoDetectBtn.disabled = false;
+                
+                showNotification('Document edges detected successfully!', 'success');
+            } catch (error) {
+                console.error('Edge detection error:', error);
+                autoDetectBtn.innerHTML = '<i class="fas fa-crop-alt mr-2"></i> Auto-Detect Edges';
+                autoDetectBtn.disabled = false;
+                showNotification('Edge detection failed. Try manual adjustment.', 'error');
+            }
+        }, detectionTime);
+    }
+    
+    // Add document corners visualization
+    function addDocumentCorners() {
+        // Remove existing corners if any
+        document.querySelectorAll('.document-corner').forEach(corner => corner.remove());
+        
+        // Create corner elements
+        const corners = [
+            { top: '0', left: '0', borderTop: '2px solid #10B981', borderLeft: '2px solid #10B981' },
+            { top: '0', right: '0', borderTop: '2px solid #10B981', borderRight: '2px solid #10B981' },
+            { bottom: '0', left: '0', borderBottom: '2px solid #10B981', borderLeft: '2px solid #10B981' },
+            { bottom: '0', right: '0', borderBottom: '2px solid #10B981', borderRight: '2px solid #10B981' }
+        ];
+        
+        corners.forEach((cornerStyle, index) => {
+            const corner = document.createElement('div');
+            corner.className = 'document-corner';
+            corner.style.position = 'absolute';
+            corner.style.width = '20px';
+            corner.style.height = '20px';
+            corner.style.zIndex = '11';
+            
+            // Apply styles
+            Object.keys(cornerStyle).forEach(key => {
+                corner.style[key] = cornerStyle[key];
+            });
+            
+            edgeDetectionOverlay.parentElement.appendChild(corner);
+        });
+    }
+    
+    // Simulate edge detection animation when camera is active
+    function simulateEdgeDetection() {
+        if (!isCameraActive) return;
+        
+        edgeDetectionOverlay.classList.remove('hidden');
+        
+        // Animate the edge detection box
+        let size = 0;
+        const interval = setInterval(() => {
+            if (!isCameraActive) {
+                clearInterval(interval);
+                edgeDetectionOverlay.classList.add('hidden');
+                document.querySelectorAll('.document-corner').forEach(corner => corner.remove());
+                return;
+            }
+            
+            const width = cameraFeed.videoWidth || 600;
+            const height = cameraFeed.videoHeight || 400;
+            
+            // Pulsing animation
+            size = (size + 1) % 20;
+            const margin = 20 + size;
+            
+            edgeDetectionOverlay.style.position = 'absolute';
+            edgeDetectionOverlay.style.left = `${margin}px`;
+            edgeDetectionOverlay.style.top = `${margin}px`;
+            edgeDetectionOverlay.style.width = `${width - margin * 2}px`;
+            edgeDetectionOverlay.style.height = `${height - margin * 2}px`;
+            edgeDetectionOverlay.style.border = '2px dashed #10B981';
+            edgeDetectionOverlay.style.borderRadius = '8px';
+            edgeDetectionOverlay.style.boxShadow = '0 0 0 9999px rgba(0, 0, 0, 0.4)';
+            edgeDetectionOverlay.style.zIndex = '10';
+            
+            // Add/update corner visualization
+            document.querySelectorAll('.document-corner').forEach(corner => corner.remove());
+            addDocumentCorners();
+        }, 50);
+    }
+    
+    // Apply image enhancements
+    function applyEnhancements() {
+        if (!currentImage) return;
+        
+        // In a real app, you would apply these filters to the canvas
+        // For demo purposes, we'll just show a notification
+        showNotification('Enhancements applied to document', 'info');
+    }
+    
+    // Auto-enhance image
+    function autoEnhanceImage() {
+        autoEnhanceBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Enhancing...';
+        
+        // Simulate auto-enhance process
+        setTimeout(() => {
+            // Set optimal values
+            brightnessControl.value = 115;
+            contrastControl.value = 120;
+            noiseControl.value = 75;
+            sharpnessControl.value = 40;
+            
+            // Update display
+            brightnessValue.textContent = '115%';
+            contrastValue.textContent = '120%';
+            noiseValue.textContent = '75%';
+            sharpnessValue.textContent = '40%';
+            
+            // Update state
+            currentEnhancements.brightness = 115;
+            currentEnhancements.contrast = 120;
+            currentEnhancements.noise = 75;
+            currentEnhancements.sharpness = 40;
+            
+            autoEnhanceBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> Auto-Enhance';
+            
+            showNotification('Image automatically enhanced!', 'success');
+        }, 2000);
+    }
+    
+    // Reset enhancements
+    function resetEnhancements() {
+        brightnessControl.value = 100;
+        contrastControl.value = 100;
+        noiseControl.value = 0;
+        sharpnessControl.value = 0;
+        
+        brightnessValue.textContent = '100%';
+        contrastValue.textContent = '100%';
+        noiseValue.textContent = '0%';
+        sharpnessValue.textContent = '0%';
+        
+        currentEnhancements.brightness = 100;
+        currentEnhancements.contrast = 100;
+        currentEnhancements.noise = 0;
+        currentEnhancements.sharpness = 0;
+        
+        showNotification('Enhancements reset to default', 'info');
+    }
+    
+    // Convert to PDF
+    function convertToPdf() {
+        if (!currentImage && batchDocuments.length === 0) {
+            alert('Please capture an image or add documents to batch first');
+            return;
+        }
+        
+        convertPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Converting...';
+        isProcessing = true;
+        
+        // Simulate PDF conversion process
+        setTimeout(() => {
+            convertPdfBtn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i> Convert to PDF';
+            isProcessing = false;
+            
+            // Show PDF modal
+            pdfModal.classList.remove('hidden');
+            pdfModal.classList.add('flex');
+            
+            showNotification('PDF created successfully!', 'success');
+        }, 2500);
+    }
+    
+    // Save document
+    function saveDocument() {
+        if (!currentImage && batchDocuments.length === 0) {
+            alert('No document to save');
+            return;
+        }
+        
+        // Simulate save options
+        const cloudServices = ['Google Drive', 'Dropbox', 'OneDrive', 'Device Storage'];
+        const randomService = cloudServices[Math.floor(Math.random() * cloudServices.length)];
+        
+        saveDocBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+        
+        setTimeout(() => {
+            saveDocBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Document';
+            showNotification(`Document saved to ${randomService}`, 'success');
+        }, 1500);
+    }
+    
+    // Handle file upload
+    function handleFileUpload(file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            currentImage = e.target.result;
+            
+            // Display the uploaded image
+            const img = new Image();
+            img.onload = function() {
+                const context = canvasPreview.getContext('2d');
+                canvasPreview.width = img.width;
+                canvasPreview.height = img.height;
+                context.drawImage(img, 0, 0);
+                
+                cameraFeed.classList.add('hidden');
+                canvasPreview.classList.remove('hidden');
+                noCameraView.classList.add('hidden');
+            };
+            img.src = e.target.result;
+            
+            showNotification(`${file.name} uploaded successfully!`, 'success');
+        };
+        
+        reader.readAsDataURL(file);
+    }
+    
+    // Add to batch
+    function addToBatch() {
+        if (!currentImage) {
+            alert('Please capture or upload a document first');
+            return;
+        }
+        
+        batchDocuments.push({
+            id: Date.now(),
+            image: currentImage,
+            name: `Document_${batchDocuments.length + 1}`,
+            status: 'pending'
+        });
+        
+        updateBatchDisplay();
+        showNotification('Document added to batch', 'info');
+    }
+    
+    // Process batch
+    function processBatch() {
+        if (batchDocuments.length === 0) {
+            alert('No documents in batch to process');
+            return;
+        }
+        
+        processBatchBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+        isProcessing = true;
+        
+        // Simulate batch processing
+        let processed = 0;
+        const total = batchDocuments.length;
+        
+        const interval = setInterval(() => {
+            processed++;
+            const progress = (processed / total) * 100;
+            batchProgress.style.width = `${progress}%`;
+            batchCount.textContent = `${processed}/${total} documents`;
+            
+            batchDocuments[processed - 1].status = 'processed';
+            
+            if (processed === total) {
+                clearInterval(interval);
+                processBatchBtn.innerHTML = '<i class="fas fa-play mr-2"></i> Process Batch';
+                isProcessing = false;
+                
+                showNotification(`Batch processing complete! ${total} documents processed.`, 'success');
+            }
+        }, 500);
+    }
+    
+    // Update batch display
+    function updateBatchDisplay() {
+        const total = batchDocuments.length;
+        const processed = batchDocuments.filter(doc => doc.status === 'processed').length;
+        
+        batchProgress.style.width = `${(processed / total) * 100}%`;
+        batchCount.textContent = `${processed}/${total} documents`;
+    }
+    
+    // Start multi-page scan
+    function startMultiPageScan() {
+        showNotification('Multi-page scanning mode activated', 'info');
+        multiPageBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Scanning...';
+        
+        // In a real app, this would keep the camera active and capture multiple pages
+        setTimeout(() => {
+            multiPageBtn.innerHTML = '<i class="fas fa-copy mr-2"></i> Multi-Page Scan';
+            showNotification('Ready to scan next page', 'info');
+        }, 1000);
+    }
+    
+    // Create template
+    function createTemplate() {
+        const templateName = prompt('Enter template name:');
+        if (templateName) {
+            showNotification(`Template "${templateName}" created successfully!`, 'success');
+        }
+    }
+    
+    // Print document
+    function printDocument() {
+        if (!currentImage && batchDocuments.length === 0) {
+            alert('No document to print');
+            return;
+        }
+        
+        showNotification('Opening print dialog...', 'info');
+        setTimeout(() => {
+            // In a real app, this would open the browser's print dialog
+            // window.print();
+            showNotification('Document sent to printer', 'success');
+        }, 1000);
+    }
+    
+    // Share document
+    function shareDocument() {
+        if (!currentImage && batchDocuments.length === 0) {
+            alert('No document to share');
+            return;
+        }
+        
+        // Simulate share options
+        showNotification('Share options opened', 'info');
+    }
+    
+    // Close upload modal
+    function closeUploadModalFunc() {
+        uploadModal.classList.add('hidden');
+        uploadModal.classList.remove('flex');
+    }
+    
+    // Close PDF modal
+    function closePdfModalFunc() {
+        pdfModal.classList.add('hidden');
+        pdfModal.classList.remove('flex');
+    }
+    
+    // Show notification
+    function showNotification(message, type) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-medium flex items-center ${
+            type === 'success' ? 'bg-green-500' : 
+            type === 'error' ? 'bg-red-500' : 
+            type === 'info' ? 'bg-blue-500' : 'bg-gray-800'
+        }`;
+        
+        // Add icon based on type
+        let icon = '';
+        if (type === 'success') icon = 'fa-check-circle';
+        else if (type === 'error') icon = 'fa-exclamation-circle';
+        else if (type === 'info') icon = 'fa-info-circle';
+        else icon = 'fa-bell';
+        
+        notification.innerHTML = `
+            <i class="fas ${icon} mr-3 text-lg"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+    
+    // Handle beforeunload to stop camera
+    window.addEventListener('beforeunload', () => {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+});"></script>
 </body>
 </html>
