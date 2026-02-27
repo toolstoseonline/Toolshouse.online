@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us - ToolsHouse.Online</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f7fb;
+}
+
+header{
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    max-width:900px;
+    margin:40px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.contact-info{
+    background:#eef2ff;
+    padding:20px;
+    border-radius:8px;
+    margin-bottom:30px;
+}
+
+.contact-info p{
+    margin:10px 0;
+    font-size:16px;
+}
+
+.contact-info a{
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+}
+
+input, textarea{
+    margin-bottom:15px;
+    padding:12px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+textarea{
+    resize:none;
+    height:120px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#1e40af;
+}
+
+.success{
+    color:green;
+    text-align:center;
+    margin-top:10px;
+}
+
+footer{
+    text-align:center;
+    padding:15px;
+    background:#111;
+    color:white;
+    margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Contact Us</h1>
+</header>
+
+<div class="container">
+
+    <h2>Get in Touch</h2>
+
+    <div class="contact-info">
+        <p><strong>Website:</strong> www.ToolsHouse.Online</p>
+        <p><strong>Email:</strong> 
+        <a href="mailto:toolstoseonline@gmail.com">
+        toolstoseonline@gmail.com
+        </a></p>
+        <p>No phone number or physical address is currently available.</p>
+    </div>
+
+    <h2>Send Us a Message</h2>
+
+    <form id="contactForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="message" placeholder="Write your message here..." required></textarea>
+        <button type="submit">Send Message</button>
+        <div class="success" id="successMsg"></div>
+    </form>
+
+</div>
+
+<footer>
+    © 2026 ToolsHouse.Online | All Rights Reserved
+</footer>
+
+<script>
+document.getElementById("contactForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let message = document.getElementById("message").value.trim();
+
+    if(name === "" || email === "" || message === ""){
+        alert("Please fill all fields.");
+        return;
+    }
+
+    document.getElementById("successMsg").innerText =
+    "Thank you! Your message has been received. We will contact you via email.";
+
+    document.getElementById("contactForm").reset();
+});
+</script>
+
+</body>
+</html>
