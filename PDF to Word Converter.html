@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF to Word Converter - Fixed Version</title>
+<title>Multi‑PDF to Word Converter</title>
 
 <!-- PDF.js for PDF parsing -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -31,7 +31,7 @@ body{
 .card{
     background:#ffffff;
     width:95%;
-    max-width:500px;
+    max-width:650px;
     padding:40px 30px;
     border-radius:20px;
     box-shadow:0 25px 50px rgba(0,0,0,0.2);
@@ -40,13 +40,21 @@ body{
 }
 
 h2{
-    margin-bottom:25px;
+    margin-bottom:10px;
     color:#333;
     font-size:1.8rem;
 }
 
-.file-input{
+.subtitle{
+    color:#666;
     margin-bottom:20px;
+    font-size:0.95rem;
+    border-bottom:1px solid #eee;
+    padding-bottom:10px;
+}
+
+.file-input{
+    margin-bottom:15px;
 }
 
 input[type="file"]{
@@ -64,30 +72,76 @@ input[type="file"]:hover{
     border-color:#5a3796;
 }
 
+.file-list{
+    text-align:left;
+    background:#f5f5f5;
+    border-radius:8px;
+    padding:10px 15px;
+    margin:15px 0;
+    max-height:150px;
+    overflow-y:auto;
+    font-size:0.9rem;
+}
+
+.file-list ul{
+    list-style-type:none;
+    padding-left:5px;
+}
+
+.file-list li{
+    padding:4px 0;
+    border-bottom:1px dashed #ddd;
+    color:#444;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.file-list li::before{
+    content:"📄";
+    font-size:0.9rem;
+    opacity:0.8;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+    margin:15px 0;
+    flex-wrap:wrap;
+}
+
 button{
-    width:100%;
-    padding:14px;
+    flex:1 1 auto;
+    padding:14px 12px;
     border:none;
     border-radius:12px;
     background:#764ba2;
     color:white;
-    font-size:16px;
+    font-size:15px;
     font-weight:600;
     cursor:pointer;
     transition:0.3s;
-    margin-bottom:15px;
 }
 
 button:hover:not(:disabled){
     background:#5a3796;
     transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(0,0,0,0.2);
+    box-shadow:0 8px 18px rgba(0,0,0,0.15);
 }
 
 button:disabled{
     background:#b19cd9;
     cursor:not-allowed;
     opacity:0.7;
+}
+
+#convertBtn{
+    background:#4a2c73;
+    flex:2;
+}
+
+#testBtn{
+    background:#2c7a4d;
 }
 
 .loading{
@@ -114,26 +168,44 @@ button:disabled{
     100%{transform:rotate(360deg);}
 }
 
+.progress-section{
+    background:#fafafa;
+    border-radius:12px;
+    padding:15px;
+    margin:15px 0;
+    border:1px solid #eaeaea;
+}
+
+.progress-item{
+    margin-bottom:15px;
+}
+
+.progress-header{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.9rem;
+    color:#333;
+    margin-bottom:5px;
+}
+
 .progress-bar{
     width:100%;
     height:20px;
-    background:#f0f0f0;
+    background:#e9e9e9;
     border-radius:10px;
-    margin:15px 0;
     overflow:hidden;
-    display:none;
 }
 
 .progress-fill{
     height:100%;
     background:#764ba2;
     width:0%;
-    transition:width 0.3s ease;
+    transition:width 0.25s ease;
     border-radius:10px;
 }
 
 .footer-text{
-    margin-top:15px;
+    margin-top:20px;
     font-size:13px;
     color:#888;
 }
@@ -141,9 +213,8 @@ button:disabled{
 .warning{
     color:#e67e22;
     font-size:12px;
-    margin-top:8px;
+    margin-top:6px;
     text-align:left;
-    padding-left:5px;
 }
 
 @keyframes fadeIn{
@@ -151,312 +222,297 @@ button:disabled{
     to{opacity:1; transform:translateY(0);}
 }
 
-@media(max-width:480px){
-    .card{
-        padding:30px 20px;
-    }
-    
-    h2{
-        font-size:1.5rem;
-    }
-}
-
-.test-btn {
-    background: #4CAF50;
-    margin-top: 10px;
-    font-size: 14px;
-    padding: 8px;
-}
-
-.test-btn:hover {
-    background: #45a049;
+@media(max-width:550px){
+    .card{padding:30px 20px;}
+    h2{font-size:1.5rem;}
+    .button-group{flex-direction:column;}
 }
 </style>
-
 </head>
 
 <body>
 
 <div class="card">
-    <h2>📑 PDF to Word Converter</h2>
-    <p style="color:#666; margin-bottom:20px; font-size:14px;">Fixed Version - 100% Working</p>
+    <h2>📑 Multi‑PDF to Word</h2>
+    <div class="subtitle">Select multiple PDF files – each becomes a separate DOC</div>
 
     <div class="file-input">
-        <input type="file" id="fileInput" accept=".pdf">
-        <div class="warning">📁 Unlimited file size • Multi-page supported • No upload required</div>
+        <input type="file" id="fileInput" accept=".pdf" multiple>
+        <div class="warning">📁 Hold Ctrl/Cmd to select multiple files • No upload • unlimited size</div>
     </div>
 
-    <button onclick="convertPDFtoWord()" id="convertBtn">Convert to Word (DOC)</button>
-    
-    <button onclick="testPDF()" class="test-btn" id="testBtn">Test PDF Loading</button>
-    
-    <div class="progress-bar" id="progressBar">
-        <div class="progress-fill" id="progressFill"></div>
+    <!-- Dynamic list of selected files -->
+    <div id="fileListContainer" class="file-list" style="display:none;">
+        <strong>📋 Selected files:</strong>
+        <ul id="fileList"></ul>
     </div>
-    
-    <div id="loading" class="loading" style="display:none;">
-        <div class="spinner"></div>
-        <span id="loadingText">Processing page 1...</span>
+
+    <div class="button-group">
+        <button onclick="convertMultiplePDFs()" id="convertBtn">📥 Convert all to Word</button>
+        <button onclick="testFirstPDF()" id="testBtn">🧪 Test first PDF</button>
+    </div>
+
+    <!-- Progress area (shows overall + per‑file progress) -->
+    <div id="progressSection" class="progress-section" style="display:none;">
+        <div id="globalProgress" class="progress-item">
+            <div class="progress-header"><span id="globalFileName">Overall</span> <span id="globalPercent">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="globalProgressFill"></div></div>
+        </div>
+        <div id="fileProgress" class="progress-item">
+            <div class="progress-header"><span id="currentFileName">-</span> <span id="filePercent">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="fileProgressFill"></div></div>
+        </div>
+        <div id="loading" class="loading" style="display:flex;">
+            <div class="spinner"></div>
+            <span id="loadingText">Ready</span>
+        </div>
     </div>
 
     <div class="footer-text">
-        ⚡ Fast • 🔒 Secure • ☁️ No Upload • 📄 Clean Formatting • ♾️ No Size Limit
+        ⚡ Batch process • 🔒 100% local • 📄 One .doc per PDF • ♾️ No file size limit
     </div>
 </div>
 
 <script>
-// Initialize PDF.js worker - FIXED
+// Initialize PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-// Test function to check if PDF.js is working
-async function testPDF() {
-    const fileInput = document.getElementById("fileInput");
-    const file = fileInput.files[0];
-    
-    if (!file) {
-        alert("Please select a PDF file first");
+// DOM elements
+const fileInput = document.getElementById('fileInput');
+const fileListContainer = document.getElementById('fileListContainer');
+const fileListEl = document.getElementById('fileList');
+const convertBtn = document.getElementById('convertBtn');
+const testBtn = document.getElementById('testBtn');
+const progressSection = document.getElementById('progressSection');
+const globalFileNameSpan = document.getElementById('globalFileName');
+const globalPercentSpan = document.getElementById('globalPercent');
+const globalProgressFill = document.getElementById('globalProgressFill');
+const currentFileNameSpan = document.getElementById('currentFileName');
+const filePercentSpan = document.getElementById('filePercent');
+const fileProgressFill = document.getElementById('fileProgressFill');
+const loadingDiv = document.getElementById('loading');
+const loadingText = document.getElementById('loadingText');
+
+// Helper: format file size
+function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(2) + ' MB';
+}
+
+// Update file list UI when selection changes
+fileInput.addEventListener('change', function() {
+    const files = Array.from(this.files);
+    if (files.length === 0) {
+        fileListContainer.style.display = 'none';
         return;
     }
-    
+    fileListContainer.style.display = 'block';
+    fileListEl.innerHTML = files.map(f => 
+        `<li>${f.name} (${formatSize(f.size)})</li>`
+    ).join('');
+});
+
+// Clear selection on click (optional)
+fileInput.addEventListener('click', function() {
+    // only clear if user wants to reselect; we keep previous for convenience
+});
+
+// Test first PDF (same as before, but using first selected file)
+async function testFirstPDF() {
+    const files = fileInput.files;
+    if (!files || files.length === 0) {
+        alert("Please select at least one PDF file.");
+        return;
+    }
+    const file = files[0];
     try {
-        alert("Testing PDF: " + file.name + "\nSize: " + (file.size / 1024).toFixed(2) + " KB");
-        
+        alert(`Testing: ${file.name}\nSize: ${formatSize(file.size)}`);
         const arrayBuffer = await readFileAsArrayBuffer(file);
-        alert("File read successfully! Size: " + arrayBuffer.byteLength + " bytes");
-        
+        alert(`File read: ${arrayBuffer.byteLength} bytes. Loading PDF...`);
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         const pdf = await loadingTask.promise;
-        
-        alert("PDF loaded successfully!\n" +
-              "Pages: " + pdf.numPages + "\n" +
-              "Version: " + (pdf.pdfInfo && pdf.pdfInfo.version ? pdf.pdfInfo.version : "Unknown"));
-        
+        alert(`✅ PDF loaded!\nPages: ${pdf.numPages}\nVersion: ${pdf.pdfInfo?.version || 'unknown'}`);
     } catch (error) {
-        alert("Test failed: " + error.message);
-        console.error("Test error:", error);
+        alert("❌ Test failed: " + error.message);
     }
 }
 
-// Main conversion function - SIMPLIFIED
-async function convertPDFtoWord() {
-    const fileInput = document.getElementById("fileInput");
-    const file = fileInput.files[0];
-    const convertBtn = document.getElementById("convertBtn");
-    const loadingDiv = document.getElementById("loading");
-    const loadingText = document.getElementById("loadingText");
-    const progressBar = document.getElementById("progressBar");
-    const progressFill = document.getElementById("progressFill");
-
-    if (!file) {
-        alert("📂 Please upload a PDF file.");
+// Main batch conversion
+async function convertMultiplePDFs() {
+    const files = Array.from(fileInput.files);
+    if (files.length === 0) {
+        alert("📂 Please select one or more PDF files.");
         return;
     }
 
-    if (!file.name.toLowerCase().endsWith(".pdf")) {
-        alert("❌ Only PDF files are supported.");
-        return;
-    }
-
+    // Disable buttons
     convertBtn.disabled = true;
-    loadingDiv.style.display = "flex";
-    progressBar.style.display = "block";
-    progressFill.style.width = "0%";
+    testBtn.disabled = true;
+    progressSection.style.display = 'block';
+    loadingDiv.style.display = 'flex';
+    loadingText.textContent = 'Starting...';
 
-    try {
-        // Read file
-        loadingText.textContent = "Reading PDF file...";
-        const arrayBuffer = await readFileAsArrayBuffer(file);
-        
-        // Load PDF
-        loadingText.textContent = "Loading PDF document...";
-        const loadingTask = pdfjsLib.getDocument({ 
-            data: arrayBuffer,
-            useSystemFonts: true,
-            disableFontFace: true,
-            nativeImageDecoderSupport: 'display',
-            standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/standard_fonts/',
-            cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/cmaps/',
-            cMapPacked: true
-        });
-        
-        const pdf = await loadingTask.promise;
-        const numPages = pdf.numPages;
-        
-        loadingText.textContent = `Processing ${numPages} pages...`;
-        
-        // Create HTML content
-        let htmlContent = `<!DOCTYPE html>
+    // Overall progress: files counter
+    const totalFiles = files.length;
+    let completedFiles = 0;
+    let successCount = 0;
+    let errorCount = 0;
+
+    // Process each file sequentially (to avoid overwhelming browser)
+    for (let idx = 0; idx < files.length; idx++) {
+        const file = files[idx];
+        // Update global progress
+        const overallPercent = Math.round((idx / totalFiles) * 100);
+        globalFileNameSpan.textContent = `Batch ${idx+1}/${totalFiles}`;
+        globalPercentSpan.textContent = `${overallPercent}%`;
+        globalProgressFill.style.width = overallPercent + '%';
+
+        try {
+            await convertSinglePDF(file, idx, totalFiles);
+            successCount++;
+        } catch (error) {
+            console.error(`Error converting ${file.name}:`, error);
+            alert(`❌ Error with "${file.name}": ${error.message}`);
+            errorCount++;
+        } finally {
+            completedFiles++;
+        }
+    }
+
+    // Final progress
+    globalFileNameSpan.textContent = `Completed`;
+    globalPercentSpan.textContent = `100%`;
+    globalProgressFill.style.width = '100%';
+    loadingText.textContent = `Done. Success: ${successCount}, Errors: ${errorCount}`;
+
+    // Re-enable buttons after a short delay
+    setTimeout(() => {
+        convertBtn.disabled = false;
+        testBtn.disabled = false;
+        // optionally hide progress after some seconds
+    }, 1500);
+}
+
+// Convert a single PDF file and save as .doc
+async function convertSinglePDF(file, fileIndex, totalFiles) {
+    // Update UI for current file
+    currentFileNameSpan.textContent = file.name;
+    filePercentSpan.textContent = '0%';
+    fileProgressFill.style.width = '0%';
+    loadingText.textContent = `Reading ${file.name}...`;
+
+    const arrayBuffer = await readFileAsArrayBuffer(file);
+
+    loadingText.textContent = `Loading PDF ${fileIndex+1}/${totalFiles}...`;
+    const loadingTask = pdfjsLib.getDocument({ 
+        data: arrayBuffer,
+        useSystemFonts: true,
+        disableFontFace: true,
+        nativeImageDecoderSupport: 'display',
+        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/cmaps/',
+        cMapPacked: true
+    });
+    
+    const pdf = await loadingTask.promise;
+    const numPages = pdf.numPages;
+    
+    // Build HTML content for Word
+    let htmlContent = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Converted from PDF</title>
+<title>Converted from ${escapeHtml(file.name)}</title>
 <style>
-    body { 
-        font-family: 'Times New Roman', Times, serif; 
-        line-height: 1.5; 
-        margin: 1.5in 1in;
-        background: white;
-        color: black;
-    }
-    .page {
-        margin-bottom: 30px;
-        page-break-after: always;
-    }
-    .page-header {
-        text-align: center;
-        font-weight: bold;
-        margin: 20px 0;
-        color: #333;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 10px;
-    }
-    p { 
-        margin: 0 0 10px 0;
-        text-align: left;
-    }
-    h1 {
-        font-size: 24px;
-        font-weight: bold;
-        margin: 20px 0 10px 0;
-    }
-    h2 {
-        font-size: 20px;
-        font-weight: bold;
-        margin: 15px 0 10px 0;
-    }
-    .footer {
-        margin-top: 30px;
-        text-align: center;
-        font-size: 10px;
-        color: #666;
-    }
+    body { font-family: 'Times New Roman', Times, serif; line-height: 1.5; margin: 1.5in 1in; background: white; }
+    .page { margin-bottom: 30px; page-break-after: always; }
+    .page-header { text-align: center; font-weight: bold; margin: 20px 0; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+    p { margin: 0 0 8px 0; }
+    h1 { font-size: 24px; font-weight: bold; margin: 20px 0 10px 0; }
+    h2 { font-size: 20px; font-weight: bold; margin: 15px 0 10px 0; }
+    .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #666; }
 </style>
 </head>
 <body>
-<div class="content">`;
-        
-        // Add document info
-        htmlContent += `
-    <h1>📄 Document Conversion</h1>
-    <p><strong>File:</strong> ${escapeHtml(file.name)}</p>
-    <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+<div class="content">
+    <h1>📄 ${escapeHtml(file.name)}</h1>
+    <p><strong>Converted:</strong> ${new Date().toLocaleString()}</p>
     <p><strong>Pages:</strong> ${numPages}</p>
     <hr style="margin: 20px 0;">`;
-        
-        // Process each page
-        for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-            const progress = Math.round((pageNum / numPages) * 100);
-            progressFill.style.width = progress + "%";
-            loadingText.textContent = `Processing page ${pageNum} of ${numPages} (${progress}%)`;
-            
-            try {
-                const page = await pdf.getPage(pageNum);
-                const textContent = await page.getTextContent();
-                
-                htmlContent += `
-    <div class="page">
-        <div class="page-header">Page ${pageNum} of ${numPages}</div>`;
-                
-                // Extract and add text
-                if (textContent.items && textContent.items.length > 0) {
-                    let lastY = null;
-                    let paragraph = [];
-                    
-                    // Process each text item
-                    for (let item of textContent.items) {
-                        if (item.str && item.str.trim()) {
-                            const currentY = Math.round(item.transform[5]);
-                            
-                            // New line if Y position changed significantly
-                            if (lastY !== null && Math.abs(currentY - lastY) > 5) {
-                                if (paragraph.length > 0) {
-                                    const lineText = paragraph.join(' ');
-                                    if (lineText.length < 50 && lineText === lineText.toUpperCase()) {
-                                        htmlContent += `\n        <h2>${escapeHtml(lineText)}</h2>`;
-                                    } else {
-                                        htmlContent += `\n        <p>${escapeHtml(lineText)}</p>`;
-                                    }
-                                    paragraph = [];
-                                }
-                            }
-                            
-                            paragraph.push(item.str);
-                            lastY = currentY;
-                        }
-                    }
-                    
-                    // Add last paragraph
-                    if (paragraph.length > 0) {
-                        const lineText = paragraph.join(' ');
-                        if (lineText.length < 50 && lineText === lineText.toUpperCase()) {
-                            htmlContent += `\n        <h2>${escapeHtml(lineText)}</h2>`;
-                        } else {
-                            htmlContent += `\n        <p>${escapeHtml(lineText)}</p>`;
-                        }
-                    }
-                } else {
-                    htmlContent += `\n        <p><em>(No text found on this page)</em></p>`;
-                }
-                
-                htmlContent += `\n    </div>`;
-                
-            } catch (pageError) {
-                console.error(`Error on page ${pageNum}:`, pageError);
-                htmlContent += `
-    <div class="page">
-        <div class="page-header">Page ${pageNum} of ${numPages}</div>
-        <p style="color: red;">Error reading page: ${escapeHtml(pageError.message)}</p>
-    </div>`;
-            }
-        }
-        
-        // Close HTML
-        htmlContent += `
-    <div class="footer">
-        Generated by PDF to Word Converter • ${numPages} page${numPages > 1 ? 's' : ''}
-    </div>
-</div>
-</body>
-</html>`;
-        
-        // Check if we got any text
-        if (htmlContent.length < 500) {
-            alert("⚠️ No readable text found in the PDF. The file might be scanned or image-based.");
-            return;
-        }
-        
-        // Create and download Word document
-        loadingText.textContent = "Creating Word document...";
-        
-        // Use .doc extension - Word opens these perfectly
-        const blob = new Blob([htmlContent], { type: 'application/msword' });
-        const fileName = file.name.replace(/\.pdf$/i, "") + ".doc";
-        
-        // Save file
-        saveAs(blob, fileName);
-        
-        // Show success message
-        setTimeout(() => {
-            alert(`✅ Conversion successful!\n\nFile: ${file.name}\nPages: ${numPages}\nSize: ${(file.size / 1024 / 1024).toFixed(2)} MB\n\nSaved as: ${fileName}`);
-        }, 500);
 
-    } catch (error) {
-        console.error("Conversion error:", error);
-        alert("❌ Conversion failed: " + error.message + "\n\nPlease try with a different PDF file.");
-    } finally {
-        convertBtn.disabled = false;
-        loadingDiv.style.display = "none";
-        progressBar.style.display = "none";
-        progressFill.style.width = "0%";
+    // Process pages
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        const pageProgress = Math.round((pageNum / numPages) * 100);
+        filePercentSpan.textContent = pageProgress + '%';
+        fileProgressFill.style.width = pageProgress + '%';
+        loadingText.textContent = `${file.name} – page ${pageNum}/${numPages}`;
+
+        try {
+            const page = await pdf.getPage(pageNum);
+            const textContent = await page.getTextContent();
+            
+            htmlContent += `\n    <div class="page">`;
+            htmlContent += `\n        <div class="page-header">Page ${pageNum}</div>`;
+
+            if (textContent.items.length > 0) {
+                let lastY = null;
+                let paragraph = [];
+                
+                for (let item of textContent.items) {
+                    if (item.str && item.str.trim()) {
+                        const currentY = Math.round(item.transform[5]);
+                        if (lastY !== null && Math.abs(currentY - lastY) > 5) {
+                            if (paragraph.length) flushParagraph();
+                        }
+                        paragraph.push(item.str);
+                        lastY = currentY;
+                    }
+                }
+                if (paragraph.length) flushParagraph();
+
+                function flushParagraph() {
+                    const lineText = paragraph.join(' ');
+                    if (lineText.length < 50 && lineText === lineText.toUpperCase()) {
+                        htmlContent += `\n        <h2>${escapeHtml(lineText)}</h2>`;
+                    } else {
+                        htmlContent += `\n        <p>${escapeHtml(lineText)}</p>`;
+                    }
+                    paragraph = [];
+                }
+            } else {
+                htmlContent += `\n        <p><em>(No extractable text on this page)</em></p>`;
+            }
+            htmlContent += `\n    </div>`;
+        } catch (pageError) {
+            htmlContent += `\n    <div class="page"><p style="color:red;">Error on page ${pageNum}: ${escapeHtml(pageError.message)}</p></div>`;
+        }
     }
+
+    htmlContent += `\n    <div class="footer">Generated by Multi‑PDF to Word · ${numPages} page(s)</div>\n</div>\n</body>\n</html>`;
+
+    // Sanity check
+    if (htmlContent.length < 500) {
+        throw new Error("No readable text found – maybe a scanned PDF?");
+    }
+
+    // Create and trigger download
+    const blob = new Blob([htmlContent], { type: 'application/msword' });
+    // generate unique name (original name + maybe index if duplicates)
+    const baseName = file.name.replace(/\.pdf$/i, '').replace(/[\\/*?:"<>|]/g, '_');
+    const fileName = `${baseName}.doc`;
+    
+    // Use FileSaver's saveAs
+    saveAs(blob, fileName);
+
+    // Brief pause to let browser breathe between files
+    await new Promise(r => setTimeout(r, 300));
 }
 
 function readFileAsArrayBuffer(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.onerror = (e) => reject(new Error("Failed to read file: " + e.target.error));
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("File read failed"));
         reader.readAsArrayBuffer(file);
     });
 }
@@ -468,45 +524,33 @@ function escapeHtml(text) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;')
-        .trim();
+        .replace(/'/g, '&#039;');
 }
 
-// Clear file input
-document.getElementById('fileInput').addEventListener('click', function() {
-    this.value = '';
-});
-
-// Drag and drop
-const fileInput = document.getElementById('fileInput');
+// Drag & drop enhancement for the card (optional)
 const card = document.querySelector('.card');
-
-card.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    card.style.border = '2px dashed #764ba2';
-});
-
-card.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    card.style.border = 'none';
-});
-
+card.addEventListener('dragover', (e) => e.preventDefault());
 card.addEventListener('drop', (e) => {
     e.preventDefault();
-    card.style.border = 'none';
-    
     const files = e.dataTransfer.files;
-    if (files.length > 0 && files[0].type === 'application/pdf') {
-        fileInput.files = files;
-    } else {
-        alert('Please drop a PDF file');
+    if (files.length > 0) {
+        // filter only pdf
+        const pdfs = Array.from(files).filter(f => f.type === 'application/pdf');
+        if (pdfs.length === 0) {
+            alert('Please drop PDF files only.');
+            return;
+        }
+        // Create a new FileList-like array by setting input files (limited but we can reassign)
+        // The easiest is to create a DataTransfer to set files
+        const dataTransfer = new DataTransfer();
+        pdfs.forEach(f => dataTransfer.items.add(f));
+        fileInput.files = dataTransfer.files;
+        // trigger change event manually
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
 });
 
-// Log PDF.js version
 console.log("PDF.js version:", pdfjsLib.version);
-console.log("PDF.js worker:", pdfjsLib.GlobalWorkerOptions.workerSrc);
 </script>
-
 </body>
 </html>
