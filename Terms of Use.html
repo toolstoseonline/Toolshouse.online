@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Use - ToolsHouse.online</title>
+
+<style>
+/* ====== CSS START ====== */
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+    color:#333;
+}
+
+header{
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    max-width:900px;
+    margin:30px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#2563eb;
+    margin-top:30px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+    margin-top:20px;
+}
+
+button:hover{
+    background:#1e4ed8;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    margin-top:30px;
+    background:#111;
+    color:white;
+}
+
+.alert{
+    display:none;
+    margin-top:15px;
+    padding:12px;
+    background:#22c55e;
+    color:white;
+    border-radius:6px;
+}
+/* ====== CSS END ====== */
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Terms of Use</h1>
+    <p>Welcome to ToolsHouse.online</p>
+</header>
+
+<div class="container">
+
+    <h2>1. Acceptance of Terms</h2>
+    <p>
+        By accessing and using ToolsHouse.online, you accept and agree to be bound 
+        by the terms and provisions of this agreement.
+    </p>
+
+    <h2>2. Use of Website</h2>
+    <p>
+        You agree to use this website only for lawful purposes. You must not misuse 
+        our services or attempt to access restricted areas.
+    </p>
+
+    <h2>3. Intellectual Property</h2>
+    <p>
+        All content, design, text, graphics, and tools on this website are the 
+        property of ToolsHouse.online and are protected by copyright laws.
+    </p>
+
+    <h2>4. User Responsibility</h2>
+    <p>
+        You are responsible for any activity that occurs under your use of the website.
+        We are not responsible for misuse of our tools.
+    </p>
+
+    <h2>5. Limitation of Liability</h2>
+    <p>
+        We are not liable for any damages or losses resulting from the use of our tools 
+        or services.
+    </p>
+
+    <h2>6. Changes to Terms</h2>
+    <p>
+        We reserve the right to update or modify these Terms at any time without prior notice.
+    </p>
+
+    <h2>7. Contact Information</h2>
+    <p>
+        If you have any questions about these Terms, please contact us through our Contact page.
+    </p>
+
+    <button onclick="acceptTerms()">I Accept Terms</button>
+
+    <div class="alert" id="successMsg">
+        ✅ Thank you for accepting the Terms of Use!
+    </div>
+
+</div>
+
+<footer>
+    © 2026 ToolsHouse.online | All Rights Reserved
+</footer>
+
+<script>
+/* ====== JavaScript START ====== */
+function acceptTerms(){
+    document.getElementById("successMsg").style.display = "block";
+}
+/* ====== JavaScript END ====== */
+</script>
+
+</body>
+</html>
