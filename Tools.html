@@ -3,258 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ToolsHouse Online - All Tools</title>
+<title>www.toolshouse.Online - All Tools</title>
+
+<!-- Google Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <style>
-/* ===== Reset ===== */
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, sans-serif;
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
 }
 
-/* ===== Header ===== */
 header{
-background:#0d6efd;
-color:white;
-padding:15px;
-display:flex;
-align-items:center;
-justify-content:space-between;
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
 }
 
-.logo{
-display:flex;
-align-items:center;
-gap:10px;
-}
-
-.logo img{
-width:40px;
-height:40px;
-}
-
-.logo h1{
-font-size:22px;
-}
-
-/* ===== Search ===== */
-.search-box{
-padding:15px;
-text-align:center;
-background:#f4f4f4;
-}
-
-.search-box input{
-width:90%;
-max-width:400px;
-padding:10px;
-border-radius:5px;
-border:1px solid #ccc;
-}
-
-/* ===== Container ===== */
 .container{
-padding:20px;
-max-width:1000px;
-margin:auto;
+    width:95%;
+    max-width:1200px;
+    margin:auto;
+    padding:20px 0;
 }
 
-/* ===== Category ===== */
 .category{
-margin-bottom:25px;
+    margin-bottom:40px;
 }
 
 .category h2{
-margin-bottom:10px;
-color:#0d6efd;
-border-bottom:2px solid #0d6efd;
-padding-bottom:5px;
+    background:#111827;
+    color:white;
+    padding:10px 15px;
+    border-radius:8px;
 }
 
-/* ===== Tool Item ===== */
-.tool{
-display:flex;
-align-items:center;
-gap:10px;
-padding:10px;
-border-radius:6px;
-transition:0.3s;
-cursor:pointer;
+.tools-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:15px;
+    margin-top:15px;
 }
 
-.tool:hover{
-background:#e9f2ff;
+.tool-card{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    transition:0.3s;
 }
 
-.tool img{
-width:32px;
-height:32px;
+.tool-card:hover{
+    background:#2563eb;
+    color:white;
+    transform:translateY(-4px);
 }
 
-.tool a{
-text-decoration:none;
-color:#333;
-font-weight:bold;
+.tool-card .material-icons{
+    font-size:28px;
+    color:#2563eb;
 }
 
-/* ===== Footer ===== */
+.tool-card:hover .material-icons{
+    color:white;
+}
+
 footer{
-text-align:center;
-padding:15px;
-background:#0d6efd;
-color:white;
-margin-top:20px;
-}
-
-/* ===== Responsive ===== */
-@media(max-width:600px){
-.logo h1{
-font-size:18px;
-}
+    background:#111827;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:40px;
 }
 </style>
 </head>
+
 <body>
 
-<!-- Header -->
 <header>
-<div class="logo">
-<img src="https://cdn-icons-png.flaticon.com/512/906/906175.png">
-<h1>ToolsHouse Online</h1>
-</div>
+Tools House Online – 100+ Professional Online Tools
 </header>
 
-<!-- Search -->
-<div class="search-box">
-<input type="text" id="search" placeholder="Search tools...">
-</div>
-
-<!-- Tools Container -->
-<div class="container" id="toolsList">
+<div class="container">
 
 <!-- Document Tools -->
 <div class="category">
-<h2>📄 Document Tools</h2>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/337/337946.png">
-<a href="Word to PDF Converter.html">Word to PDF Converter</a>
+<h2>📄 Document & File Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><span class="material-icons">picture_as_pdf</span>Word to PDF Converter</div>
+<div class="tool-card"><span class="material-icons">description</span>PDF to Word Converter</div>
+<div class="tool-card"><span class="material-icons">merge_type</span>PDF Merger</div>
+<div class="tool-card"><span class="material-icons">call_split</span>PDF Splitter</div>
+<div class="tool-card"><span class="material-icons">compress</span>PDF Compressor</div>
+<div class="tool-card"><span class="material-icons">archive</span>File Compressor</div>
+<div class="tool-card"><span class="material-icons">file_open</span>File Splitter</div>
+<div class="tool-card"><span class="material-icons">swap_horiz</span>File Converter</div>
+<div class="tool-card"><span class="material-icons">grid_on</span>Excel to PDF</div>
 </div>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/337/337946.png">
-<a href="#">PDF to Word Converter</a>
-</div>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/337/337946.png">
-<a href="#">PDF Merger</a>
-</div>
-
 </div>
 
 <!-- Image Tools -->
 <div class="category">
-<h2>🖼 Image Tools</h2>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/2919/2919592.png">
-<a href="#">Image Converter</a>
+<h2>🖼 Photo / Image Editing Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><span class="material-icons">image</span>Image Converter</div>
+<div class="tool-card"><span class="material-icons">photo_library</span>Collage Maker</div>
+<div class="tool-card"><span class="material-icons">aspect_ratio</span>Image Resizer</div>
+<div class="tool-card"><span class="material-icons">filter</span>Filter & Effects</div>
+<div class="tool-card"><span class="material-icons">brush</span>Photo Retouch</div>
+<div class="tool-card"><span class="material-icons">auto_fix_high</span>Image Enhancer</div>
+<div class="tool-card"><span class="material-icons">sentiment_satisfied</span>Meme Generator</div>
 </div>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/1829/1829586.png">
-<a href="#">Image Compressor</a>
-</div>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/4202/4202843.png">
-<a href="#">Background Remover</a>
-</div>
-
 </div>
 
 <!-- Video Tools -->
 <div class="category">
-<h2>🎬 Video Tools</h2>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/2991/2991108.png">
-<a href="#">Video Converter</a>
+<h2>🎬 Video Editing Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><span class="material-icons">content_cut</span>Video Trimmer</div>
+<div class="tool-card"><span class="material-icons">speed</span>Speed Controller</div>
+<div class="tool-card"><span class="material-icons">subtitles</span>Subtitle Adder</div>
+<div class="tool-card"><span class="material-icons">video_settings</span>Video Compressor</div>
+<div class="tool-card"><span class="material-icons">replay</span>Video Reverser</div>
+<div class="tool-card"><span class="material-icons">rotate_right</span>Video Rotator</div>
 </div>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/2991/2991108.png">
-<a href="#">Video Compressor</a>
-</div>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/2991/2991108.png">
-<a href="#">Video Rotator</a>
-</div>
-
 </div>
 
 <!-- Audio Tools -->
 <div class="category">
 <h2>🎵 Audio Tools</h2>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/727/727269.png">
-<a href="#">MP3 Converter</a>
+<div class="tools-grid">
+<div class="tool-card"><span class="material-icons">content_cut</span>Audio Cutter</div>
+<div class="tool-card"><span class="material-icons">queue_music</span>Audio Merger</div>
+<div class="tool-card"><span class="material-icons">audiotrack</span>MP3 Converter</div>
+<div class="tool-card"><span class="material-icons">mic</span>Voice Recorder</div>
 </div>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/727/727269.png">
-<a href="#">Audio Cutter</a>
-</div>
-
 </div>
 
 <!-- Calculator Tools -->
 <div class="category">
-<h2>🧮 Calculator Tools</h2>
-
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/891/891175.png">
-<a href="#">Age Calculator</a>
+<h2>🧮 Calculator & Financial</h2>
+<div class="tools-grid">
+<div class="tool-card"><span class="material-icons">calculate</span>GST Calculator</div>
+<div class="tool-card"><span class="material-icons">currency_exchange</span>Currency Converter</div>
+<div class="tool-card"><span class="material-icons">account_balance</span>Loan Calculator</div>
+<div class="tool-card"><span class="material-icons">cake</span>Age Calculator</div>
+<div class="tool-card"><span class="material-icons">trending_up</span>Compound Interest</div>
+</div>
 </div>
 
-<div class="tool">
-<img src="https://cdn-icons-png.flaticon.com/512/891/891175.png">
-<a href="#">BMI Calculator</a>
+<!-- AI Tools -->
+<div class="category">
+<h2>🤖 AI Video & Dev Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><span class="material-icons">record_voice_over</span>AI Voiceover</div>
+<div class="tool-card"><span class="material-icons">lock</span>Password Generator</div>
+<div class="tool-card"><span class="material-icons">qr_code</span>QR Generator</div>
+</div>
 </div>
 
 </div>
 
-</div>
-
-<!-- Footer -->
 <footer>
-© 2026 ToolsHouse Online - All Rights Reserved
+© 2026 Tools House Online | All Rights Reserved
 </footer>
 
-<!-- JavaScript Search -->
 <script>
-const search = document.getElementById("search");
-search.addEventListener("keyup", function() {
-
-let filter = search.value.toLowerCase();
-let tools = document.querySelectorAll(".tool");
-
-tools.forEach(tool => {
-
-let text = tool.innerText.toLowerCase();
-
-if(text.includes(filter))
-tool.style.display = "flex";
-else
-tool.style.display = "none";
-
-});
-
+// Optional Click Alert (You can replace with page links)
+document.querySelectorAll(".tool-card").forEach(card=>{
+    card.addEventListener("click",()=>{
+        alert("Tool page coming soon!");
+    });
 });
 </script>
 
