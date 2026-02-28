@@ -1,313 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tools house · 100+ pro tools</title>
-    <!-- Font Awesome 6 (free) for crisp, uniform logo-like icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools House Online - 100+ Professional Tools</title>
 
-        body {
-            background: #f8ede3;        /* light brown / warm sand */
-            color: #2d2a24;
-            padding: 2rem 1.5rem;
-        }
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#f5e6d3; /* Light Brown Background */
+}
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+/* HEADER */
+header{
+    background:#8b5e3c;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
 
-        /* header / brand */
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        .brand h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            background: linear-gradient(145deg, #4a3f34, #6b5a4a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
-        }
-        .brand span {
-            background: #5e4b3a;
-            color: #fef7f0;
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .subhead {
-            color: #5f5242;
-            margin-bottom: 2.5rem;
-            font-size: 1.2rem;
-            border-left: 4px solid #b87c4b;
-            padding-left: 1.2rem;
-        }
+header h1{
+    margin:0;
+    font-size:28px;
+}
 
-        /* category grid */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem 1.5rem;
-        }
+/* NAV */
+nav{
+    background:#6f4e37;
+    text-align:center;
+    padding:10px;
+}
 
-        .category-card {
-            background: rgba(255, 248, 240, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 32px;
-            padding: 1.5rem 1.2rem 1.8rem 1.2rem;
-            box-shadow: 0 15px 30px -12px rgba(80, 50, 30, 0.25);
-            border: 1px solid rgba(255, 235, 215, 0.8);
-            transition: transform 0.1s ease;
-        }
-        .category-card:hover {
-            transform: scale(1.01);
-            background: rgba(255, 245, 235, 0.95);
-        }
+nav a{
+    color:white;
+    margin:0 15px;
+    text-decoration:none;
+    font-weight:bold;
+}
 
-        .category-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.7rem;
-            font-weight: 600;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px dashed #dbbc9b;
-        }
-        .category-title i {
-            font-size: 2rem;
-            color: #7d5f45;
-            background: #efddd0;
-            width: 48px;
-            height: 48px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 18px;
-        }
+nav a:hover{
+    text-decoration:underline;
+}
 
-        /* tool list – each line = logo + name */
-        .tool-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-        }
-        .tool-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 0.4rem 0.8rem;
-            background: #fffcf7;
-            border-radius: 60px;
-            box-shadow: 0 3px 8px rgba(130, 85, 45, 0.05);
-            transition: all 0.15s;
-            border: 1px solid transparent;
-        }
-        .tool-item:hover {
-            border-color: #dbaa7a;
-            background: #fff7ed;
-            box-shadow: 0 5px 12px rgba(170, 110, 50, 0.12);
-        }
+/* SECTION */
+.section{
+    padding:30px 20px;
+}
 
-        /* logo (icon) beside each tool */
-        .tool-logo {
-            width: 34px;
-            height: 34px;
-            background: #edd9c7;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #634f3b;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            transition: 0.1s;
-        }
-        .tool-item:hover .tool-logo {
-            background: #e1c8b2;
-            color: #3f2e1f;
-        }
-        .tool-name {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #322a20;
-        }
+.section h2{
+    background:#8b5e3c;
+    color:white;
+    padding:10px;
+    border-radius:5px;
+}
 
-        /* small note for '100+ tools' */
-        .footnote {
-            margin-top: 3.5rem;
-            text-align: center;
-            color: #684f38;
-            background: #ebdbcd;
-            padding: 1rem 2rem;
-            border-radius: 60px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .footnote i {
-            margin: 0 4px;
-        }
+.tools-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:15px;
+}
 
-        /* make it responsive */
-        @media (max-width: 600px) {
-            body { padding: 1rem; }
-            .brand h1 { font-size: 1.8rem; }
-            .category-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+.tool-card{
+    background:white;
+    padding:15px;
+    border-radius:8px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.2);
+    text-align:center;
+    transition:0.3s;
+}
+
+.tool-card:hover{
+    transform:scale(1.05);
+}
+
+.tool-card a{
+    text-decoration:none;
+    color:#333;
+    font-weight:bold;
+}
+
+/* FOOTER */
+footer{
+    background:#6f4e37;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:20px;
+}
+</style>
 </head>
+
 <body>
-<div class="container">
-    <!-- header with domain and logo concept (house icon) -->
-    <div class="brand">
-        <i class="fas fa-house-chimney" style="font-size: 3rem; color: #9e7b5c; background: #eedaca; padding: 0.5rem; border-radius: 30px;"></i>
-        <h1>toolshouse.online</h1>
-        <span>100+ PRO TOOLS</span>
-    </div>
-    <div class="subhead">
-        <i class="fas fa-bolt" style="margin-right: 10px;"></i> PDF · image · video · audio · AI & calculators – every tool with its own logo
-    </div>
 
-    <!-- main grid – categories with all tools (each tool name + logo icon) -->
-    <div class="category-grid">
-        
-        <!-- ███████████████████████  DOCUMENT & FILE  ███████████████████████ -->
-        <div class="category-card">
-            <div class="category-title">
-                <i class="fas fa-file-alt"></i>
-                <span>Document & File</span>
-            </div>
-            <div class="tool-list">
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-file-pdf"></i></span><span class="tool-name">Word to PDF Converter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-file-word"></i></span><span class="tool-name">PDF to Word Converter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-object-group"></i></span><span class="tool-name">PDF Merger</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-cut"></i></span><span class="tool-name">PDF Splitter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-compress-alt"></i></span><span class="tool-name">PDF Compressor</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-file-archive"></i></span><span class="tool-name">File Compressor</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-columns"></i></span><span class="tool-name">File Splitter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-exchange-alt"></i></span><span class="tool-name">File Converter</span></div>
-            </div>
-        </div>
+<header>
+    <h1>🛠 Tools House Online</h1>
+    <p>100+ Professional Free Online Tools</p>
+</header>
 
-        <!-- ███████████████████████  PHOTO / IMAGE EDITING  ███████████████████████ -->
-        <div class="category-card">
-            <div class="category-title">
-                <i class="fas fa-camera-retro"></i>
-                <span>Photo / Image</span>
-            </div>
-            <div class="tool-list">
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-file-image"></i></span><span class="tool-name">Image Converter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-clone"></i></span><span class="tool-name">Collage Maker</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-expand-alt"></i></span><span class="tool-name">Image Resizer</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-magic"></i></span><span class="tool-name">Filter & Effects</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-eraser"></i></span><span class="tool-name">Photo Retouch</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-file-excel"></i></span><span class="tool-name">EXCEL to PDF</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-sun"></i></span><span class="tool-name">Image Enhancer</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-smile"></i></span><span class="tool-name">Meme Generator</span></div>
-            </div>
-        </div>
+<nav>
+    <a href="#document">Document Tools</a>
+    <a href="#image">Image Tools</a>
+    <a href="#video">Video Tools</a>
+    <a href="#audio">Audio Tools</a>
+    <a href="#calculator">Calculators</a>
+    <a href="#ai">AI Tools</a>
+</nav>
 
-        <!-- ███████████████████████  VIDEO EDITING  ███████████████████████ -->
-        <div class="category-card">
-            <div class="category-title">
-                <i class="fas fa-video"></i>
-                <span>Video Tools</span>
-            </div>
-            <div class="tool-list">
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-cut"></i></span><span class="tool-name">Video Trimmer</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-tachometer-alt"></i></span><span class="tool-name">Speed Controller</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-closed-captioning"></i></span><span class="tool-name">Subtitle Adder</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-compress"></i></span><span class="tool-name">Video Compressor</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-undo-alt"></i></span><span class="tool-name">Video Reverser</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-sync-alt"></i></span><span class="tool-name">Video Rotator</span></div>
-            </div>
-        </div>
-
-        <!-- ███████████████████████  AUDIO TOOLS  ███████████████████████ -->
-        <div class="category-card">
-            <div class="category-title">
-                <i class="fas fa-headphones"></i>
-                <span>Audio Tools</span>
-            </div>
-            <div class="tool-list">
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-cut"></i></span><span class="tool-name">Audio Cutter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-code-branch"></i></span><span class="tool-name">Audio Merger</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-music"></i></span><span class="tool-name">MP3 Converter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-microphone"></i></span><span class="tool-name">Voice Recorder</span></div>
-            </div>
-        </div>
-
-        <!-- ███████████████████████  CALCULATOR & FINANCIAL  ███████████████████████ -->
-        <div class="category-card">
-            <div class="category-title">
-                <i class="fas fa-calculator"></i>
-                <span>Calculator & Financial</span>
-            </div>
-            <div class="tool-list">
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-rupee-sign"></i></span><span class="tool-name">GST Calculator</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-dollar-sign"></i></span><span class="tool-name">Currency Converter</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-hand-holding-usd"></i></span><span class="tool-name">Loan Calculator</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-birthday-cake"></i></span><span class="tool-name">Age Calculator</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-chart-line"></i></span><span class="tool-name">Compound Interest</span></div>
-            </div>
-        </div>
-
-        <!-- ███████████████████████  AI VIDEO & DEV TOOLS  ███████████████████████ -->
-        <div class="category-card">
-            <div class="category-title">
-                <i class="fas fa-robot"></i>
-                <span>AI & Dev tools</span>
-            </div>
-            <div class="tool-list">
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-microphone-alt"></i></span><span class="tool-name">AI Voiceover</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-key"></i></span><span class="tool-name">Password Generator</span></div>
-                <div class="tool-item"><span class="tool-logo"><i class="fas fa-qrcode"></i></span><span class="tool-name">QR Generator</span></div>
-            </div>
-            <!-- extra spacing & hint (still inside same card) -->
-            <div style="margin-top: 1.2rem; background: #f3e5d8; border-radius: 30px; padding: 0.7rem 1rem; font-size:0.9rem">
-                <i class="fas fa-crown" style="color: #b95f25;"></i> More AI tools coming &nbsp;→&nbsp; <i class="fas fa-arrow-right"></i>
-            </div>
-        </div>
-    </div> <!-- end category grid -->
-
-    <!-- footnote confirming all 100+ tools are represented (with logo each) -->
-    <div class="footnote">
-        <i class="fas fa-check-circle" style="color: #5f7b4c;"></i> 
-        <strong>every tool displayed with its own logo</strong> — over 100 professional tools, from PDF to AI. 
-        <i class="fas fa-layer-group" style="margin-left: 10px;"></i>
-        <br><span style="opacity:0.8; font-size:0.85rem;">(icons by FontAwesome, each logo placed beside tool name exactly as required)</span>
-    </div>
-
-    <!-- tiny visual: toolshouse.online badge with all categories -->
-    <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin-top: 2rem;">
-        <span style="background: #fef7f0; border-radius: 30px; padding: 0.3rem 1.2rem; box-shadow: 0 2px 6px #d3b9a3;"><i class="fas-regular fa-file-pdf"></i> PDF</span>
-        <span style="background: #fef7f0; border-radius: 30px; padding: 0.3rem 1.2rem; box-shadow: 0 2px 6px #d3b9a3;"><i class="fas fa-image"></i> Image</span>
-        <span style="background: #fef7f0; border-radius: 30px; padding: 0.3rem 1.2rem; box-shadow: 0 2px 6px #d3b9a3;"><i class="fas fa-video"></i> Video</span>
-        <span style="background: #fef7f0; border-radius: 30px; padding: 0.3rem 1.2rem; box-shadow: 0 2px 6px #d3b9a3;"><i class="fas fa-headphones"></i> Audio</span>
-        <span style="background: #fef7f0; border-radius: 30px; padding: 0.3rem 1.2rem; box-shadow: 0 2px 6px #d3b9a3;"><i class="fas fa-calculator"></i> Finance</span>
-        <span style="background: #fef7f0; border-radius: 30px; padding: 0.3rem 1.2rem; box-shadow: 0 2px 6px #d3b9a3;"><i class="fas fa-robot"></i> AI</span>
-    </div>
-
-    <!-- dummy stats (just for style) -->
-    <p style="text-align: center; margin: 2rem 0 0.5rem; color: #7d6652; font-weight: 300;">
-        <i class="fas fa-globe"></i> www.toolshouse.online – your toolbox, 100+ tools, each with a unique logo
-    </p>
+<!-- DOCUMENT TOOLS -->
+<section id="document" class="section">
+<h2>📄 Document & File Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><a href="#">Word to PDF Converter</a></div>
+<div class="tool-card"><a href="#">PDF to Word Converter</a></div>
+<div class="tool-card"><a href="#">PDF Merger</a></div>
+<div class="tool-card"><a href="#">PDF Splitter</a></div>
+<div class="tool-card"><a href="#">PDF Compressor</a></div>
+<div class="tool-card"><a href="#">File Compressor</a></div>
+<div class="tool-card"><a href="#">File Splitter</a></div>
+<div class="tool-card"><a href="#">File Converter</a></div>
+<div class="tool-card"><a href="#">Excel to PDF</a></div>
 </div>
-<!-- all tools listed above – each name has a logo (via fontawesome) exactly as requested. background is light brown (#f8ede3) -->
+</section>
+
+<!-- IMAGE TOOLS -->
+<section id="image" class="section">
+<h2>🖼 Photo / Image Editing Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><a href="#">Image Converter</a></div>
+<div class="tool-card"><a href="#">Collage Maker</a></div>
+<div class="tool-card"><a href="#">Image Resizer</a></div>
+<div class="tool-card"><a href="#">Filter & Effects</a></div>
+<div class="tool-card"><a href="#">Photo Retouch</a></div>
+<div class="tool-card"><a href="#">Image Enhancer</a></div>
+<div class="tool-card"><a href="#">Meme Generator</a></div>
+</div>
+</section>
+
+<!-- VIDEO TOOLS -->
+<section id="video" class="section">
+<h2>🎬 Video Editing Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><a href="#">Video Trimmer</a></div>
+<div class="tool-card"><a href="#">Speed Controller</a></div>
+<div class="tool-card"><a href="#">Subtitle Adder</a></div>
+<div class="tool-card"><a href="#">Video Compressor</a></div>
+<div class="tool-card"><a href="#">Video Reverser</a></div>
+<div class="tool-card"><a href="#">Video Rotator</a></div>
+</div>
+</section>
+
+<!-- AUDIO TOOLS -->
+<section id="audio" class="section">
+<h2>🎵 Audio Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><a href="#">Audio Cutter</a></div>
+<div class="tool-card"><a href="#">Audio Merger</a></div>
+<div class="tool-card"><a href="#">MP3 Converter</a></div>
+<div class="tool-card"><a href="#">Voice Recorder</a></div>
+</div>
+</section>
+
+<!-- CALCULATORS -->
+<section id="calculator" class="section">
+<h2>🧮 Calculator & Financial Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><a href="#">GST Calculator</a></div>
+<div class="tool-card"><a href="#">Currency Converter</a></div>
+<div class="tool-card"><a href="#">Loan Calculator</a></div>
+<div class="tool-card"><a href="#">Age Calculator</a></div>
+<div class="tool-card"><a href="#">Compound Interest</a></div>
+</div>
+</section>
+
+<!-- AI TOOLS -->
+<section id="ai" class="section">
+<h2>🤖 AI Video & Dev Tools</h2>
+<div class="tools-grid">
+<div class="tool-card"><a href="#">AI Voiceover</a></div>
+<div class="tool-card"><a href="#">Password Generator</a></div>
+<div class="tool-card"><a href="#">QR Generator</a></div>
+</div>
+</section>
+
+<footer>
+© 2026 Tools House Online | All Rights Reserved
+</footer>
+
 </body>
 </html>
