@@ -1,498 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camp Scanner</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camp Scanner - Camera Document Scanner</title>
 
-        body {
-            background: linear-gradient(135deg, #4b6cb7, #182848);
-            color: white;
-            min-height: 100vh;
-            padding: 1rem;
-        }
+<style>
+body{
+font-family: Arial, sans-serif;
+margin:0;
+background:#f4f7fb;
+color:#333;
+}
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
+header{
+background:linear-gradient(90deg,#007bff,#00c6ff);
+color:white;
+padding:20px;
+text-align:center;
+}
 
-        header {
-            text-align: center;
-            padding: 1rem;
-        }
+header h1{
+margin:0;
+font-size:28px;
+}
 
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
 
-        .app-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
+.card{
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
 
-        button {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
+button{
+background:#007bff;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+margin-top:10px;
+}
 
-        button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
+button:hover{
+background:#0056b3;
+}
 
-        .camera-section {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4/3;
-            margin: 1rem 0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
+video, canvas{
+width:100%;
+border-radius:10px;
+margin-top:10px;
+}
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+}
 
-        .controls {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-        }
+.feature-box{
+background:#eef4ff;
+padding:15px;
+border-radius:8px;
+}
 
-        .control-group {
-            margin-bottom: 1rem;
-        }
+footer{
+text-align:center;
+padding:15px;
+background:#007bff;
+color:white;
+}
+</style>
 
-        .control-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        select, input[type="checkbox"] {
-            width: 100%;
-            padding: 0.5rem;
-            border-radius: 8px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .results {
-            display: none;
-            text-align: center;
-            margin: 1rem 0;
-        }
-
-        .results.active {
-            display: block;
-        }
-
-        img {
-            max-width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .status-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 0.5rem;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .progress {
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: #555;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: #4b6cb7;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .app-controls {
-                flex-direction: column;
-            }
-            
-            .actions {
-                flex-direction: column;
-            }
-            
-            button {
-                width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>ScanCamp</h1>
-            <p>Scan documents directly from your camera</p>
-        </header>
 
-        <div class="camera-section">
-            <video id="cameraVideo"></video>
-        </div>
+<header>
+<h1>📄 Camp Scanner</h1>
+<p>Powerful Camera Scanner App for Fast Document Scanning & PDF Conversion</p>
+</header>
 
-        <div class="app-controls">
-            <button id="scanBtn">Start Scanning</button>
-            <button id="editBtn">Edit</button>
-            <button id="cloudBtn">Cloud Save</button>
-            <button id="shareBtn">Share</button>
-        </div>
+<div class="container">
 
-        <div class="controls">
-            <div class="control-group">
-                <label for="docDetection">Document Detection</label>
-                <input type="checkbox" id="docDetection" checked>
-            </div>
-            
-            <div class="control-group">
-                <label for="editOption">Editing Options</label>
-                <select id="editOption">
-                    <option value="crop">Crop</option>
-                    <option value="rotate">Rotate</option>
-                    <option value="annotate">Annotate</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label for="cloudService">Cloud Service</label>
-                <select id="cloudService">
-                    <option value="google">Google Drive</option>
-                    <option value="dropbox">Dropbox</option>
-                </select>
-            </div>
-        </div>
+<div class="card">
+<h2>📢 App Promotion</h2>
 
-        <div class="results" id="results">
-            <img id="scannedImage" src="" alt="Scanned document">
-            <div class="actions">
-                <button id="pdfBtn">Save as PDF</button>
-                <button id="editResultBtn">Edit</button>
-                <button id="shareResultBtn">Share</button>
-            </div>
-        </div>
-    </div>
+<p>
+Camp Scanner is a powerful and user-friendly mobile document scanning app designed to turn your smartphone into a portable scanner. Easily scan documents using your camera, automatically detect edges, and convert files into high-quality PDFs. With advanced editing tools, cloud storage support, and instant sharing options, Camp Scanner makes document management fast, secure, and convenient for students, professionals, and businesses.
+</p>
 
-    <div class="status-bar">
-        <div id="statusText">Ready to scan</div>
-        <div class="progress">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-    </div>
+</div>
 
-    <script>
-        // Global variables
-        let scanner = null;
-        let documents = [];
+<div class="card">
+<h2>🎯 Key Features</h2>
 
-        // DOM Elements
-        const cameraVideo = document.getElementById('cameraVideo');
-        const scanBtn = document.getElementById('scanBtn');
-        const editBtn = document.getElementById('editBtn');
-        const cloudBtn = document.getElementById('cloudBtn');
-        const shareBtn = document.getElementById('shareBtn');
-        const docDetection = document.getElementById('docDetection');
-        const editOption = document.getElementById('editOption');
-        const cloudService = document.getElementById('cloudService');
-        const results = document.getElementById('results');
-        const scannedImage = document.getElementById('scannedImage');
-        const pdfBtn = document.getElementById('pdfBtn');
-        const editResultBtn = document.getElementById('editResultBtn');
-        const shareResultBtn = document.getElementById('shareResultBtn');
-        const statusText = document.getElementById('statusText');
-        const progressBar = document.getElementById('progressBar');
+<div class="features">
 
-        // Initialize the app
-        window.onload = function() {
-            scanner = new DocumentScanner();
-            updateUI();
-        };
+<div class="feature-box">📷 Camera Access – Scan documents using your camera</div>
+<div class="feature-box">📄 Auto Document Detection</div>
+<div class="feature-box">📑 Convert Images to PDF</div>
+<div class="feature-box">✏ Edit, Crop, Rotate & Annotate</div>
+<div class="feature-box">☁ Save to Google Drive, Dropbox</div>
+<div class="feature-box">📤 Share via Email & Social Media</div>
+<div class="feature-box">📚 Multi-Page Scanning</div>
+<div class="feature-box">✂ Auto-Crop Documents</div>
 
-        // Document Scanner Class
-        class DocumentScanner {
-            constructor() {
-                this.isScanning = false;
-                this.documentDetection = true;
-                this.currentDocument = null;
-                this.initCamera();
-                this.setupEventListeners();
-            }
+</div>
 
-            async initCamera() {
-                try {
-                    const constraints = {
-                        video: {
-                            facingMode: 'environment',
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 }
-                        },
-                        audio: false
-                    };
+</div>
 
-                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                    cameraVideo.srcObject = stream;
-                    
-                } catch (err) {
-                    console.error('Camera error:', err);
-                    setStatus('Camera access denied', 'error');
-                }
-            }
+<div class="card">
 
-            setupEventListeners() {
-                scanBtn.addEventListener('click', () => this.toggleScanning());
-                editBtn.addEventListener('click', () => this.editDocument());
-                cloudBtn.addEventListener('click', () => this.saveToCloud());
-                shareBtn.addEventListener('click', () => this.shareDocuments());
-                
-                docDetection.addEventListener('change', (e) => {
-                    this.documentDetection = e.target.checked;
-                    if (this.isScanning) {
-                        this.startScanning();
-                    }
-                });
-                
-                editOption.addEventListener('change', (e) => this.applyEditing(e.target.value));
-                cloudService.addEventListener('change', (e) => this.cloudService = e.target.value);
-                
-                pdfBtn.addEventListener('click', () => this.saveAsPDF());
-                editResultBtn.addEventListener('click', () => this.editDocument());
-                shareResultBtn.addEventListener('click', () => this.shareDocuments());
-            }
+<h2>📷 Camera Scanner</h2>
 
-            toggleScanning() {
-                this.isScanning = !this.isScanning;
-                scanBtn.textContent = this.isScanning ? 'Stop Scanning' : 'Start Scanning';
-                scanBtn.style.background = this.isScanning ? '#ff6b6b' : '';
-                
-                if (this.isScanning) {
-                    this.startScanning();
-                } else {
-                    this.stopScanning();
-                }
-            }
+<button onclick="startCamera()">Open Camera</button>
+<button onclick="capture()">Scan Document</button>
+<button onclick="download()">Download Image</button>
 
-            startScanning() {
-                setStatus('Scanning documents...', 'active');
-                
-                if (this.documentDetection) {
-                    this.detectDocuments();
-                } else {
-                    // Manual scanning mode
-                    this.manualScan();
-                }
-            }
+<video id="video" autoplay></video>
+<canvas id="canvas"></canvas>
 
-            detectDocuments() {
-                // Simulate document detection
-                const interval = setInterval(() => {
-                    if (this.isScanning) {
-                        this.captureDocument();
-                    } else {
-                        clearInterval(interval);
-                    }
-                }, 1000);
-            }
+</div>
 
-            manualScan() {
-                // Simulate manual scanning
-                document.addEventListener('keydown', (e) => {
-                    if (e.code === 'Space') {
-                        this.captureDocument();
-                    }
-                });
-            }
+</div>
 
-            captureDocument() {
-                // In a real app, we would capture from the video element
-                // For demo purposes, we'll just create a placeholder image
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = 640;
-                canvas.height = 480;
-                
-                // Draw placeholder document
-                ctx.fillStyle = '#f0f0f0';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.strokeStyle = '#4b6cb7';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
-                
-                // Add text
-                ctx.fillStyle = '#333';
-                ctx.font = 'bold 24px Arial';
-                ctx.fillText('Sample Document', 100, 100);
-                
-                // Add timestamp
-                const date = new Date();
-                ctx.font = '16px Arial';
-                ctx.fillText(`Scanned: ${date.toLocaleTimeString()}`, 100, 140);
-                
-                const imageData = canvas.toDataURL('image/jpeg', 0.9);
-                
-                // Process the image
-                this.processImage(imageData);
-            }
+<footer>
+© 2026 Camp Scanner App | Fast • Secure • Professional
+</footer>
 
-            processImage(imageData) {
-                // Create document object
-                const document = {
-                    id: Date.now(),
-                    image: imageData,
-                    timestamp: new Date(),
-                    annotations: []
-                };
-                
-                // Add to documents array
-                documents.push(document);
-                this.currentDocument = document;
-                
-                // Update UI
-                this.updateResults();
-                setStatus(`Captured document ${documents.length}`, 'success');
-            }
+<script>
 
-            updateResults() {
-                if (documents.length > 0) {
-                    results.classList.add('active');
-                    scannedImage.src = documents[0].image;
-                } else {
-                    results.classList.remove('active');
-                }
-            }
+let video = document.getElementById("video");
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext("2d");
 
-            applyEditing(option) {
-                if (!this.currentDocument) {
-                    setStatus('No document to edit', 'warning');
-                    return;
-                }
-                
-                // In a real app, we would apply the selected editing operation
-                setStatus(`Applying ${option}...`, 'active');
-                
-                setTimeout(() => {
-                    setStatus(`Applied ${option} successfully`, 'success');
-                }, 1000);
-            }
+function startCamera(){
 
-            saveToCloud() {
-                if (documents.length === 0) {
-                    setStatus('No documents to save', 'warning');
-                    return;
-                }
-                
-                setStatus(`Saving to ${cloudService.value}...`, 'active');
-                
-                // Simulate cloud saving
-                setTimeout(() => {
-                    setStatus(`Saved to ${cloudService.value} successfully`, 'success');
-                }, 2000);
-            }
+navigator.mediaDevices.getUserMedia({video:true})
+.then(stream=>{
+video.srcObject = stream;
+})
+.catch(err=>{
+alert("Camera access denied or not supported");
+});
 
-            shareDocuments() {
-                if (documents.length === 0) {
-                    setStatus('No documents to share', 'warning');
-                    return;
-                }
-                
-                setStatus('Preparing share options...', 'active');
-                
-                // In a real app, we would implement sharing options
-                setTimeout(() => {
-                    setStatus('Choose sharing method', 'info');
-                }, 1000);
-            }
+}
 
-            editDocument() {
-                if (documents.length === 0) {
-                    setStatus('No documents to edit', 'warning');
-                    return;
-                }
-                
-                setStatus('Opening editor...', 'active');
-                
-                // In a real app, we would open an editing interface
-                setTimeout(() => {
-                    setStatus('Document ready for editing', 'success');
-                }, 1000);
-            }
+function capture(){
 
-            saveAsPDF() {
-                if (documents.length === 0) {
-                    setStatus('No documents to save', 'warning');
-                    return;
-                }
-                
-                setStatus('Converting to PDF...', 'active');
-                
-                // Simulate PDF conversion
-                setTimeout(() => {
-                    setStatus('PDF saved successfully', 'success');
-                }, 1500);
-            }
-        }
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
 
-        // Utility functions
-        function setStatus(message, type) {
-            statusText.textContent = message;
-            progressBar.style.width = type === 'active' ? '70%' : '100%';
-            
-            // Reset progress bar after animation
-            if (type === 'success' || type === 'error') {
-                setTimeout(() => {
-                    progressBar.style.width = '0%';
-                }, 2000);
-            }
-        }
+context.drawImage(video,0,0);
 
-        function updateUI() {
-            // Update UI based on current state
-            const isScanning = document.querySelector('.app-controls button').textContent === 'Stop Scanning';
-            document.querySelector('.controls').style.display = isScanning ? 'block' : 'none';
-        }
-    </script>
+}
+
+function download(){
+
+let link = document.createElement('a');
+link.download = "camp-scanner-document.png";
+link.href = canvas.toDataURL();
+link.click();
+
+}
+
+</script>
+
 </body>
 </html>
