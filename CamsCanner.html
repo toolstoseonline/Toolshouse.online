@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>toolshouse.online Camscanner</title>
+    <title>Camp Scanner - Document Scanner</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -529,7 +529,7 @@
         <header class="app-header">
             <div class="logo">
                 <i class="fas fa-campground"></i>
-                <h1>Cam Scanner</h1>
+                <h1>Camp Scanner</h1>
             </div>
             <p class="tagline">Scan documents with ease</p>
         </header>
@@ -750,30 +750,12 @@
                             </button>
                         </div>
                     </div>
-                                          
+                    
                     <div class="save-options">
                         <h3>Quick Actions</h3>
                         <div class="option-grid">
-                            <button id="smart-scan-btn" class="save-option" onclick="window.scanner.startSmartScan()">
-                                <i class="fas fa-magic"></i><span>Smart Scan</span>
-                            </button>
                             <button id="pdf-edit-btn" class="save-option" onclick="window.scanner.openPDFEditor()">
                                 <i class="fas fa-edit"></i><span>Edit PDF</span>
-                            </button>
-                            <button id="export-png-quick" class="save-option" onclick="window.scanner.exportAsPNG()">
-                                <i class="fas fa-image"></i><span>Export PNG</span>
-                            </button>
-                            <button id="export-word-quick" class="save-option" onclick="window.scanner.exportAsWord()">
-                                <i class="fas fa-file-word"></i><span>Export Word</span>
-                            </button>
-                            <button id="export-txt-quick" class="save-option" onclick="window.scanner.exportAsTXT()">
-                                <i class="fas fa-file-alt"></i><span>Export TXT</span>
-                            </button>
-                            <button id="export-zip-quick" class="save-option" onclick="window.scanner.exportAsZIPQuick()">
-                                <i class="fas fa-file-archive"></i><span>Export ZIP</span>
-                            </button>
-                            <button id="ocr-quick-btn" class="save-option" onclick="window.scanner.performOCR()">
-                                <i class="fas fa-font"></i><span>OCR Text</span>
                             </button>
                             <button id="security-settings-btn" class="save-option" onclick="window.scanner.openSecuritySettings()">
                                 <i class="fas fa-shield-alt"></i><span>Security</span>
@@ -785,12 +767,23 @@
                             <button id="share-native-btn" class="save-option" onclick="window.scanner.shareNative()"><i class="fas fa-share"></i><span>Share</span></button>
                         </div>
                     </div>
-                    
+                    <div class="save-options">
+                        <h3>Tools</h3>
+                        <div class="option-grid">
+                            <button id="ocr-btn" class="save-option"><i class="fas fa-font"></i><span>Extract Text (OCR)</span></button>
+                            <button id="signature-btn" class="save-option"><i class="fas fa-signature"></i><span>Add Signature</span></button>
+                            <button id="watermark-btn" class="save-option"><i class="fas fa-stamp"></i><span>Watermark</span></button>
+                            <button id="password-btn" class="save-option"><i class="fas fa-lock"></i><span>Password</span></button>
+                            <button id="enhance-btn" class="save-option"><i class="fas fa-wand-magic-sparkles"></i><span>Enhance Doc</span></button>
+                            <button id="merge-btn" class="save-option"><i class="fas fa-object-group"></i><span>Merge PDFs</span></button>
+                        </div>
+                    </div>
                     <div class="save-options">
                         <h3>Save & Share</h3>
                         <div class="option-grid">
                             <button id="download-pdf-btn" class="save-option"><i class="fas fa-file-pdf"></i><span>Download PDF</span></button>
                             <button id="save-docs-btn" class="save-option"><i class="fas fa-save"></i><span>Save to My Docs</span></button>
+                            <button id="save-drive-btn" class="save-option"><i class="fab fa-google-drive"></i><span>Google Drive</span></button>
                             <button id="save-dropbox-btn" class="save-option"><i class="fab fa-dropbox"></i><span>Dropbox</span></button>
                             <button id="share-email-btn" class="save-option"><i class="fas fa-envelope"></i><span>Email</span></button>
                             <button id="share-whatsapp-btn" class="save-option"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></button>
@@ -803,7 +796,9 @@
         </main>
 
         <nav class="bottom-nav" id="bottom-nav" style="display: none;">
+            <button class="nav-btn" data-screen="welcome-screen"><i class="fas fa-home"></i><span>Home</span></button>
             <button class="nav-btn" id="nav-scan-btn"><i class="fas fa-camera"></i><span>Scan</span></button>
+            <button class="nav-btn" id="nav-docs-btn"><i class="fas fa-folder"></i><span>My Docs</span></button>
         </nav>
 
         <div id="loading-overlay" class="loading-overlay" style="display: none;">
@@ -1198,52 +1193,27 @@
                 <!-- PDF Edit Toolbar -->
                 <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center;">
                     <button class="btn btn-sm btn-secondary" onclick="window.scanner.addTextToPDF()">
-                        <i class="fas fa-font"></i> Text
-                    </button>
-                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.addImageToPDF()">
-                        <i class="fas fa-image"></i> Image
+                        <i class="fas fa-font"></i> Add Text
                     </button>
                     <button class="btn btn-sm btn-secondary" onclick="window.scanner.addSignatureToPDF()">
-                        <i class="fas fa-signature"></i> Sign
+                        <i class="fas fa-signature"></i> E-Sign
                     </button>
                     <button class="btn btn-sm btn-secondary" onclick="window.scanner.addDateToPDF()">
                         <i class="fas fa-calendar"></i> Date
                     </button>
                     <button class="btn btn-sm btn-secondary" onclick="window.scanner.addCheckboxToPDF()">
-                        <i class="fas fa-check-square"></i> Check
-                    </button>
-                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.drawOnPDF()">
-                        <i class="fas fa-pen"></i> Draw
-                    </button>
-                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.highlightPDF()">
-                        <i class="fas fa-highlighter"></i> Highlight
+                        <i class="fas fa-check-square"></i> Checkbox
                     </button>
                     <button class="btn btn-sm btn-secondary" onclick="window.scanner.undoPDFEdit()">
                         <i class="fas fa-undo"></i> Undo
                     </button>
                 </div>
                 
-                <!-- Tool Options Bar -->
-                <div id="pdf-tool-options" style="display: none; background: #f9fafb; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                        <span style="font-size: 0.875rem; color: #6b7280;">Color:</span>
-                        <div style="display: flex; gap: 0.25rem;">
-                            <button class="color-btn active" data-color="#000000" style="background: #000000; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #4f46e5;" onclick="window.scanner.setPDFToolColor('#000000', this)"></button>
-                            <button class="color-btn" data-color="#ff0000" style="background: #ff0000; width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setPDFToolColor('#ff0000', this)"></button>
-                            <button class="color-btn" data-color="#0000ff" style="background: #0000ff; width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setPDFToolColor('#0000ff', this)"></button>
-                            <button class="color-btn" data-color="#ffff00" style="background: #ffff00; width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setPDFToolColor('#ffff00', this)"></button>
-                        </div>
-                        <span style="font-size: 0.875rem; color: #6b7280;">Size:</span>
-                        <input type="range" id="pdf-tool-size" min="1" max="50" value="20" style="width: 100px;">
-                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.cancelPDFTool()">Cancel</button>
-                    </div>
-                </div>
-                
                 <!-- PDF Edit Canvas Container -->
-                <div id="pdf-edit-container" style="background: #f3f4f6; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; max-height: 50vh; overflow: auto; position: relative;">
-                    <canvas id="pdf-edit-canvas" style="max-width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: crosshair;"></canvas>
+                <div id="pdf-edit-container" style="background: #f3f4f6; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; max-height: 60vh; overflow: auto; position: relative;">
+                    <canvas id="pdf-edit-canvas" style="max-width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></canvas>
                     <p id="pdf-edit-hint" style="text-align: center; color: #6b7280; margin-top: 0.5rem; font-size: 0.875rem;">
-                        Select a tool above to edit the PDF
+                        Tap buttons above to add elements, then tap on document to place
                     </p>
                 </div>
                 
@@ -1263,26 +1233,6 @@
                     <button class="btn btn-primary" onclick="window.scanner.downloadEditedPDF()">
                         <i class="fas fa-download"></i> Download PDF
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PDF Image Upload Modal -->
-        <div id="pdf-image-modal" class="modal-overlay">
-            <div class="modal" style="max-width: 400px;">
-                <h3><i class="fas fa-image"></i> Add Image to PDF</h3>
-                <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem;">Select an image to add to your PDF</p>
-                <input type="file" id="pdf-image-input" accept="image/*" style="margin-bottom: 1rem;">
-                <div style="margin-bottom: 1rem;">
-                    <label style="font-size: 0.875rem; color: #6b7280;">Image Size</label>
-                    <input type="range" id="pdf-image-size" min="50" max="500" value="200" style="width: 100%;">
-                </div>
-                <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 1rem;">
-                    <i class="fas fa-hand-pointer"></i> Tap on PDF to place image
-                </p>
-                <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="document.getElementById('pdf-image-modal').classList.remove('active')">Cancel</button>
-                    <button class="btn btn-primary" onclick="window.scanner.confirmAddImageToPDF()">Add Image</button>
                 </div>
             </div>
         </div>
@@ -1540,14 +1490,14 @@
                 this.exportFormat = 'pdf';
                 this.pdfPassword = null;
                 this.qrScanner = null;
-                this.savedDocuments = JSON.parse(localStorage.getItem('camScannerDocs') || '[]');
+                this.savedDocuments = JSON.parse(localStorage.getItem('campScannerDocs') || '[]');
                 this.autoCapture = false;
                 this.autoCaptureTimer = null;
                 this.pdfEditMode = null;
                 this.pdfEditElements = [];
                 this.pdfCurrentPage = 0;
                 this.pdfTextColor = '#000000';
-                this.securitySettings = JSON.parse(localStorage.getItem('camScannerSecurity') || '{}');
+                this.securitySettings = JSON.parse(localStorage.getItem('campScannerSecurity') || '{}');
                 this.appLocked = false;
                 this.batchMode = false;
                 this.batchPages = [];
@@ -1588,9 +1538,13 @@
                 document.getElementById('share-whatsapp-btn').addEventListener('click', () => this.shareViaWhatsApp());
                 document.getElementById('share-btn').addEventListener('click', () => this.shareDocument());
                 
-                // OCR and other features - accessible via Quick Actions or modals
-                document.getElementById('copy-text-btn')?.addEventListener('click', () => this.copyExtractedText());
-                document.getElementById('save-text-btn')?.addEventListener('click', () => this.saveExtractedText());
+                // New CamScanner features
+                document.getElementById('ocr-btn').addEventListener('click', () => this.performOCR());
+                document.getElementById('signature-btn').addEventListener('click', () => this.openSignaturePad());
+                document.getElementById('watermark-btn').addEventListener('click', () => this.openWatermarkModal());
+                document.getElementById('password-btn').addEventListener('click', () => this.openPasswordModal());
+                document.getElementById('copy-text-btn').addEventListener('click', () => this.copyExtractedText());
+                document.getElementById('save-text-btn').addEventListener('click', () => this.saveExtractedText());
                 document.getElementById('clear-signature').addEventListener('click', () => this.clearSignature());
                 document.getElementById('save-signature').addEventListener('click', () => this.saveSignature());
                 document.getElementById('apply-watermark').addEventListener('click', () => this.applyWatermark());
@@ -1602,9 +1556,11 @@
                 document.getElementById('export-txt-btn').addEventListener('click', () => this.setExportFormat('txt'));
                 
                 // New features
-                document.getElementById('enhance-btn')?.addEventListener('click', () => this.openEnhanceModal());
-                document.getElementById('merge-btn')?.addEventListener('click', () => this.mergePDFs());
-                document.getElementById('apply-enhance')?.addEventListener('click', () => this.applyEnhancement());
+                document.getElementById('qr-scan-btn').addEventListener('click', () => this.openQRScanner());
+                document.getElementById('enhance-btn').addEventListener('click', () => this.openEnhanceModal());
+                document.getElementById('merge-btn').addEventListener('click', () => this.mergePDFs());
+                document.getElementById('apply-enhance').addEventListener('click', () => this.applyEnhancement());
+                document.getElementById('copy-qr-btn').addEventListener('click', () => this.copyQRResult());
                 
                 // Signature pad events
                 const sigPad = document.getElementById('signature-pad');
@@ -1615,7 +1571,14 @@
                 sigPad.addEventListener('touchmove', (e) => this.drawSignature(e));
                 sigPad.addEventListener('touchend', () => this.endSignature());
                 
-                                // Navigation button
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const screen = e.currentTarget.dataset.screen;
+                        if (screen) this.showScreen(screen);
+                    });
+                });
+                
+                // Navigation buttons
                 document.getElementById('nav-scan-btn').addEventListener('click', () => {
                     this.resetAndStart();
                 });
@@ -1664,7 +1627,16 @@
                     bottomNav.style.display = 'flex'; // Show on other screens
                 }
                 
-                // Nav button is only Scan, no active state needed
+                // Update nav active states
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                if (screenId === 'welcome-screen') {
+                    document.querySelector('.nav-btn[data-screen="welcome-screen"]')?.classList.add('active');
+                } else if (screenId === 'docs-screen') {
+                    document.getElementById('nav-docs-btn')?.classList.add('active');
+                }
             }
 
             async startCamera() {
@@ -1803,38 +1775,6 @@
                         this.autoCaptureTimer = null;
                     }
                 }
-            }
-
-            startSmartScan() {
-                // Smart Scan: Combines auto-capture, document detection, and batch mode
-                this.showToast('Starting Smart Scan...');
-                
-                // Enable auto-capture
-                this.autoCapture = true;
-                const btn = document.getElementById('auto-capture-btn');
-                if (btn) {
-                    const span = btn.querySelector('span');
-                    span.textContent = 'Auto: ON';
-                    btn.style.borderColor = '#10b981';
-                    btn.style.background = 'rgba(16, 185, 129, 0.3)';
-                }
-                
-                // Enable batch mode for continuous scanning
-                this.batchMode = true;
-                this.batchPages = [];
-                const batchBtn = document.getElementById('batch-mode-btn');
-                if (batchBtn) {
-                    batchBtn.style.background = '#4f46e5';
-                    batchBtn.style.color = 'white';
-                }
-                
-                // Show camera screen
-                this.showScreen('camera-screen');
-                
-                // Show instructions
-                setTimeout(() => {
-                    this.showToast('Smart Scan: Hold document steady - auto capture enabled!');
-                }, 1000);
             }
 
             updateDetectionUI(detected) {
@@ -2310,6 +2250,10 @@
                 }
                 
                 this.showScreen('docs-screen');
+                
+                // Update nav active state
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('nav-docs-btn').classList.add('active');
             }
 
             saveDocument() {
@@ -2325,7 +2269,7 @@
                 };
                 
                 this.savedDocuments.unshift(doc);
-                localStorage.setItem('camScannerDocs', JSON.stringify(this.savedDocuments));
+                localStorage.setItem('campScannerDocs', JSON.stringify(this.savedDocuments));
                 this.showToast('Document saved to My Docs');
             }
 
@@ -2348,7 +2292,7 @@
             deleteDocument(index) {
                 if (confirm('Delete this document?')) {
                     this.savedDocuments.splice(index, 1);
-                    localStorage.setItem('camScannerDocs', JSON.stringify(this.savedDocuments));
+                    localStorage.setItem('campScannerDocs', JSON.stringify(this.savedDocuments));
                     this.showMyDocs();
                     this.showToast('Document deleted');
                 }
@@ -2932,255 +2876,14 @@
                 await this.exportImagesAsZIP('jpg', 'image/jpeg');
             }
 
-            async exportAsPNG() {
-                if (this.pages.length === 0) {
-                    this.showToast('No images to export', 'error');
-                    return;
-                }
-                
-                this.showLoading('Preparing PNG...');
-                
-                try {
-                    if (this.pages.length === 1) {
-                        // Single image - convert to PNG
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const img = new Image();
-                        
-                        await new Promise(resolve => {
-                            img.onload = () => {
-                                canvas.width = img.width;
-                                canvas.height = img.height;
-                                ctx.drawImage(img, 0, 0);
-                                resolve();
-                            };
-                            img.src = this.pages[0].image;
-                        });
-                        
-                        const pngData = canvas.toDataURL('image/png');
-                        const link = document.createElement('a');
-                        link.href = pngData;
-                        link.download = `${document.getElementById('doc-name').value || 'Scanned Document'}.png`;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    } else {
-                        // Multiple images - create ZIP with PNGs
-                        await this.exportImagesAsZIP('png', 'image/png');
-                    }
-                    
-                    this.hideLoading();
-                    this.showToast('PNG exported successfully');
-                } catch (err) {
-                    this.hideLoading();
-                    this.showToast('Export failed', 'error');
-                    console.error(err);
-                }
-            }
-
-            async exportAsWord() {
-                if (this.pages.length === 0) {
-                    this.showToast('No document to export', 'error');
-                    return;
-                }
-                
-                this.showLoading('Creating Word document...');
-                
-                try {
-                    const docName = document.getElementById('doc-name').value || 'Scanned Document';
-                    
-                    // Create HTML content for Word
-                    let htmlContent = `
-                        <html xmlns:o='urn:schemas-microsoft-com:office:office' 
-                              xmlns:w='urn:schemas-microsoft-com:office:word' 
-                              xmlns='http://www.w3.org/TR/REC-html40'>
-                        <head>
-                            <meta charset="utf-8">
-                            <title>${docName}</title>
-                            <style>
-                                body { font-family: Arial, sans-serif; margin: 20px; }
-                                img { max-width: 100%; height: auto; margin: 10px 0; border: 1px solid #ddd; }
-                                .page-break { page-break-after: always; }
-                                h1 { color: #333; }
-                            </style>
-                        </head>
-                        <body>
-                            <h1>${docName}</h1>
-                            <p style="color: #666; font-size: 12px;">Generated by Cam Scanner</p>
-                    `;
-                    
-                    for (let i = 0; i < this.pages.length; i++) {
-                        htmlContent += `<img src="${this.pages[i].image}" alt="Page ${i + 1}">`;
-                        if (i < this.pages.length - 1) {
-                            htmlContent += '<div class="page-break"></div>';
-                        }
-                    }
-                    
-                    htmlContent += `
-                            <p style="color: #999; font-size: 10px; margin-top: 20px;">
-                                Document created on ${new Date().toLocaleString()}
-                            </p>
-                        </body>
-                        </html>
-                    `;
-                    
-                    // Create blob and download
-                    const blob = new Blob(['\ufeff', htmlContent], {
-                        type: 'application/msword'
-                    });
-                    
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `${docName}.doc`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    
-                    this.hideLoading();
-                    this.showToast('Word document exported');
-                } catch (err) {
-                    this.hideLoading();
-                    this.showToast('Export failed', 'error');
-                    console.error(err);
-                }
-            }
-
-            async exportAsTXT() {
-                if (this.pages.length === 0) {
-                    this.showToast('No document to export', 'error');
-                    return;
-                }
-                
-                this.showLoading('Extracting text...');
-                
-                try {
-                    // Use OCR to extract text from all pages
-                    let fullText = '';
-                    
-                    if (window.Tesseract) {
-                        for (let i = 0; i < this.pages.length; i++) {
-                            this.showLoading(`Extracting text from page ${i + 1}...`);
-                            
-                            const result = await window.Tesseract.recognize(
-                                this.pages[i].image,
-                                'eng',
-                                { logger: () => {} }
-                            );
-                            
-                            if (this.pages.length > 1) {
-                                fullText += `--- Page ${i + 1} ---\n`;
-                            }
-                            fullText += result.data.text + '\n\n';
-                        }
-                    } else {
-                        // If Tesseract not loaded, create a placeholder
-                        fullText = 'Text extraction requires OCR engine.\n\n';
-                        fullText += 'Document Information:\n';
-                        fullText += `Name: ${document.getElementById('doc-name').value || 'Scanned Document'}\n`;
-                        fullText += `Pages: ${this.pages.length}\n`;
-                        fullText += `Created: ${new Date().toLocaleString()}\n`;
-                    }
-                    
-                    // Create and download TXT file
-                    const blob = new Blob([fullText], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `${document.getElementById('doc-name').value || 'Scanned Document'}.txt`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    
-                    this.hideLoading();
-                    this.showToast('TXT file exported');
-                } catch (err) {
-                    this.hideLoading();
-                    this.showToast('Export failed', 'error');
-                    console.error(err);
-                }
-            }
-
-            async exportAsZIPQuick() {
-                if (this.pages.length === 0) {
-                    this.showToast('No images to export', 'error');
-                    return;
-                }
-                
-                this.showLoading('Creating ZIP archive...');
-                
-                try {
-                    // Load JSZip dynamically
-                    if (!window.JSZip) {
-                        await new Promise((resolve, reject) => {
-                            const script = document.createElement('script');
-                            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-                            script.onload = resolve;
-                            script.onerror = reject;
-                            document.head.appendChild(script);
-                        });
-                    }
-                    
-                    const zip = new window.JSZip();
-                    const folderName = document.getElementById('doc-name').value || 'Scanned Documents';
-                    const folder = zip.folder(folderName);
-                    
-                    for (let i = 0; i < this.pages.length; i++) {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const img = new Image();
-                        
-                        await new Promise(resolve => {
-                            img.onload = () => {
-                                canvas.width = img.width;
-                                canvas.height = img.height;
-                                ctx.drawImage(img, 0, 0);
-                                resolve();
-                            };
-                            img.src = this.pages[i].image;
-                        });
-                        
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-                        const base64Data = dataUrl.split(',')[1];
-                        folder.file(`page_${i + 1}.jpg`, base64Data, { base64: true });
-                    }
-                    
-                    const content = await zip.generateAsync({ type: 'blob' });
-                    const url = URL.createObjectURL(content);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `${folderName}.zip`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    
-                    this.hideLoading();
-                    this.showToast('ZIP file exported');
-                } catch (err) {
-                    this.hideLoading();
-                    this.showToast('Export failed', 'error');
-                    console.error(err);
-                }
-            }
-
             printDocument() {
-                console.log('Print document called');
                 if (this.pages.length === 0) {
                     this.showToast('No document to print', 'error');
                     return;
                 }
                 
-                try {
-                    const printWindow = window.open('', '_blank');
-                    if (!printWindow) {
-                        this.showToast('Popup blocked. Please allow popups.', 'error');
-                        return;
-                    }
-                    
-                    const docName = document.getElementById('doc-name').value || 'Scanned Document';
+                const printWindow = window.open('', '_blank');
+                const docName = document.getElementById('doc-name').value || 'Scanned Document';
                 
                 let html = `
                     <html>
@@ -3214,10 +2917,6 @@
                 setTimeout(() => {
                     printWindow.print();
                 }, 1000);
-                } catch (err) {
-                    console.error('Print error:', err);
-                    this.showToast('Print failed', 'error');
-                }
             }
 
             async copyImageToClipboard() {
@@ -4133,13 +3832,6 @@
                             ctx.stroke();
                         }
                         break;
-                    case 'image':
-                        const imgEl = new Image();
-                        imgEl.onload = () => {
-                            ctx.drawImage(imgEl, el.x, el.y, el.width, el.height);
-                        };
-                        imgEl.src = el.src;
-                        break;
                 }
             }
 
@@ -4189,27 +3881,6 @@
                         });
                         this.pdfEditMode = null;
                         this.renderPDFEditPage();
-                        break;
-                    case 'image':
-                        if (this.pendingImage) {
-                            const img = new Image();
-                            img.onload = () => {
-                                this.pdfEditElements.push({
-                                    type: 'image',
-                                    page: this.pdfCurrentPage,
-                                    x: x - (this.pendingImage.size / 2),
-                                    y: y - (this.pendingImage.size / 2),
-                                    width: this.pendingImage.size,
-                                    height: (this.pendingImage.size * img.height) / img.width,
-                                    src: this.pendingImage.src
-                                });
-                                this.pendingImage = null;
-                                this.pdfEditMode = null;
-                                this.renderPDFEditPage();
-                                this.showToast('Image added to PDF');
-                            };
-                            img.src = this.pendingImage.src;
-                        }
                         break;
                 }
             }
@@ -4427,7 +4098,7 @@
                 }
                 
                 this.securitySettings.appPassword = pin;
-                localStorage.setItem('camScannerSecurity', JSON.stringify(this.securitySettings));
+                localStorage.setItem('campScannerSecurity', JSON.stringify(this.securitySettings));
                 
                 document.getElementById('app-password-modal').classList.remove('active');
                 this.showToast('App PIN set successfully');
@@ -4435,9 +4106,9 @@
             
             forgotPassword() {
                 if (confirm('Clear all data and reset app? This cannot be undone.')) {
-                    localStorage.removeItem('camScannerSecurity');
-                    localStorage.removeItem('camScannerDocs');
-                    localStorage.removeItem('camScannerSignature');
+                    localStorage.removeItem('campScannerSecurity');
+                    localStorage.removeItem('campScannerDocs');
+                    localStorage.removeItem('campScannerSignature');
                     location.reload();
                 }
             }
@@ -4472,7 +4143,7 @@
             
             applySecuritySettings() {
                 this.securitySettings.autoDelete = document.getElementById('auto-delete-toggle').checked;
-                localStorage.setItem('camScannerSecurity', JSON.stringify(this.securitySettings));
+                localStorage.setItem('campScannerSecurity', JSON.stringify(this.securitySettings));
                 document.getElementById('security-modal').classList.remove('active');
                 this.showToast('Security settings saved');
             }
@@ -4650,155 +4321,6 @@
                     document.getElementById('batch-review-modal').remove();
                     this.showToast('All pages cleared');
                 }
-            }
-
-            // ==================== ENHANCED PDF EDITING ====================
-            
-            setPDFToolColor(color, btn) {
-                this.pdfToolColor = color;
-                document.querySelectorAll('#pdf-tool-options .color-btn').forEach(b => {
-                    b.style.borderColor = 'transparent';
-                });
-                btn.style.borderColor = '#4f46e5';
-            }
-            
-            cancelPDFTool() {
-                this.pdfEditMode = null;
-                document.getElementById('pdf-tool-options').style.display = 'none';
-                document.getElementById('pdf-edit-hint').textContent = 'Select a tool above to edit the PDF';
-                document.getElementById('pdf-edit-canvas').style.cursor = 'default';
-            }
-            
-            addImageToPDF() {
-                document.getElementById('pdf-image-modal').classList.add('active');
-                document.getElementById('pdf-image-input').value = '';
-            }
-            
-            confirmAddImageToPDF() {
-                const fileInput = document.getElementById('pdf-image-input');
-                if (!fileInput.files || fileInput.files.length === 0) {
-                    this.showToast('Please select an image', 'error');
-                    return;
-                }
-                
-                const file = fileInput.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = (e) => {
-                    this.pendingImage = {
-                        src: e.target.result,
-                        size: parseInt(document.getElementById('pdf-image-size').value)
-                    };
-                    document.getElementById('pdf-image-modal').classList.remove('active');
-                    this.pdfEditMode = 'image';
-                    document.getElementById('pdf-edit-hint').textContent = 'Tap on PDF to place image';
-                    this.showToast('Tap on document to place image');
-                };
-                
-                reader.readAsDataURL(file);
-            }
-            
-            drawOnPDF() {
-                this.pdfEditMode = 'draw';
-                this.pdfToolColor = '#000000';
-                document.getElementById('pdf-tool-options').style.display = 'block';
-                document.getElementById('pdf-edit-hint').textContent = 'Draw on the PDF with your finger/mouse';
-                document.getElementById('pdf-edit-canvas').style.cursor = 'crosshair';
-                this.setupPDFDrawing();
-            }
-            
-            highlightPDF() {
-                this.pdfEditMode = 'highlight';
-                this.pdfToolColor = '#ffff00';
-                document.getElementById('pdf-tool-options').style.display = 'block';
-                // Set yellow as active color
-                document.querySelectorAll('#pdf-tool-options .color-btn').forEach(b => {
-                    b.style.borderColor = b.dataset.color === '#ffff00' ? '#4f46e5' : 'transparent';
-                });
-                document.getElementById('pdf-edit-hint').textContent = 'Drag to highlight text on PDF';
-                document.getElementById('pdf-edit-canvas').style.cursor = 'crosshair';
-                this.setupPDFDrawing();
-            }
-            
-            setupPDFDrawing() {
-                const canvas = document.getElementById('pdf-edit-canvas');
-                let isDrawing = false;
-                let lastX = 0;
-                let lastY = 0;
-                
-                const startDraw = (e) => {
-                    isDrawing = true;
-                    const rect = canvas.getBoundingClientRect();
-                    const scaleX = canvas.width / rect.width;
-                    const scaleY = canvas.height / rect.height;
-                    lastX = (e.clientX - rect.left) * scaleX;
-                    lastY = (e.clientY - rect.top) * scaleY;
-                };
-                
-                const draw = (e) => {
-                    if (!isDrawing) return;
-                    e.preventDefault();
-                    
-                    const rect = canvas.getBoundingClientRect();
-                    const scaleX = canvas.width / rect.width;
-                    const scaleY = canvas.height / rect.height;
-                    const x = (e.clientX - rect.left) * scaleX;
-                    const y = (e.clientY - rect.top) * scaleY;
-                    
-                    const ctx = canvas.getContext('2d');
-                    ctx.beginPath();
-                    ctx.moveTo(lastX, lastY);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle = this.pdfToolColor;
-                    ctx.lineWidth = document.getElementById('pdf-tool-size').value;
-                    ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
-                    
-                    if (this.pdfEditMode === 'highlight') {
-                        ctx.globalAlpha = 0.3;
-                    } else {
-                        ctx.globalAlpha = 1;
-                    }
-                    
-                    ctx.stroke();
-                    ctx.globalAlpha = 1;
-                    
-                    lastX = x;
-                    lastY = y;
-                };
-                
-                const stopDraw = () => {
-                    if (isDrawing) {
-                        isDrawing = false;
-                        // Save the drawing as an edit element
-                        this.savePDFDrawing();
-                    }
-                };
-                
-                canvas.onmousedown = startDraw;
-                canvas.onmousemove = draw;
-                canvas.onmouseup = stopDraw;
-                canvas.onmouseout = stopDraw;
-                
-                canvas.ontouchstart = (e) => {
-                    e.preventDefault();
-                    startDraw(e.touches[0]);
-                };
-                canvas.ontouchmove = (e) => {
-                    e.preventDefault();
-                    draw(e.touches[0]);
-                };
-                canvas.ontouchend = stopDraw;
-            }
-            
-            savePDFDrawing() {
-                const canvas = document.getElementById('pdf-edit-canvas');
-                // Store the current canvas state
-                this.pdfEditElements.push({
-                    type: this.pdfEditMode,
-                    page: this.pdfCurrentPage,
-                    image: canvas.toDataURL('image/png')
-                });
             }
 
             // ==================== EDIT TOOLS ====================
@@ -5360,9 +4882,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-                        window.scanner = new CampScanner();
-                    });
+        document.addEventListener('DOMContentLoaded', () => new CampScanner());
     </script>
 </body>
 </html>
