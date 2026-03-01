@@ -613,6 +613,18 @@
                 </div>
             </section>
 
+            <section id="docs-screen" class="screen">
+                <div class="save-container">
+                    <h3 style="padding: 1rem 0; text-align: center;"><i class="fas fa-folder"></i> My Documents</h3>
+                    <div id="saved-docs-list" class="saved-docs-list" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1rem;">
+                        <p style="grid-column: 1/-1; text-align: center; color: #6b7280; padding: 2rem;">No saved documents yet. Start scanning!</p>
+                    </div>
+                    <button id="scan-new-doc-btn" class="btn btn-primary btn-full" style="margin: 1rem;">
+                        <i class="fas fa-camera"></i> Scan New Document
+                    </button>
+                </div>
+            </section>
+
             <section id="save-screen" class="screen">
                 <div class="save-container">
                     <div class="document-preview">
@@ -646,6 +658,7 @@
                         <h3>Save & Share</h3>
                         <div class="option-grid">
                             <button id="download-pdf-btn" class="save-option"><i class="fas fa-file-pdf"></i><span>Download PDF</span></button>
+                            <button id="save-docs-btn" class="save-option"><i class="fas fa-save"></i><span>Save to My Docs</span></button>
                             <button id="save-drive-btn" class="save-option"><i class="fab fa-google-drive"></i><span>Google Drive</span></button>
                             <button id="save-dropbox-btn" class="save-option"><i class="fab fa-dropbox"></i><span>Dropbox</span></button>
                             <button id="share-email-btn" class="save-option"><i class="fas fa-envelope"></i><span>Email</span></button>
@@ -660,8 +673,8 @@
 
         <nav class="bottom-nav" id="bottom-nav" style="display: none;">
             <button class="nav-btn" data-screen="welcome-screen"><i class="fas fa-home"></i><span>Home</span></button>
-            <button class="nav-btn" data-screen="camera-screen"><i class="fas fa-camera"></i><span>Scan</span></button>
-            <button class="nav-btn" data-screen="save-screen"><i class="fas fa-folder"></i><span>My Docs</span></button>
+            <button class="nav-btn" id="nav-scan-btn"><i class="fas fa-camera"></i><span>Scan</span></button>
+            <button class="nav-btn" id="nav-docs-btn"><i class="fas fa-folder"></i><span>My Docs</span></button>
         </nav>
 
         <div id="loading-overlay" class="loading-overlay" style="display: none;">
@@ -776,6 +789,7 @@
                 this.exportFormat = 'pdf';
                 this.pdfPassword = null;
                 this.qrScanner = null;
+                this.savedDocuments = JSON.parse(localStorage.getItem('campScannerDocs') || '[]');
                 this.init();
             }
 
@@ -800,6 +814,7 @@
                 document.getElementById('done-edit-btn').addEventListener('click', () => this.saveEdit());
                 document.getElementById('clear-annotations-btn').addEventListener('click', () => this.clearAnnotations());
                 document.getElementById('download-pdf-btn').addEventListener('click', () => this.downloadPDF());
+                document.getElementById('save-docs-btn').addEventListener('click', () => this.saveDocument());
                 document.getElementById('save-drive-btn').addEventListener('click', () => this.showToast('Google Drive integration coming soon'));
                 document.getElementById('save-dropbox-btn').addEventListener('click', () => this.showToast('Dropbox integration coming soon'));
                 document.getElementById('share-email-btn').addEventListener('click', () => this.shareViaEmail());
@@ -843,6 +858,17 @@
                         const screen = e.currentTarget.dataset.screen;
                         if (screen) this.showScreen(screen);
                     });
+                });
+                
+                // Navigation buttons
+                document.getElementById('nav-scan-btn').addEventListener('click', () => {
+                    this.resetAndStart();
+                });
+                document.getElementById('nav-docs-btn').addEventListener('click', () => {
+                    this.showMyDocs();
+                });
+                document.getElementById('scan-new-doc-btn').addEventListener('click', () => {
+                    this.resetAndStart();
                 });
                 
                 document.querySelectorAll('.color-btn').forEach(btn => {
@@ -1394,6 +1420,75 @@
                 if (this.pages.length > 0) preview.innerHTML = `<img src="${this.pages[0].image}" alt="Preview">`;
                 document.getElementById('page-count').textContent = `Pages: ${this.pages.length}`;
                 this.showScreen('save-screen');
+            }
+
+            showMyDocs() {
+                const container = document.getElementById('saved-docs-list');
+                
+                if (this.savedDocuments.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6b7280; padding: 2rem;">No saved documents yet. Start scanning!</p>';
+                } else {
+                    container.innerHTML = this.savedDocuments.map((doc, index) => `
+                        <div class="doc-card" style="background: white; border: 1px solid #e5e7eb; border-radius: 0.75rem; overflow: hidden; cursor: pointer;" onclick="window.scanner.loadDocument(${index})">
+                            <img src="${doc.thumbnail}" style="width: 100%; height: 120px; object-fit: cover;">
+                            <div style="padding: 0.75rem;">
+                                <p style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${doc.name}</p>
+                                <p style="font-size: 0.75rem; color: #6b7280;">${doc.pages} pages • ${new Date(doc.date).toLocaleDateString()}</p>
+                            </div>
+                            <button onclick="event.stopPropagation(); window.scanner.deleteDocument(${index})" style="position: absolute; top: 5px; right: 5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer;">
+                                <i class="fas fa-trash" style="font-size: 0.75rem;"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+                
+                this.showScreen('docs-screen');
+                
+                // Update nav active state
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('nav-docs-btn').classList.add('active');
+            }
+
+            saveDocument() {
+                if (this.pages.length === 0) return;
+                
+                const docName = document.getElementById('doc-name').value || 'Scanned Document';
+                const doc = {
+                    name: docName,
+                    pages: this.pages.length,
+                    thumbnail: this.pages[0].image,
+                    images: this.pages.map(p => p.image),
+                    date: new Date().toISOString()
+                };
+                
+                this.savedDocuments.unshift(doc);
+                localStorage.setItem('campScannerDocs', JSON.stringify(this.savedDocuments));
+                this.showToast('Document saved to My Docs');
+            }
+
+            loadDocument(index) {
+                const doc = this.savedDocuments[index];
+                if (!doc) return;
+                
+                this.pages = doc.images.map(img => ({
+                    image: img,
+                    annotations: [],
+                    rotation: 0,
+                    filter: 'none'
+                }));
+                this.currentPage = 0;
+                document.getElementById('doc-name').value = doc.name;
+                this.updateThumbnails();
+                this.showSaveScreen();
+            }
+
+            deleteDocument(index) {
+                if (confirm('Delete this document?')) {
+                    this.savedDocuments.splice(index, 1);
+                    localStorage.setItem('campScannerDocs', JSON.stringify(this.savedDocuments));
+                    this.showMyDocs();
+                    this.showToast('Document deleted');
+                }
             }
 
             shareViaEmail() {
