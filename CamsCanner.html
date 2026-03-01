@@ -165,6 +165,17 @@
             margin-top: 1rem;
             font-size: 0.875rem;
         }
+        .scan-hint.detected {
+            background: rgba(16, 185, 129, 0.8);
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .scan-frame.detected {
+            border-color: rgba(16, 185, 129, 0.8);
+        }
         .camera-controls {
             position: absolute;
             bottom: 2rem;
@@ -431,6 +442,60 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         .toast i { color: #10b981; }
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal h3 { margin-bottom: 1rem; }
+        .modal-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .signature-pad {
+            border: 2px dashed #e5e7eb;
+            border-radius: 0.5rem;
+            width: 100%;
+            height: 200px;
+            margin-bottom: 1rem;
+            background: #fafafa;
+        }
+        .ocr-result {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 1rem;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .modal-buttons .btn { flex: 1; }
         @media (max-width: 480px) {
             .app-container, .bottom-nav { max-width: 100%; }
             .features-grid { grid-template-columns: repeat(2, 1fr); }
@@ -464,7 +529,10 @@
                     <div class="feature-card"><i class="fas fa-magic"></i><span>Auto Detect</span></div>
                     <div class="feature-card"><i class="fas fa-file-pdf"></i><span>PDF Export</span></div>
                     <div class="feature-card"><i class="fas fa-crop"></i><span>Auto Crop</span></div>
-                    <div class="feature-card"><i class="fas fa-edit"></i><span>Edit & Annotate</span></div>
+                    <div class="feature-card"><i class="fas fa-font"></i><span>OCR Text</span></div>
+                    <div class="feature-card"><i class="fas fa-signature"></i><span>E-Sign</span></div>
+                    <div class="feature-card"><i class="fas fa-stamp"></i><span>Watermark</span></div>
+                    <div class="feature-card"><i class="fas fa-lock"></i><span>Password</span></div>
                     <div class="feature-card"><i class="fas fa-cloud-upload-alt"></i><span>Cloud Save</span></div>
                 </div>
             </section>
@@ -547,6 +615,15 @@
                         </div>
                     </div>
                     <div class="save-options">
+                        <h3>Tools</h3>
+                        <div class="option-grid">
+                            <button id="ocr-btn" class="save-option"><i class="fas fa-font"></i><span>Extract Text (OCR)</span></button>
+                            <button id="signature-btn" class="save-option"><i class="fas fa-signature"></i><span>Add Signature</span></button>
+                            <button id="watermark-btn" class="save-option"><i class="fas fa-stamp"></i><span>Watermark</span></button>
+                            <button id="password-btn" class="save-option"><i class="fas fa-lock"></i><span>Password</span></button>
+                        </div>
+                    </div>
+                    <div class="save-options">
                         <h3>Save & Share</h3>
                         <div class="option-grid">
                             <button id="download-pdf-btn" class="save-option"><i class="fas fa-file-pdf"></i><span>Download PDF</span></button>
@@ -577,6 +654,60 @@
             <i class="fas fa-check-circle"></i>
             <span id="toast-message">Success!</span>
         </div>
+
+        <!-- OCR Modal -->
+        <div id="ocr-modal" class="modal-overlay">
+            <div class="modal">
+                <h3><i class="fas fa-font"></i> Extracted Text</h3>
+                <div id="ocr-text" class="ocr-result">Scan a document to extract text...</div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('ocr-modal').classList.remove('active')">Close</button>
+                    <button class="btn btn-primary" id="copy-text-btn"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signature Modal -->
+        <div id="signature-modal" class="modal-overlay">
+            <div class="modal">
+                <h3><i class="fas fa-signature"></i> Add Signature</h3>
+                <canvas id="signature-pad" class="signature-pad"></canvas>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" id="clear-signature">Clear</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('signature-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" id="save-signature">Add to Document</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Watermark Modal -->
+        <div id="watermark-modal" class="modal-overlay">
+            <div class="modal">
+                <h3><i class="fas fa-stamp"></i> Add Watermark</h3>
+                <input type="text" id="watermark-text" class="modal-input" placeholder="Enter watermark text">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #6b7280;">Opacity</label>
+                    <input type="range" id="watermark-opacity" min="10" max="100" value="30" style="width: 100%;">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('watermark-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" id="apply-watermark">Apply</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Modal -->
+        <div id="password-modal" class="modal-overlay">
+            <div class="modal">
+                <h3><i class="fas fa-lock"></i> Password Protect PDF</h3>
+                <input type="password" id="pdf-password" class="modal-input" placeholder="Enter password">
+                <input type="password" id="pdf-password-confirm" class="modal-input" placeholder="Confirm password">
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('password-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" id="apply-password">Apply Password</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -585,6 +716,7 @@
                 this.pages = [];
                 this.currentPage = 0;
                 this.currentStream = null;
+                this.detectionInterval = null;
                 this.isFlashOn = false;
                 this.annotationMode = false;
                 this.currentFilter = 'none';
@@ -619,6 +751,26 @@
                 document.getElementById('share-email-btn').addEventListener('click', () => this.shareViaEmail());
                 document.getElementById('share-whatsapp-btn').addEventListener('click', () => this.shareViaWhatsApp());
                 document.getElementById('share-btn').addEventListener('click', () => this.shareDocument());
+                
+                // New CamScanner features
+                document.getElementById('ocr-btn').addEventListener('click', () => this.performOCR());
+                document.getElementById('signature-btn').addEventListener('click', () => this.openSignaturePad());
+                document.getElementById('watermark-btn').addEventListener('click', () => this.openWatermarkModal());
+                document.getElementById('password-btn').addEventListener('click', () => this.openPasswordModal());
+                document.getElementById('copy-text-btn').addEventListener('click', () => this.copyExtractedText());
+                document.getElementById('clear-signature').addEventListener('click', () => this.clearSignature());
+                document.getElementById('save-signature').addEventListener('click', () => this.saveSignature());
+                document.getElementById('apply-watermark').addEventListener('click', () => this.applyWatermark());
+                document.getElementById('apply-password').addEventListener('click', () => this.applyPassword());
+                
+                // Signature pad events
+                const sigPad = document.getElementById('signature-pad');
+                sigPad.addEventListener('mousedown', (e) => this.startSignature(e));
+                sigPad.addEventListener('mousemove', (e) => this.drawSignature(e));
+                sigPad.addEventListener('mouseup', () => this.endSignature());
+                sigPad.addEventListener('touchstart', (e) => this.startSignature(e));
+                sigPad.addEventListener('touchmove', (e) => this.drawSignature(e));
+                sigPad.addEventListener('touchend', () => this.endSignature());
                 
                 document.querySelectorAll('.nav-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
@@ -666,20 +818,85 @@
 
             async startCamera() {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
-                    });
+                    // Stop any existing stream
+                    this.stopCamera();
+                    
+                    // Try back camera first, then any camera
+                    const constraints = {
+                        video: {
+                            facingMode: { ideal: 'environment' },
+                            width: { ideal: 1920 },
+                            height: { ideal: 1080 }
+                        },
+                        audio: false
+                    };
+                    
+                    let stream;
+                    try {
+                        stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    } catch (err) {
+                        // Fallback to any available camera
+                        stream = await navigator.mediaDevices.getUserMedia({ 
+                            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+                            audio: false 
+                        });
+                    }
+                    
                     this.currentStream = stream;
-                    document.getElementById('camera-video').srcObject = stream;
+                    const video = document.getElementById('camera-video');
+                    video.srcObject = stream;
+                    video.play().catch(e => console.log('Video play error:', e));
+                    
+                    // Start real-time document detection
+                    this.startDocumentDetection();
+                    
                 } catch (err) {
-                    this.showToast('Could not access camera. Please allow permissions.', 'error');
+                    console.error('Camera error:', err);
+                    this.showToast('Camera access denied. Please allow camera permissions in your browser settings.', 'error');
                 }
             }
 
             stopCamera() {
+                if (this.detectionInterval) {
+                    clearInterval(this.detectionInterval);
+                    this.detectionInterval = null;
+                }
                 if (this.currentStream) {
                     this.currentStream.getTracks().forEach(t => t.stop());
                     this.currentStream = null;
+                }
+            }
+
+            startDocumentDetection() {
+                // Check for document every 500ms
+                this.detectionInterval = setInterval(() => {
+                    const video = document.getElementById('camera-video');
+                    if (!video.videoWidth) return;
+                    
+                    // Create small canvas for quick detection
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 320;
+                    canvas.height = 240;
+                    ctx.drawImage(video, 0, 0, 320, 240);
+                    
+                    const edges = this.detectDocumentEdges(canvas);
+                    this.updateDetectionUI(edges !== null);
+                }, 500);
+            }
+
+            updateDetectionUI(detected) {
+                const hint = document.querySelector('.scan-hint');
+                const frame = document.querySelector('.scan-frame');
+                
+                if (detected) {
+                    hint.textContent = 'Document detected! Tap capture';
+                    hint.classList.add('detected');
+                    frame.classList.add('detected');
+                } else {
+                    hint.textContent = 'Position document within frame';
+                    hint.classList.remove('detected');
+                    frame.classList.remove('detected');
                 }
             }
 
@@ -695,27 +912,177 @@
 
             captureImage() {
                 const video = document.getElementById('camera-video');
+                if (!video.videoWidth) {
+                    this.showToast('Camera not ready. Please wait...', 'error');
+                    return;
+                }
+                
                 const canvas = document.getElementById('camera-canvas');
                 const ctx = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 ctx.drawImage(video, 0, 0);
                 
-                // Auto-enhance
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imageData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const factor = 1.2;
-                    data[i] = factor * (data[i] - 128) + 128;
-                    data[i+1] = factor * (data[i+1] - 128) + 128;
-                    data[i+2] = factor * (data[i+2] - 128) + 128;
-                }
-                ctx.putImageData(imageData, 0, 0);
+                // Detect document edges and auto-crop
+                const detectedEdges = this.detectDocumentEdges(canvas);
+                const processedImage = this.autoCropAndEnhance(canvas, detectedEdges);
                 
-                this.pages.push({ image: canvas.toDataURL('image/jpeg', 0.9), annotations: [], rotation: 0, filter: 'none' });
+                this.pages.push({ 
+                    image: processedImage, 
+                    annotations: [], 
+                    rotation: 0, 
+                    filter: 'none',
+                    edges: detectedEdges 
+                });
                 this.currentPage = this.pages.length - 1;
                 this.updateThumbnails();
                 this.showPreview();
+            }
+
+            detectDocumentEdges(canvas) {
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Get image data
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                
+                // Convert to grayscale and apply edge detection
+                const gray = new Uint8Array(width * height);
+                for (let i = 0; i < data.length; i += 4) {
+                    gray[i / 4] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                }
+                
+                // Simple edge detection using gradient
+                const edges = new Uint8Array(width * height);
+                const threshold = 30;
+                
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = y * width + x;
+                        const gx = gray[idx - 1] - gray[idx + 1];
+                        const gy = gray[idx - width] - gray[idx + width];
+                        const gradient = Math.sqrt(gx * gx + gy * gy);
+                        edges[idx] = gradient > threshold ? 255 : 0;
+                    }
+                }
+                
+                // Find largest rectangle (simplified - looks for white paper on darker background)
+                // Scan from center outward to find document boundaries
+                const centerX = Math.floor(width / 2);
+                const centerY = Math.floor(height / 2);
+                
+                let left = 0, right = width - 1, top = 0, bottom = height - 1;
+                
+                // Find left edge
+                for (let x = centerX; x >= 0; x--) {
+                    let edgeCount = 0;
+                    for (let y = centerY - 50; y < centerY + 50 && y < height; y++) {
+                        if (y >= 0 && edges[y * width + x]) edgeCount++;
+                    }
+                    if (edgeCount > 20) { left = x; break; }
+                }
+                
+                // Find right edge
+                for (let x = centerX; x < width; x++) {
+                    let edgeCount = 0;
+                    for (let y = centerY - 50; y < centerY + 50 && y < height; y++) {
+                        if (y >= 0 && edges[y * width + x]) edgeCount++;
+                    }
+                    if (edgeCount > 20) { right = x; break; }
+                }
+                
+                // Find top edge
+                for (let y = centerY; y >= 0; y--) {
+                    let edgeCount = 0;
+                    for (let x = centerX - 50; x < centerX + 50 && x < width; x++) {
+                        if (x >= 0 && edges[y * width + x]) edgeCount++;
+                    }
+                    if (edgeCount > 20) { top = y; break; }
+                }
+                
+                // Find bottom edge
+                for (let y = centerY; y < height; y++) {
+                    let edgeCount = 0;
+                    for (let x = centerX - 50; x < centerX + 50 && x < width; x++) {
+                        if (x >= 0 && edges[y * width + x]) edgeCount++;
+                    }
+                    if (edgeCount > 20) { bottom = y; break; }
+                }
+                
+                // Ensure minimum size
+                if (right - left < width * 0.3 || bottom - top < height * 0.3) {
+                    return null; // Use full image
+                }
+                
+                return { left, right, top, bottom };
+            }
+
+            autoCropAndEnhance(sourceCanvas, edges) {
+                const outputCanvas = document.createElement('canvas');
+                const ctx = outputCanvas.getContext('2d');
+                
+                let srcX = 0, srcY = 0, srcW = sourceCanvas.width, srcH = sourceCanvas.height;
+                
+                // Apply crop if edges detected
+                if (edges) {
+                    srcX = edges.left;
+                    srcY = edges.top;
+                    srcW = edges.right - edges.left;
+                    srcH = edges.bottom - edges.top;
+                    
+                    // Add small padding
+                    const padding = 20;
+                    srcX = Math.max(0, srcX - padding);
+                    srcY = Math.max(0, srcY - padding);
+                    srcW = Math.min(sourceCanvas.width - srcX, srcW + padding * 2);
+                    srcH = Math.min(sourceCanvas.height - srcY, srcH + padding * 2);
+                }
+                
+                outputCanvas.width = srcW;
+                outputCanvas.height = srcH;
+                
+                // Draw cropped region
+                ctx.drawImage(sourceCanvas, srcX, srcY, srcW, srcH, 0, 0, srcW, srcH);
+                
+                // Apply enhancement
+                const imageData = ctx.getImageData(0, 0, srcW, srcH);
+                const data = imageData.data;
+                
+                // Auto white balance and contrast
+                let rSum = 0, gSum = 0, bSum = 0, count = 0;
+                for (let i = 0; i < data.length; i += 40) { // Sample every 10th pixel
+                    rSum += data[i];
+                    gSum += data[i + 1];
+                    bSum += data[i + 2];
+                    count++;
+                }
+                
+                const avgGray = (rSum / count + gSum / count + bSum / count) / 3;
+                const whitePoint = Math.min(255, avgGray * 1.1);
+                const contrast = 1.3;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    // White balance
+                    data[i] = Math.min(255, data[i] * 255 / whitePoint);
+                    data[i + 1] = Math.min(255, data[i + 1] * 255 / whitePoint);
+                    data[i + 2] = Math.min(255, data[i + 2] * 255 / whitePoint);
+                    
+                    // Contrast
+                    data[i] = contrast * (data[i] - 128) + 128;
+                    data[i + 1] = contrast * (data[i + 1] - 128) + 128;
+                    data[i + 2] = contrast * (data[i + 2] - 128) + 128;
+                    
+                    // Clamp values
+                    data[i] = Math.max(0, Math.min(255, data[i]));
+                    data[i + 1] = Math.max(0, Math.min(255, data[i + 1]));
+                    data[i + 2] = Math.max(0, Math.min(255, data[i + 2]));
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+                
+                return outputCanvas.toDataURL('image/jpeg', 0.92);
             }
 
             handleFileSelect(e) {
@@ -908,33 +1275,6 @@
                 this.showScreen('save-screen');
             }
 
-            async downloadPDF() {
-                this.showLoading('Generating PDF...');
-                try {
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF();
-                    for (let i = 0; i < this.pages.length; i++) {
-                        if (i > 0) pdf.addPage();
-                        const img = new Image();
-                        await new Promise(resolve => {
-                            img.onload = () => {
-                                const w = pdf.internal.pageSize.getWidth();
-                                const h = (img.height * w) / img.width;
-                                pdf.addImage(this.pages[i].image, 'JPEG', 0, 0, w, h);
-                                resolve();
-                            };
-                            img.src = this.pages[i].image;
-                        });
-                    }
-                    pdf.save(`${document.getElementById('doc-name').value || 'Scanned Document'}.pdf`);
-                    this.hideLoading();
-                    this.showToast('PDF downloaded');
-                } catch (err) {
-                    this.hideLoading();
-                    this.showToast('Error generating PDF', 'error');
-                }
-            }
-
             shareViaEmail() {
                 const subject = encodeURIComponent(document.getElementById('doc-name').value || 'Scanned Document');
                 window.open(`mailto:?subject=${subject}&body=Please find the scanned document attached.`);
@@ -998,10 +1338,235 @@
                 toast.style.display = 'flex';
                 setTimeout(() => toast.style.display = 'none', 3000);
             }
+
+            // ==================== CAMSCANNER FEATURES ====================
+
+            // OCR - Extract text from image using Tesseract.js
+            async performOCR() {
+                if (this.pages.length === 0) {
+                    this.showToast('No document to scan', 'error');
+                    return;
+                }
+                
+                this.showLoading('Extracting text...');
+                
+                try {
+                    // Load Tesseract.js dynamically
+                    if (!window.Tesseract) {
+                        await new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js';
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    }
+                    
+                    const result = await window.Tesseract.recognize(
+                        this.pages[0].image,
+                        'eng',
+                        { logger: m => console.log(m) }
+                    );
+                    
+                    document.getElementById('ocr-text').textContent = result.data.text || 'No text found';
+                    document.getElementById('ocr-modal').classList.add('active');
+                    this.hideLoading();
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('OCR failed. Please try again.', 'error');
+                    console.error(err);
+                }
+            }
+
+            copyExtractedText() {
+                const text = document.getElementById('ocr-text').textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    this.showToast('Text copied to clipboard');
+                });
+            }
+
+            // E-Signature
+            openSignaturePad() {
+                document.getElementById('signature-modal').classList.add('active');
+                const canvas = document.getElementById('signature-pad');
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+            }
+
+            startSignature(e) {
+                this.isSigning = true;
+                const canvas = document.getElementById('signature-pad');
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                this.sigLastX = clientX - rect.left;
+                this.sigLastY = clientY - rect.top;
+            }
+
+            drawSignature(e) {
+                if (!this.isSigning) return;
+                e.preventDefault();
+                const canvas = document.getElementById('signature-pad');
+                const ctx = canvas.getContext('2d');
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+                
+                ctx.beginPath();
+                ctx.moveTo(this.sigLastX, this.sigLastY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                this.sigLastX = x;
+                this.sigLastY = y;
+            }
+
+            endSignature() { this.isSigning = false; }
+
+            clearSignature() {
+                const canvas = document.getElementById('signature-pad');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            saveSignature() {
+                const sigCanvas = document.getElementById('signature-pad');
+                if (this.pages.length === 0) return;
+                
+                // Add signature to current page
+                const pageCanvas = document.createElement('canvas');
+                const ctx = pageCanvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    pageCanvas.width = img.width;
+                    pageCanvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Draw signature at bottom right
+                    const sigWidth = pageCanvas.width * 0.25;
+                    const sigHeight = (sigCanvas.height / sigCanvas.width) * sigWidth;
+                    ctx.drawImage(sigCanvas, pageCanvas.width - sigWidth - 50, pageCanvas.height - sigHeight - 50, sigWidth, sigHeight);
+                    
+                    this.pages[this.currentPage].image = pageCanvas.toDataURL('image/jpeg', 0.9);
+                    document.getElementById('signature-modal').classList.remove('active');
+                    this.showSaveScreen();
+                    this.showToast('Signature added');
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+
+            // Watermark
+            openWatermarkModal() {
+                document.getElementById('watermark-modal').classList.add('active');
+            }
+
+            applyWatermark() {
+                const text = document.getElementById('watermark-text').value;
+                const opacity = document.getElementById('watermark-opacity').value / 100;
+                
+                if (!text) {
+                    this.showToast('Please enter watermark text', 'error');
+                    return;
+                }
+                
+                if (this.pages.length === 0) return;
+                
+                const pageCanvas = document.createElement('canvas');
+                const ctx = pageCanvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    pageCanvas.width = img.width;
+                    pageCanvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Add watermark
+                    ctx.save();
+                    ctx.globalAlpha = opacity;
+                    ctx.fillStyle = '#666';
+                    ctx.font = `bold ${pageCanvas.width * 0.05}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.translate(pageCanvas.width / 2, pageCanvas.height / 2);
+                    ctx.rotate(-Math.PI / 4);
+                    ctx.fillText(text, 0, 0);
+                    ctx.restore();
+                    
+                    this.pages[this.currentPage].image = pageCanvas.toDataURL('image/jpeg', 0.9);
+                    document.getElementById('watermark-modal').classList.remove('active');
+                    this.showSaveScreen();
+                    this.showToast('Watermark applied');
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+
+            // Password Protection
+            openPasswordModal() {
+                document.getElementById('password-modal').classList.add('active');
+            }
+
+            applyPassword() {
+                const pass = document.getElementById('pdf-password').value;
+                const confirm = document.getElementById('pdf-password-confirm').value;
+                
+                if (!pass) {
+                    this.showToast('Please enter a password', 'error');
+                    return;
+                }
+                if (pass !== confirm) {
+                    this.showToast('Passwords do not match', 'error');
+                    return;
+                }
+                
+                this.pdfPassword = pass;
+                document.getElementById('password-modal').classList.remove('active');
+                this.showToast('Password will be applied to PDF');
+            }
+
+            // Override downloadPDF to support password
+            async downloadPDF() {
+                this.showLoading('Generating PDF...');
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF();
+                    
+                    // Apply password if set
+                    if (this.pdfPassword) {
+                        pdf.encrypt(this.pdfPassword);
+                    }
+                    
+                    for (let i = 0; i < this.pages.length; i++) {
+                        if (i > 0) pdf.addPage();
+                        const img = new Image();
+                        await new Promise(resolve => {
+                            img.onload = () => {
+                                const w = pdf.internal.pageSize.getWidth();
+                                const h = (img.height * w) / img.width;
+                                pdf.addImage(this.pages[i].image, 'JPEG', 0, 0, w, h);
+                                resolve();
+                            };
+                            img.src = this.pages[i].image;
+                        });
+                    }
+                    
+                    pdf.save(`${document.getElementById('doc-name').value || 'Scanned Document'}.pdf`);
+                    this.hideLoading();
+                    this.showToast('PDF downloaded');
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('Error generating PDF', 'error');
+                }
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => new CampScanner());
     </script>
 </body>
 </html>
-
