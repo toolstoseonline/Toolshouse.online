@@ -1,321 +1,498 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🏕️ Camp Scanner - All-in-One</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
-    body { font-family: 'Poppins', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camp Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .app-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .camera-section {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            margin: 1rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        select, input[type="checkbox"] {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .progress {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #555;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #4b6cb7;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .app-controls {
+                flex-direction: column;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-emerald-950 via-teal-950 to-emerald-900 text-white min-h-screen">
+<body>
+    <div class="container">
+        <header>
+            <h1>ScanCamp</h1>
+            <p>Scan documents directly from your camera</p>
+        </header>
 
-  <!-- HOME SCREEN -->
-  <div id="home" class="flex flex-col min-h-screen p-6">
-    <div class="flex items-center gap-3 mb-8">
-      <span class="text-5xl">🏕️</span>
-      <h1 class="text-4xl font-bold">Camp Scanner</h1>
+        <div class="camera-section">
+            <video id="cameraVideo"></video>
+        </div>
+
+        <div class="app-controls">
+            <button id="scanBtn">Start Scanning</button>
+            <button id="editBtn">Edit</button>
+            <button id="cloudBtn">Cloud Save</button>
+            <button id="shareBtn">Share</button>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="docDetection">Document Detection</label>
+                <input type="checkbox" id="docDetection" checked>
+            </div>
+            
+            <div class="control-group">
+                <label for="editOption">Editing Options</label>
+                <select id="editOption">
+                    <option value="crop">Crop</option>
+                    <option value="rotate">Rotate</option>
+                    <option value="annotate">Annotate</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="cloudService">Cloud Service</label>
+                <select id="cloudService">
+                    <option value="google">Google Drive</option>
+                    <option value="dropbox">Dropbox</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <img id="scannedImage" src="" alt="Scanned document">
+            <div class="actions">
+                <button id="pdfBtn">Save as PDF</button>
+                <button id="editResultBtn">Edit</button>
+                <button id="shareResultBtn">Share</button>
+            </div>
+        </div>
     </div>
-    <div class="flex-1 flex flex-col items-center justify-center text-center">
-      <p class="text-xl opacity-90 mb-12 max-w-md">
-        Scan documents • Record video notes • Add voice explanations<br>
-        All in your browser — no install needed
-      </p>
-      <button onclick="startApp()"
-              class="bg-lime-400 hover:bg-lime-300 text-emerald-950 font-bold text-2xl px-16 py-8 rounded-3xl shadow-2xl active:scale-95 transition-all">
-        📸 Start Scanning
-      </button>
-    </div>
-  </div>
 
-  <!-- MAIN SCANNER INTERFACE -->
-  <div id="scanner" class="hidden flex flex-col min-h-screen bg-black">
-    <!-- Header -->
-    <div class="p-4 bg-black/80 flex justify-between items-center">
-      <button onclick="stopEverything()" class="text-3xl font-bold">✕</button>
-
-      <div class="flex gap-2 text-sm">
-        <button onclick="setQuality(0)" id="q0" class="px-4 py-2 rounded-xl font-semibold bg-lime-500 text-black">Economy</button>
-        <button onclick="setQuality(1)" id="q1" class="px-4 py-2 rounded-xl font-semibold bg-white/20">Balanced</button>
-        <button onclick="setQuality(2)" id="q2" class="px-4 py-2 rounded-xl font-semibold bg-white/20">High</button>
-      </div>
-
-      <button id="torchBtn" onclick="toggleTorch()" class="text-3xl">⚡</button>
+    <div class="status-bar">
+        <div id="statusText">Ready to scan</div>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
     </div>
 
-    <!-- Camera / Video Preview -->
-    <div class="relative flex-1 bg-black overflow-hidden">
-      <video id="preview" class="w-full h-full object-cover" autoplay playsinline muted></video>
-      <div class="absolute inset-6 border-4 border-lime-400/70 border-dashed rounded-3xl pointer-events-none"></div>
+    <script>
+        // Global variables
+        let scanner = null;
+        let documents = [];
 
-      <!-- Timer (shown during recording) -->
-      <div id="timerBox" class="hidden absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 px-6 py-2 rounded-full text-xl font-mono tracking-wider">
-        <span id="timer">00:00</span>
-      </div>
-    </div>
+        // DOM Elements
+        const cameraVideo = document.getElementById('cameraVideo');
+        const scanBtn = document.getElementById('scanBtn');
+        const editBtn = document.getElementById('editBtn');
+        const cloudBtn = document.getElementById('cloudBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const docDetection = document.getElementById('docDetection');
+        const editOption = document.getElementById('editOption');
+        const cloudService = document.getElementById('cloudService');
+        const results = document.getElementById('results');
+        const scannedImage = document.getElementById('scannedImage');
+        const pdfBtn = document.getElementById('pdfBtn');
+        const editResultBtn = document.getElementById('editResultBtn');
+        const shareResultBtn = document.getElementById('shareResultBtn');
+        const statusText = document.getElementById('statusText');
+        const progressBar = document.getElementById('progressBar');
 
-    <!-- Controls -->
-    <div class="p-6 bg-gradient-to-t from-black to-transparent flex flex-wrap gap-4 justify-center">
-      <!-- Photo -->
-      <button onclick="takePhoto()" class="px-9 py-5 bg-lime-500 text-black rounded-3xl font-bold text-lg flex items-center gap-3 active:scale-95 shadow-lg">
-        <span class="text-2xl">📸</span> Photo
-      </button>
+        // Initialize the app
+        window.onload = function() {
+            scanner = new DocumentScanner();
+            updateUI();
+        };
 
-      <!-- Voice Note -->
-      <button onclick="startVoiceNote()" class="px-9 py-5 bg-amber-500 text-black rounded-3xl font-bold text-lg flex items-center gap-3 active:scale-95 shadow-lg">
-        <span class="text-2xl">🎤</span> Voice
-      </button>
+        // Document Scanner Class
+        class DocumentScanner {
+            constructor() {
+                this.isScanning = false;
+                this.documentDetection = true;
+                this.currentDocument = null;
+                this.initCamera();
+                this.setupEventListeners();
+            }
 
-      <!-- Video -->
-      <button id="startVideoBtn" onclick="startVideo()" class="px-9 py-5 bg-red-600 rounded-3xl font-bold text-lg flex items-center gap-3 active:scale-95 shadow-lg">
-        <span class="text-2xl">🎥</span> Video
-      </button>
+            async initCamera() {
+                try {
+                    const constraints = {
+                        video: {
+                            facingMode: 'environment',
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        },
+                        audio: false
+                    };
 
-      <button id="pauseBtn"   onclick="pauseOrResume()" class="hidden px-9 py-5 bg-yellow-500 text-black rounded-3xl font-bold text-lg active:scale-95 shadow-lg">⏸ Pause</button>
-      <button id="stopBtn"    onclick="stopRecording()" class="hidden px-9 py-5 bg-white text-black rounded-3xl font-bold text-lg active:scale-95 shadow-lg">■ Stop</button>
-    </div>
-  </div>
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    cameraVideo.srcObject = stream;
+                    
+                } catch (err) {
+                    console.error('Camera error:', err);
+                    setStatus('Camera access denied', 'error');
+                }
+            }
 
-  <script>
-    // ────────────────────────────────────────────────
-    // State
-    // ────────────────────────────────────────────────
-    let stream = null;
-    let mediaRecorder = null;
-    let recordedChunks = [];
-    let torchOn = false;
-    let timerInterval = null;
-    let seconds = 0;
-    let qualityLevel = 1; // 0=economy, 1=balanced, 2=high
+            setupEventListeners() {
+                scanBtn.addEventListener('click', () => this.toggleScanning());
+                editBtn.addEventListener('click', () => this.editDocument());
+                cloudBtn.addEventListener('click', () => this.saveToCloud());
+                shareBtn.addEventListener('click', () => this.shareDocuments());
+                
+                docDetection.addEventListener('change', (e) => {
+                    this.documentDetection = e.target.checked;
+                    if (this.isScanning) {
+                        this.startScanning();
+                    }
+                });
+                
+                editOption.addEventListener('change', (e) => this.applyEditing(e.target.value));
+                cloudService.addEventListener('change', (e) => this.cloudService = e.target.value);
+                
+                pdfBtn.addEventListener('click', () => this.saveAsPDF());
+                editResultBtn.addEventListener('click', () => this.editDocument());
+                shareResultBtn.addEventListener('click', () => this.shareDocuments());
+            }
 
-    const qualityPresets = [
-      { name:"Economy",  videoBitrate:  800_000, audioBitrate: 32_000, fps:15, res: 720, audioChannels:1, audioSampleRate:16000 },
-      { name:"Balanced", videoBitrate:2_500_000, audioBitrate: 64_000, fps:20, res:1080, audioChannels:1, audioSampleRate:24000 },
-      { name:"High",     videoBitrate:5_000_000, audioBitrate:128_000, fps:24, res:1080, audioChannels:2, audioSampleRate:48000 }
-    ];
+            toggleScanning() {
+                this.isScanning = !this.isScanning;
+                scanBtn.textContent = this.isScanning ? 'Stop Scanning' : 'Start Scanning';
+                scanBtn.style.background = this.isScanning ? '#ff6b6b' : '';
+                
+                if (this.isScanning) {
+                    this.startScanning();
+                } else {
+                    this.stopScanning();
+                }
+            }
 
-    // ────────────────────────────────────────────────
-    // Utils
-    // ────────────────────────────────────────────────
-    function formatTime(s) {
-      const m = Math.floor(s / 60).toString().padStart(2,'0');
-      const sec = (s % 60).toString().padStart(2,'0');
-      return `${m}:${sec}`;
-    }
+            startScanning() {
+                setStatus('Scanning documents...', 'active');
+                
+                if (this.documentDetection) {
+                    this.detectDocuments();
+                } else {
+                    // Manual scanning mode
+                    this.manualScan();
+                }
+            }
 
-    function startTimer() {
-      seconds = 0;
-      document.getElementById('timer').textContent = "00:00";
-      document.getElementById('timerBox').classList.remove('hidden');
-      timerInterval = setInterval(() => {
-        seconds++;
-        document.getElementById('timer').textContent = formatTime(seconds);
-      }, 1000);
-    }
+            detectDocuments() {
+                // Simulate document detection
+                const interval = setInterval(() => {
+                    if (this.isScanning) {
+                        this.captureDocument();
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 1000);
+            }
 
-    function stopTimer() {
-      clearInterval(timerInterval);
-      document.getElementById('timerBox').classList.add('hidden');
-    }
+            manualScan() {
+                // Simulate manual scanning
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space') {
+                        this.captureDocument();
+                    }
+                });
+            }
 
-    function getBestVideoMime() {
-      const tries = [
-        'video/webm;codecs=vp9,opus',
-        'video/webm;codecs=vp8,opus',
-        'video/webm'
-      ];
-      for (let t of tries) {
-        if (MediaRecorder.isTypeSupported(t)) return t;
-      }
-      return 'video/webm';
-    }
+            captureDocument() {
+                // In a real app, we would capture from the video element
+                // For demo purposes, we'll just create a placeholder image
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 640;
+                canvas.height = 480;
+                
+                // Draw placeholder document
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#4b6cb7';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+                
+                // Add text
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 24px Arial';
+                ctx.fillText('Sample Document', 100, 100);
+                
+                // Add timestamp
+                const date = new Date();
+                ctx.font = '16px Arial';
+                ctx.fillText(`Scanned: ${date.toLocaleTimeString()}`, 100, 140);
+                
+                const imageData = canvas.toDataURL('image/jpeg', 0.9);
+                
+                // Process the image
+                this.processImage(imageData);
+            }
 
-    // ────────────────────────────────────────────────
-    // Core Actions
-    // ────────────────────────────────────────────────
-    async function startApp() {
-      document.getElementById('home').classList.add('hidden');
-      document.getElementById('scanner').classList.remove('hidden');
+            processImage(imageData) {
+                // Create document object
+                const document = {
+                    id: Date.now(),
+                    image: imageData,
+                    timestamp: new Date(),
+                    annotations: []
+                };
+                
+                // Add to documents array
+                documents.push(document);
+                this.currentDocument = document;
+                
+                // Update UI
+                this.updateResults();
+                setStatus(`Captured document ${documents.length}`, 'success');
+            }
 
-      const q = qualityPresets[qualityLevel];
+            updateResults() {
+                if (documents.length > 0) {
+                    results.classList.add('active');
+                    scannedImage.src = documents[0].image;
+                } else {
+                    results.classList.remove('active');
+                }
+            }
 
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: "environment" },
-            width:  { ideal: q.res },
-            height: { ideal: Math.round(q.res * 16/9) },
-            frameRate: { ideal: q.fps }
-          },
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            channelCount:   q.audioChannels,
-            sampleRate:     q.audioSampleRate
-          }
-        });
+            applyEditing(option) {
+                if (!this.currentDocument) {
+                    setStatus('No document to edit', 'warning');
+                    return;
+                }
+                
+                // In a real app, we would apply the selected editing operation
+                setStatus(`Applying ${option}...`, 'active');
+                
+                setTimeout(() => {
+                    setStatus(`Applied ${option} successfully`, 'success');
+                }, 1000);
+            }
 
-        document.getElementById('preview').srcObject = stream;
-        await document.getElementById('preview').play();
-      } catch (err) {
-        alert("Camera / Microphone access denied or not available.\n\n" + err.message);
-      }
-    }
+            saveToCloud() {
+                if (documents.length === 0) {
+                    setStatus('No documents to save', 'warning');
+                    return;
+                }
+                
+                setStatus(`Saving to ${cloudService.value}...`, 'active');
+                
+                // Simulate cloud saving
+                setTimeout(() => {
+                    setStatus(`Saved to ${cloudService.value} successfully`, 'success');
+                }, 2000);
+            }
 
-    function setQuality(idx) {
-      qualityLevel = idx;
-      document.querySelectorAll('#q0,#q1,#q2').forEach((el,i) => {
-        el.classList.toggle('bg-lime-500', i === idx);
-        el.classList.toggle('bg-white/20', i !== idx);
-        el.classList.toggle('text-black',   i === idx);
-      });
-      alert(`Switched to ${qualityPresets[idx].name} quality.\nRestart scanning to apply.`);
-    }
+            shareDocuments() {
+                if (documents.length === 0) {
+                    setStatus('No documents to share', 'warning');
+                    return;
+                }
+                
+                setStatus('Preparing share options...', 'active');
+                
+                // In a real app, we would implement sharing options
+                setTimeout(() => {
+                    setStatus('Choose sharing method', 'info');
+                }, 1000);
+            }
 
-    async function takePhoto() {
-      if (!stream) return alert("Camera not started yet.");
+            editDocument() {
+                if (documents.length === 0) {
+                    setStatus('No documents to edit', 'warning');
+                    return;
+                }
+                
+                setStatus('Opening editor...', 'active');
+                
+                // In a real app, we would open an editing interface
+                setTimeout(() => {
+                    setStatus('Document ready for editing', 'success');
+                }, 1000);
+            }
 
-      try {
-        const track = stream.getVideoTracks()[0];
-        const capture = new ImageCapture(track);
-        const blob = await capture.takePhoto();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Camp-Photo-${Date.now()}.jpg`;
-        a.click();
-        URL.revokeObjectURL(url);
-      } catch (e) {
-        // fallback canvas
-        const video = document.getElementById('preview');
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        canvas.toBlob(b => {
-          const url = URL.createObjectURL(b);
-          const a = document.createElement('a');
-          a.href = url; a.download = `Camp-Photo-fallback-${Date.now()}.jpg`;
-          a.click(); URL.revokeObjectURL(url);
-        }, 'image/jpeg', 0.92);
-      }
-    }
+            saveAsPDF() {
+                if (documents.length === 0) {
+                    setStatus('No documents to save', 'warning');
+                    return;
+                }
+                
+                setStatus('Converting to PDF...', 'active');
+                
+                // Simulate PDF conversion
+                setTimeout(() => {
+                    setStatus('PDF saved successfully', 'success');
+                }, 1500);
+            }
+        }
 
-    async function startVoiceNote() {
-      if (!stream) return alert("Start scanning first");
+        // Utility functions
+        function setStatus(message, type) {
+            statusText.textContent = message;
+            progressBar.style.width = type === 'active' ? '70%' : '100%';
+            
+            // Reset progress bar after animation
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                }, 2000);
+            }
+        }
 
-      const q = qualityPresets[qualityLevel];
-      const audioStream = new MediaStream(stream.getAudioTracks());
-
-      mediaRecorder = new MediaRecorder(audioStream, {
-        mimeType: 'audio/webm;codecs=opus',
-        audioBitsPerSecond: q.audioBitrate
-      });
-
-      recordedChunks = [];
-      mediaRecorder.ondataavailable = e => e.data.size > 0 && recordedChunks.push(e.data);
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Camp-Voice-${q.name}-${Date.now()}.webm`;
-        a.click();
-        URL.revokeObjectURL(url);
-      };
-
-      mediaRecorder.start();
-      alert("🎤 Recording voice note...\n\nTap Stop when finished.");
-    }
-
-    async function startVideo() {
-      if (!stream) return;
-
-      const q = qualityPresets[qualityLevel];
-      const mime = getBestVideoMime();
-
-      mediaRecorder = new MediaRecorder(stream, {
-        mimeType: mime,
-        videoBitsPerSecond: q.videoBitrate,
-        audioBitsPerSecond: q.audioBitrate
-      });
-
-      recordedChunks = [];
-      mediaRecorder.ondataavailable = e => e.data.size > 0 && recordedChunks.push(e.data);
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: mime });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Camp-Video-${q.name}-${Date.now()}.webm`;
-        a.click();
-        URL.revokeObjectURL(url);
-        stopTimer();
-      };
-
-      mediaRecorder.start(1000); // chunks every second
-      startTimer();
-
-      document.getElementById('startVideoBtn').classList.add('hidden');
-      document.getElementById('pauseBtn').classList.remove('hidden');
-      document.getElementById('stopBtn').classList.remove('hidden');
-    }
-
-    function pauseOrResume() {
-      if (!mediaRecorder) return;
-      if (mediaRecorder.state === 'recording') {
-        mediaRecorder.pause();
-        stopTimer();
-        document.getElementById('pauseBtn').textContent = '▶ Resume';
-      } else if (mediaRecorder.state === 'paused') {
-        mediaRecorder.resume();
-        startTimer();
-        document.getElementById('pauseBtn').textContent = '⏸ Pause';
-      }
-    }
-
-    function stopRecording() {
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-      }
-      document.getElementById('startVideoBtn').classList.remove('hidden');
-      document.getElementById('pauseBtn').classList.add('hidden');
-      document.getElementById('pauseBtn').textContent = '⏸ Pause';
-      document.getElementById('stopBtn').classList.add('hidden');
-      stopTimer();
-    }
-
-    async function toggleTorch() {
-      if (!stream) return;
-      const track = stream.getVideoTracks()[0];
-      if (!track) return;
-      torchOn = !torchOn;
-      try {
-        await track.applyConstraints({ advanced: [{ torch: torchOn }] });
-      } catch {}
-    }
-
-    function stopEverything() {
-      stopTimer();
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-      }
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop());
-        stream = null;
-      }
-      document.getElementById('scanner').classList.add('hidden');
-      document.getElementById('home').classList.remove('hidden');
-      document.getElementById('startVideoBtn').classList.remove('hidden');
-      document.getElementById('pauseBtn').classList.add('hidden');
-      document.getElementById('stopBtn').classList.add('hidden');
-    }
-
-    console.log("%c🏕️ Camp Scanner – single file edition loaded", "color:lime; font-size:16px; font-weight:bold");
-  </script>
+        function updateUI() {
+            // Update UI based on current state
+            const isScanning = document.querySelector('.app-controls button').textContent === 'Stop Scanning';
+            document.querySelector('.controls').style.display = isScanning ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>
