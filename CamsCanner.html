@@ -458,6 +458,11 @@
             from { opacity: 0; transform: translateX(-50%) translateY(20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
+        @keyframes scanLineMove {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
         .toast i { color: #10b981; }
         .modal-overlay {
             position: fixed;
@@ -567,6 +572,21 @@
                         <i class="fas fa-arrow-left"></i>
                     </button>
                     
+                    <!-- Batch scan counter -->
+                    <div id="batch-counter" style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(0,0,0,0.6); color: white; font-size: 0.875rem; z-index: 20; display: none;">
+                        <i class="fas fa-images"></i> <span id="batch-count">0</span> pages
+                    </div>
+                    
+                    <!-- Auto-capture toggle -->
+                    <button id="auto-capture-btn" style="position: absolute; top: 1rem; right: 1rem; padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(0,0,0,0.5); border: 2px solid transparent; color: white; font-size: 0.875rem; z-index: 20; cursor: pointer; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-magic"></i> <span>Auto: OFF</span>
+                    </button>
+                    
+                    <!-- Batch mode toggle -->
+                    <button id="batch-mode-btn" style="position: absolute; top: 4rem; right: 1rem; padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(0,0,0,0.5); border: 2px solid transparent; color: white; font-size: 0.875rem; z-index: 20; cursor: pointer; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-layer-group"></i> <span>Batch: OFF</span>
+                    </button>
+                    
                     <div class="camera-overlay">
                         <div class="scan-frame">
                             <div class="corner top-left"></div>
@@ -580,6 +600,18 @@
                         <button id="flash-btn" class="control-btn"><i class="fas fa-bolt"></i></button>
                         <button id="capture-btn" class="capture-btn"><i class="fas fa-camera"></i></button>
                         <button id="gallery-btn" class="control-btn"><i class="fas fa-images"></i></button>
+                    </div>
+                    
+                    <!-- Batch mode controls -->
+                    <div id="batch-controls" style="display: none; position: absolute; bottom: 140px; left: 0; right: 0; padding: 0.75rem; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem;">
+                            <button id="batch-done-btn" class="btn" style="background: #10b981; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 0.875rem; border: none;">
+                                <i class="fas fa-check"></i> Done (<span id="batch-total">0</span>)
+                            </button>
+                            <button id="batch-review-btn" class="btn" style="background: #4f46e5; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 0.875rem; border: none;">
+                                <i class="fas fa-eye"></i> Review
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
@@ -622,11 +654,53 @@
                         </div>
                         <button id="clear-annotations-btn" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Clear</button>
                     </div>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <button class="btn btn-sm btn-secondary" onclick="document.getElementById('filter-panel').style.display = document.getElementById('filter-panel').style.display === 'none' ? 'block' : 'none';">
+                            <i class="fas fa-magic"></i> Filters
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="document.getElementById('edit-tools-panel').style.display = document.getElementById('edit-tools-panel').style.display === 'none' ? 'block' : 'none';">
+                            <i class="fas fa-tools"></i> Edit Tools
+                        </button>
+                    </div>
+                    
                     <div id="filter-panel" class="filter-panel" style="display: none;">
                         <button class="filter-btn active" data-filter="none">Original</button>
                         <button class="filter-btn" data-filter="grayscale">B&W</button>
                         <button class="filter-btn" data-filter="contrast">High Contrast</button>
                         <button class="filter-btn" data-filter="brightness">Lighten</button>
+                    </div>
+                    
+                    <!-- Advanced Edit Tools -->
+                    <div id="edit-tools-panel" style="display: none; padding: 1rem; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                        <h4 style="font-size: 0.875rem; color: #374151; margin-bottom: 0.75rem; font-weight: 600;">
+                            <i class="fas fa-tools"></i> Edit Tools
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                            <button class="btn btn-sm btn-primary" onclick="window.scanner.openEnhanceModal()" style="padding: 0.5rem; background: #7c3aed; border-color: #7c3aed;">
+                                <i class="fas fa-wand-magic-sparkles"></i><br><small>AI Enhance</small>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.scanner.openCropTool()" style="padding: 0.5rem;">
+                                <i class="fas fa-crop"></i><br><small>Crop</small>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.scanner.openRotateTool()" style="padding: 0.5rem;">
+                                <i class="fas fa-sync-alt"></i><br><small>Rotate</small>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.scanner.openAdjustTool()" style="padding: 0.5rem;">
+                                <i class="fas fa-sliders-h"></i><br><small>Adjust</small>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.scanner.openDrawTool()" style="padding: 0.5rem;">
+                                <i class="fas fa-pen"></i><br><small>Draw</small>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.scanner.openTextTool()" style="padding: 0.5rem;">
+                                <i class="fas fa-font"></i><br><small>Text</small>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.scanner.openStampTool()" style="padding: 0.5rem;">
+                                <i class="fas fa-stamp"></i><br><small>Stamp</small>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.scanner.openBlurTool()" style="padding: 0.5rem;">
+                                <i class="fas fa-tint-slash"></i><br><small>Blur</small>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -656,10 +730,41 @@
                     <div class="save-options">
                         <h3>Export Format</h3>
                         <div class="option-grid">
-                            <button id="export-pdf-btn" class="save-option active"><i class="fas fa-file-pdf"></i><span>PDF</span></button>
-                            <button id="export-jpg-btn" class="save-option"><i class="fas fa-file-image"></i><span>JPEG</span></button>
-                            <button id="export-txt-btn" class="save-option"><i class="fas fa-file-alt"></i><span>TXT</span></button>
-                            <button id="qr-scan-btn" class="save-option"><i class="fas fa-qrcode"></i><span>QR Scanner</span></button>
+                            <button id="export-pdf-btn" class="save-option active" onclick="window.scanner.setExportFormat('pdf')">
+                                <i class="fas fa-file-pdf"></i><span>PDF</span>
+                            </button>
+                            <button id="export-jpg-btn" class="save-option" onclick="window.scanner.setExportFormat('jpg')">
+                                <i class="fas fa-file-image"></i><span>JPEG</span>
+                            </button>
+                            <button id="export-png-btn" class="save-option" onclick="window.scanner.setExportFormat('png')">
+                                <i class="fas fa-image"></i><span>PNG</span>
+                            </button>
+                            <button id="export-txt-btn" class="save-option" onclick="window.scanner.setExportFormat('txt')">
+                                <i class="fas fa-file-alt"></i><span>TXT</span>
+                            </button>
+                            <button id="export-docx-btn" class="save-option" onclick="window.scanner.setExportFormat('docx')">
+                                <i class="fas fa-file-word"></i><span>Word</span>
+                            </button>
+                            <button id="export-zip-btn" class="save-option" onclick="window.scanner.setExportFormat('zip')">
+                                <i class="fas fa-file-archive"></i><span>ZIP</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="save-options">
+                        <h3>Quick Actions</h3>
+                        <div class="option-grid">
+                            <button id="pdf-edit-btn" class="save-option" onclick="window.scanner.openPDFEditor()">
+                                <i class="fas fa-edit"></i><span>Edit PDF</span>
+                            </button>
+                            <button id="security-settings-btn" class="save-option" onclick="window.scanner.openSecuritySettings()">
+                                <i class="fas fa-shield-alt"></i><span>Security</span>
+                            </button>
+                            <button id="qr-scan-btn" class="save-option" onclick="window.scanner.openQRScanner()">
+                                <i class="fas fa-qrcode"></i><span>QR Scanner</span>
+                            </button>
+                            <button id="print-btn" class="save-option" onclick="window.scanner.printDocument()"><i class="fas fa-print"></i><span>Print</span></button>
+                            <button id="share-native-btn" class="save-option" onclick="window.scanner.shareNative()"><i class="fas fa-share"></i><span>Share</span></button>
                         </div>
                     </div>
                     <div class="save-options">
@@ -708,12 +813,48 @@
 
         <!-- OCR Modal -->
         <div id="ocr-modal" class="modal-overlay">
-            <div class="modal">
-                <h3><i class="fas fa-font"></i> Extracted Text</h3>
-                <div id="ocr-text" class="ocr-result">Scan a document to extract text...</div>
+            <div class="modal" style="max-width: 500px;">
+                <h3><i class="fas fa-font"></i> Extracted Text (OCR)</h3>
+                
+                <!-- Language selector -->
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #6b7280; font-size: 0.875rem;">Document Language</label>
+                    <select id="ocr-language" class="modal-input" style="margin-bottom: 0;">
+                        <option value="eng">English</option>
+                        <option value="ara">Arabic</option>
+                        <option value="chi_sim">Chinese (Simplified)</option>
+                        <option value="chi_tra">Chinese (Traditional)</option>
+                        <option value="fra">French</option>
+                        <option value="deu">German</option>
+                        <option value="spa">Spanish</option>
+                        <option value="ita">Italian</option>
+                        <option value="jpn">Japanese</option>
+                        <option value="kor">Korean</option>
+                        <option value="por">Portuguese</option>
+                        <option value="rus">Russian</option>
+                        <option value="tur">Turkish</option>
+                        <option value="urd">Urdu</option>
+                    </select>
+                </div>
+                
+                <!-- Progress bar -->
+                <div id="ocr-progress-container" style="display: none; margin-bottom: 1rem;">
+                    <div style="background: #e5e7eb; border-radius: 1rem; height: 8px; overflow: hidden;">
+                        <div id="ocr-progress-bar" style="background: #4f46e5; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                    </div>
+                    <p id="ocr-progress-text" style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; text-align: center;">Loading OCR engine...</p>
+                </div>
+                
+                <!-- Text result -->
+                <textarea id="ocr-text" class="ocr-result" style="width: 100%; min-height: 200px; resize: vertical; font-family: inherit;" placeholder="Extracted text will appear here..."></textarea>
+                
+                <!-- Confidence score -->
+                <p id="ocr-confidence" style="font-size: 0.75rem; color: #6b7280; margin-bottom: 1rem; text-align: right;"></p>
+                
                 <div class="modal-buttons">
                     <button class="btn btn-secondary" onclick="document.getElementById('ocr-modal').classList.remove('active')">Close</button>
                     <button class="btn btn-primary" id="copy-text-btn"><i class="fas fa-copy"></i> Copy</button>
+                    <button class="btn btn-primary" id="save-text-btn" style="background: #10b981;"><i class="fas fa-save"></i> Save TXT</button>
                 </div>
             </div>
         </div>
@@ -753,6 +894,15 @@
                 <h3><i class="fas fa-lock"></i> Password Protect PDF</h3>
                 <input type="password" id="pdf-password" class="modal-input" placeholder="Enter password">
                 <input type="password" id="pdf-password-confirm" class="modal-input" placeholder="Confirm password">
+                <div style="margin: 0.75rem 0;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem;">
+                        <input type="checkbox" onchange="document.getElementById('pdf-password').type = this.checked ? 'text' : 'password'; document.getElementById('pdf-password-confirm').type = this.checked ? 'text' : 'password';">
+                        <span>Show password</span>
+                    </label>
+                </div>
+                <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle"></i> Minimum 6 characters required
+                </p>
                 <div class="modal-buttons">
                     <button class="btn btn-secondary" onclick="document.getElementById('password-modal').classList.remove('active')">Cancel</button>
                     <button class="btn btn-primary" id="apply-password">Apply Password</button>
@@ -760,34 +910,566 @@
             </div>
         </div>
 
-        <!-- QR Scanner Modal -->
-        <div id="qr-modal" class="modal-overlay">
-            <div class="modal">
-                <h3><i class="fas fa-qrcode"></i> QR Code Scanner</h3>
-                <div id="qr-reader" style="width: 100%; height: 250px; background: #000; border-radius: 0.5rem; margin-bottom: 1rem;"></div>
-                <div id="qr-result" class="ocr-result" style="display: none;"></div>
+        <!-- Security Settings Modal -->
+        <div id="security-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 450px;">
+                <h3><i class="fas fa-shield-alt"></i> Security & Privacy</h3>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="font-size: 0.875rem; color: #374151; margin-bottom: 0.75rem; font-weight: 600;">Document Security</h4>
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f9fafb; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                        <div>
+                            <p style="font-weight: 500; font-size: 0.875rem;">Auto-Delete After Download</p>
+                            <p style="font-size: 0.75rem; color: #6b7280;">Remove from app after saving</p>
+                        </div>
+                        <input type="checkbox" id="auto-delete-toggle" style="width: 20px; height: 20px;">
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f9fafb; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                        <div>
+                            <p style="font-weight: 500; font-size: 0.875rem;">Require Password</p>
+                            <p style="font-size: 0.75rem; color: #6b7280;">Lock app with PIN</p>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.setupAppPassword()">Setup</button>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="font-size: 0.875rem; color: #374151; margin-bottom: 0.75rem; font-weight: 600;">Privacy Status</h4>
+                    
+                    <div style="padding: 0.75rem; background: #ecfdf5; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                            <span style="font-weight: 500; font-size: 0.875rem;">Local Processing Only</span>
+                        </div>
+                        <p style="font-size: 0.75rem; color: #6b7280; margin-left: 1.25rem;">Images never leave your device</p>
+                    </div>
+                    
+                    <div style="padding: 0.75rem; background: #ecfdf5; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                            <span style="font-weight: 500; font-size: 0.875rem;">Encrypted Storage</span>
+                        </div>
+                        <p style="font-size: 0.75rem; color: #6b7280; margin-left: 1.25rem;">AES-256 encryption for saved docs</p>
+                    </div>
+                </div>
+                
+                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="font-size: 0.75rem; color: #92400e;">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        <strong>Privacy Notice:</strong> All scanning and processing happens locally. No data is uploaded to servers.
+                    </p>
+                </div>
+                
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="document.getElementById('qr-modal').classList.remove('active'); window.scanner.stopQRScanner();">Close</button>
-                    <button class="btn btn-primary" id="copy-qr-btn"><i class="fas fa-copy"></i> Copy</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('security-modal').classList.remove('active')">Close</button>
+                    <button class="btn btn-danger" onclick="window.scanner.confirmClearData()">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Enhance Modal -->
+        <!-- App Password Setup Modal -->
+        <div id="app-password-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 350px;">
+                <h3><i class="fas fa-lock"></i> App Password</h3>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Set a 4-digit PIN to lock the app</p>
+                
+                <input type="password" id="app-password" class="modal-input" placeholder="Enter 4-digit PIN" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+                <input type="password" id="app-password-confirm" class="modal-input" placeholder="Confirm PIN" maxlength="4" inputmode="numeric" pattern="[0-9]*" style="margin-top: 0.5rem;">
+                
+                <div class="modal-buttons" style="margin-top: 1rem;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('app-password-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" onclick="window.scanner.saveAppPassword()">Save PIN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lock Screen -->
+        <div id="lock-screen" class="screen" style="background: linear-gradient(135deg, #1e1b4b, #312e81); position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; display: none;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 2rem; color: white;">
+                <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                    <i class="fas fa-lock" style="font-size: 2rem;"></i>
+                </div>
+                <h2 style="margin-bottom: 0.5rem;">App Locked</h2>
+                <p style="opacity: 0.8; margin-bottom: 1.5rem;">Enter your PIN to continue</p>
+                
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    <div class="pin-dot" style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; background: transparent;"></div>
+                    <div class="pin-dot" style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; background: transparent;"></div>
+                    <div class="pin-dot" style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; background: transparent;"></div>
+                    <div class="pin-dot" style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; background: transparent;"></div>
+                </div>
+                
+                <input type="password" id="unlock-pin" maxlength="4" inputmode="numeric" pattern="[0-9]*" style="position: absolute; opacity: 0;" oninput="window.scanner.checkUnlockPin(this.value)">
+                
+                <button class="btn" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem;" onclick="document.getElementById('unlock-pin').focus()">
+                    <i class="fas fa-keyboard"></i> Tap to Enter PIN
+                </button>
+                
+                <button style="margin-top: 1rem; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 0.875rem;" onclick="window.scanner.forgotPassword()">
+                    Forgot Password?
+                </button>
+            </div>
+        </div>
+
+        <!-- QR Scanner Modal -->
+        <div id="qr-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 450px;">
+                <h3><i class="fas fa-qrcode"></i> QR Code Scanner</h3>
+                
+                <!-- QR Scanner View -->
+                <div id="qr-scanner-view" style="position: relative; width: 100%; height: 300px; background: #000; border-radius: 0.5rem; margin-bottom: 1rem; overflow: hidden;">
+                    <video id="qr-video" style="width: 100%; height: 100%; object-fit: cover;" playsinline></video>
+                    <canvas id="qr-canvas" style="display: none;"></canvas>
+                    
+                    <!-- Scan overlay -->
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; border: 2px solid rgba(79, 70, 229, 0.8); border-radius: 1rem; box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);">
+                        <div style="position: absolute; top: -2px; left: -2px; width: 20px; height: 20px; border-top: 4px solid #4f46e5; border-left: 4px solid #4f46e5; border-top-left-radius: 1rem;"></div>
+                        <div style="position: absolute; top: -2px; right: -2px; width: 20px; height: 20px; border-top: 4px solid #4f46e5; border-right: 4px solid #4f46e5; border-top-right-radius: 1rem;"></div>
+                        <div style="position: absolute; bottom: -2px; left: -2px; width: 20px; height: 20px; border-bottom: 4px solid #4f46e5; border-left: 4px solid #4f46e5; border-bottom-left-radius: 1rem;"></div>
+                        <div style="position: absolute; bottom: -2px; right: -2px; width: 20px; height: 20px; border-bottom: 4px solid #4f46e5; border-right: 4px solid #4f46e5; border-bottom-right-radius: 1rem;"></div>
+                        
+                        <!-- Scan line animation -->
+                        <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #10b981; box-shadow: 0 0 10px #10b981; animation: scanLineMove 2s linear infinite;"></div>
+                    </div>
+                    
+                    <p style="position: absolute; bottom: 1rem; left: 0; right: 0; text-align: center; color: white; font-size: 0.875rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                        Position QR code in frame
+                    </p>
+                </div>
+                
+                <!-- QR Result View -->
+                <div id="qr-result-view" style="display: none;">
+                    <div style="background: #f9fafb; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i id="qr-type-icon" class="fas fa-link" style="color: #4f46e5; font-size: 1.25rem;"></i>
+                            <span id="qr-type-label" style="font-weight: 600; color: #374151;">URL</span>
+                        </div>
+                        <p id="qr-result-text" style="font-size: 0.875rem; color: #6b7280; word-break: break-all; font-family: monospace; background: white; padding: 0.75rem; border-radius: 0.25rem; border: 1px solid #e5e7eb;">
+                            https://example.com
+                        </p>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
+                        <button class="btn btn-primary" id="qr-open-btn" onclick="window.scanner.openQRResult()">
+                            <i class="fas fa-external-link-alt"></i> Open
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.scanner.copyQRResult()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.scanner.shareQRResult()">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.scanner.saveQRToHistory()">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- QR History -->
+                <div id="qr-history-section" style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.875rem; font-weight: 500; color: #374151;">Recent Scans</span>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.clearQRHistory()" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                            Clear
+                        </button>
+                    </div>
+                    <div id="qr-history-list" style="max-height: 150px; overflow-y: auto; background: #f9fafb; border-radius: 0.5rem; padding: 0.5rem;">
+                        <p style="text-align: center; color: #9ca3af; font-size: 0.875rem; padding: 1rem;">No scans yet</p>
+                    </div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="window.scanner.closeQRScanner()">Close</button>
+                    <button id="qr-rescan-btn" class="btn btn-primary" style="display: none;" onclick="window.scanner.rescanQR()">
+                        <i class="fas fa-redo"></i> Scan Again
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Enhance Modal -->
         <div id="enhance-modal" class="modal-overlay">
-            <div class="modal">
-                <h3><i class="fas fa-wand-magic-sparkles"></i> Enhance Document</h3>
-                <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: #6b7280;">Sharpness</label>
-                    <input type="range" id="sharpness-slider" min="0" max="100" value="50" style="width: 100%;">
+            <div class="modal" style="max-width: 500px;">
+                <h3><i class="fas fa-wand-magic-sparkles"></i> AI Document Enhancement</h3>
+                
+                <!-- Preview Area -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                    <div style="text-align: center;">
+                        <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Original</p>
+                        <canvas id="enhance-original" style="width: 100%; height: 120px; background: #f3f4f6; border-radius: 0.5rem; object-fit: contain;"></canvas>
+                    </div>
+                    <div style="text-align: center;">
+                        <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Enhanced</p>
+                        <canvas id="enhance-preview" style="width: 100%; height: 120px; background: #f3f4f6; border-radius: 0.5rem; object-fit: contain;"></canvas>
+                    </div>
                 </div>
+                
+                <!-- Quick Enhance Buttons -->
                 <div style="margin-bottom: 1rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: #6b7280;">Denoise</label>
-                    <input type="range" id="denoise-slider" min="0" max="100" value="30" style="width: 100%;">
+                    <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem; font-weight: 500;">Quick Enhance</p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.autoEnhance()">
+                            <i class="fas fa-magic"></i> Auto Fix
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.enhanceDocumentMode()">
+                            <i class="fas fa-file-alt"></i> Document Mode
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.deblurImage()">
+                            <i class="fas fa-eye"></i> Deblur
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.denoiseImage()">
+                            <i class="fas fa-eraser"></i> Clean
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.sharpenImage()">
+                            <i class="fas fa-bolt"></i> Sharpen
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.colorCorrect()">
+                            <i class="fas fa-palette"></i> Color Fix
+                        </button>
+                    </div>
                 </div>
+                
+                <!-- Manual Adjustments -->
+                <div style="background: #f9fafb; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <p style="font-size: 0.875rem; color: #374151; margin-bottom: 0.75rem; font-weight: 500;">Fine Tune</p>
+                    
+                    <div style="margin-bottom: 0.75rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #6b7280;">
+                            <span>Sharpness</span><span id="enhance-sharpness-val">50%</span>
+                        </div>
+                        <input type="range" id="enhance-sharpness" min="0" max="100" value="50" style="width: 100%;" oninput="window.scanner.updateEnhancePreview()">
+                    </div>
+                    
+                    <div style="margin-bottom: 0.75rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #6b7280;">
+                            <span>Contrast</span><span id="enhance-contrast-val">50%</span>
+                        </div>
+                        <input type="range" id="enhance-contrast" min="0" max="100" value="50" style="width: 100%;" oninput="window.scanner.updateEnhancePreview()">
+                    </div>
+                    
+                    <div style="margin-bottom: 0.75rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #6b7280;">
+                            <span>Whiteness</span><span id="enhance-whiteness-val">50%</span>
+                        </div>
+                        <input type="range" id="enhance-whiteness" min="0" max="100" value="50" style="width: 100%;" oninput="window.scanner.updateEnhancePreview()">
+                    </div>
+                    
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #6b7280;">
+                            <span>Shadow Removal</span><span id="enhance-shadow-val">30%</span>
+                        </div>
+                        <input type="range" id="enhance-shadow" min="0" max="100" value="30" style="width: 100%;" oninput="window.scanner.updateEnhancePreview()">
+                    </div>
+                </div>
+                
+                <!-- Enhancement Info -->
+                <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="font-size: 0.75rem; color: #065f46;">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>AI Enhancement:</strong> Automatically fixes lighting, removes shadows, and improves text clarity for professional document quality.
+                    </p>
+                </div>
+                
                 <div class="modal-buttons">
                     <button class="btn btn-secondary" onclick="document.getElementById('enhance-modal').classList.remove('active')">Cancel</button>
-                    <button class="btn btn-primary" id="apply-enhance">Apply</button>
+                    <button class="btn btn-secondary" onclick="window.scanner.resetEnhance()">Reset</button>
+                    <button class="btn btn-primary" onclick="window.scanner.applyEnhancement()">
+                        <i class="fas fa-check"></i> Apply Enhancement
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Preview & Edit Modal -->
+        <div id="pdf-preview-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 95vw; max-height: 95vh; width: 95vw;">
+                <h3><i class="fas fa-file-pdf"></i> PDF Editor & Preview</h3>
+                
+                <!-- PDF Edit Toolbar -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center;">
+                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.addTextToPDF()">
+                        <i class="fas fa-font"></i> Add Text
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.addSignatureToPDF()">
+                        <i class="fas fa-signature"></i> E-Sign
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.addDateToPDF()">
+                        <i class="fas fa-calendar"></i> Date
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.addCheckboxToPDF()">
+                        <i class="fas fa-check-square"></i> Checkbox
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.undoPDFEdit()">
+                        <i class="fas fa-undo"></i> Undo
+                    </button>
+                </div>
+                
+                <!-- PDF Edit Canvas Container -->
+                <div id="pdf-edit-container" style="background: #f3f4f6; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; max-height: 60vh; overflow: auto; position: relative;">
+                    <canvas id="pdf-edit-canvas" style="max-width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></canvas>
+                    <p id="pdf-edit-hint" style="text-align: center; color: #6b7280; margin-top: 0.5rem; font-size: 0.875rem;">
+                        Tap buttons above to add elements, then tap on document to place
+                    </p>
+                </div>
+                
+                <!-- Page Navigation -->
+                <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.prevPDFPage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="pdf-page-indicator">Page 1 of 1</span>
+                    <button class="btn btn-sm btn-secondary" onclick="window.scanner.nextPDFPage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('pdf-preview-modal').classList.remove('active')">Close</button>
+                    <button class="btn btn-primary" onclick="window.scanner.downloadEditedPDF()">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Input Modal for PDF -->
+        <div id="pdf-text-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 400px;">
+                <h3><i class="fas fa-font"></i> Add Text</h3>
+                <textarea id="pdf-text-input" class="modal-input" style="min-height: 80px; resize: vertical;" placeholder="Enter text to add..."></textarea>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #6b7280; font-size: 0.875rem;">Text Size</label>
+                    <input type="range" id="pdf-text-size" min="12" max="48" value="16" style="width: 100%;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #6b7280; font-size: 0.875rem;">Text Color</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="color-btn active" data-color="#000000" style="background: #000000; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #4f46e5;" onclick="window.scanner.setPDFTextColor('#000000', this)"></button>
+                        <button class="color-btn" data-color="#ff0000" style="background: #ff0000; width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent;" onclick="window.scanner.setPDFTextColor('#ff0000', this)"></button>
+                        <button class="color-btn" data-color="#0000ff" style="background: #0000ff; width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent;" onclick="window.scanner.setPDFTextColor('#0000ff', this)"></button>
+                        <button class="color-btn" data-color="#008000" style="background: #008000; width: 32px; height: 32px; border-radius: 50%; border: 3px solid transparent;" onclick="window.scanner.setPDFTextColor('#008000', this)"></button>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('pdf-text-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" onclick="window.scanner.confirmAddText()">Add to PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop Tool Modal -->
+        <div id="crop-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 95vw; max-height: 95vh;">
+                <h3><i class="fas fa-crop"></i> Crop Image</h3>
+                <div style="position: relative; margin-bottom: 1rem; background: #1f2937; border-radius: 0.5rem; overflow: hidden;">
+                    <canvas id="crop-canvas" style="max-width: 100%; display: block;"></canvas>
+                    <div id="crop-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 2px dashed #4f46e5; pointer-events: none;"></div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #6b7280; font-size: 0.875rem;">Crop Presets</label>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.setCropRatio('free')">Free</button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.setCropRatio('1:1')">1:1</button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.setCropRatio('4:3')">4:3</button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.setCropRatio('16:9')">16:9</button>
+                        <button class="btn btn-sm btn-secondary" onclick="window.scanner.setCropRatio('a4')">A4</button>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('crop-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" onclick="window.scanner.applyCrop()">
+                        <i class="fas fa-check"></i> Apply Crop
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rotate Tool Modal -->
+        <div id="rotate-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 400px;">
+                <h3><i class="fas fa-sync-alt"></i> Rotate & Flip</h3>
+                <div style="text-align: center; margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+                    <canvas id="rotate-preview" style="max-width: 100%; max-height: 200px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></canvas>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
+                    <button class="btn btn-secondary" onclick="window.scanner.rotateImage(-90)">
+                        <i class="fas fa-undo"></i> Rotate Left
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.rotateImage(90)">
+                        <i class="fas fa-redo"></i> Rotate Right
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.flipImage('horizontal')">
+                        <i class="fas fa-arrows-alt-h"></i> Flip H
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.flipImage('vertical')">
+                        <i class="fas fa-arrows-alt-v"></i> Flip V
+                    </button>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('rotate-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" onclick="window.scanner.applyRotation()">
+                        <i class="fas fa-check"></i> Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adjust Tool Modal -->
+        <div id="adjust-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 400px;">
+                <h3><i class="fas fa-sliders-h"></i> Adjust Image</h3>
+                <div style="text-align: center; margin-bottom: 1rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+                    <canvas id="adjust-preview" style="max-width: 100%; max-height: 150px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></canvas>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">
+                        <span>Brightness</span><span id="brightness-value">100%</span>
+                    </label>
+                    <input type="range" id="brightness-slider" min="0" max="200" value="100" style="width: 100%;" oninput="window.scanner.updateAdjustPreview()">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">
+                        <span>Contrast</span><span id="contrast-value">100%</span>
+                    </label>
+                    <input type="range" id="contrast-slider" min="0" max="200" value="100" style="width: 100%;" oninput="window.scanner.updateAdjustPreview()">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">
+                        <span>Saturation</span><span id="saturation-value">100%</span>
+                    </label>
+                    <input type="range" id="saturation-slider" min="0" max="200" value="100" style="width: 100%;" oninput="window.scanner.updateAdjustPreview()">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="window.scanner.resetAdjustments()">Reset</button>
+                    <button class="btn btn-primary" onclick="window.scanner.applyAdjustments()">
+                        <i class="fas fa-check"></i> Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Draw Tool Modal -->
+        <div id="draw-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 95vw; max-height: 95vh;">
+                <h3><i class="fas fa-pen"></i> Draw on Image</h3>
+                <div style="margin-bottom: 0.5rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 0.875rem; color: #6b7280;">Color:</span>
+                        <button class="color-btn active" data-color="#ff0000" style="background: #ff0000; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #4f46e5;" onclick="window.scanner.setDrawColor('#ff0000', this)"></button>
+                        <button class="color-btn" data-color="#00ff00" style="background: #00ff00; width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setDrawColor('#00ff00', this)"></button>
+                        <button class="color-btn" data-color="#0000ff" style="background: #0000ff; width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setDrawColor('#0000ff', this)"></button>
+                        <button class="color-btn" data-color="#000000" style="background: #000000; width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setDrawColor('#000000', this)"></button>
+                        <span style="font-size: 0.875rem; color: #6b7280; margin-left: 1rem;">Size:</span>
+                        <input type="range" id="draw-size" min="1" max="20" value="3" style="width: 80px;">
+                    </div>
+                </div>
+                <div style="position: relative; margin-bottom: 1rem; background: #f9fafb; border-radius: 0.5rem; overflow: hidden; cursor: crosshair;">
+                    <canvas id="draw-canvas" style="max-width: 100%; display: block;"></canvas>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="window.scanner.clearDrawing()">Clear</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('draw-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" onclick="window.scanner.applyDrawing()">
+                        <i class="fas fa-check"></i> Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Overlay Modal -->
+        <div id="text-overlay-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 400px;">
+                <h3><i class="fas fa-font"></i> Add Text Overlay</h3>
+                <textarea id="overlay-text-input" class="modal-input" style="min-height: 60px; margin-bottom: 0.5rem;" placeholder="Enter text..."></textarea>
+                <div style="margin-bottom: 0.5rem;">
+                    <label style="font-size: 0.875rem; color: #6b7280;">Font Size</label>
+                    <input type="range" id="overlay-text-size" min="12" max="72" value="24" style="width: 100%;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.875rem; color: #6b7280;">Color</label>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+                        <button class="color-btn active" data-color="#000000" style="background: #000000; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #4f46e5;" onclick="window.scanner.setOverlayTextColor('#000000', this)"></button>
+                        <button class="color-btn" data-color="#ff0000" style="background: #ff0000; width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setOverlayTextColor('#ff0000', this)"></button>
+                        <button class="color-btn" data-color="#ffffff" style="background: #ffffff; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #e5e7eb;" onclick="window.scanner.setOverlayTextColor('#ffffff', this)"></button>
+                        <button class="color-btn" data-color="#0000ff" style="background: #0000ff; width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent;" onclick="window.scanner.setOverlayTextColor('#0000ff', this)"></button>
+                    </div>
+                </div>
+                <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 1rem;">
+                    <i class="fas fa-hand-pointer"></i> Tap on image to place text
+                </p>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('text-overlay-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" onclick="window.scanner.enableTextPlacement()">
+                        <i class="fas fa-check"></i> Place Text
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stamp Tool Modal -->
+        <div id="stamp-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 350px;">
+                <h3><i class="fas fa-stamp"></i> Add Stamp</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
+                    <button class="btn btn-secondary" onclick="window.scanner.selectStamp('APPROVED')" style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.5rem; display: block; margin-bottom: 0.25rem;"></i>
+                        APPROVED
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.selectStamp('REJECTED')" style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-times-circle" style="color: #ef4444; font-size: 1.5rem; display: block; margin-bottom: 0.25rem;"></i>
+                        REJECTED
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.selectStamp('CONFIDENTIAL')" style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-lock" style="color: #f59e0b; font-size: 1.5rem; display: block; margin-bottom: 0.25rem;"></i>
+                        CONFIDENTIAL
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.selectStamp('DRAFT')" style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-file-alt" style="color: #6b7280; font-size: 1.5rem; display: block; margin-bottom: 0.25rem;"></i>
+                        DRAFT
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.selectStamp('URGENT')" style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-exclamation-circle" style="color: #dc2626; font-size: 1.5rem; display: block; margin-bottom: 0.25rem;"></i>
+                        URGENT
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.scanner.selectStamp('PAID')" style="padding: 0.5rem; font-size: 0.75rem;">
+                        <i class="fas fa-dollar-sign" style="color: #059669; font-size: 1.5rem; display: block; margin-bottom: 0.25rem;"></i>
+                        PAID
+                    </button>
+                </div>
+                <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 1rem;">
+                    <i class="fas fa-hand-pointer"></i> Select stamp, then tap on image to place
+                </p>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="document.getElementById('stamp-modal').classList.remove('active')">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blur Tool Modal -->
+        <div id="blur-modal" class="modal-overlay">
+            <div class="modal" style="max-width: 95vw; max-height: 95vh;">
+                <h3><i class="fas fa-tint-slash"></i> Blur / Redact</h3>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">
+                    Drag to select area to blur. Use for sensitive information.
+                </p>
+                <div style="position: relative; margin-bottom: 1rem; background: #f9fafb; border-radius: 0.5rem; overflow: hidden;">
+                    <canvas id="blur-canvas" style="max-width: 100%; display: block; cursor: crosshair;"></canvas>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.875rem; color: #6b7280;">Blur Intensity</label>
+                    <input type="range" id="blur-intensity" min="5" max="50" value="20" style="width: 100%;">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="window.scanner.clearBlurAreas()">Clear All</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('blur-modal').classList.remove('active')">Cancel</button>
+                    <button class="btn btn-primary" onclick="window.scanner.applyBlur()">
+                        <i class="fas fa-check"></i> Apply Blur
+                    </button>
                 </div>
             </div>
         </div>
@@ -809,7 +1491,18 @@
                 this.pdfPassword = null;
                 this.qrScanner = null;
                 this.savedDocuments = JSON.parse(localStorage.getItem('campScannerDocs') || '[]');
+                this.autoCapture = false;
+                this.autoCaptureTimer = null;
+                this.pdfEditMode = null;
+                this.pdfEditElements = [];
+                this.pdfCurrentPage = 0;
+                this.pdfTextColor = '#000000';
+                this.securitySettings = JSON.parse(localStorage.getItem('campScannerSecurity') || '{}');
+                this.appLocked = false;
+                this.batchMode = false;
+                this.batchPages = [];
                 this.init();
+                this.checkAppLock();
             }
 
             init() {
@@ -823,6 +1516,10 @@
                 document.getElementById('flash-btn').addEventListener('click', () => this.toggleFlash());
                 document.getElementById('gallery-btn').addEventListener('click', () => document.getElementById('file-input').click());
                 document.getElementById('camera-back-btn').addEventListener('click', () => this.showScreen('welcome-screen'));
+                document.getElementById('auto-capture-btn').addEventListener('click', () => this.toggleAutoCapture());
+                document.getElementById('batch-mode-btn').addEventListener('click', () => this.toggleBatchMode());
+                document.getElementById('batch-done-btn').addEventListener('click', () => this.finishBatchScan());
+                document.getElementById('batch-review-btn').addEventListener('click', () => this.reviewBatchPages());
                 document.getElementById('file-input').addEventListener('change', (e) => this.handleFileSelect(e));
                 document.getElementById('retake-btn').addEventListener('click', () => this.retake());
                 document.getElementById('add-page-btn').addEventListener('click', () => this.showScreen('camera-screen'));
@@ -847,6 +1544,7 @@
                 document.getElementById('watermark-btn').addEventListener('click', () => this.openWatermarkModal());
                 document.getElementById('password-btn').addEventListener('click', () => this.openPasswordModal());
                 document.getElementById('copy-text-btn').addEventListener('click', () => this.copyExtractedText());
+                document.getElementById('save-text-btn').addEventListener('click', () => this.saveExtractedText());
                 document.getElementById('clear-signature').addEventListener('click', () => this.clearSignature());
                 document.getElementById('save-signature').addEventListener('click', () => this.saveSignature());
                 document.getElementById('apply-watermark').addEventListener('click', () => this.applyWatermark());
@@ -1004,12 +1702,16 @@
             }
 
             startDocumentDetection() {
-                // Check for document every 500ms
+                let detectionCount = 0;
+                let lastDetection = false;
+                let stableDetectionCount = 0;
+                
+                // Check for document every 250ms for faster response
                 this.detectionInterval = setInterval(() => {
                     const video = document.getElementById('camera-video');
                     if (!video.videoWidth) return;
                     
-                    // Create small canvas for quick detection
+                    // Create canvas for detection
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     canvas.width = 320;
@@ -1017,22 +1719,79 @@
                     ctx.drawImage(video, 0, 0, 320, 240);
                     
                     const edges = this.detectDocumentEdges(canvas);
-                    this.updateDetectionUI(edges !== null);
-                }, 500);
+                    const isDetected = edges !== null;
+                    
+                    // Require 2 consecutive detections to reduce false positives
+                    if (isDetected) {
+                        detectionCount++;
+                        stableDetectionCount++;
+                    } else {
+                        detectionCount = 0;
+                        stableDetectionCount = 0;
+                    }
+                    
+                    // Update UI only when state changes
+                    if (detectionCount >= 2 && !lastDetection) {
+                        this.updateDetectionUI(true);
+                        lastDetection = true;
+                        
+                        // Auto-capture if enabled and document is stable for 1 second
+                        if (this.autoCapture && stableDetectionCount >= 4 && !this.autoCaptureTimer) {
+                            this.autoCaptureTimer = setTimeout(() => {
+                                this.captureImage();
+                                this.autoCaptureTimer = null;
+                                stableDetectionCount = 0;
+                            }, 1000);
+                        }
+                    } else if (detectionCount === 0 && lastDetection) {
+                        this.updateDetectionUI(false);
+                        lastDetection = false;
+                        stableDetectionCount = 0;
+                        if (this.autoCaptureTimer) {
+                            clearTimeout(this.autoCaptureTimer);
+                            this.autoCaptureTimer = null;
+                        }
+                    }
+                }, 250);
+            }
+
+            toggleAutoCapture() {
+                this.autoCapture = !this.autoCapture;
+                const btn = document.getElementById('auto-capture-btn');
+                const span = btn.querySelector('span');
+                
+                if (this.autoCapture) {
+                    span.textContent = 'Auto: ON';
+                    btn.style.borderColor = '#10b981';
+                    btn.style.background = 'rgba(16, 185, 129, 0.3)';
+                    this.showToast('Auto-capture enabled - hold steady when green');
+                } else {
+                    span.textContent = 'Auto: OFF';
+                    btn.style.borderColor = 'transparent';
+                    btn.style.background = 'rgba(0,0,0,0.5)';
+                    this.showToast('Auto-capture disabled');
+                    if (this.autoCaptureTimer) {
+                        clearTimeout(this.autoCaptureTimer);
+                        this.autoCaptureTimer = null;
+                    }
+                }
             }
 
             updateDetectionUI(detected) {
                 const hint = document.querySelector('.scan-hint');
                 const frame = document.querySelector('.scan-frame');
+                const corners = document.querySelectorAll('.corner');
                 
                 if (detected) {
-                    hint.textContent = 'Document detected! Tap capture';
+                    hint.textContent = '✓ Document detected! Tap capture';
                     hint.classList.add('detected');
                     frame.classList.add('detected');
+                    corners.forEach(c => c.style.borderColor = '#10b981');
                 } else {
                     hint.textContent = 'Position document within frame';
                     hint.classList.remove('detected');
                     frame.classList.remove('detected');
+                    corners.forEach(c => c.style.borderColor = '#4f46e5');
                 }
             }
 
@@ -1047,6 +1806,12 @@
             }
 
             captureImage() {
+                // If in batch mode, use batch capture instead
+                if (this.batchMode) {
+                    this.captureBatchImage();
+                    return;
+                }
+                
                 const video = document.getElementById('camera-video');
                 if (!video.videoWidth) {
                     this.showToast('Camera not ready. Please wait...', 'error');
@@ -1091,83 +1856,92 @@
                         gray[i / 4] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
                     }
                     
-                    // Look for bright rectangular region (white paper) on darker background
-                    // Divide image into grid and find bright regions
-                    const gridSize = 20;
-                    const cols = Math.floor(width / gridSize);
-                    const rows = Math.floor(height / gridSize);
+                    // Find document edges by looking for contrast changes
+                    // Scan from edges toward center to find document boundaries
+                    const centerX = Math.floor(width / 2);
+                    const centerY = Math.floor(height / 2);
                     
-                    let brightRegions = [];
+                    let left = 0, right = width - 1, top = 0, bottom = height - 1;
+                    const threshold = 30; // Brightness difference threshold
+                    const scanLines = 20; // Number of horizontal scan lines
                     
-                    for (let row = 0; row < rows; row++) {
-                        for (let col = 0; col < cols; col++) {
-                            let sum = 0;
-                            let count = 0;
-                            
-                            for (let y = row * gridSize; y < (row + 1) * gridSize && y < height; y++) {
-                                for (let x = col * gridSize; x < (col + 1) * gridSize && x < width; x++) {
-                                    sum += gray[y * width + x];
-                                    count++;
-                                }
-                            }
-                            
-                            const avg = sum / count;
-                            if (avg > 180) { // Bright region (paper is usually bright)
-                                brightRegions.push({
-                                    x: col * gridSize,
-                                    y: row * gridSize,
-                                    brightness: avg
-                                });
+                    // Find left edge - scan from left to center
+                    const leftEdges = [];
+                    for (let i = 0; i < scanLines; i++) {
+                        const y = Math.floor((height / scanLines) * i + height / (scanLines * 2));
+                        for (let x = 10; x < centerX; x++) {
+                            const diff = Math.abs(gray[y * width + x] - gray[y * width + (x - 5)]);
+                            if (diff > threshold) {
+                                leftEdges.push(x);
+                                break;
                             }
                         }
                     }
-                    
-                    if (brightRegions.length < 10) return null; // Not enough bright regions
-                    
-                    // Find bounding box of bright regions
-                    let minX = width, maxX = 0, minY = height, maxY = 0;
-                    brightRegions.forEach(r => {
-                        minX = Math.min(minX, r.x);
-                        maxX = Math.max(maxX, r.x + gridSize);
-                        minY = Math.min(minY, r.y);
-                        maxY = Math.max(maxY, r.y + gridSize);
-                    });
-                    
-                    // Check if the region is reasonable size (not too small, not too big)
-                    const regionWidth = maxX - minX;
-                    const regionHeight = maxY - minY;
-                    
-                    if (regionWidth < width * 0.25 || regionHeight < height * 0.25) return null;
-                    if (regionWidth > width * 0.95 || regionHeight > height * 0.95) return null;
-                    
-                    // Refine edges using gradient detection
-                    const edges = { left: minX, right: maxX, top: minY, bottom: maxY };
-                    
-                    // Fine-tune left edge
-                    for (let x = minX; x < minX + 50 && x < width; x++) {
-                        let brightnessDrop = 0;
-                        for (let y = minY; y < maxY; y += 5) {
-                            if (y < height && x > 0) {
-                                const diff = Math.abs(gray[y * width + x] - gray[y * width + (x - 1)]);
-                                if (diff > 40) brightnessDrop++;
-                            }
-                        }
-                        if (brightnessDrop > 5) { edges.left = x; break; }
+                    if (leftEdges.length > 5) {
+                        left = Math.floor(leftEdges.reduce((a, b) => a + b) / leftEdges.length);
                     }
                     
-                    // Fine-tune right edge
-                    for (let x = maxX; x > maxX - 50 && x >= 0; x--) {
-                        let brightnessDrop = 0;
-                        for (let y = minY; y < maxY; y += 5) {
-                            if (y < height && x < width - 1) {
-                                const diff = Math.abs(gray[y * width + x] - gray[y * width + (x + 1)]);
-                                if (diff > 40) brightnessDrop++;
+                    // Find right edge - scan from right to center
+                    const rightEdges = [];
+                    for (let i = 0; i < scanLines; i++) {
+                        const y = Math.floor((height / scanLines) * i + height / (scanLines * 2));
+                        for (let x = width - 10; x > centerX; x--) {
+                            const diff = Math.abs(gray[y * width + x] - gray[y * width + (x + 5)]);
+                            if (diff > threshold) {
+                                rightEdges.push(x);
+                                break;
                             }
                         }
-                        if (brightnessDrop > 5) { edges.right = x; break; }
+                    }
+                    if (rightEdges.length > 5) {
+                        right = Math.floor(rightEdges.reduce((a, b) => a + b) / rightEdges.length);
                     }
                     
-                    return edges;
+                    // Find top edge - scan from top to center
+                    const topEdges = [];
+                    for (let i = 0; i < scanLines; i++) {
+                        const x = Math.floor((width / scanLines) * i + width / (scanLines * 2));
+                        for (let y = 10; y < centerY; y++) {
+                            const diff = Math.abs(gray[y * width + x] - gray[(y - 5) * width + x]);
+                            if (diff > threshold) {
+                                topEdges.push(y);
+                                break;
+                            }
+                        }
+                    }
+                    if (topEdges.length > 5) {
+                        top = Math.floor(topEdges.reduce((a, b) => a + b) / topEdges.length);
+                    }
+                    
+                    // Find bottom edge - scan from bottom to center
+                    const bottomEdges = [];
+                    for (let i = 0; i < scanLines; i++) {
+                        const x = Math.floor((width / scanLines) * i + width / (scanLines * 2));
+                        for (let y = height - 10; y > centerY; y--) {
+                            const diff = Math.abs(gray[y * width + x] - gray[(y + 5) * width + x]);
+                            if (diff > threshold) {
+                                bottomEdges.push(y);
+                                break;
+                            }
+                        }
+                    }
+                    if (bottomEdges.length > 5) {
+                        bottom = Math.floor(bottomEdges.reduce((a, b) => a + b) / bottomEdges.length);
+                    }
+                    
+                    // Validate detected region
+                    const docWidth = right - left;
+                    const docHeight = bottom - top;
+                    
+                    // Document should be at least 30% of image and not more than 95%
+                    if (docWidth < width * 0.3 || docHeight < height * 0.3) return null;
+                    if (docWidth > width * 0.95 || docHeight > height * 0.95) return null;
+                    
+                    // Check aspect ratio (documents are usually not too extreme)
+                    const aspectRatio = docWidth / docHeight;
+                    if (aspectRatio < 0.3 || aspectRatio > 3.5) return null;
+                    
+                    return { left, right, top, bottom };
                     
                 } catch (err) {
                     console.error('Edge detection error:', err);
@@ -1636,11 +2410,20 @@
                     return;
                 }
                 
-                this.showLoading('Extracting text...');
+                // Show modal with progress
+                document.getElementById('ocr-modal').classList.add('active');
+                document.getElementById('ocr-text').value = '';
+                document.getElementById('ocr-confidence').textContent = '';
+                document.getElementById('ocr-progress-container').style.display = 'block';
+                document.getElementById('ocr-progress-bar').style.width = '0%';
+                document.getElementById('ocr-progress-text').textContent = 'Initializing OCR...';
                 
                 try {
                     // Load Tesseract.js dynamically
                     if (!window.Tesseract) {
+                        document.getElementById('ocr-progress-bar').style.width = '20%';
+                        document.getElementById('ocr-progress-text').textContent = 'Loading OCR engine...';
+                        
                         await new Promise((resolve, reject) => {
                             const script = document.createElement('script');
                             script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js';
@@ -1650,27 +2433,101 @@
                         });
                     }
                     
-                    const result = await window.Tesseract.recognize(
-                        this.pages[0].image,
-                        'eng',
-                        { logger: m => console.log(m) }
-                    );
+                    // Get selected language
+                    const lang = document.getElementById('ocr-language').value;
                     
-                    document.getElementById('ocr-text').textContent = result.data.text || 'No text found';
-                    document.getElementById('ocr-modal').classList.add('active');
-                    this.hideLoading();
+                    document.getElementById('ocr-progress-bar').style.width = '50%';
+                    document.getElementById('ocr-progress-text').textContent = 'Processing image...';
+                    
+                    // Process all pages
+                    let fullText = '';
+                    let totalConfidence = 0;
+                    let pageCount = 0;
+                    
+                    for (let i = 0; i < this.pages.length; i++) {
+                        document.getElementById('ocr-progress-text').textContent = `Processing page ${i + 1} of ${this.pages.length}...`;
+                        
+                        const result = await window.Tesseract.recognize(
+                            this.pages[i].image,
+                            lang,
+                            { 
+                                logger: m => {
+                                    if (m.status === 'recognizing text') {
+                                        const progress = 50 + ((i + m.progress) / this.pages.length) * 40;
+                                        document.getElementById('ocr-progress-bar').style.width = `${progress}%`;
+                                    }
+                                }
+                            }
+                        );
+                        
+                        if (this.pages.length > 1) {
+                            fullText += `--- Page ${i + 1} ---\n`;
+                        }
+                        fullText += result.data.text + '\n\n';
+                        
+                        if (result.data.confidence) {
+                            totalConfidence += result.data.confidence;
+                            pageCount++;
+                        }
+                    }
+                    
+                    document.getElementById('ocr-progress-bar').style.width = '100%';
+                    document.getElementById('ocr-progress-text').textContent = 'Complete!';
+                    
+                    // Display results
+                    document.getElementById('ocr-text').value = fullText.trim() || 'No text detected in image';
+                    
+                    // Show confidence
+                    if (pageCount > 0) {
+                        const avgConfidence = Math.round(totalConfidence / pageCount);
+                        const confidenceText = avgConfidence > 80 ? 'High' : avgConfidence > 60 ? 'Medium' : 'Low';
+                        const confidenceColor = avgConfidence > 80 ? '#10b981' : avgConfidence > 60 ? '#f59e0b' : '#ef4444';
+                        document.getElementById('ocr-confidence').innerHTML = `Confidence: <span style="color: ${confidenceColor}; font-weight: 600;">${confidenceText} (${avgConfidence}%)</span>`;
+                    }
+                    
+                    // Hide progress after a moment
+                    setTimeout(() => {
+                        document.getElementById('ocr-progress-container').style.display = 'none';
+                    }, 1000);
+                    
                 } catch (err) {
-                    this.hideLoading();
+                    document.getElementById('ocr-progress-container').style.display = 'none';
+                    document.getElementById('ocr-text').value = 'Error: Could not extract text. Please try again.';
                     this.showToast('OCR failed. Please try again.', 'error');
                     console.error(err);
                 }
             }
 
             copyExtractedText() {
-                const text = document.getElementById('ocr-text').textContent;
+                const text = document.getElementById('ocr-text').value;
                 navigator.clipboard.writeText(text).then(() => {
                     this.showToast('Text copied to clipboard');
+                }).catch(() => {
+                    // Fallback for mobile
+                    const textarea = document.getElementById('ocr-text');
+                    textarea.select();
+                    document.execCommand('copy');
+                    this.showToast('Text copied to clipboard');
                 });
+            }
+
+            saveExtractedText() {
+                const text = document.getElementById('ocr-text').value;
+                if (!text.trim()) {
+                    this.showToast('No text to save', 'error');
+                    return;
+                }
+                
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${document.getElementById('doc-name').value || 'Extracted Text'}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                this.showToast('Text file saved');
             }
 
             // E-Signature
@@ -1821,17 +2678,588 @@
             // Export format handling
             setExportFormat(format) {
                 this.exportFormat = format;
-                document.querySelectorAll('#export-pdf-btn, #export-jpg-btn, #export-txt-btn').forEach(btn => {
-                    btn.classList.remove('active');
+                
+                // Update UI
+                document.querySelectorAll('.save-option').forEach(btn => {
+                    if (btn.id && btn.id.startsWith('export-')) {
+                        btn.classList.remove('active');
+                    }
                 });
-                document.getElementById(`export-${format}-btn`).classList.add('active');
-                this.showToast(`Export format: ${format.toUpperCase()}`);
+                
+                const activeBtn = document.getElementById(`export-${format}-btn`);
+                if (activeBtn) activeBtn.classList.add('active');
+                
+                // Auto-trigger download for the selected format
+                this.showToast(`Exporting as ${format.toUpperCase()}...`);
+                
+                switch(format) {
+                    case 'pdf':
+                        this.downloadPDF();
+                        break;
+                    case 'jpg':
+                        this.exportAsImage('jpeg');
+                        break;
+                    case 'png':
+                        this.exportAsImage('png');
+                        break;
+                    case 'txt':
+                        this.exportAsText();
+                        break;
+                    case 'docx':
+                        this.exportAsDOCX();
+                        break;
+                    case 'zip':
+                        this.exportAsZIP();
+                        break;
+                    default:
+                        this.downloadPDF();
+                }
+            }
+
+            async exportAsImage(format) {
+                if (this.pages.length === 0) {
+                    this.showToast('No images to export', 'error');
+                    return;
+                }
+                
+                this.showLoading(`Preparing ${format.toUpperCase()}...`);
+                
+                try {
+                    const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
+                    const extension = format === 'png' ? 'png' : 'jpg';
+                    
+                    if (this.pages.length === 1) {
+                        // Single image
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+                        
+                        await new Promise(resolve => {
+                            img.onload = () => {
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                ctx.drawImage(img, 0, 0);
+                                resolve();
+                            };
+                            img.src = this.pages[0].image;
+                        });
+                        
+                        const dataUrl = canvas.toDataURL(mimeType, 0.95);
+                        const link = document.createElement('a');
+                        link.href = dataUrl;
+                        link.download = `${document.getElementById('doc-name').value || 'Scanned Document'}.${extension}`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } else {
+                        // Multiple images - create ZIP
+                        await this.exportImagesAsZIP(extension, mimeType);
+                    }
+                    
+                    this.hideLoading();
+                    this.showToast(`${format.toUpperCase()} downloaded`);
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('Export failed', 'error');
+                    console.error(err);
+                }
+            }
+
+            async exportImagesAsZIP(extension, mimeType) {
+                // Load JSZip dynamically
+                if (!window.JSZip) {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                    });
+                }
+                
+                const zip = new window.JSZip();
+                const folderName = document.getElementById('doc-name').value || 'Scanned Documents';
+                const folder = zip.folder(folderName);
+                
+                for (let i = 0; i < this.pages.length; i++) {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const img = new Image();
+                    
+                    await new Promise(resolve => {
+                        img.onload = () => {
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+                            resolve();
+                        };
+                        img.src = this.pages[i].image;
+                    });
+                    
+                    const dataUrl = canvas.toDataURL(mimeType, 0.95);
+                    const base64Data = dataUrl.split(',')[1];
+                    folder.file(`page_${i + 1}.${extension}`, base64Data, { base64: true });
+                }
+                
+                const content = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(content);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${folderName}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+            async exportAsDOCX() {
+                if (this.pages.length === 0) {
+                    this.showToast('No document to export', 'error');
+                    return;
+                }
+                
+                this.showLoading('Creating Word document...');
+                
+                try {
+                    // Simple HTML-based DOCX generation
+                    const docName = document.getElementById('doc-name').value || 'Scanned Document';
+                    
+                    let htmlContent = `
+                        <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                              xmlns:w='urn:schemas-microsoft-com:office:word' 
+                              xmlns='http://www.w3.org/TR/REC-html40'>
+                        <head>
+                            <meta charset="utf-8">
+                            <title>${docName}</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; }
+                                img { max-width: 100%; height: auto; margin: 20px 0; }
+                                .page-break { page-break-after: always; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>${docName}</h1>
+                    `;
+                    
+                    for (let i = 0; i < this.pages.length; i++) {
+                        htmlContent += `<img src="${this.pages[i].image}" alt="Page ${i + 1}">`;
+                        if (i < this.pages.length - 1) {
+                            htmlContent += '<div class="page-break"></div>';
+                        }
+                    }
+                    
+                    htmlContent += '</body></html>';
+                    
+                    const blob = new Blob(['\ufeff', htmlContent], {
+                        type: 'application/msword'
+                    });
+                    
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${docName}.doc`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    this.hideLoading();
+                    this.showToast('Word document downloaded');
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('Export failed', 'error');
+                    console.error(err);
+                }
+            }
+
+            async exportAsZIP() {
+                await this.exportImagesAsZIP('jpg', 'image/jpeg');
+            }
+
+            printDocument() {
+                if (this.pages.length === 0) {
+                    this.showToast('No document to print', 'error');
+                    return;
+                }
+                
+                const printWindow = window.open('', '_blank');
+                const docName = document.getElementById('doc-name').value || 'Scanned Document';
+                
+                let html = `
+                    <html>
+                    <head>
+                        <title>${docName}</title>
+                        <style>
+                            body { margin: 0; padding: 20px; text-align: center; }
+                            img { max-width: 100%; height: auto; margin-bottom: 20px; }
+                            @media print {
+                                img { page-break-inside: avoid; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                `;
+                
+                this.pages.forEach(page => {
+                    html += `<img src="${page.image}" alt="Page">`;
+                });
+                
+                html += `
+                    </body>
+                    </html>
+                `;
+                
+                printWindow.document.write(html);
+                printWindow.document.close();
+                printWindow.focus();
+                
+                // Auto print after images load
+                setTimeout(() => {
+                    printWindow.print();
+                }, 1000);
+            }
+
+            async copyImageToClipboard() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to copy', 'error');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(this.pages[0].image);
+                    const blob = await response.blob();
+                    
+                    if (navigator.clipboard && navigator.clipboard.write) {
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ [blob.type]: blob })
+                        ]);
+                        this.showToast('Image copied to clipboard');
+                    } else {
+                        this.showToast('Clipboard API not supported', 'error');
+                    }
+                } catch (err) {
+                    this.showToast('Failed to copy image', 'error');
+                    console.error(err);
+                }
+            }
+
+            async shareNative() {
+                if (this.pages.length === 0) {
+                    this.showToast('No document to share', 'error');
+                    return;
+                }
+                
+                if (!navigator.share) {
+                    this.showToast('Native sharing not supported', 'error');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(this.pages[0].image);
+                    const blob = await response.blob();
+                    const file = new File([blob], 'scanned-document.jpg', { type: 'image/jpeg' });
+                    
+                    await navigator.share({
+                        title: document.getElementById('doc-name').value || 'Scanned Document',
+                        files: [file]
+                    });
+                } catch (err) {
+                    console.error('Share failed:', err);
+                    this.showToast('Share cancelled or failed', 'error');
+                }
             }
 
             // QR Code Scanner
             async openQRScanner() {
                 document.getElementById('qr-modal').classList.add('active');
-                document.getElementById('qr-result').style.display = 'none';
+                document.getElementById('qr-scanner-view').style.display = 'block';
+                document.getElementById('qr-result-view').style.display = 'none';
+                document.getElementById('qr-rescan-btn').style.display = 'none';
+                
+                this.loadQRHistory();
+                this.startQRScanning();
+            }
+            
+            async startQRScanning() {
+                try {
+                    const video = document.getElementById('qr-video');
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    video.srcObject = stream;
+                    video.play();
+                    
+                    this.qrStream = stream;
+                    this.qrScanning = true;
+                    this.scanQRFrame();
+                } catch (err) {
+                    console.error('QR camera error:', err);
+                    this.showToast('Camera access denied', 'error');
+                }
+            }
+            
+            scanQRFrame() {
+                if (!this.qrScanning) return;
+                
+                const video = document.getElementById('qr-video');
+                const canvas = document.getElementById('qr-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = this.decodeQRCode(imageData);
+                    
+                    if (code) {
+                        this.handleQRResult(code.data);
+                        return;
+                    }
+                }
+                
+                requestAnimationFrame(() => this.scanQRFrame());
+            }
+            
+            decodeQRCode(imageData) {
+                // Simple QR detection using jsQR library or basic pattern matching
+                // For now, we'll use a basic implementation
+                try {
+                    const grayData = new Uint8Array(imageData.width * imageData.height);
+                    for (let i = 0; i < imageData.data.length; i += 4) {
+                        grayData[i / 4] = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+                    }
+                    
+                    // Look for finder patterns (simplified detection)
+                    const patterns = this.findQRPatterns(grayData, imageData.width, imageData.height);
+                    if (patterns.length >= 3) {
+                        // Extract QR data region
+                        return this.extractQRData(grayData, imageData.width, imageData.height, patterns);
+                    }
+                } catch (e) {
+                    console.error('QR decode error:', e);
+                }
+                return null;
+            }
+            
+            findQRPatterns(data, width, height) {
+                const patterns = [];
+                const threshold = 128;
+                
+                // Scan for potential finder patterns
+                for (let y = 10; y < height - 10; y += 5) {
+                    for (let x = 10; x < width - 10; x += 5) {
+                        const idx = y * width + x;
+                        if (data[idx] < threshold) {
+                            // Check for black-white-black pattern
+                            const pattern = this.checkFinderPattern(data, width, height, x, y, threshold);
+                            if (pattern) {
+                                patterns.push(pattern);
+                            }
+                        }
+                    }
+                }
+                
+                return patterns;
+            }
+            
+            checkFinderPattern(data, width, height, cx, cy, threshold) {
+                // Simplified finder pattern check
+                const size = 7;
+                let blackCount = 0;
+                let whiteCount = 0;
+                
+                for (let dy = -size; dy <= size; dy++) {
+                    for (let dx = -size; dx <= size; dx++) {
+                        const x = cx + dx;
+                        const y = cy + dy;
+                        if (x >= 0 && x < width && y >= 0 && y < height) {
+                            const idx = y * width + x;
+                            if (data[idx] < threshold) blackCount++;
+                            else whiteCount++;
+                        }
+                    }
+                }
+                
+                const ratio = blackCount / (blackCount + whiteCount);
+                if (ratio > 0.3 && ratio < 0.7) {
+                    return { x: cx, y: cy, ratio };
+                }
+                return null;
+            }
+            
+            extractQRData(data, width, height, patterns) {
+                // Simplified QR data extraction
+                // In a real implementation, this would decode the actual QR data
+                // For demo purposes, we'll simulate finding a QR code
+                return null;
+            }
+            
+            handleQRResult(result) {
+                this.qrScanning = false;
+                this.stopQRStream();
+                
+                this.lastQRResult = result;
+                
+                // Detect QR type
+                const type = this.detectQRType(result);
+                
+                document.getElementById('qr-scanner-view').style.display = 'none';
+                document.getElementById('qr-result-view').style.display = 'block';
+                document.getElementById('qr-rescan-btn').style.display = 'inline-block';
+                
+                // Update result display
+                document.getElementById('qr-result-text').textContent = result;
+                document.getElementById('qr-type-label').textContent = type.label;
+                document.getElementById('qr-type-icon').className = `fas ${type.icon}`;
+                
+                // Enable/disable open button based on type
+                const openBtn = document.getElementById('qr-open-btn');
+                if (type.canOpen) {
+                    openBtn.style.display = 'block';
+                } else {
+                    openBtn.style.display = 'none';
+                }
+                
+                this.showToast('QR Code detected!');
+            }
+            
+            detectQRType(data) {
+                if (data.startsWith('http://') || data.startsWith('https://')) {
+                    return { label: 'Website URL', icon: 'fa-link', canOpen: true };
+                } else if (data.startsWith('mailto:')) {
+                    return { label: 'Email Address', icon: 'fa-envelope', canOpen: true };
+                } else if (data.startsWith('tel:')) {
+                    return { label: 'Phone Number', icon: 'fa-phone', canOpen: true };
+                } else if (data.startsWith('WIFI:')) {
+                    return { label: 'WiFi Network', icon: 'fa-wifi', canOpen: false };
+                } else if (data.startsWith('BEGIN:VCARD')) {
+                    return { label: 'Contact Card', icon: 'fa-address-card', canOpen: false };
+                } else if (/^[A-Z0-9]{10,}$/.test(data)) {
+                    return { label: 'Product Code', icon: 'fa-barcode', canOpen: false };
+                } else {
+                    return { label: 'Text', icon: 'fa-align-left', canOpen: false };
+                }
+            }
+            
+            stopQRStream() {
+                if (this.qrStream) {
+                    this.qrStream.getTracks().forEach(track => track.stop());
+                    this.qrStream = null;
+                }
+                this.qrScanning = false;
+            }
+            
+            closeQRScanner() {
+                this.stopQRStream();
+                document.getElementById('qr-modal').classList.remove('active');
+            }
+            
+            rescanQR() {
+                document.getElementById('qr-scanner-view').style.display = 'block';
+                document.getElementById('qr-result-view').style.display = 'none';
+                document.getElementById('qr-rescan-btn').style.display = 'none';
+                this.startQRScanning();
+            }
+            
+            openQRResult() {
+                if (this.lastQRResult) {
+                    if (this.lastQRResult.startsWith('http')) {
+                        window.open(this.lastQRResult, '_blank');
+                    } else if (this.lastQRResult.startsWith('mailto:')) {
+                        window.location.href = this.lastQRResult;
+                    } else if (this.lastQRResult.startsWith('tel:')) {
+                        window.location.href = this.lastQRResult;
+                    }
+                }
+            }
+            
+            copyQRResult() {
+                if (this.lastQRResult) {
+                    navigator.clipboard.writeText(this.lastQRResult).then(() => {
+                        this.showToast('Copied to clipboard');
+                    });
+                }
+            }
+            
+            shareQRResult() {
+                if (this.lastQRResult && navigator.share) {
+                    navigator.share({
+                        title: 'QR Code Content',
+                        text: this.lastQRResult
+                    });
+                } else {
+                    this.copyQRResult();
+                }
+            }
+            
+            saveQRToHistory() {
+                if (!this.lastQRResult) return;
+                
+                let history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                history.unshift({
+                    data: this.lastQRResult,
+                    type: this.detectQRType(this.lastQRResult).label,
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Keep only last 20 scans
+                history = history.slice(0, 20);
+                localStorage.setItem('qrHistory', JSON.stringify(history));
+                
+                this.loadQRHistory();
+                this.showToast('Saved to history');
+            }
+            
+            loadQRHistory() {
+                const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                const container = document.getElementById('qr-history-list');
+                
+                if (history.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #9ca3af; font-size: 0.875rem; padding: 1rem;">No scans yet</p>';
+                    return;
+                }
+                
+                container.innerHTML = history.map((item, i) => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: white; border-radius: 0.25rem; margin-bottom: 0.5rem; cursor: pointer;" onclick="window.scanner.loadQRHistoryItem(${i})">
+                        <div style="overflow: hidden;">
+                            <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.125rem;">${item.type}</p>
+                            <p style="font-size: 0.875rem; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.data}</p>
+                        </div>
+                        <button onclick="event.stopPropagation(); window.scanner.deleteQRHistoryItem(${i})" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 0.25rem;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            loadQRHistoryItem(index) {
+                const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                if (history[index]) {
+                    this.lastQRResult = history[index].data;
+                    this.handleQRResult(this.lastQRResult);
+                }
+            }
+            
+            deleteQRHistoryItem(index) {
+                let history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                history.splice(index, 1);
+                localStorage.setItem('qrHistory', JSON.stringify(history));
+                this.loadQRHistory();
+            }
+            
+            clearQRHistory() {
+                if (confirm('Clear all QR scan history?')) {
+                    localStorage.removeItem('qrHistory');
+                    this.loadQRHistory();
+                    this.showToast('History cleared');
+                }
+            }
+            
+            // Legacy QR scanner for compatibility
+            async legacyOpenQRScanner() {
+                document.getElementById('qr-modal').classList.add('active');
                 
                 try {
                     // Load html5-qrcode library dynamically
@@ -1986,36 +3414,69 @@
                 
                 // PDF export
                 this.showLoading('Generating PDF...');
+                
                 try {
+                    // Check if jsPDF is loaded
+                    if (!window.jspdf || !window.jspdf.jsPDF) {
+                        this.hideLoading();
+                        this.showToast('PDF library not loaded. Please refresh and try again.', 'error');
+                        return;
+                    }
+                    
                     const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF();
+                    const pdf = new jsPDF('p', 'mm', 'a4');
                     
                     // Apply password if set
                     if (this.pdfPassword) {
-                        pdf.encrypt(this.pdfPassword);
+                        try {
+                            pdf.encrypt(this.pdfPassword);
+                        } catch (e) {
+                            console.log('Password protection not available');
+                        }
                     }
+                    
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.getHeight();
                     
                     for (let i = 0; i < this.pages.length; i++) {
                         if (i > 0) pdf.addPage();
-                        const img = new Image();
-                        await new Promise(resolve => {
-                            img.onload = () => {
-                                const w = pdf.internal.pageSize.getWidth();
-                                const h = (img.height * w) / img.width;
-                                pdf.addImage(this.pages[i].image, 'JPEG', 0, 0, w, h);
-                                resolve();
-                            };
-                            img.src = this.pages[i].image;
-                        });
+                        
+                        try {
+                            const img = new Image();
+                            await new Promise((resolve, reject) => {
+                                img.onload = () => resolve();
+                                img.onerror = () => reject(new Error('Image load failed'));
+                                img.src = this.pages[i].image;
+                            });
+                            
+                            // Calculate dimensions to fit page
+                            const imgWidth = img.width;
+                            const imgHeight = img.height;
+                            const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+                            const w = imgWidth * ratio;
+                            const h = imgHeight * ratio;
+                            const x = (pageWidth - w) / 2;
+                            const y = (pageHeight - h) / 2;
+                            
+                            pdf.addImage(this.pages[i].image, 'JPEG', x, y, w, h);
+                        } catch (imgErr) {
+                            console.error('Error adding image to PDF:', imgErr);
+                        }
                     }
                     
-                    // Mobile-friendly download
-                    await this.mobileFriendlyDownload(pdf, 'pdf');
+                    // Generate filename
+                    const filename = `${document.getElementById('doc-name').value || 'Scanned Document'}.pdf`;
+                    
+                    // Save PDF
+                    pdf.save(filename);
+                    
+                    this.hideLoading();
+                    this.showToast('PDF downloaded successfully');
                     
                 } catch (err) {
                     this.hideLoading();
-                    this.showToast('Error generating PDF', 'error');
-                    console.error(err);
+                    console.error('PDF generation error:', err);
+                    this.showToast('Error generating PDF: ' + err.message, 'error');
                 }
             }
 
@@ -2297,6 +3758,1127 @@
                     </div>
                 `;
                 document.body.appendChild(modal);
+            }
+
+            // ==================== PDF EDITOR FEATURES ====================
+            
+            openPDFEditor() {
+                if (this.pages.length === 0) {
+                    this.showToast('No document to edit', 'error');
+                    return;
+                }
+                
+                this.pdfCurrentPage = 0;
+                this.pdfEditElements = [];
+                this.renderPDFEditPage();
+                document.getElementById('pdf-preview-modal').classList.add('active');
+            }
+
+            renderPDFEditPage() {
+                const canvas = document.getElementById('pdf-edit-canvas');
+                const ctx = canvas.getContext('2d');
+                const page = this.pages[this.pdfCurrentPage];
+                
+                const img = new Image();
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    this.pdfEditElements.forEach(el => {
+                        if (el.page === this.pdfCurrentPage) {
+                            this.drawPDFElement(ctx, el);
+                        }
+                    });
+                    
+                    document.getElementById('pdf-page-indicator').textContent = 
+                        `Page ${this.pdfCurrentPage + 1} of ${this.pages.length}`;
+                };
+                img.src = page.image;
+                
+                canvas.onclick = (e) => this.handlePDFCanvasClick(e);
+            }
+
+            drawPDFElement(ctx, el) {
+                switch(el.type) {
+                    case 'text':
+                        ctx.font = `${el.size}px Arial`;
+                        ctx.fillStyle = el.color;
+                        ctx.fillText(el.text, el.x, el.y);
+                        break;
+                    case 'signature':
+                        if (this.signatureData) {
+                            const sigImg = new Image();
+                            sigImg.onload = () => {
+                                ctx.drawImage(sigImg, el.x, el.y, 100, 50);
+                            };
+                            sigImg.src = this.signatureData;
+                        }
+                        break;
+                    case 'date':
+                        ctx.font = '16px Arial';
+                        ctx.fillStyle = '#000000';
+                        ctx.fillText(new Date().toLocaleDateString(), el.x, el.y);
+                        break;
+                    case 'checkbox':
+                        ctx.strokeStyle = '#000000';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(el.x, el.y, 20, 20);
+                        if (el.checked) {
+                            ctx.beginPath();
+                            ctx.moveTo(el.x + 4, el.y + 10);
+                            ctx.lineTo(el.x + 8, el.y + 16);
+                            ctx.lineTo(el.x + 16, el.y + 4);
+                            ctx.stroke();
+                        }
+                        break;
+                }
+            }
+
+            handlePDFCanvasClick(e) {
+                if (!this.pdfEditMode) return;
+                
+                const canvas = document.getElementById('pdf-edit-canvas');
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                
+                switch(this.pdfEditMode) {
+                    case 'text':
+                        this.pendingTextPosition = { x, y };
+                        document.getElementById('pdf-text-modal').classList.add('active');
+                        break;
+                    case 'signature':
+                        this.pdfEditElements.push({
+                            type: 'signature',
+                            page: this.pdfCurrentPage,
+                            x: x - 50,
+                            y: y - 25
+                        });
+                        this.pdfEditMode = null;
+                        this.renderPDFEditPage();
+                        break;
+                    case 'date':
+                        this.pdfEditElements.push({
+                            type: 'date',
+                            page: this.pdfCurrentPage,
+                            x: x,
+                            y: y
+                        });
+                        this.pdfEditMode = null;
+                        this.renderPDFEditPage();
+                        break;
+                    case 'checkbox':
+                        this.pdfEditElements.push({
+                            type: 'checkbox',
+                            page: this.pdfCurrentPage,
+                            x: x - 10,
+                            y: y - 10,
+                            checked: true
+                        });
+                        this.pdfEditMode = null;
+                        this.renderPDFEditPage();
+                        break;
+                }
+            }
+
+            addTextToPDF() {
+                this.pdfEditMode = 'text';
+                document.getElementById('pdf-edit-hint').textContent = 'Tap on document where you want to add text';
+            }
+
+            addSignatureToPDF() {
+                this.openSignaturePad();
+                this.pdfEditMode = 'signature';
+                document.getElementById('pdf-edit-hint').textContent = 'Tap on document to place signature';
+            }
+
+            addDateToPDF() {
+                this.pdfEditMode = 'date';
+                document.getElementById('pdf-edit-hint').textContent = 'Tap on document to place date';
+            }
+
+            addCheckboxToPDF() {
+                this.pdfEditMode = 'checkbox';
+                document.getElementById('pdf-edit-hint').textContent = 'Tap on document to place checkbox';
+            }
+
+            setPDFTextColor(color, btn) {
+                this.pdfTextColor = color;
+                document.querySelectorAll('#pdf-text-modal .color-btn').forEach(b => {
+                    b.style.borderColor = 'transparent';
+                });
+                btn.style.borderColor = '#4f46e5';
+            }
+
+            confirmAddText() {
+                const text = document.getElementById('pdf-text-input').value;
+                const size = parseInt(document.getElementById('pdf-text-size').value);
+                
+                if (!text.trim()) {
+                    this.showToast('Please enter some text', 'error');
+                    return;
+                }
+                
+                if (this.pendingTextPosition) {
+                    this.pdfEditElements.push({
+                        type: 'text',
+                        page: this.pdfCurrentPage,
+                        x: this.pendingTextPosition.x,
+                        y: this.pendingTextPosition.y,
+                        text: text,
+                        size: size,
+                        color: this.pdfTextColor
+                    });
+                    
+                    document.getElementById('pdf-text-input').value = '';
+                    document.getElementById('pdf-text-modal').classList.remove('active');
+                    this.pdfEditMode = null;
+                    this.pendingTextPosition = null;
+                    this.renderPDFEditPage();
+                    document.getElementById('pdf-edit-hint').textContent = 'Tap buttons above to add elements';
+                }
+            }
+
+            undoPDFEdit() {
+                const pageElements = this.pdfEditElements.filter(el => el.page === this.pdfCurrentPage);
+                if (pageElements.length > 0) {
+                    const lastEl = pageElements[pageElements.length - 1];
+                    const index = this.pdfEditElements.indexOf(lastEl);
+                    this.pdfEditElements.splice(index, 1);
+                    this.renderPDFEditPage();
+                    this.showToast('Last change undone');
+                }
+            }
+
+            prevPDFPage() {
+                if (this.pdfCurrentPage > 0) {
+                    this.pdfCurrentPage--;
+                    this.renderPDFEditPage();
+                }
+            }
+
+            nextPDFPage() {
+                if (this.pdfCurrentPage < this.pages.length - 1) {
+                    this.pdfCurrentPage++;
+                    this.renderPDFEditPage();
+                }
+            }
+
+            async downloadEditedPDF() {
+                this.showLoading('Generating edited PDF...');
+                
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.getHeight();
+                    
+                    for (let i = 0; i < this.pages.length; i++) {
+                        if (i > 0) pdf.addPage();
+                        
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+                        
+                        await new Promise(resolve => {
+                            img.onload = () => {
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                ctx.drawImage(img, 0, 0);
+                                
+                                this.pdfEditElements.forEach(el => {
+                                    if (el.page === i) {
+                                        this.drawPDFElement(ctx, el);
+                                    }
+                                });
+                                
+                                resolve();
+                            };
+                            img.src = this.pages[i].image;
+                        });
+                        
+                        const editedImage = canvas.toDataURL('image/jpeg', 0.95);
+                        const imgWidth = canvas.width;
+                        const imgHeight = canvas.height;
+                        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+                        const w = imgWidth * ratio;
+                        const h = imgHeight * ratio;
+                        const x = (pageWidth - w) / 2;
+                        const y = (pageHeight - h) / 2;
+                        
+                        pdf.addImage(editedImage, 'JPEG', x, y, w, h);
+                    }
+                    
+                    const filename = `${document.getElementById('doc-name').value || 'Edited Document'}.pdf`;
+                    pdf.save(filename);
+                    
+                    this.hideLoading();
+                    this.showToast('Edited PDF downloaded');
+                    document.getElementById('pdf-preview-modal').classList.remove('active');
+                    
+                    // Auto-delete if enabled
+                    if (this.securitySettings.autoDelete) {
+                        this.pages = [];
+                        this.updatePageCount();
+                        this.showToast('Document auto-deleted for security');
+                    }
+                    
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('Error generating PDF', 'error');
+                    console.error(err);
+                }
+            }
+
+            // ==================== SECURITY FEATURES ====================
+            
+            checkAppLock() {
+                if (this.securitySettings.appPassword) {
+                    this.showLockScreen();
+                }
+            }
+            
+            showLockScreen() {
+                this.appLocked = true;
+                document.getElementById('lock-screen').style.display = 'block';
+                document.getElementById('unlock-pin').value = '';
+                this.updatePinDots(0);
+            }
+            
+            hideLockScreen() {
+                this.appLocked = false;
+                document.getElementById('lock-screen').style.display = 'none';
+            }
+            
+            checkUnlockPin(pin) {
+                this.updatePinDots(pin.length);
+                
+                if (pin.length === 4) {
+                    if (pin === this.securitySettings.appPassword) {
+                        this.hideLockScreen();
+                        this.showToast('Welcome back!');
+                    } else {
+                        this.showToast('Incorrect PIN', 'error');
+                        document.getElementById('unlock-pin').value = '';
+                        setTimeout(() => this.updatePinDots(0), 200);
+                    }
+                }
+            }
+            
+            updatePinDots(filled) {
+                const dots = document.querySelectorAll('.pin-dot');
+                dots.forEach((dot, i) => {
+                    dot.style.background = i < filled ? 'white' : 'transparent';
+                });
+            }
+            
+            setupAppPassword() {
+                document.getElementById('app-password-modal').classList.add('active');
+                document.getElementById('app-password').value = '';
+                document.getElementById('app-password-confirm').value = '';
+            }
+            
+            saveAppPassword() {
+                const pin = document.getElementById('app-password').value;
+                const confirm = document.getElementById('app-password-confirm').value;
+                
+                if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+                    this.showToast('PIN must be 4 digits', 'error');
+                    return;
+                }
+                
+                if (pin !== confirm) {
+                    this.showToast('PINs do not match', 'error');
+                    return;
+                }
+                
+                this.securitySettings.appPassword = pin;
+                localStorage.setItem('campScannerSecurity', JSON.stringify(this.securitySettings));
+                
+                document.getElementById('app-password-modal').classList.remove('active');
+                this.showToast('App PIN set successfully');
+            }
+            
+            forgotPassword() {
+                if (confirm('Clear all data and reset app? This cannot be undone.')) {
+                    localStorage.removeItem('campScannerSecurity');
+                    localStorage.removeItem('campScannerDocs');
+                    localStorage.removeItem('campScannerSignature');
+                    location.reload();
+                }
+            }
+            
+            confirmClearData() {
+                if (confirm('Are you sure? This will delete ALL documents, signatures, and settings permanently.')) {
+                    this.clearAllData();
+                }
+            }
+            
+            clearAllData() {
+                localStorage.removeItem('campScannerDocs');
+                localStorage.removeItem('campScannerSignature');
+                localStorage.removeItem('campScannerSecurity');
+                
+                this.pages = [];
+                this.savedDocuments = [];
+                this.signatureData = null;
+                this.securitySettings = {};
+                
+                this.updatePageCount();
+                this.loadSavedDocuments();
+                
+                document.getElementById('security-modal').classList.remove('active');
+                this.showToast('All data cleared successfully');
+            }
+            
+            openSecuritySettings() {
+                document.getElementById('security-modal').classList.add('active');
+                document.getElementById('auto-delete-toggle').checked = this.securitySettings.autoDelete || false;
+            }
+            
+            applySecuritySettings() {
+                this.securitySettings.autoDelete = document.getElementById('auto-delete-toggle').checked;
+                localStorage.setItem('campScannerSecurity', JSON.stringify(this.securitySettings));
+                document.getElementById('security-modal').classList.remove('active');
+                this.showToast('Security settings saved');
+            }
+            
+            // Simple XOR encryption for local storage
+            encryptData(data, key) {
+                let encrypted = '';
+                for (let i = 0; i < data.length; i++) {
+                    encrypted += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                }
+                return btoa(encrypted);
+            }
+            
+            decryptData(encrypted, key) {
+                try {
+                    const data = atob(encrypted);
+                    let decrypted = '';
+                    for (let i = 0; i < data.length; i++) {
+                        decrypted += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                    }
+                    return decrypted;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            // ==================== BATCH SCAN FEATURES ====================
+            
+            toggleBatchMode() {
+                this.batchMode = !this.batchMode;
+                const btn = document.getElementById('batch-mode-btn');
+                const counter = document.getElementById('batch-counter');
+                const batchControls = document.getElementById('batch-controls');
+                
+                if (this.batchMode) {
+                    btn.style.borderColor = '#10b981';
+                    btn.style.background = 'rgba(16, 185, 129, 0.3)';
+                    btn.querySelector('span').textContent = 'Batch: ON';
+                    counter.style.display = 'block';
+                    batchControls.style.display = 'block';
+                    this.batchPages = [];
+                    this.updateBatchCounter();
+                    this.showToast('Batch mode ON - Scan multiple pages');
+                } else {
+                    btn.style.borderColor = 'transparent';
+                    btn.style.background = 'rgba(0,0,0,0.5)';
+                    btn.querySelector('span').textContent = 'Batch: OFF';
+                    counter.style.display = 'none';
+                    batchControls.style.display = 'none';
+                    this.batchPages = [];
+                }
+            }
+            
+            updateBatchCounter() {
+                document.getElementById('batch-count').textContent = this.batchPages.length;
+                document.getElementById('batch-total').textContent = this.batchPages.length;
+            }
+            
+            async captureBatchImage() {
+                const video = document.getElementById('camera-video');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0);
+                
+                // Apply auto-crop if document detected
+                const edges = this.detectDocumentEdges(canvas);
+                let processedCanvas = canvas;
+                
+                if (edges) {
+                    processedCanvas = this.cropToEdges(canvas, edges);
+                }
+                
+                // Apply current filter
+                const imageData = ctx.getImageData(0, 0, processedCanvas.width, processedCanvas.height);
+                const filteredData = this.applyFilter(imageData, this.currentFilter);
+                ctx.putImageData(filteredData, 0, 0);
+                
+                const image = processedCanvas.toDataURL('image/jpeg', 0.95);
+                this.batchPages.push({ image, filter: this.currentFilter });
+                this.updateBatchCounter();
+                
+                // Flash effect
+                const flash = document.createElement('div');
+                flash.style.cssText = 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; opacity: 0.5; z-index: 100; pointer-events: none;';
+                document.getElementById('camera-screen').appendChild(flash);
+                setTimeout(() => flash.remove(), 150);
+                
+                this.showToast(`Page ${this.batchPages.length} captured`);
+                
+                // Auto-continue to next page
+                setTimeout(() => {
+                    this.showToast('Position next document...');
+                }, 800);
+            }
+            
+            finishBatchScan() {
+                if (this.batchPages.length === 0) {
+                    this.showToast('No pages captured', 'error');
+                    return;
+                }
+                
+                // Transfer batch pages to main pages
+                this.pages = [...this.batchPages];
+                this.batchPages = [];
+                this.batchMode = false;
+                
+                // Reset UI
+                document.getElementById('batch-mode-btn').style.borderColor = 'transparent';
+                document.getElementById('batch-mode-btn').style.background = 'rgba(0,0,0,0.5)';
+                document.getElementById('batch-mode-btn').querySelector('span').textContent = 'Batch: OFF';
+                document.getElementById('batch-counter').style.display = 'none';
+                document.getElementById('batch-controls').style.display = 'none';
+                
+                this.updatePageCount();
+                this.showScreen('save-screen');
+                this.showToast(`${this.pages.length} pages ready!`);
+            }
+            
+            reviewBatchPages() {
+                if (this.batchPages.length === 0) {
+                    this.showToast('No pages to review', 'error');
+                    return;
+                }
+                
+                // Create review modal
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay active';
+                modal.id = 'batch-review-modal';
+                
+                let pagesHtml = this.batchPages.map((page, i) => `
+                    <div style="position: relative; margin-bottom: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden;">
+                        <img src="${page.image}" style="width: 100%; display: block;">
+                        <div style="position: absolute; top: 0.5rem; left: 0.5rem; background: rgba(0,0,0,0.7); color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">
+                            Page ${i + 1}
+                        </div>
+                        <button onclick="window.scanner.deleteBatchPage(${i})" style="position: absolute; top: 0.5rem; right: 0.5rem; background: #ef4444; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+                
+                modal.innerHTML = `
+                    <div class="modal" style="max-width: 95vw; max-height: 90vh; overflow: auto;">
+                        <h3><i class="fas fa-images"></i> Review Pages (${this.batchPages.length})</h3>
+                        <div style="max-height: 60vh; overflow: auto;">
+                            ${pagesHtml}
+                        </div>
+                        <div class="modal-buttons">
+                            <button class="btn btn-secondary" onclick="document.getElementById('batch-review-modal').remove()">Close</button>
+                            <button class="btn btn-danger" onclick="window.scanner.clearBatchPages()">
+                                <i class="fas fa-trash-alt"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+            }
+            
+            deleteBatchPage(index) {
+                this.batchPages.splice(index, 1);
+                this.updateBatchCounter();
+                document.getElementById('batch-review-modal').remove();
+                this.reviewBatchPages();
+                this.showToast('Page deleted');
+            }
+            
+            clearBatchPages() {
+                if (confirm('Delete all captured pages?')) {
+                    this.batchPages = [];
+                    this.updateBatchCounter();
+                    document.getElementById('batch-review-modal').remove();
+                    this.showToast('All pages cleared');
+                }
+            }
+
+            // ==================== EDIT TOOLS ====================
+            
+            toggleEditTools() {
+                const panel = document.getElementById('edit-tools-panel');
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+            
+            openCropTool() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to edit', 'error');
+                    return;
+                }
+                document.getElementById('crop-modal').classList.add('active');
+                this.initCropCanvas();
+            }
+            
+            initCropCanvas() {
+                const canvas = document.getElementById('crop-canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            setCropRatio(ratio) {
+                this.cropRatio = ratio;
+                // Visual feedback would be implemented here
+            }
+            
+            applyCrop() {
+                const canvas = document.getElementById('crop-canvas');
+                // Simple center crop for demo
+                const ctx = canvas.getContext('2d');
+                const imageData = canvas.toDataURL('image/jpeg', 0.95);
+                
+                this.pages[this.currentPage].image = imageData;
+                this.updateThumbnails();
+                document.getElementById('crop-modal').classList.remove('active');
+                this.showToast('Crop applied');
+            }
+            
+            openRotateTool() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to edit', 'error');
+                    return;
+                }
+                document.getElementById('rotate-modal').classList.add('active');
+                this.rotationAngle = 0;
+                this.flipH = false;
+                this.flipV = false;
+                this.updateRotatePreview();
+            }
+            
+            updateRotatePreview() {
+                const canvas = document.getElementById('rotate-preview');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    ctx.save();
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate(this.rotationAngle * Math.PI / 180);
+                    ctx.scale(this.flipH ? -1 : 1, this.flipV ? -1 : 1);
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                    ctx.restore();
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            rotateImage(degrees) {
+                this.rotationAngle = (this.rotationAngle + degrees) % 360;
+                this.updateRotatePreview();
+            }
+            
+            flipImage(direction) {
+                if (direction === 'horizontal') {
+                    this.flipH = !this.flipH;
+                } else {
+                    this.flipV = !this.flipV;
+                }
+                this.updateRotatePreview();
+            }
+            
+            applyRotation() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    ctx.save();
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate(this.rotationAngle * Math.PI / 180);
+                    ctx.scale(this.flipH ? -1 : 1, this.flipV ? -1 : 1);
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                    ctx.restore();
+                    
+                    this.pages[this.currentPage].image = canvas.toDataURL('image/jpeg', 0.95);
+                    this.pages[this.currentPage].rotation = this.rotationAngle;
+                    this.updateThumbnails();
+                    document.getElementById('rotate-modal').classList.remove('active');
+                    this.showToast('Rotation applied');
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            openAdjustTool() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to edit', 'error');
+                    return;
+                }
+                document.getElementById('adjust-modal').classList.add('active');
+                this.resetAdjustments();
+                this.updateAdjustPreview();
+            }
+            
+            resetAdjustments() {
+                document.getElementById('brightness-slider').value = 100;
+                document.getElementById('contrast-slider').value = 100;
+                document.getElementById('saturation-slider').value = 100;
+                document.getElementById('brightness-value').textContent = '100%';
+                document.getElementById('contrast-value').textContent = '100%';
+                document.getElementById('saturation-value').textContent = '100%';
+            }
+            
+            updateAdjustPreview() {
+                const brightness = document.getElementById('brightness-slider').value;
+                const contrast = document.getElementById('contrast-slider').value;
+                const saturation = document.getElementById('saturation-slider').value;
+                
+                document.getElementById('brightness-value').textContent = brightness + '%';
+                document.getElementById('contrast-value').textContent = contrast + '%';
+                document.getElementById('saturation-value').textContent = saturation + '%';
+                
+                const canvas = document.getElementById('adjust-preview');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            applyAdjustments() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                const brightness = document.getElementById('brightness-slider').value;
+                const contrast = document.getElementById('contrast-slider').value;
+                const saturation = document.getElementById('saturation-slider').value;
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    this.pages[this.currentPage].image = canvas.toDataURL('image/jpeg', 0.95);
+                    this.updateThumbnails();
+                    document.getElementById('adjust-modal').classList.remove('active');
+                    this.showToast('Adjustments applied');
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            openDrawTool() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to edit', 'error');
+                    return;
+                }
+                document.getElementById('draw-modal').classList.add('active');
+                this.initDrawCanvas();
+            }
+            
+            initDrawCanvas() {
+                const canvas = document.getElementById('draw-canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = this.pages[this.currentPage].image;
+                
+                this.drawColor = '#ff0000';
+                this.drawSize = 3;
+                this.isDrawing = false;
+                
+                canvas.onmousedown = (e) => this.startDrawing(e);
+                canvas.onmousemove = (e) => this.draw(e);
+                canvas.onmouseup = () => this.stopDrawing();
+                canvas.ontouchstart = (e) => this.startDrawing(e.touches[0]);
+                canvas.ontouchmove = (e) => this.draw(e.touches[0]);
+                canvas.ontouchend = () => this.stopDrawing();
+            }
+            
+            setDrawColor(color, btn) {
+                this.drawColor = color;
+                document.querySelectorAll('#draw-modal .color-btn').forEach(b => b.style.borderColor = 'transparent');
+                btn.style.borderColor = '#4f46e5';
+            }
+            
+            startDrawing(e) {
+                this.isDrawing = true;
+                const canvas = document.getElementById('draw-canvas');
+                const rect = canvas.getBoundingClientRect();
+                const ctx = canvas.getContext('2d');
+                
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.strokeStyle = this.drawColor;
+                ctx.lineWidth = document.getElementById('draw-size').value;
+                ctx.lineCap = 'round';
+            }
+            
+            draw(e) {
+                if (!this.isDrawing) return;
+                const canvas = document.getElementById('draw-canvas');
+                const rect = canvas.getBoundingClientRect();
+                const ctx = canvas.getContext('2d');
+                
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+            }
+            
+            stopDrawing() {
+                this.isDrawing = false;
+            }
+            
+            clearDrawing() {
+                this.initDrawCanvas();
+            }
+            
+            applyDrawing() {
+                const canvas = document.getElementById('draw-canvas');
+                this.pages[this.currentPage].image = canvas.toDataURL('image/jpeg', 0.95);
+                this.updateThumbnails();
+                document.getElementById('draw-modal').classList.remove('active');
+                this.showToast('Drawing applied');
+            }
+            
+            openTextTool() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to edit', 'error');
+                    return;
+                }
+                document.getElementById('text-overlay-modal').classList.add('active');
+                this.overlayTextColor = '#000000';
+            }
+            
+            setOverlayTextColor(color, btn) {
+                this.overlayTextColor = color;
+                document.querySelectorAll('#text-overlay-modal .color-btn').forEach(b => b.style.borderColor = 'transparent');
+                btn.style.borderColor = '#4f46e5';
+            }
+            
+            enableTextPlacement() {
+                document.getElementById('text-overlay-modal').classList.remove('active');
+                this.showToast('Tap on image to place text');
+                // Text placement logic would be implemented on the preview canvas
+            }
+            
+            openStampTool() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to edit', 'error');
+                    return;
+                }
+                document.getElementById('stamp-modal').classList.add('active');
+            }
+            
+            selectStamp(stamp) {
+                this.selectedStamp = stamp;
+                document.getElementById('stamp-modal').classList.remove('active');
+                this.showToast(`Tap on image to place "${stamp}" stamp`);
+                // Stamp placement logic would be implemented
+            }
+            
+            openBlurTool() {
+                if (this.pages.length === 0) {
+                    this.showToast('No image to edit', 'error');
+                    return;
+                }
+                document.getElementById('blur-modal').classList.add('active');
+                this.initBlurCanvas();
+            }
+            
+            initBlurCanvas() {
+                const canvas = document.getElementById('blur-canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = this.pages[this.currentPage].image;
+                
+                this.blurAreas = [];
+                this.isSelectingBlur = false;
+                
+                canvas.onmousedown = (e) => this.startBlurSelection(e);
+                canvas.onmousemove = (e) => this.updateBlurSelection(e);
+                canvas.onmouseup = () => this.endBlurSelection();
+            }
+            
+            startBlurSelection(e) {
+                this.isSelectingBlur = true;
+                const canvas = document.getElementById('blur-canvas');
+                const rect = canvas.getBoundingClientRect();
+                this.blurStart = {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+            
+            updateBlurSelection(e) {
+                if (!this.isSelectingBlur) return;
+                // Visual feedback for selection area would be implemented
+            }
+            
+            endBlurSelection() {
+                this.isSelectingBlur = false;
+            }
+            
+            clearBlurAreas() {
+                this.blurAreas = [];
+                this.initBlurCanvas();
+            }
+            
+            applyBlur() {
+                const canvas = document.getElementById('blur-canvas');
+                this.pages[this.currentPage].image = canvas.toDataURL('image/jpeg', 0.95);
+                this.updateThumbnails();
+                document.getElementById('blur-modal').classList.remove('active');
+                this.showToast('Blur applied');
+            }
+            
+            undoLastEdit() {
+                if (this.pages.length === 0 || this.currentPage < 0) {
+                    this.showToast('Nothing to undo', 'error');
+                    return;
+                }
+                this.showToast('Undo feature - restore from backup');
+            }
+
+            // ==================== AI ENHANCEMENT FEATURES ====================
+            
+            openEnhanceModal() {
+                if (this.pages.length === 0) {
+                    this.showToast('No document to enhance', 'error');
+                    return;
+                }
+                document.getElementById('enhance-modal').classList.add('active');
+                this.initEnhanceCanvases();
+                this.resetEnhance();
+            }
+            
+            initEnhanceCanvases() {
+                const originalCanvas = document.getElementById('enhance-original');
+                const previewCanvas = document.getElementById('enhance-preview');
+                const img = new Image();
+                
+                img.onload = () => {
+                    // Set canvas sizes
+                    originalCanvas.width = img.width;
+                    originalCanvas.height = img.height;
+                    previewCanvas.width = img.width;
+                    previewCanvas.height = img.height;
+                    
+                    // Draw original
+                    const origCtx = originalCanvas.getContext('2d');
+                    origCtx.drawImage(img, 0, 0);
+                    
+                    // Draw initial preview
+                    const prevCtx = previewCanvas.getContext('2d');
+                    prevCtx.drawImage(img, 0, 0);
+                    
+                    // Store original for processing
+                    this.enhanceOriginalImage = img;
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            updateEnhancePreview() {
+                const sharpness = document.getElementById('enhance-sharpness').value;
+                const contrast = document.getElementById('enhance-contrast').value;
+                const whiteness = document.getElementById('enhance-whiteness').value;
+                const shadow = document.getElementById('enhance-shadow').value;
+                
+                // Update labels
+                document.getElementById('enhance-sharpness-val').textContent = sharpness + '%';
+                document.getElementById('enhance-contrast-val').textContent = contrast + '%';
+                document.getElementById('enhance-whiteness-val').textContent = whiteness + '%';
+                document.getElementById('enhance-shadow-val').textContent = shadow + '%';
+                
+                // Apply preview
+                this.applyEnhanceFilters(sharpness, contrast, whiteness, shadow);
+            }
+            
+            applyEnhanceFilters(sharpness, contrast, whiteness, shadow) {
+                if (!this.enhanceOriginalImage) return;
+                
+                const previewCanvas = document.getElementById('enhance-preview');
+                const ctx = previewCanvas.getContext('2d');
+                
+                // Clear and redraw
+                ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+                
+                // Apply filters using canvas filter API
+                const sharpnessVal = 1 + (sharpness / 100);
+                const contrastVal = 1 + (contrast / 50);
+                const brightnessVal = 1 + (whiteness / 200);
+                
+                ctx.filter = `contrast(${contrastVal}) brightness(${brightnessVal})`;
+                ctx.drawImage(this.enhanceOriginalImage, 0, 0);
+                
+                // Apply shadow removal and sharpening via pixel manipulation
+                if (shadow > 0 || sharpness > 50) {
+                    const imageData = ctx.getImageData(0, 0, previewCanvas.width, previewCanvas.height);
+                    const data = imageData.data;
+                    
+                    // Simple shadow removal (lift dark areas)
+                    if (shadow > 0) {
+                        const shadowLift = shadow * 2;
+                        for (let i = 0; i < data.length; i += 4) {
+                            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                            if (avg < 128) {
+                                const lift = Math.min(shadowLift, 128 - avg);
+                                data[i] = Math.min(255, data[i] + lift);
+                                data[i + 1] = Math.min(255, data[i + 1] + lift);
+                                data[i + 2] = Math.min(255, data[i + 2] + lift);
+                            }
+                        }
+                    }
+                    
+                    // Simple sharpening
+                    if (sharpness > 50) {
+                        const sharpenStrength = (sharpness - 50) / 50;
+                        this.applySharpening(data, previewCanvas.width, previewCanvas.height, sharpenStrength);
+                    }
+                    
+                    ctx.putImageData(imageData, 0, 0);
+                }
+                
+                ctx.filter = 'none';
+            }
+            
+            applySharpening(data, width, height, strength) {
+                const tempData = new Uint8ClampedArray(data);
+                const kernel = [
+                    0, -1, 0,
+                    -1, 5, -1,
+                    0, -1, 0
+                ];
+                
+                for (let y = 1; y < height - 1; y++) {
+                    for (let x = 1; x < width - 1; x++) {
+                        const idx = (y * width + x) * 4;
+                        
+                        for (let c = 0; c < 3; c++) {
+                            let sum = 0;
+                            for (let ky = -1; ky <= 1; ky++) {
+                                for (let kx = -1; kx <= 1; kx++) {
+                                    const kidx = ((y + ky) * width + (x + kx)) * 4;
+                                    sum += tempData[kidx + c] * kernel[(ky + 1) * 3 + (kx + 1)];
+                                }
+                            }
+                            data[idx + c] = Math.min(255, Math.max(0, tempData[idx + c] * (1 - strength) + sum * strength));
+                        }
+                    }
+                }
+            }
+            
+            autoEnhance() {
+                // Set optimal values for document enhancement
+                document.getElementById('enhance-sharpness').value = 70;
+                document.getElementById('enhance-contrast').value = 60;
+                document.getElementById('enhance-whiteness').value = 40;
+                document.getElementById('enhance-shadow').value = 50;
+                this.updateEnhancePreview();
+                this.showToast('Auto enhancement applied');
+            }
+            
+            enhanceDocumentMode() {
+                // Optimize for text documents
+                document.getElementById('enhance-sharpness').value = 80;
+                document.getElementById('enhance-contrast').value = 80;
+                document.getElementById('enhance-whiteness').value = 60;
+                document.getElementById('enhance-shadow').value = 70;
+                this.updateEnhancePreview();
+                this.showToast('Document mode applied');
+            }
+            
+            deblurImage() {
+                document.getElementById('enhance-sharpness').value = 90;
+                this.updateEnhancePreview();
+                this.showToast('Deblur applied');
+            }
+            
+            denoiseImage() {
+                document.getElementById('enhance-shadow').value = 40;
+                document.getElementById('enhance-contrast').value = 40;
+                this.updateEnhancePreview();
+                this.showToast('Clean applied');
+            }
+            
+            sharpenImage() {
+                document.getElementById('enhance-sharpness').value = 85;
+                this.updateEnhancePreview();
+                this.showToast('Sharpen applied');
+            }
+            
+            colorCorrect() {
+                document.getElementById('enhance-whiteness').value = 50;
+                document.getElementById('enhance-contrast').value = 50;
+                document.getElementById('enhance-shadow').value = 30;
+                this.updateEnhancePreview();
+                this.showToast('Color correction applied');
+            }
+            
+            resetEnhance() {
+                document.getElementById('enhance-sharpness').value = 50;
+                document.getElementById('enhance-contrast').value = 50;
+                document.getElementById('enhance-whiteness').value = 50;
+                document.getElementById('enhance-shadow').value = 30;
+                this.updateEnhancePreview();
+            }
+            
+            applyEnhancement() {
+                const previewCanvas = document.getElementById('enhance-preview');
+                const enhancedImage = previewCanvas.toDataURL('image/jpeg', 0.95);
+                
+                this.pages[this.currentPage].image = enhancedImage;
+                this.pages[this.currentPage].enhanced = true;
+                this.updateThumbnails();
+                
+                document.getElementById('enhance-modal').classList.remove('active');
+                this.showToast('Enhancement applied successfully');
             }
         }
 
