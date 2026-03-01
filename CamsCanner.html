@@ -1,165 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🏕️ Camp Scanner Pro v8</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏕️ Camp Scanner - All-in-One</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap'); body{font-family:'Poppins',sans-serif;}</style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-emerald-900 to-teal-950 text-white min-h-screen">
+<body class="bg-gradient-to-br from-emerald-950 via-teal-950 to-emerald-900 text-white min-h-screen">
 
-  <!-- HOME -->
-  <div id="home" class="flex flex-col h-screen p-6">
-    <div class="flex items-center gap-3">
+  <!-- HOME SCREEN -->
+  <div id="home" class="flex flex-col min-h-screen p-6">
+    <div class="flex items-center gap-3 mb-8">
       <span class="text-5xl">🏕️</span>
       <h1 class="text-4xl font-bold">Camp Scanner</h1>
     </div>
-    <button onclick="startScanner()" class="mt-auto bg-lime-400 text-emerald-950 font-bold text-2xl py-8 rounded-3xl shadow-2xl active:scale-95">📸 START SCANNING</button>
+    <div class="flex-1 flex flex-col items-center justify-center text-center">
+      <p class="text-xl opacity-90 mb-12 max-w-md">
+        Scan documents • Record video notes • Add voice explanations<br>
+        All in your browser — no install needed
+      </p>
+      <button onclick="startApp()"
+              class="bg-lime-400 hover:bg-lime-300 text-emerald-950 font-bold text-2xl px-16 py-8 rounded-3xl shadow-2xl active:scale-95 transition-all">
+        📸 Start Scanning
+      </button>
+    </div>
   </div>
 
-  <!-- SCANNER -->
-  <div id="scanner" class="hidden flex flex-col h-screen bg-black">
+  <!-- MAIN SCANNER INTERFACE -->
+  <div id="scanner" class="hidden flex flex-col min-h-screen bg-black">
+    <!-- Header -->
     <div class="p-4 bg-black/80 flex justify-between items-center">
-      <button onclick="stopAll()" class="text-3xl">✕</button>
-      
-      <div class="flex gap-2 text-xs">
-        <button onclick="setAudioQuality(0)" id="aq0" class="px-3 py-1 bg-lime-400 text-black rounded-xl font-bold">Economy</button>
-        <button onclick="setAudioQuality(1)" id="aq1" class="px-3 py-1 bg-white/20 rounded-xl font-bold">Balanced</button>
-        <button onclick="setAudioQuality(2)" id="aq2" class="px-3 py-1 bg-white/20 rounded-xl font-bold">High</button>
+      <button onclick="stopEverything()" class="text-3xl font-bold">✕</button>
+
+      <div class="flex gap-2 text-sm">
+        <button onclick="setQuality(0)" id="q0" class="px-4 py-2 rounded-xl font-semibold bg-lime-500 text-black">Economy</button>
+        <button onclick="setQuality(1)" id="q1" class="px-4 py-2 rounded-xl font-semibold bg-white/20">Balanced</button>
+        <button onclick="setQuality(2)" id="q2" class="px-4 py-2 rounded-xl font-semibold bg-white/20">High</button>
       </div>
 
-      <button onclick="toggleTorch()" class="text-3xl">⚡</button>
+      <button id="torchBtn" onclick="toggleTorch()" class="text-3xl">⚡</button>
     </div>
-    
-    <div class="flex-1 relative overflow-hidden">
-      <video id="video" class="w-full h-full object-cover" autoplay playsinline></video>
-      <div class="absolute inset-8 border-4 border-lime-400 border-dashed rounded-3xl pointer-events-none"></div>
-      
-      <div id="timerContainer" class="hidden absolute top-6 left-1/2 -translate-x-1/2 bg-black/70 px-6 py-2 rounded-full text-xl font-mono">
+
+    <!-- Camera / Video Preview -->
+    <div class="relative flex-1 bg-black overflow-hidden">
+      <video id="preview" class="w-full h-full object-cover" autoplay playsinline muted></video>
+      <div class="absolute inset-6 border-4 border-lime-400/70 border-dashed rounded-3xl pointer-events-none"></div>
+
+      <!-- Timer (shown during recording) -->
+      <div id="timerBox" class="hidden absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 px-6 py-2 rounded-full text-xl font-mono tracking-wider">
         <span id="timer">00:00</span>
       </div>
     </div>
 
     <!-- Controls -->
-    <div class="p-6 bg-black/80 flex flex-wrap gap-3 justify-center">
-      <button onclick="captureStill()" class="px-8 py-4 bg-lime-400 text-black rounded-3xl font-bold flex items-center gap-2">📸 Photo</button>
-      <button onclick="startVoiceNote()" class="px-8 py-4 bg-amber-400 text-black rounded-3xl font-bold flex items-center gap-2">🎤 Voice Note</button>
-      
-      <button onclick="startVideoRecording()" id="startVideoBtn" class="px-8 py-4 bg-red-500 rounded-3xl font-bold flex items-center gap-2">🎥 Video + Voice</button>
-      <button onclick="pauseRecording()" id="pauseBtn" class="hidden px-8 py-4 bg-yellow-400 text-black rounded-3xl font-bold">⏸ Pause</button>
-      <button onclick="resumeRecording()" id="resumeBtn" class="hidden px-8 py-4 bg-green-400 text-black rounded-3xl font-bold">▶ Resume</button>
-      <button onclick="stopVideoRecording()" id="stopBtn" class="hidden px-8 py-4 bg-white text-black rounded-3xl font-bold">■ Stop</button>
+    <div class="p-6 bg-gradient-to-t from-black to-transparent flex flex-wrap gap-4 justify-center">
+      <!-- Photo -->
+      <button onclick="takePhoto()" class="px-9 py-5 bg-lime-500 text-black rounded-3xl font-bold text-lg flex items-center gap-3 active:scale-95 shadow-lg">
+        <span class="text-2xl">📸</span> Photo
+      </button>
+
+      <!-- Voice Note -->
+      <button onclick="startVoiceNote()" class="px-9 py-5 bg-amber-500 text-black rounded-3xl font-bold text-lg flex items-center gap-3 active:scale-95 shadow-lg">
+        <span class="text-2xl">🎤</span> Voice
+      </button>
+
+      <!-- Video -->
+      <button id="startVideoBtn" onclick="startVideo()" class="px-9 py-5 bg-red-600 rounded-3xl font-bold text-lg flex items-center gap-3 active:scale-95 shadow-lg">
+        <span class="text-2xl">🎥</span> Video
+      </button>
+
+      <button id="pauseBtn"   onclick="pauseOrResume()" class="hidden px-9 py-5 bg-yellow-500 text-black rounded-3xl font-bold text-lg active:scale-95 shadow-lg">⏸ Pause</button>
+      <button id="stopBtn"    onclick="stopRecording()" class="hidden px-9 py-5 bg-white text-black rounded-3xl font-bold text-lg active:scale-95 shadow-lg">■ Stop</button>
     </div>
   </div>
 
   <script>
-    let stream = null, mediaRecorder = null, recordedChunks = [], torchOn = false;
-    let timerInterval = null, seconds = 0, audioQualityLevel = 1; // 0=Economy, 1=Balanced, 2=High
-    const audioPresets = [
-      {name:"Economy", bitrate:32000, channels:1, sampleRate:16000}, // voice only
-      {name:"Balanced", bitrate:64000, channels:1, sampleRate:24000},
-      {name:"High", bitrate:128000, channels:2, sampleRate:48000}
+    // ────────────────────────────────────────────────
+    // State
+    // ────────────────────────────────────────────────
+    let stream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let torchOn = false;
+    let timerInterval = null;
+    let seconds = 0;
+    let qualityLevel = 1; // 0=economy, 1=balanced, 2=high
+
+    const qualityPresets = [
+      { name:"Economy",  videoBitrate:  800_000, audioBitrate: 32_000, fps:15, res: 720, audioChannels:1, audioSampleRate:16000 },
+      { name:"Balanced", videoBitrate:2_500_000, audioBitrate: 64_000, fps:20, res:1080, audioChannels:1, audioSampleRate:24000 },
+      { name:"High",     videoBitrate:5_000_000, audioBitrate:128_000, fps:24, res:1080, audioChannels:2, audioSampleRate:48000 }
     ];
 
-    async function startScanner() {
-      document.getElementById('home').classList.add('hidden');
-      document.getElementById('scanner').classList.remove('hidden');
-      
-      const preset = audioPresets[audioQualityLevel];
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 20 } },
-        audio: { 
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: preset.sampleRate,
-          channelCount: preset.channels
-        }
-      });
-      document.getElementById('video').srcObject = stream;
-      await document.getElementById('video').play();
+    // ────────────────────────────────────────────────
+    // Utils
+    // ────────────────────────────────────────────────
+    function formatTime(s) {
+      const m = Math.floor(s / 60).toString().padStart(2,'0');
+      const sec = (s % 60).toString().padStart(2,'0');
+      return `${m}:${sec}`;
     }
 
-    function setAudioQuality(level) {
-      audioQualityLevel = level;
-      document.querySelectorAll('#scanner button[id^="aq"]').forEach((b,i) => {
-        b.classList.toggle('bg-lime-400', i===level);
-        b.classList.toggle('bg-white/20', i!==level);
-      });
-    }
-
-    function formatTime(s) { return \( {Math.floor(s/60).toString().padStart(2,'0')}: \){(s%60).toString().padStart(2,'0')}; }
     function startTimer() {
-      seconds = 0; document.getElementById('timer').textContent = "00:00";
-      timerInterval = setInterval(() => { seconds++; document.getElementById('timer').textContent = formatTime(seconds); }, 1000);
+      seconds = 0;
+      document.getElementById('timer').textContent = "00:00";
+      document.getElementById('timerBox').classList.remove('hidden');
+      timerInterval = setInterval(() => {
+        seconds++;
+        document.getElementById('timer').textContent = formatTime(seconds);
+      }, 1000);
     }
-    function stopTimer() { if(timerInterval) clearInterval(timerInterval); }
 
-    function getBestMime() {
-      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) return 'video/webm;codecs=vp9,opus';
-      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) return 'video/webm;codecs=vp8,opus';
+    function stopTimer() {
+      clearInterval(timerInterval);
+      document.getElementById('timerBox').classList.add('hidden');
+    }
+
+    function getBestVideoMime() {
+      const tries = [
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm'
+      ];
+      for (let t of tries) {
+        if (MediaRecorder.isTypeSupported(t)) return t;
+      }
       return 'video/webm';
     }
 
-    async function startVideoRecording() {
-      const preset = audioPresets[audioQualityLevel];
-      const mime = getBestMime();
-      
-      mediaRecorder = new MediaRecorder(stream, { 
-        mimeType: mime,
-        videoBitsPerSecond: 2500000,
-        audioBitsPerSecond: preset.bitrate
-      });
-      recordedChunks = [];
+    // ────────────────────────────────────────────────
+    // Core Actions
+    // ────────────────────────────────────────────────
+    async function startApp() {
+      document.getElementById('home').classList.add('hidden');
+      document.getElementById('scanner').classList.remove('hidden');
 
-      mediaRecorder.ondataavailable = e => e.data.size && recordedChunks.push(e.data);
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: mime });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = Camp-Scan-\( {preset.name}- \){Date.now()}.webm;
-        a.click(); URL.revokeObjectURL(url);
-        alert(✅ Video + Voice Saved!\nAudio: \( {preset.name} ( \){preset.bitrate/1000}kbps Opus));
-        stopTimer();
-      };
+      const q = qualityPresets[qualityLevel];
 
-      mediaRecorder.start(1000);
-      startTimer();
-      document.getElementById('startVideoBtn').classList.add('hidden');
-      document.getElementById('pauseBtn').classList.remove('hidden');
-      document.getElementById('stopBtn').classList.remove('hidden');
-      document.getElementById('timerContainer').classList.remove('hidden');
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" },
+            width:  { ideal: q.res },
+            height: { ideal: Math.round(q.res * 16/9) },
+            frameRate: { ideal: q.fps }
+          },
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            channelCount:   q.audioChannels,
+            sampleRate:     q.audioSampleRate
+          }
+        });
+
+        document.getElementById('preview').srcObject = stream;
+        await document.getElementById('preview').play();
+      } catch (err) {
+        alert("Camera / Microphone access denied or not available.\n\n" + err.message);
+      }
     }
 
-    function pauseRecording() { if (mediaRecorder?.state === "recording") { mediaRecorder.pause(); stopTimer(); document.getElementById('pauseBtn').classList.add('hidden'); document.getElementById('resumeBtn').classList.remove('hidden'); } }
-    function resumeRecording() { if (mediaRecorder?.state === "paused") { mediaRecorder.resume(); startTimer(); document.getElementById('resumeBtn').classList.add('hidden'); document.getElementById('pauseBtn').classList.remove('hidden'); } }
-    function stopVideoRecording() { if (mediaRecorder) mediaRecorder.stop(); document.getElementById('startVideoBtn').classList.remove('hidden'); document.getElementById('pauseBtn').classList.add('hidden'); document.getElementById('resumeBtn').classList.add('hidden'); document.getElementById('stopBtn').classList.add('hidden'); }
+    function setQuality(idx) {
+      qualityLevel = idx;
+      document.querySelectorAll('#q0,#q1,#q2').forEach((el,i) => {
+        el.classList.toggle('bg-lime-500', i === idx);
+        el.classList.toggle('bg-white/20', i !== idx);
+        el.classList.toggle('text-black',   i === idx);
+      });
+      alert(`Switched to ${qualityPresets[idx].name} quality.\nRestart scanning to apply.`);
+    }
+
+    async function takePhoto() {
+      if (!stream) return alert("Camera not started yet.");
+
+      try {
+        const track = stream.getVideoTracks()[0];
+        const capture = new ImageCapture(track);
+        const blob = await capture.takePhoto();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Camp-Photo-${Date.now()}.jpg`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        // fallback canvas
+        const video = document.getElementById('preview');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        canvas.toBlob(b => {
+          const url = URL.createObjectURL(b);
+          const a = document.createElement('a');
+          a.href = url; a.download = `Camp-Photo-fallback-${Date.now()}.jpg`;
+          a.click(); URL.revokeObjectURL(url);
+        }, 'image/jpeg', 0.92);
+      }
+    }
 
     async function startVoiceNote() {
-      const preset = audioPresets[audioQualityLevel];
-      const audioStream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: preset.sampleRate, channelCount: preset.channels, noiseSuppression: true } });
-      mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: preset.bitrate });
-      recordedChunks = [];
+      if (!stream) return alert("Start scanning first");
 
-      mediaRecorder.ondataavailable = e => e.data.size && recordedChunks.push(e.data);
+      const q = qualityPresets[qualityLevel];
+      const audioStream = new MediaStream(stream.getAudioTracks());
+
+      mediaRecorder = new MediaRecorder(audioStream, {
+        mimeType: 'audio/webm;codecs=opus',
+        audioBitsPerSecond: q.audioBitrate
+      });
+
+      recordedChunks = [];
+      mediaRecorder.ondataavailable = e => e.data.size > 0 && recordedChunks.push(e.data);
+
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunks, { type: 'audio/webm' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = Camp-VoiceNote-\( {preset.name}- \){Date.now()}.webm;
-        a.click(); URL.revokeObjectURL(url);
-        alert(✅ Pure Voice Note Saved! (${(blob.size/1024).toFixed(1)} KB, ${preset.name} Opus));
+        a.href = url;
+        a.download = `Camp-Voice-${q.name}-${Date.now()}.webm`;
+        a.click();
+        URL.revokeObjectURL(url);
       };
+
       mediaRecorder.start();
-      alert("🎤 Recording voice note... Tap Stop when done");
-      setTimeout(() => mediaRecorder.stop(), 30000); // max 30s for demo
+      alert("🎤 Recording voice note...\n\nTap Stop when finished.");
     }
 
-    async function captureStill() { alert("📸 High-Res Photo captured!"); }
-    async function toggleTorch() { /* same as before */ }
-    function stopAll() { if(stream) stream.getTracks().forEach(t=>t.stop()); stopTimer(); location.reload(); }
+    async function startVideo() {
+      if (!stream) return;
 
-    console.log("%c🏕️ Camp Scanner v8 – Audio Compression (Opus + Presets) Mastered! 🎤", "color:lime;font-size:18px;font-weight:bold");
+      const q = qualityPresets[qualityLevel];
+      const mime = getBestVideoMime();
+
+      mediaRecorder = new MediaRecorder(stream, {
+        mimeType: mime,
+        videoBitsPerSecond: q.videoBitrate,
+        audioBitsPerSecond: q.audioBitrate
+      });
+
+      recordedChunks = [];
+      mediaRecorder.ondataavailable = e => e.data.size > 0 && recordedChunks.push(e.data);
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Camp-Video-${q.name}-${Date.now()}.webm`;
+        a.click();
+        URL.revokeObjectURL(url);
+        stopTimer();
+      };
+
+      mediaRecorder.start(1000); // chunks every second
+      startTimer();
+
+      document.getElementById('startVideoBtn').classList.add('hidden');
+      document.getElementById('pauseBtn').classList.remove('hidden');
+      document.getElementById('stopBtn').classList.remove('hidden');
+    }
+
+    function pauseOrResume() {
+      if (!mediaRecorder) return;
+      if (mediaRecorder.state === 'recording') {
+        mediaRecorder.pause();
+        stopTimer();
+        document.getElementById('pauseBtn').textContent = '▶ Resume';
+      } else if (mediaRecorder.state === 'paused') {
+        mediaRecorder.resume();
+        startTimer();
+        document.getElementById('pauseBtn').textContent = '⏸ Pause';
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      document.getElementById('startVideoBtn').classList.remove('hidden');
+      document.getElementById('pauseBtn').classList.add('hidden');
+      document.getElementById('pauseBtn').textContent = '⏸ Pause';
+      document.getElementById('stopBtn').classList.add('hidden');
+      stopTimer();
+    }
+
+    async function toggleTorch() {
+      if (!stream) return;
+      const track = stream.getVideoTracks()[0];
+      if (!track) return;
+      torchOn = !torchOn;
+      try {
+        await track.applyConstraints({ advanced: [{ torch: torchOn }] });
+      } catch {}
+    }
+
+    function stopEverything() {
+      stopTimer();
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+      document.getElementById('scanner').classList.add('hidden');
+      document.getElementById('home').classList.remove('hidden');
+      document.getElementById('startVideoBtn').classList.remove('hidden');
+      document.getElementById('pauseBtn').classList.add('hidden');
+      document.getElementById('stopBtn').classList.add('hidden');
+    }
+
+    console.log("%c🏕️ Camp Scanner – single file edition loaded", "color:lime; font-size:16px; font-weight:bold");
   </script>
 </body>
 </html>
