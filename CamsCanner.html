@@ -769,6 +769,9 @@
                             <button id="export-zip-quick" class="save-option" onclick="window.scanner.exportAsZIPQuick()">
                                 <i class="fas fa-file-archive"></i><span>Export ZIP</span>
                             </button>
+                            <button id="ocr-quick-btn" class="save-option" onclick="window.scanner.performOCR()">
+                                <i class="fas fa-font"></i><span>OCR Text</span>
+                            </button>
                             <button id="security-settings-btn" class="save-option" onclick="window.scanner.openSecuritySettings()">
                                 <i class="fas fa-shield-alt"></i><span>Security</span>
                             </button>
@@ -1583,13 +1586,9 @@
                 document.getElementById('share-whatsapp-btn').addEventListener('click', () => this.shareViaWhatsApp());
                 document.getElementById('share-btn').addEventListener('click', () => this.shareDocument());
                 
-                // New CamScanner features
-                document.getElementById('ocr-btn').addEventListener('click', () => this.performOCR());
-                document.getElementById('signature-btn').addEventListener('click', () => this.openSignaturePad());
-                document.getElementById('watermark-btn').addEventListener('click', () => this.openWatermarkModal());
-                document.getElementById('password-btn').addEventListener('click', () => this.openPasswordModal());
-                document.getElementById('copy-text-btn').addEventListener('click', () => this.copyExtractedText());
-                document.getElementById('save-text-btn').addEventListener('click', () => this.saveExtractedText());
+                // OCR and other features - accessible via Quick Actions or modals
+                document.getElementById('copy-text-btn')?.addEventListener('click', () => this.copyExtractedText());
+                document.getElementById('save-text-btn')?.addEventListener('click', () => this.saveExtractedText());
                 document.getElementById('clear-signature').addEventListener('click', () => this.clearSignature());
                 document.getElementById('save-signature').addEventListener('click', () => this.saveSignature());
                 document.getElementById('apply-watermark').addEventListener('click', () => this.applyWatermark());
