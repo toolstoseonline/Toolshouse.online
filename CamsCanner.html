@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camp Scanner - Document Scanner</title>
+    <title>toolshouse.online Camscanner</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -529,7 +529,7 @@
         <header class="app-header">
             <div class="logo">
                 <i class="fas fa-campground"></i>
-                <h1>Camp Scanner</h1>
+                <h1>Cam Scanner</h1>
             </div>
             <p class="tagline">Scan documents with ease</p>
         </header>
@@ -796,9 +796,7 @@
         </main>
 
         <nav class="bottom-nav" id="bottom-nav" style="display: none;">
-            <button class="nav-btn" data-screen="welcome-screen"><i class="fas fa-home"></i><span>Home</span></button>
             <button class="nav-btn" id="nav-scan-btn"><i class="fas fa-camera"></i><span>Scan</span></button>
-            <button class="nav-btn" id="nav-docs-btn"><i class="fas fa-folder"></i><span>My Docs</span></button>
         </nav>
 
         <div id="loading-overlay" class="loading-overlay" style="display: none;">
@@ -1490,14 +1488,14 @@
                 this.exportFormat = 'pdf';
                 this.pdfPassword = null;
                 this.qrScanner = null;
-                this.savedDocuments = JSON.parse(localStorage.getItem('campScannerDocs') || '[]');
+                this.savedDocuments = JSON.parse(localStorage.getItem('camScannerDocs') || '[]');
                 this.autoCapture = false;
                 this.autoCaptureTimer = null;
                 this.pdfEditMode = null;
                 this.pdfEditElements = [];
                 this.pdfCurrentPage = 0;
                 this.pdfTextColor = '#000000';
-                this.securitySettings = JSON.parse(localStorage.getItem('campScannerSecurity') || '{}');
+                this.securitySettings = JSON.parse(localStorage.getItem('camScannerSecurity') || '{}');
                 this.appLocked = false;
                 this.batchMode = false;
                 this.batchPages = [];
@@ -1556,11 +1554,9 @@
                 document.getElementById('export-txt-btn').addEventListener('click', () => this.setExportFormat('txt'));
                 
                 // New features
-                document.getElementById('qr-scan-btn').addEventListener('click', () => this.openQRScanner());
-                document.getElementById('enhance-btn').addEventListener('click', () => this.openEnhanceModal());
-                document.getElementById('merge-btn').addEventListener('click', () => this.mergePDFs());
-                document.getElementById('apply-enhance').addEventListener('click', () => this.applyEnhancement());
-                document.getElementById('copy-qr-btn').addEventListener('click', () => this.copyQRResult());
+                document.getElementById('enhance-btn')?.addEventListener('click', () => this.openEnhanceModal());
+                document.getElementById('merge-btn')?.addEventListener('click', () => this.mergePDFs());
+                document.getElementById('apply-enhance')?.addEventListener('click', () => this.applyEnhancement());
                 
                 // Signature pad events
                 const sigPad = document.getElementById('signature-pad');
@@ -1571,14 +1567,7 @@
                 sigPad.addEventListener('touchmove', (e) => this.drawSignature(e));
                 sigPad.addEventListener('touchend', () => this.endSignature());
                 
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const screen = e.currentTarget.dataset.screen;
-                        if (screen) this.showScreen(screen);
-                    });
-                });
-                
-                // Navigation buttons
+                                // Navigation button
                 document.getElementById('nav-scan-btn').addEventListener('click', () => {
                     this.resetAndStart();
                 });
@@ -1627,16 +1616,7 @@
                     bottomNav.style.display = 'flex'; // Show on other screens
                 }
                 
-                // Update nav active states
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                if (screenId === 'welcome-screen') {
-                    document.querySelector('.nav-btn[data-screen="welcome-screen"]')?.classList.add('active');
-                } else if (screenId === 'docs-screen') {
-                    document.getElementById('nav-docs-btn')?.classList.add('active');
-                }
+                // Nav button is only Scan, no active state needed
             }
 
             async startCamera() {
@@ -2250,10 +2230,6 @@
                 }
                 
                 this.showScreen('docs-screen');
-                
-                // Update nav active state
-                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('nav-docs-btn').classList.add('active');
             }
 
             saveDocument() {
@@ -2269,7 +2245,7 @@
                 };
                 
                 this.savedDocuments.unshift(doc);
-                localStorage.setItem('campScannerDocs', JSON.stringify(this.savedDocuments));
+                localStorage.setItem('camScannerDocs', JSON.stringify(this.savedDocuments));
                 this.showToast('Document saved to My Docs');
             }
 
@@ -2292,7 +2268,7 @@
             deleteDocument(index) {
                 if (confirm('Delete this document?')) {
                     this.savedDocuments.splice(index, 1);
-                    localStorage.setItem('campScannerDocs', JSON.stringify(this.savedDocuments));
+                    localStorage.setItem('camScannerDocs', JSON.stringify(this.savedDocuments));
                     this.showMyDocs();
                     this.showToast('Document deleted');
                 }
@@ -2877,13 +2853,20 @@
             }
 
             printDocument() {
+                console.log('Print document called');
                 if (this.pages.length === 0) {
                     this.showToast('No document to print', 'error');
                     return;
                 }
                 
-                const printWindow = window.open('', '_blank');
-                const docName = document.getElementById('doc-name').value || 'Scanned Document';
+                try {
+                    const printWindow = window.open('', '_blank');
+                    if (!printWindow) {
+                        this.showToast('Popup blocked. Please allow popups.', 'error');
+                        return;
+                    }
+                    
+                    const docName = document.getElementById('doc-name').value || 'Scanned Document';
                 
                 let html = `
                     <html>
@@ -2917,6 +2900,10 @@
                 setTimeout(() => {
                     printWindow.print();
                 }, 1000);
+                } catch (err) {
+                    console.error('Print error:', err);
+                    this.showToast('Print failed', 'error');
+                }
             }
 
             async copyImageToClipboard() {
@@ -4098,7 +4085,7 @@
                 }
                 
                 this.securitySettings.appPassword = pin;
-                localStorage.setItem('campScannerSecurity', JSON.stringify(this.securitySettings));
+                localStorage.setItem('camScannerSecurity', JSON.stringify(this.securitySettings));
                 
                 document.getElementById('app-password-modal').classList.remove('active');
                 this.showToast('App PIN set successfully');
@@ -4106,9 +4093,9 @@
             
             forgotPassword() {
                 if (confirm('Clear all data and reset app? This cannot be undone.')) {
-                    localStorage.removeItem('campScannerSecurity');
-                    localStorage.removeItem('campScannerDocs');
-                    localStorage.removeItem('campScannerSignature');
+                    localStorage.removeItem('camScannerSecurity');
+                    localStorage.removeItem('camScannerDocs');
+                    localStorage.removeItem('camScannerSignature');
                     location.reload();
                 }
             }
@@ -4143,7 +4130,7 @@
             
             applySecuritySettings() {
                 this.securitySettings.autoDelete = document.getElementById('auto-delete-toggle').checked;
-                localStorage.setItem('campScannerSecurity', JSON.stringify(this.securitySettings));
+                localStorage.setItem('camScannerSecurity', JSON.stringify(this.securitySettings));
                 document.getElementById('security-modal').classList.remove('active');
                 this.showToast('Security settings saved');
             }
@@ -4882,7 +4869,9 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => new CampScanner());
+        document.addEventListener('DOMContentLoaded', () => {
+                        window.scanner = new CampScanner();
+                    });
     </script>
 </body>
 </html>
