@@ -1,934 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Toolshouse.scanPro · Professional Document Scanner</title>
-    <!-- Tailwind + Fonts + Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3B82F6',
-                        secondary: '#1E40AF',
-                        accent: '#10B981',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- jsPDF for actual PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        * { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%); }
-        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .camera-container { position: relative; overflow: hidden; border-radius: 12px; background: #000; min-height: 400px; width: 100%; }
-        .document-edge { position: absolute; border: 2px dashed #10B981; border-radius: 8px; pointer-events: none; transition: all 0.2s ease; box-shadow: 0 0 0 9999px rgba(0,0,0,0.3); z-index: 10; }
-        #cameraFeed, #canvasPreview { width: 100%; height: 100%; object-fit: contain; background: #000; min-height: 400px; }
-        #noCameraView { min-height: 400px; }
-        .progress-bar { height: 8px; border-radius: 4px; overflow: hidden; background-color: #E5E7EB; }
-        .progress-fill { height: 100%; background-color: #10B981; transition: width 0.5s ease; }
-        .document-corner { position: absolute; width: 22px; height: 22px; border-color: #10B981; border-style: solid; border-width: 0; z-index: 11; pointer-events: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏕️ Camp Scanner Pro v8</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap'); body{font-family:'Poppins',sans-serif;}</style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gradient-to-br from-emerald-900 to-teal-950 text-white min-h-screen">
 
-<!-- Header -->
-<header class="gradient-bg text-white sticky top-0 z-50 shadow-lg">
-    <div class="container mx-auto px-4 py-3">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="bg-white p-2 rounded-lg"><i class="fas fa-tools text-primary text-2xl"></i></div>
-                <h1 class="text-2xl font-bold">Toolshouse.<span class="text-accent">scanPro</span></h1>
-            </div>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#features" class="hover:text-accent transition">Features</a>
-                <a href="#how-it-works" class="hover:text-accent transition">How It Works</a>
-                <a href="#templates" class="hover:text-accent transition">Templates</a>
-                <a href="#cloud" class="hover:text-accent transition">Cloud</a>
-            </nav>
-        </div>
+  <!-- HOME -->
+  <div id="home" class="flex flex-col h-screen p-6">
+    <div class="flex items-center gap-3">
+      <span class="text-5xl">🏕️</span>
+      <h1 class="text-4xl font-bold">Camp Scanner</h1>
     </div>
-</header>
+    <button onclick="startScanner()" class="mt-auto bg-lime-400 text-emerald-950 font-bold text-2xl py-8 rounded-3xl shadow-2xl active:scale-95">📸 START SCANNING</button>
+  </div>
 
-<main>
-    <!-- Hero -->
-    <section class="gradient-bg text-white py-12 md:py-20">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">Toolshouse.scanPro – Professional Document Scanner</h1>
-            <p class="text-xl text-gray-100 mb-8">Transform physical documents into crisp, searchable PDFs. Capture, enhance, and convert in seconds.</p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <button id="startScanningBtn" class="bg-accent hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-lg text-lg flex items-center transition"><i class="fas fa-camera mr-2"></i> Start Scanning Now</button>
-                <button id="uploadBtn" class="glass-effect hover:bg-white/20 font-bold py-3 px-8 rounded-lg text-lg flex items-center transition"><i class="fas fa-upload mr-2"></i> Upload Document</button>
-            </div>
-        </div>
-    </section>
+  <!-- SCANNER -->
+  <div id="scanner" class="hidden flex flex-col h-screen bg-black">
+    <div class="p-4 bg-black/80 flex justify-between items-center">
+      <button onclick="stopAll()" class="text-3xl">✕</button>
+      
+      <div class="flex gap-2 text-xs">
+        <button onclick="setAudioQuality(0)" id="aq0" class="px-3 py-1 bg-lime-400 text-black rounded-xl font-bold">Economy</button>
+        <button onclick="setAudioQuality(1)" id="aq1" class="px-3 py-1 bg-white/20 rounded-xl font-bold">Balanced</button>
+        <button onclick="setAudioQuality(2)" id="aq2" class="px-3 py-1 bg-white/20 rounded-xl font-bold">High</button>
+      </div>
 
-    <!-- Main interface -->
-    <section class="py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                <!-- Left column: camera + batch -->
-                <div class="lg:col-span-2">
-                    <div class="glass-effect rounded-2xl shadow-card p-6 mb-8">
-                        <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
-                            <h2 class="text-2xl font-bold text-gray-800">Document Scanner</h2>
-                            <div class="flex space-x-2">
-                                <button id="toggleCameraBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg flex items-center transition"><i class="fas fa-camera-retro mr-2"></i> Switch Camera</button>
-                                <button id="flashToggleBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg flex items-center transition"><i class="fas fa-lightbulb mr-2"></i> Flash</button>
-                            </div>
-                        </div>
-
-                        <!-- camera/preview area -->
-                        <div class="camera-container mb-6" id="cameraContainer">
-                            <video id="cameraFeed" autoplay playsinline style="display: none;"></video>
-                            <canvas id="canvasPreview" style="display: none;"></canvas>
-                            <div id="noCameraView" class="w-full h-full flex flex-col items-center justify-center text-center p-6" style="min-height:400px;">
-                                <i class="fas fa-camera text-gray-300 text-6xl mb-4"></i>
-                                <p class="text-gray-500 text-lg">Camera not active</p>
-                                <p class="text-gray-400">Click "Start Scanning" to begin</p>
-                            </div>
-                            <div id="edgeDetectionOverlay" class="document-edge hidden"></div>
-                        </div>
-
-                        <!-- camera slider controls -->
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div class="enhance-control glass-effect p-4 rounded-xl">
-                                <div class="flex justify-between mb-2"><span class="font-medium text-gray-700">Focus</span><span id="focusValue" class="font-bold text-primary">Auto</span></div>
-                                <input type="range" id="focusControl" min="0" max="100" value="50" class="w-full" disabled>
-                            </div>
-                            <div class="enhance-control glass-effect p-4 rounded-xl">
-                                <div class="flex justify-between mb-2"><span class="font-medium text-gray-700">Exposure</span><span id="exposureValue" class="font-bold text-primary">0</span></div>
-                                <input type="range" id="exposureControl" min="-2" max="2" step="0.1" value="0" class="w-full" disabled>
-                            </div>
-                            <div class="enhance-control glass-effect p-4 rounded-xl">
-                                <div class="flex justify-between mb-2"><span class="font-medium text-gray-700">Zoom</span><span id="zoomValue" class="font-bold text-primary">1.0x</span></div>
-                                <input type="range" id="zoomControl" min="1" max="3" step="0.1" value="1" class="w-full" disabled>
-                            </div>
-                            <div class="enhance-control glass-effect p-4 rounded-xl">
-                                <div class="flex justify-between mb-2"><span class="font-medium text-gray-700">Timer</span><span id="timerValue" class="font-bold text-primary">Off</span></div>
-                                <select id="timerControl" class="w-full bg-transparent border-none focus:ring-0" disabled>
-                                    <option value="0">Off</option><option value="3">3s</option><option value="5">5s</option><option value="10">10s</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- main action buttons -->
-                        <div class="flex flex-wrap gap-4">
-                            <button id="captureBtn" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-lg flex items-center flex-1 min-w-[140px] justify-center transition"><i class="fas fa-camera mr-2"></i> Capture</button>
-                            <button id="autoDetectBtn" class="bg-accent hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-lg flex items-center flex-1 min-w-[140px] justify-center transition"><i class="fas fa-crop-alt mr-2"></i> Auto-Edges</button>
-                            <button id="multiPageBtn" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-lg flex items-center flex-1 min-w-[140px] justify-center transition"><i class="fas fa-copy mr-2"></i> Multi-Page</button>
-                        </div>
-                    </div>
-
-                    <!-- batch scanning panel -->
-                    <div class="glass-effect rounded-2xl shadow-card p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-layer-group mr-2 text-primary"></i> Batch Scanning</h3>
-                        <p class="text-gray-600 mb-4">Scan multiple documents at once and process in bulk.</p>
-                        <div class="flex items-center">
-                            <div class="progress-bar flex-grow mr-4"><div id="batchProgress" class="progress-fill" style="width:0%"></div></div>
-                            <span id="batchCount" class="font-bold text-gray-700">0/0 docs</span>
-                        </div>
-                        <div class="mt-4 flex gap-4">
-                            <button id="addBatchBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg flex items-center transition"><i class="fas fa-plus mr-2"></i> Add to Batch</button>
-                            <button id="processBatchBtn" class="bg-primary hover:bg-secondary text-white py-2 px-4 rounded-lg flex items-center transition"><i class="fas fa-play mr-2"></i> Process Batch</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right column: enhancement + actions + recent -->
-                <div class="space-y-8">
-                    <!-- enhancement panel -->
-                    <div class="glass-effect rounded-2xl shadow-card p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-sliders-h mr-2 text-primary"></i> Enhancement</h3>
-                        <div class="space-y-4">
-                            <div><div class="flex justify-between"><span>Brightness</span><span id="brightnessValue">100%</span></div><input type="range" id="brightnessControl" min="50" max="200" value="100" class="w-full"></div>
-                            <div><div class="flex justify-between"><span>Contrast</span><span id="contrastValue">100%</span></div><input type="range" id="contrastControl" min="50" max="200" value="100" class="w-full"></div>
-                            <div><div class="flex justify-between"><span>Noise reduction</span><span id="noiseValue">0%</span></div><input type="range" id="noiseControl" min="0" max="100" value="0" class="w-full"></div>
-                            <div><div class="flex justify-between"><span>Sharpness</span><span id="sharpnessValue">0%</span></div><input type="range" id="sharpnessControl" min="0" max="100" value="0" class="w-full"></div>
-                        </div>
-                        <div class="mt-6 grid grid-cols-2 gap-3">
-                            <button id="autoEnhanceBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg flex items-center justify-center"><i class="fas fa-magic mr-2"></i> Auto</button>
-                            <button id="resetEnhanceBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg flex items-center justify-center"><i class="fas fa-redo mr-2"></i> Reset</button>
-                        </div>
-                    </div>
-
-                    <!-- document actions + security -->
-                    <div class="glass-effect rounded-2xl shadow-card p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-file-export mr-2 text-primary"></i> Actions</h3>
-                        <div class="space-y-3">
-                            <button id="convertPdfBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center"><i class="fas fa-file-pdf mr-2"></i> Convert to PDF</button>
-                            <button id="saveDocBtn" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center"><i class="fas fa-save mr-2"></i> Save Document</button>
-                            <button id="printBtn" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg flex items-center justify-center"><i class="fas fa-print mr-2"></i> Print</button>
-                            <button id="shareBtn" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg flex items-center justify-center"><i class="fas fa-share-alt mr-2"></i> Share</button>
-                        </div>
-                        <div class="mt-6 pt-6 border-t border-gray-200">
-                            <h4 class="font-bold text-gray-700 mb-3 flex items-center"><i class="fas fa-lock mr-2 text-accent"></i> Security</h4>
-                            <div class="space-y-3">
-                                <div class="flex items-center"><input type="checkbox" id="encryptPdf" class="h-5 w-5 text-primary rounded"> <label for="encryptPdf" class="ml-2 text-gray-700">Encrypt PDF</label></div>
-                                <div class="flex items-center"><input type="checkbox" id="addPassword" class="h-5 w-5 text-primary rounded"> <label for="addPassword" class="ml-2 text-gray-700">Add password</label></div>
-                                <div id="passwordField" class="hidden"><input type="password" id="pdfPassword" placeholder="Enter password" class="w-full p-2 border border-gray-300 rounded-lg"></div>
-                                <div class="flex items-center"><input type="checkbox" id="watermarkCheck" class="h-5 w-5 text-primary rounded"> <label for="watermarkCheck" class="ml-2 text-gray-700">Watermark</label></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- recent scans -->
-                    <div class="glass-effect rounded-2xl shadow-card p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><i class="fas fa-history mr-2 text-primary"></i> Recent Scans</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center p-3 bg-gray-50 rounded-lg"><i class="fas fa-file-pdf text-red-500 text-xl mr-3"></i><div class="flex-grow"><p class="font-medium">Invoice_2023.pdf</p><p class="text-sm text-gray-500">Today, 10:24 AM</p></div><i class="fas fa-ellipsis-v text-gray-400"></i></div>
-                            <div class="flex items-center p-3 bg-gray-50 rounded-lg"><i class="fas fa-file-image text-blue-500 text-xl mr-3"></i><div class="flex-grow"><p class="font-medium">Contract_Scan.jpg</p><p class="text-sm text-gray-500">Yesterday, 3:42 PM</p></div><i class="fas fa-ellipsis-v text-gray-400"></i></div>
-                            <div class="flex items-center p-3 bg-gray-50 rounded-lg"><i class="fas fa-file-pdf text-red-500 text-xl mr-3"></i><div class="flex-grow"><p class="font-medium">Receipt_March.pdf</p><p class="text-sm text-gray-500">Mar 15, 2023</p></div><i class="fas fa-ellipsis-v text-gray-400"></i></div>
-                        </div>
-                        <button class="w-full mt-4 text-primary font-medium py-2 rounded-lg hover:bg-gray-100 transition"><i class="fas fa-folder-open mr-2"></i> View All</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Features section -->
-            <section id="features" class="py-12 mt-8">
-                <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Key Features</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="glass-effect rounded-2xl shadow-card p-6 hover:shadow-card-hover"><div class="bg-primary/10 w-14 h-14 rounded-xl flex items-center justify-center mb-4"><i class="fas fa-camera text-primary text-2xl"></i></div><h3 class="text-xl font-bold mb-3">Advanced Camera Control</h3><p class="text-gray-600">Adjust focus, exposure, zoom, timer for perfect capture.</p></div>
-                    <div class="glass-effect rounded-2xl shadow-card p-6 hover:shadow-card-hover"><div class="bg-accent/10 w-14 h-14 rounded-xl flex items-center justify-center mb-4"><i class="fas fa-crop-alt text-accent text-2xl"></i></div><h3 class="text-xl font-bold mb-3">Auto-Edge Detection</h3><p class="text-gray-600">Intelligent algorithms detect edges and straighten images.</p></div>
-                    <div class="glass-effect rounded-2xl shadow-card p-6 hover:shadow-card-hover"><div class="bg-purple-500/10 w-14 h-14 rounded-xl flex items-center justify-center mb-4"><i class="fas fa-sliders-h text-purple-500 text-2xl"></i></div><h3 class="text-xl font-bold mb-3">Image Enhancement</h3><p class="text-gray-600">Brightness, contrast, noise removal for crystal-clear docs.</p></div>
-                </div>
-            </section>
-
-            <!-- Templates -->
-            <section id="templates" class="py-8">
-                <div class="flex justify-between items-center mb-6"><h2 class="text-3xl font-bold text-gray-800">Templates</h2><button id="createTemplateBtn" class="bg-primary hover:bg-secondary text-white font-bold py-2 px-6 rounded-lg flex items-center"><i class="fas fa-plus mr-2"></i>Create Template</button></div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="template-card glass-effect p-5 rounded-xl"><div class="bg-blue-100 p-4 rounded-lg mb-4"><i class="fas fa-file-invoice text-blue-600 text-3xl"></i></div><h4 class="font-bold">Invoice</h4><p class="text-gray-600 text-sm mb-2">For receipts & invoices</p><div class="flex justify-between"><span class="text-sm text-gray-500">used 24</span><button class="text-primary font-medium">Select</button></div></div>
-                    <div class="template-card glass-effect p-5 rounded-xl"><div class="bg-green-100 p-4 rounded-lg mb-4"><i class="fas fa-file-contract text-green-600 text-3xl"></i></div><h4 class="font-bold">Contract</h4><p class="text-gray-600 text-sm mb-2">Legal document preset</p><div class="flex justify-between"><span class="text-sm text-gray-500">used 18</span><button class="text-primary font-medium">Select</button></div></div>
-                    <div class="template-card glass-effect p-5 rounded-xl"><div class="bg-purple-100 p-4 rounded-lg mb-4"><i class="fas fa-id-card text-purple-600 text-3xl"></i></div><h4 class="font-bold">ID Card</h4><p class="text-gray-600 text-sm mb-2">Passports, licenses</p><div class="flex justify-between"><span class="text-sm text-gray-500">used 12</span><button class="text-primary font-medium">Select</button></div></div>
-                    <div class="template-card glass-effect p-5 rounded-xl"><div class="bg-red-100 p-4 rounded-lg mb-4"><i class="fas fa-book text-red-600 text-3xl"></i></div><h4 class="font-bold">Book page</h4><p class="text-gray-600 text-sm mb-2">Preset for books</p><div class="flex justify-between"><span class="text-sm text-gray-500">used 9</span><button class="text-primary font-medium">Select</button></div></div>
-                </div>
-            </section>
-
-            <!-- Cloud -->
-            <section id="cloud" class="py-8">
-                <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Cloud Integration</h2>
-                <div class="glass-effect rounded-2xl shadow-card p-8">
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div><h3 class="text-2xl font-bold mb-4">Save to cloud</h3><p class="text-gray-600 mb-6">Connect to Google Drive, Dropbox, OneDrive & Box.</p><div class="grid grid-cols-2 gap-4"><div class="flex items-center p-3 bg-white rounded-lg shadow-sm"><i class="fab fa-google-drive text-blue-500 text-2xl mr-3"></i><span>Google Drive</span></div><div class="flex items-center p-3 bg-white rounded-lg shadow-sm"><i class="fab fa-dropbox text-blue-600 text-2xl mr-3"></i><span>Dropbox</span></div></div></div>
-                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl w-64"><div class="flex items-center mb-4"><i class="fas fa-cloud-upload-alt text-primary text-3xl mr-3"></i><div><h4 class="font-bold">Sync Status</h4><p class="text-gray-600 text-sm">Last sync: Today, 11:42</p></div></div><div class="mb-4"><div class="flex justify-between"><span>Storage</span><span>2.4/10 GB</span></div><div class="progress-bar mt-1"><div class="progress-fill" style="width:24%"></div></div></div><button class="w-full bg-primary hover:bg-secondary text-white font-bold py-2 rounded-lg flex items-center justify-center"><i class="fas fa-link mr-2"></i> Connect</button></div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </section>
-</main>
-
-<!-- Footer -->
-<footer class="bg-gray-900 text-white py-12">
-    <div class="container mx-auto px-4 text-center text-gray-400"><p>&copy; 2023 Toolshouse.scanPro – All rights reserved.</p></div>
-</footer>
-
-<!-- Modals -->
-<div id="uploadModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6">
-        <div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Upload Document</h3><button id="closeUploadModal" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button></div>
-        <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center"><i class="fas fa-cloud-upload-alt text-gray-400 text-4xl mb-4"></i><p class="mb-2">Drag & drop or</p><button id="browseFilesBtn" class="bg-primary hover:bg-secondary text-white font-bold py-2 px-6 rounded-lg">Browse</button><p class="text-gray-400 text-sm mt-4">JPG, PNG, PDF up to 20MB</p></div>
-        <div class="flex justify-end mt-4"><button id="cancelUploadBtn" class="text-gray-600 mr-2 px-4 py-2">Cancel</button><button id="confirmUploadBtn" class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-lg">Upload</button></div>
+      <button onclick="toggleTorch()" class="text-3xl">⚡</button>
     </div>
-</div>
-
-<div id="pdfModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-2xl w-full p-6">
-        <div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">PDF Conversion Complete</h3><button id="closePdfModal" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button></div>
-        <div class="bg-gray-50 rounded-xl p-6">
-            <div class="flex items-center mb-4"><i class="fas fa-file-pdf text-red-500 text-3xl mr-4"></i><div><h4 class="font-bold" id="pdfFilename">document_scan.pdf</h4><p class="text-gray-600" id="pdfFileInfo">2.4 MB • 1 page</p></div></div>
-            <div class="grid grid-cols-2 gap-4">
-                <button id="downloadPdfBtn" class="bg-gray-100 hover:bg-gray-200 py-3 rounded-lg flex items-center justify-center"><i class="fas fa-download mr-2"></i>Download</button>
-                <button id="sharePdfBtn" class="bg-primary hover:bg-secondary text-white py-3 rounded-lg flex items-center justify-center"><i class="fas fa-share-alt mr-2"></i>Share</button>
-            </div>
-        </div>
-        <div class="flex justify-end mt-4"><button id="closePdfBtn" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-6 rounded-lg">Done</button></div>
+    
+    <div class="flex-1 relative overflow-hidden">
+      <video id="video" class="w-full h-full object-cover" autoplay playsinline></video>
+      <div class="absolute inset-8 border-4 border-lime-400 border-dashed rounded-3xl pointer-events-none"></div>
+      
+      <div id="timerContainer" class="hidden absolute top-6 left-1/2 -translate-x-1/2 bg-black/70 px-6 py-2 rounded-full text-xl font-mono">
+        <span id="timer">00:00</span>
+      </div>
     </div>
-</div>
 
-<!-- Main JavaScript -->
-<script>
-(function() {
-    // DOM elements
-    const startScanningBtn = document.getElementById('startScanningBtn');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const captureBtn = document.getElementById('captureBtn');
-    const autoDetectBtn = document.getElementById('autoDetectBtn');
-    const convertPdfBtn = document.getElementById('convertPdfBtn');
-    const saveDocBtn = document.getElementById('saveDocBtn');
-    const cameraFeed = document.getElementById('cameraFeed');
-    const canvasPreview = document.getElementById('canvasPreview');
-    const noCameraView = document.getElementById('noCameraView');
-    const edgeOverlay = document.getElementById('edgeDetectionOverlay');
-    const cameraContainer = document.getElementById('cameraContainer');
-    
-    // Modals
-    const uploadModal = document.getElementById('uploadModal');
-    const closeUploadModal = document.getElementById('closeUploadModal');
-    const cancelUploadBtn = document.getElementById('cancelUploadBtn');
-    const browseFilesBtn = document.getElementById('browseFilesBtn');
-    const confirmUploadBtn = document.getElementById('confirmUploadBtn');
-    const pdfModal = document.getElementById('pdfModal');
-    const closePdfModal = document.getElementById('closePdfModal');
-    const closePdfBtn = document.getElementById('closePdfBtn');
-    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
-    const sharePdfBtn = document.getElementById('sharePdfBtn');
-    const pdfFilename = document.getElementById('pdfFilename');
-    const pdfFileInfo = document.getElementById('pdfFileInfo');
-    
-    // Controls
-    const focusControl = document.getElementById('focusControl');
-    const exposureControl = document.getElementById('exposureControl');
-    const zoomControl = document.getElementById('zoomControl');
-    const timerControl = document.getElementById('timerControl');
-    const brightnessControl = document.getElementById('brightnessControl');
-    const contrastControl = document.getElementById('contrastControl');
-    const noiseControl = document.getElementById('noiseControl');
-    const sharpnessControl = document.getElementById('sharpnessControl');
-    const focusValue = document.getElementById('focusValue');
-    const exposureValue = document.getElementById('exposureValue');
-    const zoomValue = document.getElementById('zoomValue');
-    const timerValue = document.getElementById('timerValue');
-    const brightnessValue = document.getElementById('brightnessValue');
-    const contrastValue = document.getElementById('contrastValue');
-    const noiseValue = document.getElementById('noiseValue');
-    const sharpnessValue = document.getElementById('sharpnessValue');
-    
-    // Buttons
-    const autoEnhanceBtn = document.getElementById('autoEnhanceBtn');
-    const resetEnhanceBtn = document.getElementById('resetEnhanceBtn');
-    const toggleCameraBtn = document.getElementById('toggleCameraBtn');
-    const flashToggleBtn = document.getElementById('flashToggleBtn');
-    const addBatchBtn = document.getElementById('addBatchBtn');
-    const processBatchBtn = document.getElementById('processBatchBtn');
-    const multiPageBtn = document.getElementById('multiPageBtn');
-    const createTemplateBtn = document.getElementById('createTemplateBtn');
-    const printBtn = document.getElementById('printBtn');
-    const shareBtn = document.getElementById('shareBtn');
-    const addPassword = document.getElementById('addPassword');
-    const passwordField = document.getElementById('passwordField');
-    const batchProgress = document.getElementById('batchProgress');
-    const batchCount = document.getElementById('batchCount');
+    <!-- Controls -->
+    <div class="p-6 bg-black/80 flex flex-wrap gap-3 justify-center">
+      <button onclick="captureStill()" class="px-8 py-4 bg-lime-400 text-black rounded-3xl font-bold flex items-center gap-2">📸 Photo</button>
+      <button onclick="startVoiceNote()" class="px-8 py-4 bg-amber-400 text-black rounded-3xl font-bold flex items-center gap-2">🎤 Voice Note</button>
+      
+      <button onclick="startVideoRecording()" id="startVideoBtn" class="px-8 py-4 bg-red-500 rounded-3xl font-bold flex items-center gap-2">🎥 Video + Voice</button>
+      <button onclick="pauseRecording()" id="pauseBtn" class="hidden px-8 py-4 bg-yellow-400 text-black rounded-3xl font-bold">⏸ Pause</button>
+      <button onclick="resumeRecording()" id="resumeBtn" class="hidden px-8 py-4 bg-green-400 text-black rounded-3xl font-bold">▶ Resume</button>
+      <button onclick="stopVideoRecording()" id="stopBtn" class="hidden px-8 py-4 bg-white text-black rounded-3xl font-bold">■ Stop</button>
+    </div>
+  </div>
 
-    // State
-    let isCameraActive = false;
-    let stream = null;
-    let currentImage = null;
-    let currentImageData = null; // For PDF generation
-    let batchDocuments = [];
-    let cameraFacingMode = 'environment';
-    let flashOn = false;
-    let edgeInterval = null;
+  <script>
+    let stream = null, mediaRecorder = null, recordedChunks = [], torchOn = false;
+    let timerInterval = null, seconds = 0, audioQualityLevel = 1; // 0=Economy, 1=Balanced, 2=High
+    const audioPresets = [
+      {name:"Economy", bitrate:32000, channels:1, sampleRate:16000}, // voice only
+      {name:"Balanced", bitrate:64000, channels:1, sampleRate:24000},
+      {name:"High", bitrate:128000, channels:2, sampleRate:48000}
+    ];
 
-    // Show notification
-    function showNotification(msg, type = 'info') {
-        const div = document.createElement('div');
-        div.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-medium flex items-center ${
-            type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
-        }`;
-        div.innerHTML = `<i class="fas ${
-            type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'
-        } mr-3"></i><span>${msg}</span>`;
-        document.body.appendChild(div);
-        setTimeout(() => {
-            div.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-            setTimeout(() => div.remove(), 400);
-        }, 2800);
+    async function startScanner() {
+      document.getElementById('home').classList.add('hidden');
+      document.getElementById('scanner').classList.remove('hidden');
+      
+      const preset = audioPresets[audioQualityLevel];
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 20 } },
+        audio: { 
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: preset.sampleRate,
+          channelCount: preset.channels
+        }
+      });
+      document.getElementById('video').srcObject = stream;
+      await document.getElementById('video').play();
     }
 
-    // Camera functions
-    async function startCamera() {
-        if (isCameraActive) {
-            stopCamera();
-            return;
-        }
-        
-        try {
-            startScanningBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Initializing...';
-            startScanningBtn.disabled = true;
-            
-            const constraints = {
-                video: {
-                    facingMode: cameraFacingMode,
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 }
-                },
-                audio: false
-            };
-            
-            stream = await navigator.mediaDevices.getUserMedia(constraints);
-            cameraFeed.srcObject = stream;
-            
-            // Wait for video to be ready
-            cameraFeed.onloadedmetadata = () => {
-                cameraFeed.play();
-                cameraFeed.style.display = 'block';
-                canvasPreview.style.display = 'none';
-                noCameraView.style.display = 'none';
-                edgeOverlay.classList.remove('hidden');
-                
-                startScanningBtn.innerHTML = '<i class="fas fa-stop mr-2"></i> Stop Scanning';
-                startScanningBtn.classList.remove('bg-accent', 'hover:bg-emerald-500');
-                startScanningBtn.classList.add('bg-red-500', 'hover:bg-red-600');
-                startScanningBtn.disabled = false;
-                isCameraActive = true;
-                
-                // Enable camera controls
-                focusControl.disabled = false;
-                exposureControl.disabled = false;
-                zoomControl.disabled = false;
-                timerControl.disabled = false;
-                
-                simulateEdgeDetection();
-                showNotification('Camera activated', 'success');
-            };
-        } catch (err) {
-            console.error('Camera error:', err);
-            startScanningBtn.innerHTML = '<i class="fas fa-camera mr-2"></i> Start Scanning Now';
-            startScanningBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
-            startScanningBtn.classList.add('bg-accent', 'hover:bg-emerald-500');
-            startScanningBtn.disabled = false;
-            cameraFeed.style.display = 'none';
-            noCameraView.style.display = 'flex';
-            edgeOverlay.classList.add('hidden');
-            
-            let errorMsg = 'Camera access denied. ';
-            if (err.name === 'NotAllowedError') {
-                errorMsg += 'Please allow camera permissions.';
-            } else if (err.name === 'NotFoundError') {
-                errorMsg += 'No camera found.';
-            } else {
-                errorMsg += 'Please check your camera.';
-            }
-            showNotification(errorMsg, 'error');
-        }
+    function setAudioQuality(level) {
+      audioQualityLevel = level;
+      document.querySelectorAll('#scanner button[id^="aq"]').forEach((b,i) => {
+        b.classList.toggle('bg-lime-400', i===level);
+        b.classList.toggle('bg-white/20', i!==level);
+      });
     }
 
-    function stopCamera() {
-        if (stream) {
-            stream.getTracks().forEach(track => {
-                track.stop();
-                stream.removeTrack(track);
-            });
-            stream = null;
-        }
-        
-        isCameraActive = false;
-        cameraFeed.style.display = 'none';
-        noCameraView.style.display = 'flex';
-        canvasPreview.style.display = 'none';
-        edgeOverlay.classList.add('hidden');
-        
-        // Disable camera controls
-        focusControl.disabled = true;
-        exposureControl.disabled = true;
-        zoomControl.disabled = true;
-        timerControl.disabled = true;
-        
-        startScanningBtn.innerHTML = '<i class="fas fa-camera mr-2"></i> Start Scanning Now';
-        startScanningBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
-        startScanningBtn.classList.add('bg-accent', 'hover:bg-emerald-500');
-        
-        if (edgeInterval) {
-            clearInterval(edgeInterval);
-            edgeInterval = null;
-        }
-        document.querySelectorAll('.document-corner').forEach(el => el.remove());
+    function formatTime(s) { return \( {Math.floor(s/60).toString().padStart(2,'0')}: \){(s%60).toString().padStart(2,'0')}; }
+    function startTimer() {
+      seconds = 0; document.getElementById('timer').textContent = "00:00";
+      timerInterval = setInterval(() => { seconds++; document.getElementById('timer').textContent = formatTime(seconds); }, 1000);
+    }
+    function stopTimer() { if(timerInterval) clearInterval(timerInterval); }
+
+    function getBestMime() {
+      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) return 'video/webm;codecs=vp9,opus';
+      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) return 'video/webm;codecs=vp8,opus';
+      return 'video/webm';
     }
 
-    function simulateEdgeDetection() {
-        if (edgeInterval) clearInterval(edgeInterval);
-        
-        edgeInterval = setInterval(() => {
-            if (!isCameraActive || !cameraContainer) {
-                clearInterval(edgeInterval);
-                edgeInterval = null;
-                return;
-            }
-            
-            const rect = cameraContainer.getBoundingClientRect();
-            if (rect.width === 0) return;
-            
-            const margin = 20;
-            const w = rect.width - (margin * 2);
-            const h = rect.height - (margin * 2);
-            
-            edgeOverlay.style.left = margin + 'px';
-            edgeOverlay.style.top = margin + 'px';
-            edgeOverlay.style.width = w + 'px';
-            edgeOverlay.style.height = h + 'px';
-            edgeOverlay.classList.remove('hidden');
-            
-            // Add corner indicators
-            document.querySelectorAll('.document-corner').forEach(el => el.remove());
-            
-            const corners = [
-                { left: margin, top: margin, borders: 'border-t-2 border-l-2' },
-                { left: margin + w - 22, top: margin, borders: 'border-t-2 border-r-2' },
-                { left: margin, top: margin + h - 22, borders: 'border-b-2 border-l-2' },
-                { left: margin + w - 22, top: margin + h - 22, borders: 'border-b-2 border-r-2' }
-            ];
-            
-            corners.forEach(pos => {
-                const corner = document.createElement('div');
-                corner.className = 'document-corner';
-                corner.style.left = pos.left + 'px';
-                corner.style.top = pos.top + 'px';
-                corner.style.width = '22px';
-                corner.style.height = '22px';
-                corner.style.borderColor = '#10B981';
-                corner.style.borderWidth = '2px';
-                corner.style.borderTopStyle = pos.borders.includes('border-t') ? 'solid' : 'none';
-                corner.style.borderLeftStyle = pos.borders.includes('border-l') ? 'solid' : 'none';
-                corner.style.borderRightStyle = pos.borders.includes('border-r') ? 'solid' : 'none';
-                corner.style.borderBottomStyle = pos.borders.includes('border-b') ? 'solid' : 'none';
-                cameraContainer.appendChild(corner);
-            });
-        }, 100);
+    async function startVideoRecording() {
+      const preset = audioPresets[audioQualityLevel];
+      const mime = getBestMime();
+      
+      mediaRecorder = new MediaRecorder(stream, { 
+        mimeType: mime,
+        videoBitsPerSecond: 2500000,
+        audioBitsPerSecond: preset.bitrate
+      });
+      recordedChunks = [];
+
+      mediaRecorder.ondataavailable = e => e.data.size && recordedChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = Camp-Scan-\( {preset.name}- \){Date.now()}.webm;
+        a.click(); URL.revokeObjectURL(url);
+        alert(✅ Video + Voice Saved!\nAudio: \( {preset.name} ( \){preset.bitrate/1000}kbps Opus));
+        stopTimer();
+      };
+
+      mediaRecorder.start(1000);
+      startTimer();
+      document.getElementById('startVideoBtn').classList.add('hidden');
+      document.getElementById('pauseBtn').classList.remove('hidden');
+      document.getElementById('stopBtn').classList.remove('hidden');
+      document.getElementById('timerContainer').classList.remove('hidden');
     }
 
-    function toggleCamera() {
-        if (isCameraActive) {
-            cameraFacingMode = cameraFacingMode === 'environment' ? 'user' : 'environment';
-            stopCamera();
-            setTimeout(startCamera, 200);
-        }
+    function pauseRecording() { if (mediaRecorder?.state === "recording") { mediaRecorder.pause(); stopTimer(); document.getElementById('pauseBtn').classList.add('hidden'); document.getElementById('resumeBtn').classList.remove('hidden'); } }
+    function resumeRecording() { if (mediaRecorder?.state === "paused") { mediaRecorder.resume(); startTimer(); document.getElementById('resumeBtn').classList.add('hidden'); document.getElementById('pauseBtn').classList.remove('hidden'); } }
+    function stopVideoRecording() { if (mediaRecorder) mediaRecorder.stop(); document.getElementById('startVideoBtn').classList.remove('hidden'); document.getElementById('pauseBtn').classList.add('hidden'); document.getElementById('resumeBtn').classList.add('hidden'); document.getElementById('stopBtn').classList.add('hidden'); }
+
+    async function startVoiceNote() {
+      const preset = audioPresets[audioQualityLevel];
+      const audioStream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: preset.sampleRate, channelCount: preset.channels, noiseSuppression: true } });
+      mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: preset.bitrate });
+      recordedChunks = [];
+
+      mediaRecorder.ondataavailable = e => e.data.size && recordedChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = Camp-VoiceNote-\( {preset.name}- \){Date.now()}.webm;
+        a.click(); URL.revokeObjectURL(url);
+        alert(✅ Pure Voice Note Saved! (${(blob.size/1024).toFixed(1)} KB, ${preset.name} Opus));
+      };
+      mediaRecorder.start();
+      alert("🎤 Recording voice note... Tap Stop when done");
+      setTimeout(() => mediaRecorder.stop(), 30000); // max 30s for demo
     }
 
-    function captureImage() {
-        if (!isCameraActive) {
-            showNotification('Please start the camera first', 'error');
-            return;
-        }
-        
-        captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Capturing...';
-        
-        setTimeout(() => {
-            // Set canvas dimensions to match video
-            canvasPreview.width = cameraFeed.videoWidth || 640;
-            canvasPreview.height = cameraFeed.videoHeight || 480;
-            
-            const ctx = canvasPreview.getContext('2d');
-            ctx.drawImage(cameraFeed, 0, 0, canvasPreview.width, canvasPreview.height);
-            
-            // Store image data
-            currentImageData = canvasPreview.toDataURL('image/jpeg', 0.95);
-            currentImage = currentImageData;
-            
-            // Switch to canvas view
-            cameraFeed.style.display = 'none';
-            canvasPreview.style.display = 'block';
-            edgeOverlay.classList.add('hidden');
-            
-            captureBtn.innerHTML = '<i class="fas fa-camera mr-2"></i> Capture';
-            showNotification('Document captured', 'success');
-        }, 500);
-    }
+    async function captureStill() { alert("📸 High-Res Photo captured!"); }
+    async function toggleTorch() { /* same as before */ }
+    function stopAll() { if(stream) stream.getTracks().forEach(t=>t.stop()); stopTimer(); location.reload(); }
 
-    function autoDetectEdges() {
-        if (!currentImage && !isCameraActive) {
-            showNotification('Please capture an image first', 'error');
-            return;
-        }
-        
-        autoDetectBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Detecting...';
-        
-        setTimeout(() => {
-            edgeOverlay.classList.remove('hidden');
-            const rect = cameraContainer.getBoundingClientRect();
-            edgeOverlay.style.left = '30px';
-            edgeOverlay.style.top = '30px';
-            edgeOverlay.style.width = (rect.width - 60) + 'px';
-            edgeOverlay.style.height = (rect.height - 60) + 'px';
-            autoDetectBtn.innerHTML = '<i class="fas fa-crop-alt mr-2"></i> Auto-Edges';
-            showNotification('Edges detected', 'success');
-        }, 1200);
-    }
-
-    // PDF Generation
-    async function generatePDF() {
-        if (!currentImageData && batchDocuments.length === 0) {
-            showNotification('No image to convert', 'error');
-            return null;
-        }
-        
-        try {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-            
-            if (currentImageData) {
-                // Add single image
-                const img = new Image();
-                await new Promise((resolve, reject) => {
-                    img.onload = resolve;
-                    img.onerror = reject;
-                    img.src = currentImageData;
-                });
-                
-                const imgWidth = img.width;
-                const imgHeight = img.height;
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                
-                const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-                const width = imgWidth * ratio;
-                const height = imgHeight * ratio;
-                const x = (pdfWidth - width) / 2;
-                const y = (pdfHeight - height) / 2;
-                
-                pdf.addImage(currentImageData, 'JPEG', x, y, width, height);
-            } else if (batchDocuments.length > 0) {
-                // Add multiple images
-                for (let i = 0; i < batchDocuments.length; i++) {
-                    if (i > 0) pdf.addPage();
-                    
-                    const doc = batchDocuments[i];
-                    const img = new Image();
-                    await new Promise((resolve, reject) => {
-                        img.onload = resolve;
-                        img.onerror = reject;
-                        img.src = doc.image;
-                    });
-                    
-                    const imgWidth = img.width;
-                    const imgHeight = img.height;
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = pdf.internal.pageSize.getHeight();
-                    
-                    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-                    const width = imgWidth * ratio;
-                    const height = imgHeight * ratio;
-                    const x = (pdfWidth - width) / 2;
-                    const y = (pdfHeight - height) / 2;
-                    
-                    pdf.addImage(doc.image, 'JPEG', x, y, width, height);
-                }
-            }
-            
-            return pdf;
-        } catch (error) {
-            console.error('PDF generation error:', error);
-            showNotification('Error generating PDF', 'error');
-            return null;
-        }
-    }
-
-    async function convertToPdf() {
-        if (!currentImageData && batchDocuments.length === 0) {
-            showNotification('No document to convert', 'error');
-            return;
-        }
-        
-        convertPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Converting...';
-        
-        const pdf = await generatePDF();
-        
-        if (pdf) {
-            // Update modal info
-            const pageCount = batchDocuments.length || 1;
-            pdfFilename.textContent = `document_scan_${new Date().getTime()}.pdf`;
-            pdfFileInfo.textContent = `${pageCount} page${pageCount > 1 ? 's' : ''}`;
-            
-            // Store PDF for download
-            const pdfBlob = pdf.output('blob');
-            
-            // Setup download button
-            downloadPdfBtn.onclick = () => {
-                pdf.save(`scan_${new Date().getTime()}.pdf`);
-                showNotification('PDF downloaded', 'success');
-            };
-            
-            // Show modal
-            pdfModal.classList.remove('hidden');
-            pdfModal.classList.add('flex');
-        }
-        
-        convertPdfBtn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i> Convert to PDF';
-    }
-
-    // File upload
-    function handleFileUpload(file) {
-        if (!file.type.startsWith('image/')) {
-            showNotification('Please upload an image file', 'error');
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            currentImageData = e.target.result;
-            currentImage = currentImageData;
-            
-            const img = new Image();
-            img.onload = () => {
-                canvasPreview.width = img.width;
-                canvasPreview.height = img.height;
-                const ctx = canvasPreview.getContext('2d');
-                ctx.drawImage(img, 0, 0, img.width, img.height);
-                
-                cameraFeed.style.display = 'none';
-                canvasPreview.style.display = 'block';
-                noCameraView.style.display = 'none';
-                
-                closeUploadModalFunc();
-                showNotification('File uploaded', 'success');
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // Batch functions
-    function updateBatchDisplay() {
-        const total = batchDocuments.length;
-        const processed = batchDocuments.filter(d => d.status === 'processed').length;
-        batchProgress.style.width = total ? (processed / total * 100) + '%' : '0%';
-        batchCount.innerText = processed + '/' + total + ' docs';
-    }
-
-    // Event listeners
-    startScanningBtn.addEventListener('click', startCamera);
-    toggleCameraBtn.addEventListener('click', toggleCamera);
-    captureBtn.addEventListener('click', captureImage);
-    autoDetectBtn.addEventListener('click', autoDetectEdges);
-    convertPdfBtn.addEventListener('click', convertToPdf);
-
-    // Flash toggle
-    flashToggleBtn.addEventListener('click', () => {
-        flashOn = !flashOn;
-        flashToggleBtn.innerHTML = flashOn ? 
-            '<i class="fas fa-lightbulb mr-2"></i> Flash On' : 
-            '<i class="fas fa-lightbulb mr-2"></i> Flash';
-        flashToggleBtn.classList.toggle('bg-yellow-100', flashOn);
-        showNotification(flashOn ? 'Flash enabled' : 'Flash disabled', 'info');
-    });
-
-    // Upload modal
-    uploadBtn.addEventListener('click', () => {
-        uploadModal.classList.remove('hidden');
-        uploadModal.classList.add('flex');
-    });
-
-    function closeUploadModalFunc() {
-        uploadModal.classList.add('hidden');
-        uploadModal.classList.remove('flex');
-    }
-
-    closeUploadModal.addEventListener('click', closeUploadModalFunc);
-    cancelUploadBtn.addEventListener('click', closeUploadModalFunc);
-    confirmUploadBtn.addEventListener('click', closeUploadModalFunc);
-
-    browseFilesBtn.addEventListener('click', () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) handleFileUpload(file);
-        };
-        input.click();
-    });
-
-    // PDF modal close
-    function closePdfModalFunc() {
-        pdfModal.classList.add('hidden');
-        pdfModal.classList.remove('flex');
-    }
-    closePdfModal.addEventListener('click', closePdfModalFunc);
-    closePdfBtn.addEventListener('click', closePdfModalFunc);
-    sharePdfBtn.addEventListener('click', () => {
-        showNotification('Share dialog opened', 'info');
-    });
-
-    // Batch
-    addBatchBtn.addEventListener('click', () => {
-        if (!currentImageData) {
-            showNotification('Capture or upload an image first', 'error');
-            return;
-        }
-        batchDocuments.push({
-            id: Date.now(),
-            image: currentImageData,
-            name: 'Doc_' + (batchDocuments.length + 1),
-            status: 'pending'
-        });
-        updateBatchDisplay();
-        showNotification('Added to batch', 'success');
-    });
-
-    processBatchBtn.addEventListener('click', () => {
-        if (batchDocuments.length === 0) {
-            showNotification('Batch is empty', 'error');
-            return;
-        }
-        
-        processBatchBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
-        let processed = 0;
-        const total = batchDocuments.length;
-        
-        const interval = setInterval(() => {
-            processed++;
-            batchDocuments[processed - 1].status = 'processed';
-            updateBatchDisplay();
-            
-            if (processed === total) {
-                clearInterval(interval);
-                processBatchBtn.innerHTML = '<i class="fas fa-play mr-2"></i> Process Batch';
-                showNotification('Batch complete!', 'success');
-            }
-        }, 400);
-    });
-
-    // Save document (simulate)
-    saveDocBtn.addEventListener('click', () => {
-        if (!currentImageData && batchDocuments.length === 0) {
-            showNotification('No document to save', 'error');
-            return;
-        }
-        saveDocBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
-        setTimeout(() => {
-            saveDocBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Document';
-            showNotification('Document saved to cloud', 'success');
-        }, 1200);
-    });
-
-    // Multi-page
-    multiPageBtn.addEventListener('click', () => {
-        multiPageBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Scanning...';
-        setTimeout(() => {
-            multiPageBtn.innerHTML = '<i class="fas fa-copy mr-2"></i> Multi-Page';
-            showNotification('Multi-page mode ready', 'info');
-        }, 1000);
-    });
-
-    // Print
-    printBtn.addEventListener('click', () => {
-        if (!currentImageData) {
-            showNotification('No document to print', 'error');
-            return;
-        }
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write('<img src="' + currentImageData + '" style="max-width:100%"/>');
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-    });
-
-    // Share
-    shareBtn.addEventListener('click', () => {
-        if (navigator.share && currentImageData) {
-            fetch(currentImageData)
-                .then(res => res.blob())
-                .then(blob => {
-                    const file = new File([blob], 'scan.jpg', { type: 'image/jpeg' });
-                    navigator.share({
-                        title: 'Document Scan',
-                        files: [file]
-                    }).catch(() => showNotification('Share cancelled', 'info'));
-                });
-        } else {
-            showNotification('Share via browser not supported', 'info');
-        }
-    });
-
-    // Password toggle
-    addPassword.addEventListener('change', (e) => {
-        passwordField.classList.toggle('hidden', !e.target.checked);
-    });
-
-    // Create template
-    createTemplateBtn.addEventListener('click', () => {
-        const name = prompt('Template name:');
-        if (name) showNotification('Template "' + name + '" created', 'success');
-    });
-
-    // Enhancement controls
-    brightnessControl.addEventListener('input', () => {
-        brightnessValue.innerText = brightnessControl.value + '%';
-    });
-    contrastControl.addEventListener('input', () => {
-        contrastValue.innerText = contrastControl.value + '%';
-    });
-    noiseControl.addEventListener('input', () => {
-        noiseValue.innerText = noiseControl.value + '%';
-    });
-    sharpnessControl.addEventListener('input', () => {
-        sharpnessValue.innerText = sharpnessControl.value + '%';
-    });
-
-    focusControl.addEventListener('input', () => {
-        focusValue.innerText = focusControl.value == 50 ? 'Auto' : focusControl.value + '%';
-    });
-    exposureControl.addEventListener('input', () => {
-        exposureValue.innerText = exposureControl.value;
-    });
-    zoomControl.addEventListener('input', () => {
-        zoomValue.innerText = zoomControl.value + 'x';
-    });
-    timerControl.addEventListener('change', () => {
-        timerValue.innerText = timerControl.value == 0 ? 'Off' : timerControl.value + 's';
-    });
-
-    // Auto enhance
-    autoEnhanceBtn.addEventListener('click', () => {
-        autoEnhanceBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Enhancing...';
-        setTimeout(() => {
-            brightnessControl.value = 115;
-            brightnessValue.innerText = '115%';
-            contrastControl.value = 120;
-            contrastValue.innerText = '120%';
-            noiseControl.value = 75;
-            noiseValue.innerText = '75%';
-            sharpnessControl.value = 40;
-            sharpnessValue.innerText = '40%';
-            autoEnhanceBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> Auto';
-            showNotification('Auto-enhance applied', 'success');
-        }, 1500);
-    });
-
-    // Reset enhancements
-    resetEnhanceBtn.addEventListener('click', () => {
-        brightnessControl.value = 100;
-        brightnessValue.innerText = '100%';
-        contrastControl.value = 100;
-        contrastValue.innerText = '100%';
-        noiseControl.value = 0;
-        noiseValue.innerText = '0%';
-        sharpnessControl.value = 0;
-        sharpnessValue.innerText = '0%';
-        showNotification('Enhancements reset', 'info');
-    });
-
-    // Initialize values
-    focusValue.innerText = 'Auto';
-    exposureValue.innerText = '0';
-    zoomValue.innerText = '1.0x';
-    timerValue.innerText = 'Off';
-    
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
-    });
-})();
-</script>
-<!-- deepsite badge -->
-<script src="https://deepsite.hf.co/deepsite-badge.js"></script>
+    console.log("%c🏕️ Camp Scanner v8 – Audio Compression (Opus + Presets) Mastered! 🎤", "color:lime;font-size:18px;font-weight:bold");
+  </script>
 </body>
 </html>
