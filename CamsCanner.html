@@ -750,7 +750,42 @@
                             </button>
                         </div>
                     </div>
-                     
+                                          
+                    <div class="save-options">
+                        <h3>Quick Actions</h3>
+                        <div class="option-grid">
+                            <button id="smart-scan-btn" class="save-option" onclick="window.scanner.startSmartScan()">
+                                <i class="fas fa-magic"></i><span>Smart Scan</span>
+                            </button>
+                            <button id="pdf-edit-btn" class="save-option" onclick="window.scanner.openPDFEditor()">
+                                <i class="fas fa-edit"></i><span>Edit PDF</span>
+                            </button>
+                            <button id="export-png-quick" class="save-option" onclick="window.scanner.exportAsPNG()">
+                                <i class="fas fa-image"></i><span>Export PNG</span>
+                            </button>
+                            <button id="export-word-quick" class="save-option" onclick="window.scanner.exportAsWord()">
+                                <i class="fas fa-file-word"></i><span>Export Word</span>
+                            </button>
+                            <button id="export-txt-quick" class="save-option" onclick="window.scanner.exportAsTXT()">
+                                <i class="fas fa-file-alt"></i><span>Export TXT</span>
+                            </button>
+                            <button id="export-zip-quick" class="save-option" onclick="window.scanner.exportAsZIPQuick()">
+                                <i class="fas fa-file-archive"></i><span>Export ZIP</span>
+                            </button>
+                            <button id="ocr-quick-btn" class="save-option" onclick="window.scanner.performOCR()">
+                                <i class="fas fa-font"></i><span>OCR Text</span>
+                            </button>
+                            <button id="security-settings-btn" class="save-option" onclick="window.scanner.openSecuritySettings()">
+                                <i class="fas fa-shield-alt"></i><span>Security</span>
+                            </button>
+                            <button id="qr-scan-btn" class="save-option" onclick="window.scanner.openQRScanner()">
+                                <i class="fas fa-qrcode"></i><span>QR Scanner</span>
+                            </button>
+                            <button id="print-btn" class="save-option" onclick="window.scanner.printDocument()"><i class="fas fa-print"></i><span>Print</span></button>
+                            <button id="share-native-btn" class="save-option" onclick="window.scanner.shareNative()"><i class="fas fa-share"></i><span>Share</span></button>
+                        </div>
+                    </div>
+                    
                     <div class="save-options">
                         <h3>Save & Share</h3>
                         <div class="option-grid">
@@ -1768,6 +1803,38 @@
                         this.autoCaptureTimer = null;
                     }
                 }
+            }
+
+            startSmartScan() {
+                // Smart Scan: Combines auto-capture, document detection, and batch mode
+                this.showToast('Starting Smart Scan...');
+                
+                // Enable auto-capture
+                this.autoCapture = true;
+                const btn = document.getElementById('auto-capture-btn');
+                if (btn) {
+                    const span = btn.querySelector('span');
+                    span.textContent = 'Auto: ON';
+                    btn.style.borderColor = '#10b981';
+                    btn.style.background = 'rgba(16, 185, 129, 0.3)';
+                }
+                
+                // Enable batch mode for continuous scanning
+                this.batchMode = true;
+                this.batchPages = [];
+                const batchBtn = document.getElementById('batch-mode-btn');
+                if (batchBtn) {
+                    batchBtn.style.background = '#4f46e5';
+                    batchBtn.style.color = 'white';
+                }
+                
+                // Show camera screen
+                this.showScreen('camera-screen');
+                
+                // Show instructions
+                setTimeout(() => {
+                    this.showToast('Smart Scan: Hold document steady - auto capture enabled!');
+                }, 1000);
             }
 
             updateDetectionUI(detected) {
