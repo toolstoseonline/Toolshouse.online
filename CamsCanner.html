@@ -1,1 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camp Scanner - Document Scanner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .app-header {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        .logo i { font-size: 2rem; }
+        .logo h1 { font-size: 1.75rem; font-weight: 700; }
+        .tagline { font-size: 0.9rem; opacity: 0.9; }
+        .screen { display: none; animation: fadeIn 0.3s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero {
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .hero-icon i { font-size: 3rem; color: white; }
+        .hero h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .hero p { color: #6b7280; margin-bottom: 1.5rem; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+        .btn-secondary:hover { background: #e5e7eb; }
+        .btn-full { width: 100%; }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding: 0 1.5rem 2rem;
+        }
+        .feature-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border-color: #4f46e5;
+        }
+        .feature-card i {
+            font-size: 1.5rem;
+            color: #4f46e5;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .feature-card span { font-size: 0.75rem; color: #6b7280; display: block; }
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 200px);
+            min-height: 400px;
+            background: #000;
+            overflow: hidden;
+        }
+        #camera-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .camera-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .scan-frame {
+            width: 80%;
+            max-width: 320px;
+            aspect-ratio: 3/4;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: #4f46e5;
+            border-style: solid;
+        }
+        .corner.top-left { top: -2px; left: -2px; border-width: 4px 0 0 4px; }
+        .corner.top-right { top: -2px; right: -2px; border-width: 4px 4px 0 0; }
+        .corner.bottom-left { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; }
+        .corner.bottom-right { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; }
+        .scan-hint {
+            color: white;
+            background: rgba(0,0,0,0.6);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        .camera-controls {
+            position: absolute;
+            bottom: 2rem;
+            left: 0; right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+        .control-btn:hover { background: rgba(255,255,255,0.3); }
+        .capture-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background: #4f46e5;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .capture-btn:hover { transform: scale(1.05); background: #4338ca; }
+        .capture-btn:active { transform: scale(0.95); }
+        .preview-container {
+            padding: 1rem;
+            background: #000;
+        }
+        #preview-canvas {
+            width: 100%;
+            max-height: 60vh;
+            border-radius: 0.5rem;
+            display: block;
+            margin: 0 auto;
+        }
+        .preview-controls {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            background: #fff;
+        }
+        .page-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            background: #f3f4f6;
+        }
+        .thumbnail {
+            width: 80px;
+            height: 100px;
+            border-radius: 0.5rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .thumbnail.active { border-color: #4f46e5; }
+        .edit-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 80px);
+        }
+        #edit-canvas {
+            flex: 1;
+            max-width: 100%;
+            max-height: calc(100% - 120px);
+            margin: 0 auto;
+            display: block;
+        }
+        .edit-toolbar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 1rem;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+            gap: 0.5rem;
+        }
+        .toolbar-section { display: flex; gap: 0.5rem; }
+        .tool-btn {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 0.75rem;
+            background: #f3f4f6;
+            color: #1f2937;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tool-btn:hover { background: #4f46e5; color: white; }
+        .tool-btn.active { background: #4f46e5; color: white; }
+        .annotation-panel, .filter-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f3f4f6;
+            border-top: 1px solid #e5e7eb;
+        }
+        .color-picker { display: flex; gap: 0.5rem; }
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .color-btn.active { border-color: #1f2937; transform: scale(1.1); }
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 2rem;
+            background: #fff;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+        .save-container { padding: 1.5rem; }
+        .document-preview {
+            background: #f3f4f6;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .final-preview {
+            width: 100%;
+            max-height: 200px;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .final-preview img { width: 100%; height: auto; display: block; }
+        .document-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .document-info p { color: #6b7280; font-size: 0.875rem; }
+        #doc-name {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .save-options h3 { margin-bottom: 1rem; font-size: 1.125rem; }
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .save-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.25rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .save-option:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border-color: #4f46e5;
+        }
+        .save-option i { font-size: 2rem; color: #4f46e5; }
+        .save-option span { font-size: 0.875rem; color: #6b7280; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+            padding: 0.75rem 0;
+            z-index: 100;
+        }
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .nav-btn i { font-size: 1.25rem; }
+        .nav-btn span { font-size: 0.75rem; }
+        .nav-btn:hover, .nav-btn.active { color: #4f46e5; }
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-overlay p { color: white; margin-top: 1rem; }
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1001;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .toast i { color: #10b981; }
+        @media (max-width: 480px) {
+            .app-container, .bottom-nav { max-width: 100%; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-campground"></i>
+                <h1>Camp Scanner</h1>
+            </div>
+            <p class="tagline">Scan documents with ease</p>
+        </header>
+
+        <main class="main-content">
+            <section id="welcome-screen" class="screen active">
+                <div class="hero">
+                    <div class="hero-icon">
+                        <i class="fas fa-file-signature"></i>
+                    </div>
+                    <h2>Scan Documents Anywhere</h2>
+                    <p>Turn your camera into a powerful document scanner</p>
+                    <button id="start-btn" class="btn btn-primary">
+                        <i class="fas fa-camera"></i> Start Scanning
+                    </button>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card"><i class="fas fa-camera"></i><span>Camera Scan</span></div>
+                    <div class="feature-card"><i class="fas fa-magic"></i><span>Auto Detect</span></div>
+                    <div class="feature-card"><i class="fas fa-file-pdf"></i><span>PDF Export</span></div>
+                    <div class="feature-card"><i class="fas fa-crop"></i><span>Auto Crop</span></div>
+                    <div class="feature-card"><i class="fas fa-edit"></i><span>Edit & Annotate</span></div>
+                    <div class="feature-card"><i class="fas fa-cloud-upload-alt"></i><span>Cloud Save</span></div>
+                </div>
+            </section>
+
+            <section id="camera-screen" class="screen">
+                <div class="camera-container">
+                    <video id="camera-video" autoplay playsinline></video>
+                    <canvas id="camera-canvas" style="display: none;"></canvas>
+                    <div class="camera-overlay">
+                        <div class="scan-frame">
+                            <div class="corner top-left"></div>
+                            <div class="corner top-right"></div>
+                            <div class="corner bottom-left"></div>
+                            <div class="corner bottom-right"></div>
+                        </div>
+                        <p class="scan-hint">Position document within frame</p>
+                    </div>
+                    <div class="camera-controls">
+                        <button id="flash-btn" class="control-btn"><i class="fas fa-bolt"></i></button>
+                        <button id="capture-btn" class="capture-btn"><i class="fas fa-camera"></i></button>
+                        <button id="gallery-btn" class="control-btn"><i class="fas fa-images"></i></button>
+                    </div>
+                </div>
+                <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+            </section>
+
+            <section id="preview-screen" class="screen">
+                <div class="preview-container">
+                    <canvas id="preview-canvas"></canvas>
+                    <div class="preview-controls">
+                        <button id="retake-btn" class="btn btn-secondary"><i class="fas fa-redo"></i> Retake</button>
+                        <button id="add-page-btn" class="btn btn-secondary"><i class="fas fa-plus"></i> Add Page</button>
+                        <button id="edit-btn" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
+                    </div>
+                </div>
+                <div class="page-thumbnails" id="page-thumbnails"></div>
+            </section>
+
+            <section id="edit-screen" class="screen">
+                <div class="edit-container">
+                    <canvas id="edit-canvas"></canvas>
+                    <div class="edit-toolbar">
+                        <div class="toolbar-section">
+                            <button id="rotate-left-btn" class="tool-btn" title="Rotate Left"><i class="fas fa-undo"></i></button>
+                            <button id="rotate-right-btn" class="tool-btn" title="Rotate Right"><i class="fas fa-redo"></i></button>
+                        </div>
+                        <div class="toolbar-section">
+                            <button id="annotate-btn" class="tool-btn" title="Annotate"><i class="fas fa-pen"></i></button>
+                            <button id="filter-btn" class="tool-btn" title="Filters"><i class="fas fa-adjust"></i></button>
+                        </div>
+                        <div class="toolbar-section">
+                            <button id="done-edit-btn" class="btn btn-primary"><i class="fas fa-check"></i> Done</button>
+                        </div>
+                    </div>
+                    <div id="annotation-tools" class="annotation-panel" style="display: none;">
+                        <div class="color-picker">
+                            <button class="color-btn active" data-color="#ff0000" style="background: #ff0000;"></button>
+                            <button class="color-btn" data-color="#00ff00" style="background: #00ff00;"></button>
+                            <button class="color-btn" data-color="#0000ff" style="background: #0000ff;"></button>
+                            <button class="color-btn" data-color="#000000" style="background: #000000;"></button>
+                        </div>
+                        <button id="clear-annotations-btn" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Clear</button>
+                    </div>
+                    <div id="filter-panel" class="filter-panel" style="display: none;">
+                        <button class="filter-btn active" data-filter="none">Original</button>
+                        <button class="filter-btn" data-filter="grayscale">B&W</button>
+                        <button class="filter-btn" data-filter="contrast">High Contrast</button>
+                        <button class="filter-btn" data-filter="brightness">Lighten</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="save-screen" class="screen">
+                <div class="save-container">
+                    <div class="document-preview">
+                        <div id="final-preview" class="final-preview"></div>
+                        <div class="document-info">
+                            <p id="page-count">Pages: 1</p>
+                            <input type="text" id="doc-name" placeholder="Document name" value="Scanned Document">
+                        </div>
+                    </div>
+                    <div class="save-options">
+                        <h3>Save & Share</h3>
+                        <div class="option-grid">
+                            <button id="download-pdf-btn" class="save-option"><i class="fas fa-file-pdf"></i><span>Download PDF</span></button>
+                            <button id="save-drive-btn" class="save-option"><i class="fab fa-google-drive"></i><span>Google Drive</span></button>
+                            <button id="save-dropbox-btn" class="save-option"><i class="fab fa-dropbox"></i><span>Dropbox</span></button>
+                            <button id="share-email-btn" class="save-option"><i class="fas fa-envelope"></i><span>Email</span></button>
+                            <button id="share-whatsapp-btn" class="save-option"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></button>
+                            <button id="share-btn" class="save-option"><i class="fas fa-share-alt"></i><span>Share</span></button>
+                        </div>
+                    </div>
+                    <button id="new-scan-btn" class="btn btn-secondary btn-full"><i class="fas fa-plus"></i> New Scan</button>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav" id="bottom-nav" style="display: none;">
+            <button class="nav-btn" data-screen="welcome-screen"><i class="fas fa-home"></i><span>Home</span></button>
+            <button class="nav-btn" data-screen="camera-screen"><i class="fas fa-camera"></i><span>Scan</span></button>
+            <button class="nav-btn" data-screen="save-screen"><i class="fas fa-folder"></i><span>My Docs</span></button>
+        </nav>
+
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <p id="loading-text">Processing...</p>
+        </div>
+
+        <div id="toast" class="toast" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Success!</span>
+        </div>
+    </div>
+
+    <script>
+        class CampScanner {
+            constructor() {
+                this.pages = [];
+                this.currentPage = 0;
+                this.currentStream = null;
+                this.isFlashOn = false;
+                this.annotationMode = false;
+                this.currentFilter = 'none';
+                this.annotationColor = '#ff0000';
+                this.isDrawing = false;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                document.getElementById('start-btn').addEventListener('click', () => this.showScreen('camera-screen'));
+                document.getElementById('new-scan-btn').addEventListener('click', () => this.resetAndStart());
+                document.getElementById('capture-btn').addEventListener('click', () => this.captureImage());
+                document.getElementById('flash-btn').addEventListener('click', () => this.toggleFlash());
+                document.getElementById('gallery-btn').addEventListener('click', () => document.getElementById('file-input').click());
+                document.getElementById('file-input').addEventListener('change', (e) => this.handleFileSelect(e));
+                document.getElementById('retake-btn').addEventListener('click', () => this.retake());
+                document.getElementById('add-page-btn').addEventListener('click', () => this.showScreen('camera-screen'));
+                document.getElementById('edit-btn').addEventListener('click', () => this.showEditScreen());
+                document.getElementById('rotate-left-btn').addEventListener('click', () => this.rotate(-90));
+                document.getElementById('rotate-right-btn').addEventListener('click', () => this.rotate(90));
+                document.getElementById('annotate-btn').addEventListener('click', () => this.toggleAnnotation());
+                document.getElementById('filter-btn').addEventListener('click', () => this.toggleFilterPanel());
+                document.getElementById('done-edit-btn').addEventListener('click', () => this.saveEdit());
+                document.getElementById('clear-annotations-btn').addEventListener('click', () => this.clearAnnotations());
+                document.getElementById('download-pdf-btn').addEventListener('click', () => this.downloadPDF());
+                document.getElementById('save-drive-btn').addEventListener('click', () => this.showToast('Google Drive integration coming soon'));
+                document.getElementById('save-dropbox-btn').addEventListener('click', () => this.showToast('Dropbox integration coming soon'));
+                document.getElementById('share-email-btn').addEventListener('click', () => this.shareViaEmail());
+                document.getElementById('share-whatsapp-btn').addEventListener('click', () => this.shareViaWhatsApp());
+                document.getElementById('share-btn').addEventListener('click', () => this.shareDocument());
+                
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const screen = e.currentTarget.dataset.screen;
+                        if (screen) this.showScreen(screen);
+                    });
+                });
+                
+                document.querySelectorAll('.color-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.annotationColor = e.target.dataset.color;
+                        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                    });
+                });
+                
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.applyFilter(e.target.dataset.filter));
+                });
+                
+                const editCanvas = document.getElementById('edit-canvas');
+                editCanvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+                editCanvas.addEventListener('mousemove', (e) => this.draw(e));
+                editCanvas.addEventListener('mouseup', () => this.stopDrawing());
+                editCanvas.addEventListener('touchstart', (e) => this.startDrawing(e));
+                editCanvas.addEventListener('touchmove', (e) => this.draw(e));
+                editCanvas.addEventListener('touchend', () => this.stopDrawing());
+            }
+
+            showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(screenId).classList.add('active');
+                
+                if (screenId === 'camera-screen') {
+                    this.startCamera();
+                    document.getElementById('bottom-nav').style.display = 'flex';
+                } else {
+                    this.stopCamera();
+                }
+                
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.screen === screenId);
+                });
+            }
+
+            async startCamera() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+                    });
+                    this.currentStream = stream;
+                    document.getElementById('camera-video').srcObject = stream;
+                } catch (err) {
+                    this.showToast('Could not access camera. Please allow permissions.', 'error');
+                }
+            }
+
+            stopCamera() {
+                if (this.currentStream) {
+                    this.currentStream.getTracks().forEach(t => t.stop());
+                    this.currentStream = null;
+                }
+            }
+
+            async toggleFlash() {
+                if (!this.currentStream) return;
+                const track = this.currentStream.getVideoTracks()[0];
+                const capabilities = track.getCapabilities();
+                if (capabilities.torch) {
+                    this.isFlashOn = !this.isFlashOn;
+                    await track.applyConstraints({ advanced: [{ torch: this.isFlashOn }] });
+                }
+            }
+
+            captureImage() {
+                const video = document.getElementById('camera-video');
+                const canvas = document.getElementById('camera-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0);
+                
+                // Auto-enhance
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const factor = 1.2;
+                    data[i] = factor * (data[i] - 128) + 128;
+                    data[i+1] = factor * (data[i+1] - 128) + 128;
+                    data[i+2] = factor * (data[i+2] - 128) + 128;
+                }
+                ctx.putImageData(imageData, 0, 0);
+                
+                this.pages.push({ image: canvas.toDataURL('image/jpeg', 0.9), annotations: [], rotation: 0, filter: 'none' });
+                this.currentPage = this.pages.length - 1;
+                this.updateThumbnails();
+                this.showPreview();
+            }
+
+            handleFileSelect(e) {
+                Array.from(e.target.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        this.pages.push({ image: ev.target.result, annotations: [], rotation: 0, filter: 'none' });
+                        this.currentPage = this.pages.length - 1;
+                        this.updateThumbnails();
+                    };
+                    reader.readAsDataURL(file);
+                });
+                setTimeout(() => this.showPreview(), 100);
+            }
+
+            showPreview() {
+                const canvas = document.getElementById('preview-canvas');
+                const ctx = canvas.getContext('2d');
+                const page = this.pages[this.currentPage];
+                const img = new Image();
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = page.image;
+                this.showScreen('preview-screen');
+                document.getElementById('page-count').textContent = `Pages: ${this.pages.length}`;
+            }
+
+            updateThumbnails() {
+                const container = document.getElementById('page-thumbnails');
+                container.innerHTML = '';
+                this.pages.forEach((page, i) => {
+                    const img = document.createElement('img');
+                    img.src = page.image;
+                    img.className = `thumbnail ${i === this.currentPage ? 'active' : ''}`;
+                    img.onclick = () => { this.currentPage = i; this.showPreview(); };
+                    container.appendChild(img);
+                });
+            }
+
+            retake() {
+                this.pages.pop();
+                this.currentPage = Math.max(0, this.pages.length - 1);
+                if (this.pages.length === 0) this.showScreen('camera-screen');
+                else { this.updateThumbnails(); this.showPreview(); }
+            }
+
+            showEditScreen() {
+                const canvas = document.getElementById('edit-canvas');
+                const ctx = canvas.getContext('2d');
+                const page = this.pages[this.currentPage];
+                const img = new Image();
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = page.image;
+                this.showScreen('edit-screen');
+            }
+
+            rotate(deg) {
+                const canvas = document.getElementById('edit-canvas');
+                const ctx = canvas.getContext('2d');
+                this.pages[this.currentPage].rotation = (this.pages[this.currentPage].rotation + deg) % 360;
+                
+                const img = new Image();
+                img.onload = () => {
+                    const temp = document.createElement('canvas');
+                    const tctx = temp.getContext('2d');
+                    temp.width = canvas.height;
+                    temp.height = canvas.width;
+                    tctx.translate(temp.width/2, temp.height/2);
+                    tctx.rotate(deg * Math.PI / 180);
+                    tctx.drawImage(canvas, -canvas.width/2, -canvas.height/2);
+                    canvas.width = temp.width;
+                    canvas.height = temp.height;
+                    ctx.drawImage(temp, 0, 0);
+                };
+                img.src = canvas.toDataURL();
+            }
+
+            toggleAnnotation() {
+                this.annotationMode = !this.annotationMode;
+                document.getElementById('annotate-btn').classList.toggle('active', this.annotationMode);
+                document.getElementById('annotation-tools').style.display = this.annotationMode ? 'flex' : 'none';
+                document.getElementById('edit-canvas').style.cursor = this.annotationMode ? 'crosshair' : 'default';
+            }
+
+            startDrawing(e) {
+                if (!this.annotationMode) return;
+                this.isDrawing = true;
+                const canvas = document.getElementById('edit-canvas');
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                this.lastX = (clientX - rect.left) * (canvas.width / rect.width);
+                this.lastY = (clientY - rect.top) * (canvas.height / rect.height);
+            }
+
+            draw(e) {
+                if (!this.isDrawing || !this.annotationMode) return;
+                e.preventDefault();
+                const canvas = document.getElementById('edit-canvas');
+                const ctx = canvas.getContext('2d');
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                if (!clientX) return;
+                const x = (clientX - rect.left) * (canvas.width / rect.width);
+                const y = (clientY - rect.top) * (canvas.height / rect.height);
+                ctx.strokeStyle = this.annotationColor;
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(this.lastX, this.lastY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                this.lastX = x;
+                this.lastY = y;
+            }
+
+            stopDrawing() { this.isDrawing = false; }
+
+            clearAnnotations() {
+                const canvas = document.getElementById('edit-canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+
+            toggleFilterPanel() {
+                const panel = document.getElementById('filter-panel');
+                panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+            }
+
+            applyFilter(filter) {
+                this.currentFilter = filter;
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+                const canvas = document.getElementById('edit-canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                    if (filter === 'none') return;
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    if (filter === 'grayscale') {
+                        for (let i = 0; i < data.length; i += 4) {
+                            const gray = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+                            data[i] = data[i+1] = data[i+2] = gray;
+                        }
+                    } else if (filter === 'contrast') {
+                        for (let i = 0; i < data.length; i += 4) {
+                            data[i] = 1.5 * (data[i] - 128) + 128;
+                            data[i+1] = 1.5 * (data[i+1] - 128) + 128;
+                            data[i+2] = 1.5 * (data[i+2] - 128) + 128;
+                        }
+                    } else if (filter === 'brightness') {
+                        for (let i = 0; i < data.length; i += 4) {
+                            data[i] = Math.min(255, data[i] + 30);
+                            data[i+1] = Math.min(255, data[i+1] + 30);
+                            data[i+2] = Math.min(255, data[i+2] + 30);
+                        }
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+
+            saveEdit() {
+                const canvas = document.getElementById('edit-canvas');
+                this.pages[this.currentPage].image = canvas.toDataURL('image/jpeg', 0.9);
+                this.pages[this.currentPage].filter = this.currentFilter;
+                this.showSaveScreen();
+                this.showToast('Changes saved');
+            }
+
+            showSaveScreen() {
+                const preview = document.getElementById('final-preview');
+                if (this.pages.length > 0) preview.innerHTML = `<img src="${this.pages[0].image}" alt="Preview">`;
+                document.getElementById('page-count').textContent = `Pages: ${this.pages.length}`;
+                this.showScreen('save-screen');
+            }
+
+            async downloadPDF() {
+                this.showLoading('Generating PDF...');
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF();
+                    for (let i = 0; i < this.pages.length; i++) {
+                        if (i > 0) pdf.addPage();
+                        const img = new Image();
+                        await new Promise(resolve => {
+                            img.onload = () => {
+                                const w = pdf.internal.pageSize.getWidth();
+                                const h = (img.height * w) / img.width;
+                                pdf.addImage(this.pages[i].image, 'JPEG', 0, 0, w, h);
+                                resolve();
+                            };
+                            img.src = this.pages[i].image;
+                        });
+                    }
+                    pdf.save(`${document.getElementById('doc-name').value || 'Scanned Document'}.pdf`);
+                    this.hideLoading();
+                    this.showToast('PDF downloaded');
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('Error generating PDF', 'error');
+                }
+            }
+
+            shareViaEmail() {
+                const subject = encodeURIComponent(document.getElementById('doc-name').value || 'Scanned Document');
+                window.open(`mailto:?subject=${subject}&body=Please find the scanned document attached.`);
+            }
+
+            shareViaWhatsApp() {
+                const text = encodeURIComponent(`Check out this document: ${document.getElementById('doc-name').value || 'Scanned Document'}`);
+                window.open(`https://wa.me/?text=${text}`);
+            }
+
+            async shareDocument() {
+                if (navigator.share) {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+                        await new Promise(resolve => {
+                            img.onload = () => {
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                ctx.drawImage(img, 0, 0);
+                                resolve();
+                            };
+                            img.src = this.pages[0].image;
+                        });
+                        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg'));
+                        const file = new File([blob], 'document.jpg', { type: 'image/jpeg' });
+                        await navigator.share({ title: document.getElementById('doc-name').value || 'Scanned Document', files: [file] });
+                    } catch (err) {
+                        this.showToast('Sharing not available', 'error');
+                    }
+                } else {
+                    this.showToast('Web Share not supported', 'error');
+                }
+            }
+
+            resetAndStart() {
+                this.pages = [];
+                this.currentPage = 0;
+                this.currentFilter = 'none';
+                document.getElementById('page-thumbnails').innerHTML = '';
+                document.getElementById('doc-name').value = 'Scanned Document';
+                this.showScreen('camera-screen');
+            }
+
+            showLoading(text) {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading-overlay').style.display = 'flex';
+            }
+
+            hideLoading() {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+
+            showToast(msg, type = 'success') {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-message').textContent = msg;
+                const icon = toast.querySelector('i');
+                icon.className = type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+                icon.style.color = type === 'error' ? '#ef4444' : '#10b981';
+                toast.style.display = 'flex';
+                setTimeout(() => toast.style.display = 'none', 3000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => new CampScanner());
+    </script>
+</body>
+</html>
 
