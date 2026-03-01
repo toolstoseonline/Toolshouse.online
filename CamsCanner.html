@@ -1808,20 +1808,12 @@
                 const format = this.exportFormat || 'pdf';
                 
                 if (format === 'txt') {
-                    // Export as text (requires OCR)
                     await this.exportAsText();
                     return;
                 }
                 
                 if (format === 'jpg') {
-                    // Export as JPEG
-                    if (this.pages.length > 0) {
-                        const link = document.createElement('a');
-                        link.download = `${document.getElementById('doc-name').value || 'Scanned Document'}.jpg`;
-                        link.href = this.pages[0].image;
-                        link.click();
-                        this.showToast('JPEG downloaded');
-                    }
+                    await this.exportAsJPEG();
                     return;
                 }
                 
@@ -1850,13 +1842,215 @@
                         });
                     }
                     
-                    pdf.save(`${document.getElementById('doc-name').value || 'Scanned Document'}.pdf`);
-                    this.hideLoading();
-                    this.showToast('PDF downloaded');
+                    // Mobile-friendly download
+                    await this.mobileFriendlyDownload(pdf, 'pdf');
+                    
                 } catch (err) {
                     this.hideLoading();
                     this.showToast('Error generating PDF', 'error');
+                    console.error(err);
                 }
+            }
+
+            async exportAsJPEG() {
+                if (this.pages.length === 0) {
+                    this.showToast('No images to export', 'error');
+                    return;
+                }
+                
+                this.showLoading('Preparing images...');
+                
+                try {
+                    if (this.pages.length === 1) {
+                        // Single image - direct download
+                        await this.downloadImage(this.pages[0].image, `${document.getElementById('doc-name').value || 'Scanned Document'}.jpg`);
+                    } else {
+                        // Multiple images - create ZIP
+                        await this.downloadImagesAsZIP();
+                    }
+                    this.hideLoading();
+                    this.showToast('Images downloaded');
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('Download failed', 'error');
+                }
+            }
+
+            async downloadImage(dataUrl, filename) {
+                // Try multiple download methods for mobile compatibility
+                
+                // Method 1: Standard download link
+                try {
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    return;
+                } catch (e) {
+                    console.log('Method 1 failed, trying alternative...');
+                }
+                
+                // Method 2: Open in new tab for manual save (iOS Safari)
+                try {
+                    const newWindow = window.open(dataUrl, '_blank');
+                    if (newWindow) {
+                        this.showToast('Image opened in new tab - long press to save');
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Method 2 failed...');
+                }
+                
+                // Method 3: Use blob and object URL
+                try {
+                    const response = await fetch(dataUrl);
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    return;
+                } catch (e) {
+                    console.log('Method 3 failed...');
+                }
+                
+                // Method 4: Show image for manual save
+                this.showImageForManualSave(dataUrl, filename);
+            }
+
+            async downloadImagesAsZIP() {
+                // Load JSZip dynamically
+                if (!window.JSZip) {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                    });
+                }
+                
+                const zip = new window.JSZip();
+                const folder = zip.folder('Scanned Documents');
+                
+                for (let i = 0; i < this.pages.length; i++) {
+                    const response = await fetch(this.pages[i].image);
+                    const blob = await response.blob();
+                    folder.file(`page_${i + 1}.jpg`, blob);
+                }
+                
+                const content = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(content);
+                
+                // Try download
+                try {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${document.getElementById('doc-name').value || 'Scanned Documents'}.zip`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } catch (e) {
+                    // Fallback for mobile
+                    this.showFileForDownload(url, 'zip');
+                }
+                
+                URL.revokeObjectURL(url);
+            }
+
+            async mobileFriendlyDownload(pdf, type) {
+                try {
+                    const pdfBlob = pdf.output('blob');
+                    const url = URL.createObjectURL(pdfBlob);
+                    const filename = `${document.getElementById('doc-name').value || 'Scanned Document'}.pdf`;
+                    
+                    // Try standard download first
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    
+                    // Check if it's a mobile device
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    
+                    if (isMobile) {
+                        // For mobile, try to use native share if available
+                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([pdfBlob], filename, { type: 'application/pdf' })] })) {
+                            try {
+                                await navigator.share({
+                                    title: filename,
+                                    files: [new File([pdfBlob], filename, { type: 'application/pdf' })]
+                                });
+                                this.hideLoading();
+                                this.showToast('PDF shared');
+                                URL.revokeObjectURL(url);
+                                return;
+                            } catch (shareErr) {
+                                console.log('Share failed, trying download...');
+                            }
+                        }
+                        
+                        // Try opening in new tab for mobile browsers
+                        if (/Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
+                            // iOS Safari - open in new tab
+                            window.open(url, '_blank');
+                            this.hideLoading();
+                            this.showToast('PDF opened - tap share button to save');
+                            return;
+                        }
+                    }
+                    
+                    // Standard download
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    this.hideLoading();
+                    this.showToast('PDF downloaded');
+                    URL.revokeObjectURL(url);
+                    
+                } catch (err) {
+                    this.hideLoading();
+                    this.showToast('Download failed - try sharing instead', 'error');
+                    console.error(err);
+                }
+            }
+
+            showImageForManualSave(dataUrl, filename) {
+                // Create a modal showing the image for manual save
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay active';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h3><i class="fas fa-download"></i> Save Image</h3>
+                        <p style="margin-bottom: 1rem; color: #6b7280;">Long press the image below and select "Save Image"</p>
+                        <img src="${dataUrl}" style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #e5e7eb;">
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Filename: ${filename}</p>
+                        <button class="btn btn-primary btn-full" onclick="this.closest('.modal-overlay').remove()">Done</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            showFileForDownload(url, type) {
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay active';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h3><i class="fas fa-download"></i> Download File</h3>
+                        <p style="margin-bottom: 1rem; color: #6b7280;">Tap the button below to download your file</p>
+                        <a href="${url}" download class="btn btn-primary btn-full" style="margin-bottom: 0.5rem;">
+                            <i class="fas fa-download"></i> Download ${type.toUpperCase()}
+                        </a>
+                        <button class="btn btn-secondary btn-full" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
             }
 
             async exportAsText() {
@@ -1879,17 +2073,63 @@
                     }
                     
                     const blob = new Blob([fullText], { type: 'text/plain' });
-                    const link = document.createElement('a');
-                    link.download = `${document.getElementById('doc-name').value || 'Scanned Document'}.txt`;
-                    link.href = URL.createObjectURL(blob);
-                    link.click();
+                    const url = URL.createObjectURL(blob);
+                    const filename = `${document.getElementById('doc-name').value || 'Scanned Document'}.txt`;
                     
+                    // Mobile-friendly text download
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    
+                    if (isMobile && navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: filename,
+                                text: fullText
+                            });
+                            this.hideLoading();
+                            this.showToast('Text shared');
+                            return;
+                        } catch (e) {
+                            console.log('Share failed, trying download...');
+                        }
+                    }
+                    
+                    // Try standard download
+                    try {
+                        const link = document.createElement('a');
+                        link.download = filename;
+                        link.href = url;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } catch (e) {
+                        // Show text for manual copy on mobile
+                        this.showTextForCopy(fullText, filename);
+                    }
+                    
+                    URL.revokeObjectURL(url);
                     this.hideLoading();
                     this.showToast('Text file downloaded');
                 } catch (err) {
                     this.hideLoading();
                     this.showToast('Text extraction failed', 'error');
                 }
+            }
+
+            showTextForCopy(text, filename) {
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay active';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h3><i class="fas fa-copy"></i> Copy Text</h3>
+                        <p style="margin-bottom: 1rem; color: #6b7280;">Copy the text below and save it manually</p>
+                        <textarea readonly style="width: 100%; height: 200px; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-family: monospace; font-size: 0.875rem; margin-bottom: 1rem;">${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
+                        <button class="btn btn-primary btn-full" onclick="navigator.clipboard.writeText(this.previousElementSibling.value).then(() => alert('Copied!'))">
+                            <i class="fas fa-copy"></i> Copy All Text
+                        </button>
+                        <button class="btn btn-secondary btn-full" style="margin-top: 0.5rem;" onclick="this.closest('.modal-overlay').remove()">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
             }
         }
 
