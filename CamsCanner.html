@@ -120,8 +120,8 @@
         .camera-container {
             position: relative;
             width: 100%;
-            height: calc(100vh - 200px);
-            min-height: 400px;
+            height: calc(100vh - 140px);
+            min-height: 350px;
             background: #000;
             overflow: hidden;
         }
@@ -178,13 +178,14 @@
         }
         .camera-controls {
             position: absolute;
-            bottom: 2rem;
+            bottom: 5rem;
             left: 0; right: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 2rem;
             padding: 0 2rem;
+            z-index: 10;
         }
         .control-btn {
             width: 50px;
@@ -325,12 +326,23 @@
         }
         .final-preview {
             width: 100%;
-            max-height: 200px;
-            overflow: hidden;
+            max-height: 350px;
+            overflow: auto;
             border-radius: 0.5rem;
             margin-bottom: 1rem;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .final-preview img { width: 100%; height: auto; display: block; }
+        .final-preview img { 
+            max-width: 100%;
+            max-height: 350px;
+            width: auto;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
         .document-info {
             display: flex;
             justify-content: space-between;
@@ -549,6 +561,12 @@
                 <div class="camera-container">
                     <video id="camera-video" autoplay playsinline></video>
                     <canvas id="camera-canvas" style="display: none;"></canvas>
+                    
+                    <!-- Back button -->
+                    <button id="camera-back-btn" style="position: absolute; top: 1rem; left: 1rem; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.5); border: none; color: white; font-size: 1.25rem; z-index: 20; cursor: pointer; backdrop-filter: blur(10px);">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    
                     <div class="camera-overlay">
                         <div class="scan-frame">
                             <div class="corner top-left"></div>
@@ -628,7 +646,8 @@
             <section id="save-screen" class="screen">
                 <div class="save-container">
                     <div class="document-preview">
-                        <div id="final-preview" class="final-preview"></div>
+                        <div id="final-preview" class="final-preview" onclick="window.scanner.viewFullImage()"></div>
+                        <p style="text-align: center; color: #6b7280; font-size: 0.75rem; margin-bottom: 0.5rem;">Tap image to view full size</p>
                         <div class="document-info">
                             <p id="page-count">Pages: 1</p>
                             <input type="text" id="doc-name" placeholder="Document name" value="Scanned Document">
@@ -803,6 +822,7 @@
                 document.getElementById('capture-btn').addEventListener('click', () => this.captureImage());
                 document.getElementById('flash-btn').addEventListener('click', () => this.toggleFlash());
                 document.getElementById('gallery-btn').addEventListener('click', () => document.getElementById('file-input').click());
+                document.getElementById('camera-back-btn').addEventListener('click', () => this.showScreen('welcome-screen'));
                 document.getElementById('file-input').addEventListener('change', (e) => this.handleFileSelect(e));
                 document.getElementById('retake-btn').addEventListener('click', () => this.retake());
                 document.getElementById('add-page-btn').addEventListener('click', () => this.showScreen('camera-screen'));
@@ -896,16 +916,29 @@
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                 document.getElementById(screenId).classList.add('active');
                 
+                const bottomNav = document.getElementById('bottom-nav');
+                
                 if (screenId === 'camera-screen') {
                     this.startCamera();
-                    document.getElementById('bottom-nav').style.display = 'flex';
+                    bottomNav.style.display = 'none'; // Hide nav on camera screen
+                } else if (screenId === 'welcome-screen') {
+                    this.stopCamera();
+                    bottomNav.style.display = 'none'; // Hide on welcome too
                 } else {
                     this.stopCamera();
+                    bottomNav.style.display = 'flex'; // Show on other screens
                 }
                 
+                // Update nav active states
                 document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.screen === screenId);
+                    btn.classList.remove('active');
                 });
+                
+                if (screenId === 'welcome-screen') {
+                    document.querySelector('.nav-btn[data-screen="welcome-screen"]')?.classList.add('active');
+                } else if (screenId === 'docs-screen') {
+                    document.getElementById('nav-docs-btn')?.classList.add('active');
+                }
             }
 
             async startCamera() {
@@ -1489,6 +1522,45 @@
                     this.showMyDocs();
                     this.showToast('Document deleted');
                 }
+            }
+
+            viewFullImage() {
+                if (this.pages.length === 0) return;
+                
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay active';
+                modal.style.zIndex = '3000';
+                modal.innerHTML = `
+                    <div class="modal" style="max-width: 95vw; max-height: 95vh; padding: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem;">
+                            <h3 style="margin: 0;">Full Image View</h3>
+                            <button onclick="this.closest('.modal-overlay').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div style="overflow: auto; max-height: 80vh; display: flex; justify-content: center;">
+                            <img src="${this.pages[0].image}" style="max-width: 100%; max-height: 80vh; object-fit: contain;">
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; padding: 0.5rem; justify-content: center;">
+                            <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Close</button>
+                            <button class="btn btn-primary" onclick="window.scanner.downloadCurrentImage()">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            downloadCurrentImage() {
+                if (this.pages.length === 0) return;
+                const link = document.createElement('a');
+                link.href = this.pages[0].image;
+                link.download = `${document.getElementById('doc-name').value || 'Scanned Document'}.jpg`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                this.showToast('Image downloaded');
             }
 
             shareViaEmail() {
