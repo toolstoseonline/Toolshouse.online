@@ -275,7 +275,7 @@ select{
         <div class="small-hint">
             <span>🔤</span> Text encoding: UTF-8
         </div>
-        <input type="file" id="srtFileInput" accept=".srt" hidden>
+        <input type="file" id="srtFileInput" accept=".srt,.txt" hidden>
     </div>
 </div>
 
@@ -334,6 +334,7 @@ select{
     let subtitles = [];               // parsed subtitles
     let recordedBlob = null;
     let currentVideoBlobUrl = null;
+    let animationFrame = null;         // to track animation frame
 
     // ----- helper: clear error -----
     function setError(text) {
@@ -365,15 +366,21 @@ select{
     });
 
     // drag & drop for video card
-    videoUploadBtn.addEventListener('dragover', (e) => e.preventDefault());
+    videoUploadBtn.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
     videoUploadBtn.addEventListener('drop', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         const files = e.dataTransfer.files;
         if (files.length) {
             const videoFile = Array.from(files).find(f => f.type.startsWith('video/'));
             if (videoFile) {
                 handleVideoFile(videoFile);
-                // sync input (optional, can't set .files directly)
+                // sync file input (can't set .files directly, but we can reset it)
+                videoFileInput.value = '';
             } else {
                 setError('No video file in dropped items.');
             }
@@ -399,6 +406,9 @@ select{
             recordedBlob = null;
             downloadBtn.disabled = true;
         };
+        reader.onerror = () => {
+            setError('Error reading subtitle file.');
+        };
         reader.readAsText(file, 'UTF-8');
     }
 
@@ -408,14 +418,23 @@ select{
     });
 
     // drag & drop for srt card
-    srtUploadBtn.addEventListener('dragover', (e) => e.preventDefault());
+    srtUploadBtn.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
     srtUploadBtn.addEventListener('drop', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         const files = e.dataTransfer.files;
         if (files.length) {
             const srtFile = Array.from(files).find(f => f.name.endsWith('.srt'));
-            if (srtFile) handleSrtFile(srtFile);
-            else setError('Dropped item is not an .srt file.');
+            if (srtFile) {
+                handleSrtFile(srtFile);
+                srtFileInput.value = '';
+            } else {
+                setError('Dropped item is not an .srt file.');
+            }
         }
     });
 
@@ -497,6 +516,12 @@ select{
             return;
         }
 
+        // Cancel any previous recording animation
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+        }
+
         // canvas size from video
         canvas.width = videoPreview.videoWidth;
         canvas.height = videoPreview.videoHeight;
@@ -532,21 +557,41 @@ select{
         }
 
         const chunks = [];
-        recorder.ondataavailable = (e) => chunks.push(e.data);
+        recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) {
+                chunks.push(e.data);
+            }
+        };
+        
         recorder.onstop = () => {
             recordedBlob = new Blob(chunks, { type: mime });
             downloadBtn.disabled = false;
             loading.style.display = 'none';
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
         };
 
         recorder.start();
-        videoPreview.play();
+        
+        // Make sure video plays
+        try {
+            await videoPreview.play();
+        } catch (err) {
+            setError('Could not play video: ' + err.message);
+            recorder.stop();
+            return;
+        }
 
         function drawFrame() {
             if (videoPreview.paused || videoPreview.ended) {
-                if (recorder.state !== 'inactive') recorder.stop();
+                if (recorder && recorder.state !== 'inactive') {
+                    recorder.stop();
+                }
                 return;
             }
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
             const current = videoPreview.currentTime;
@@ -566,7 +611,7 @@ select{
                 }
             });
             ctx.shadowBlur = 0; // reset
-            requestAnimationFrame(drawFrame);
+            animationFrame = requestAnimationFrame(drawFrame);
         }
         drawFrame();
     });
@@ -583,14 +628,24 @@ select{
         }
     });
 
-    // small adjustment: if video ends before recorder, stop properly
+    // Clean up on video end
     videoPreview.addEventListener('ended', () => {
-        // if recording, stop (though draw loop also stops)
+        // The drawFrame function will handle stopping the recorder
+    });
+
+    // Clean up on page unload
+    window.addEventListener('beforeunload', () => {
+        if (currentVideoBlobUrl) {
+            URL.revokeObjectURL(currentVideoBlobUrl);
+        }
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
+        }
     });
 
     // initially no file
 })();
 </script>
-     <script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
+    <script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
 </body>
 </html>
