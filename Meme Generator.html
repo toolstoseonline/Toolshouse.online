@@ -343,14 +343,12 @@
             const fillColorPicker = document.getElementById('fillColor');
             const strokeColorPicker = document.getElementById('strokeColor');
 
-            // ------------- LANGUAGE PLACEHOLDERS (English descriptions remain, but placeholder text in native scripts) ----------
+            // ------------- LANGUAGE PLACEHOLDERS ----------
             const languagePlaceholders = {
-                // Pakistani & north Indian
                 ur: { top: "اوپر والا متن", bottom: "نیچے والا متن" },
-                sd: { top: "مٿيون متن", bottom: "ھيٺيون متن" },     // Sindhi
-                ps: { top: "پورتنى متن", bottom: "لاندنى متن" },     // Pashto
-                bal: { top: "نبشتہ گونی", bottom: "نبشتہ ہیزی" },    // Balochi (simple)
-                // Indian official
+                sd: { top: "مٿيون متن", bottom: "ھيٺيون متن" },
+                ps: { top: "پورتنى متن", bottom: "لاندنى متن" },
+                bal: { top: "نبشتہ گونی", bottom: "نبشتہ ہیزی" },
                 hi: { top: "ऊपर वाला पाठ", bottom: "नीचे वाला पाठ" },
                 bn: { top: "উপরের লেখা", bottom: "নিচের লেখা" },
                 pa: { top: "ਉੱਤੇ ਵਾਲਾ ਲਿਖਤ", bottom: "ਹੇਠਾਂ ਵਾਲਾ ਲਿਖਤ" },
@@ -362,7 +360,6 @@
                 kn: { top: "ಮೇಲಿನ ಪಠ್ಯ", bottom: "ಕೆಳಗಿನ ಪಠ್ಯ" },
                 or: { top: "ଉପର ଲେଖା", bottom: "ତଳ ଲେଖା" },
                 as: { top: "ওপৰৰ লিখনি", bottom: "তলৰ লিখনি" },
-                // additional international
                 en: { top: "TOP TEXT", bottom: "BOTTOM TEXT" },
                 es: { top: "TEXTO SUPERIOR", bottom: "TEXTO INFERIOR" },
                 ar: { top: "النص العلوي", bottom: "النص السفلي" }
@@ -390,7 +387,7 @@
                 ctx.fillText('Urdu · हिन्दी · বাংলা · اردو', w/2, h/2+30);
             }
 
-            drawDefaultGradient(); // initial draw
+            drawDefaultGradient();
 
             // sync font size
             function syncFontSize() {
@@ -403,7 +400,7 @@
                 val = Math.min(100, Math.max(20, val));
                 fontSizeRange.value = val;
                 this.value = val;
-                redrawCanvas();
+                fullRender();
             });
 
             // Update placeholders based on language
@@ -414,7 +411,7 @@
                 bottomTextInput.placeholder = texts.bottom;
             }
             languageSelect.addEventListener('change', updatePlaceholders);
-            updatePlaceholders(); // urdu initially
+            updatePlaceholders();
 
             // File upload
             fileInput.addEventListener('change', function(e) {
@@ -423,8 +420,12 @@
                     fileNameSpan.textContent = file.name.length > 28 ? file.name.substr(0,25)+'…' : file.name;
                     const reader = new FileReader();
                     reader.onload = function(event) {
+                        currentImg = new Image(); // Create new image to avoid caching issues
+                        currentImg.onload = function() {
+                            userImageLoaded = true;
+                            fullRender();
+                        };
                         currentImg.src = event.target.result;
-                        userImageLoaded = true;
                     };
                     reader.readAsDataURL(file);
                 } else {
@@ -432,23 +433,35 @@
                 }
             });
 
-            // image loading
-            currentImg.onload = function() {
-                redrawCanvas();
-            };
-            currentImg.onerror = function() {
-                userImageLoaded = false;
-                drawDefaultGradient();
-                drawTextOverlay();
-            };
-
             // Main draw: background + text
             function redrawCanvas() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (userImageLoaded && currentImg.src && currentImg.complete && currentImg.naturalWidth > 0) {
+                if (userImageLoaded && currentImg && currentImg.complete && currentImg.naturalWidth > 0) {
                     try {
-                        ctx.drawImage(currentImg, 0, 0, canvas.width, canvas.height);
+                        // Calculate aspect ratio to fit image properly
+                        const imgAspect = currentImg.naturalWidth / currentImg.naturalHeight;
+                        const canvasAspect = canvas.width / canvas.height;
+                        
+                        let drawWidth = canvas.width;
+                        let drawHeight = canvas.height;
+                        let offsetX = 0;
+                        let offsetY = 0;
+                        
+                        if (imgAspect > canvasAspect) {
+                            // Image is wider - fit to height
+                            drawHeight = canvas.height;
+                            drawWidth = canvas.height * imgAspect;
+                            offsetX = (canvas.width - drawWidth) / 2;
+                        } else {
+                            // Image is taller - fit to width
+                            drawWidth = canvas.width;
+                            drawHeight = canvas.width / imgAspect;
+                            offsetY = (canvas.height - drawHeight) / 2;
+                        }
+                        
+                        ctx.drawImage(currentImg, offsetX, offsetY, drawWidth, drawHeight);
                     } catch (e) {
+                        console.error('Error drawing image:', e);
                         drawDefaultGradient();
                     }
                 } else {
@@ -461,34 +474,50 @@
             function drawTextOverlay() {
                 const topText = topTextInput.value.trim();
                 const bottomText = bottomTextInput.value.trim();
-                if (!topText && !bottomText) return;
-
-                // font construction with fallback for indic/urdu
+                
+                // Save context state
+                ctx.save();
+                
+                // font construction with fallback
                 let fontFamily = fontFamilySelect.value;
-                let finalFont = `${fontFamily}, 'Noto Sans', 'Nirmala UI', 'Mangal', 'Segoe UI', sans-serif`;
-                // special fallback for nastaliq
+                // Remove quotes if present for proper font string
+                fontFamily = fontFamily.replace(/['"]/g, '');
+                
+                let finalFont;
                 if (fontFamily.includes('Nastaliq')) {
-                    finalFont = `${fontFamily}, 'Noto Nastaliq Urdu', 'Noto Sans', sans-serif`;
+                    finalFont = `900 ${fontSizeRange.value}px "${fontFamily}", "Noto Nastaliq Urdu", "Noto Sans", sans-serif`;
+                } else {
+                    finalFont = `900 ${fontSizeRange.value}px "${fontFamily}", "Noto Sans", "Nirmala UI", "Mangal", "Segoe UI", sans-serif`;
                 }
-
-                const fontSize = fontSizeRange.value + 'px';
-                ctx.font = `900 ${fontSize} ${finalFont}`; // 900 for bold
+                
+                ctx.font = finalFont;
                 ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle'; // Better vertical alignment
+                
+                // Set stroke and fill properties
                 ctx.fillStyle = fillColorPicker.value;
                 ctx.strokeStyle = strokeColorPicker.value;
                 ctx.lineWidth = parseFloat(strokeWidthRange.value);
-
-                // top Y
+                
+                // top text
                 if (topText) {
+                    if (ctx.lineWidth > 0) {
+                        ctx.strokeText(topText, canvas.width / 2, 70);
+                    }
                     ctx.fillText(topText, canvas.width / 2, 70);
-                    if (ctx.lineWidth > 0) ctx.strokeText(topText, canvas.width / 2, 70);
                 }
-                // bottom Y
+                
+                // bottom text
                 if (bottomText) {
                     const yPos = canvas.height - 40;
+                    if (ctx.lineWidth > 0) {
+                        ctx.strokeText(bottomText, canvas.width / 2, yPos);
+                    }
                     ctx.fillText(bottomText, canvas.width / 2, yPos);
-                    if (ctx.lineWidth > 0) ctx.strokeText(bottomText, canvas.width / 2, yPos);
                 }
+                
+                // Restore context state
+                ctx.restore();
             }
 
             // full render wrapper
@@ -517,16 +546,20 @@
                 fileInput.value = '';
                 fileNameSpan.textContent = 'No file chosen';
                 userImageLoaded = false;
-                currentImg = new Image();   // fresh image
-                drawDefaultGradient();
-                drawTextOverlay();           // keep text on gradient
+                currentImg = new Image();
+                fullRender();
             });
 
             // live update on any control
-            const liveElements = [fontFamilySelect, fontSizeRange, fontSizeNumber, strokeWidthRange, fillColorPicker, strokeColorPicker, topTextInput, bottomTextInput];
+            const liveElements = [fontFamilySelect, fontSizeRange, strokeWidthRange, fillColorPicker, strokeColorPicker, topTextInput, bottomTextInput];
             liveElements.forEach(el => el.addEventListener('input', function() {
-                redrawCanvas();
+                fullRender();
             }));
+
+            // Add resize observer for better rendering
+            window.addEventListener('resize', function() {
+                fullRender();
+            });
 
             // final initialization
             window.addEventListener('load', function() {
