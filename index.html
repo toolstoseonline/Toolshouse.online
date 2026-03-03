@@ -37,17 +37,7 @@
             --transition: all 0.25s ease;
         }
 
-        body
-        <header style="display:flex; align-items:center; padding:15px 20px; background:#ffffff; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-    
-    <img src="logo.png" alt="Tools House Online Logo" style="height:60px;">
-    
-    <h2 style="margin-left:12px; font-size:22px; color:#333;">
-        Tools House Online
-    </h2>
-
-</header>
-          {
+        body {
             font-family: 'Poppins', sans-serif;
             background: 
                 radial-gradient(circle at 20% 20%, rgba(100, 181, 246, 0.4) 0%, transparent 50%),
@@ -82,11 +72,11 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            background: rgba(255, 255, 255, 0.85);
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            border-bottom: 1px solid rgba(210, 180, 140, 0.25);
+            box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .header-flex {
@@ -102,18 +92,17 @@
             line-height: 1.2;
         }
         .logo-tools {
-            color: var(--accent-blue);
+            color: #90caf9;
         }
         .logo-house {
-            color: var(--soft-black);
+            color: #ffffff;
         }
         .logo-ayyaz {
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 300;
             letter-spacing: 1px;
-            color: #6b5a44;
-            margin-top: -6px;
+            color: #e3f2fd;
         }
 
         /* navigation */
@@ -124,15 +113,15 @@
         }
         .nav-menu a {
             text-decoration: none;
-            color: var(--soft-black);
+            color: #ffffff;
             font-size: 1.1rem;
             transition: var(--transition);
             border-bottom: 2px solid transparent;
             padding-bottom: 4px;
         }
         .nav-menu a:hover {
-            color: var(--brown-light);
-            border-bottom-color: var(--brown-light);
+            color: #90caf9;
+            border-bottom-color: #90caf9;
         }
 
         /* hamburger (mobile) */
@@ -141,7 +130,7 @@
             font-size: 2rem;
             background: none;
             border: none;
-            color: var(--soft-black);
+            color: #ffffff;
             cursor: pointer;
         }
         .mobile-nav {
