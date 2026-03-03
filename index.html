@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <script>(function(s){s.dataset.zone='10673861',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))  </script>
     <meta name="google-site-verification" content="Kaipmt-Vgg8znI_Xdl-thl_SewkVFcDLuV3sMPhF9qA" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -40,7 +39,12 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(145deg, #fdf9f3 0%, #faf3e9 100%);
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(100, 181, 246, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(66, 165, 245, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(144, 202, 249, 0.2) 0%, transparent 70%),
+                linear-gradient(145deg, #e3f2fd 0%, #90caf9 50%, #64b5f6 100%);
+            background-attachment: fixed;
             color: var(--soft-black);
             line-height: 1.5;
             scroll-behavior: smooth;
@@ -320,7 +324,7 @@
 
         /* ---------- FOOTER ---------- */
         .footer {
-            background: var(--brown-light);
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%);
             margin-top: 80px;
             padding: 50px 0 30px;
             border-radius: 48px 48px 0 0;
@@ -336,22 +340,22 @@
             font-size: 2rem;
             font-weight: 600;
         }
-        .footer-logo .logo-tools { color: var(--pure-white); }
-        .footer-logo .logo-house { color: var(--soft-black); }
+        .footer-logo .logo-tools { color: #90caf9; }
+        .footer-logo .logo-house { color: #ffffff; }
         .footer-tagline {
             max-width: 400px;
             font-size: 1rem;
-            color: #2f2a1f;
+            color: #e3f2fd;
         }
         .footer-email {
             font-size: 1.1rem;
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.2);
             padding: 10px 20px;
             border-radius: 40px;
         }
-        .footer-email i { margin-right: 8px; }
+        .footer-email i { margin-right: 8px; color: #90caf9; }
         .footer-email a {
-            color: var(--soft-black);
+            color: #ffffff;
             text-decoration: none;
             font-weight: 500;
         }
@@ -362,15 +366,75 @@
         }
         .footer-links a {
             text-decoration: none;
-            color: var(--soft-black);
+            color: #e3f2fd;
             font-weight: 500;
         }
-        .footer-links a:hover { text-decoration: underline; }
+        .footer-links a:hover { color: #ffffff; text-decoration: underline; }
         .copyright {
             text-align: center;
             margin-top: 40px;
-            opacity: 0.8;
+            opacity: 0.9;
             font-size: 0.9rem;
+            color: #bbdefb;
+        }
+
+        /* ---------- FOOTER TOOLS LINKS ---------- */
+        .footer-tools {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        .footer-tools-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .footer-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .footer-tool-category {
+            margin-bottom: 15px;
+        }
+        .footer-tool-category h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #90caf9;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(144, 202, 249, 0.3);
+        }
+        .footer-tool-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-tool-list li {
+            margin-bottom: 6px;
+        }
+        .footer-tool-list a {
+            color: #e3f2fd;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            display: block;
+            padding: 3px 0;
+        }
+        .footer-tool-list a:hover {
+            color: #ffffff;
+            padding-left: 5px;
+        }
+        @media screen and (max-width: 1024px) {
+            .footer-tools-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media screen and (max-width: 768px) {
+            .footer-tools-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media screen and (max-width: 480px) {
+            .footer-tools-grid { grid-template-columns: 1fr; }
         }
 
         /* scroll to top */
@@ -398,6 +462,78 @@
             transform: scale(1.1);
         }
 
+        /* ---------- RECENTLY VIEWED TOOLS ---------- */
+        .recent-tools {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(31, 136, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .recent-tools-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--soft-black);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recent-tools-title i {
+            color: #2196f3;
+        }
+        .recent-tools-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .recent-tool-item {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 1px solid #90caf9;
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1565c0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .recent-tool-item:hover {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        }
+        .recent-tool-item i {
+            font-size: 0.85rem;
+        }
+        .recent-tool-empty {
+            color: #78909c;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+        .clear-recent {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #78909c;
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 15px;
+            transition: all 0.2s ease;
+        }
+        .clear-recent:hover {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
         /* ---------- RESPONSIVE ---------- */
         @media screen and (max-width: 1024px) {
             .card-grid { grid-template-columns: repeat(3, 1fr); }
@@ -410,10 +546,12 @@
             .card-grid { grid-template-columns: repeat(2, 1fr); }
             .hero h1 { font-size: 2.5rem; }
             .footer-content { flex-direction: column; text-align: center; }
+            .recent-tools { padding: 15px 20px; }
         }
         @media screen and (max-width: 480px) {
             .card-grid { grid-template-columns: 1fr; }
             .search-input { padding: 14px 18px; }
+            .recent-tool-item { font-size: 0.85rem; padding: 6px 12px; }
         }
     </style>
 </head>
@@ -443,6 +581,18 @@
     </header>
 
     <main class="container">
+        <!-- RECENTLY VIEWED TOOLS -->
+        <section class="recent-tools" id="recentTools">
+            <div class="recent-tools-title">
+                <i class="fas fa-history"></i>
+                Recently Viewed Tools
+                <button class="clear-recent" onclick="clearRecentTools()" title="Clear History">Clear</button>
+            </div>
+            <div class="recent-tools-list" id="recentToolsList">
+                <span class="recent-tool-empty">No tools viewed yet. Start exploring!</span>
+            </div>
+        </section>
+
         <!-- SEARCH BAR -->
         <div class="search-section">
             <div class="search-wrapper">
@@ -560,6 +710,101 @@
                     <a href="#">Ayyaz</a>
                 </div>
             </div>
+            <!-- All Tools Links -->
+            <div class="footer-tools">
+                <div class="footer-tools-title">📋 All Tools</div>
+                <div class="footer-tools-grid">
+                    <!-- Document & File Tools -->
+                    <div class="footer-tool-category">
+                        <h4>📄 Document & File</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Word to PDF Converter.html">Word to PDF</a></li>
+                            <li><a href="pdf reader.html">PDF Reader</a></li>
+                            <li><a href="PDF Merger.html">PDF Merger</a></li>
+                            <li><a href="PDF Splitter.html">PDF Splitter</a></li>
+                            <li><a href="PDF Compressor.html">PDF Compressor</a></li>
+                            <li><a href="File Compressor.html">File Compressor</a></li>
+                            <li><a href="File Splitter.html">File Splitter</a></li>
+                            <li><a href="File Converter.html">File Converter</a></li>
+                        </ul>
+                    </div>
+                    <!-- Image Tools -->
+                    <div class="footer-tool-category">
+                        <h4>🖼 Image Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Image Converter.html">Image Converter</a></li>
+                            <li><a href="Collage Maker.html">Collage Maker</a></li>
+                            <li><a href="Image Resizer.html">Image Resizer</a></li>
+                            <li><a href="Filter & Effects.html">Filter & Effects</a></li>
+                            <li><a href="Photo Retouch.html">Photo Retouch</a></li>
+                            <li><a href="Excel to PDF.html">Excel to PDF</a></li>
+                            <li><a href="Image Enhancer.html">Image Enhancer</a></li>
+                            <li><a href="Meme Generator.html">Meme Generator</a></li>
+                        </ul>
+                    </div>
+                    <!-- Video Tools -->
+                    <div class="footer-tool-category">
+                        <h4>🎬 Video Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Video Trimmer.html">Video Trimmer</a></li>
+                            <li><a href="Speed Controller.html">Speed Controller</a></li>
+                            <li><a href="Subtitle Adder.html">Subtitle Adder</a></li>
+                            <li><a href="Video Compressor.html">Video Compressor</a></li>
+                            <li><a href="Video Reverser.html">Video Reverser</a></li>
+                            <li><a href="Video Rotator.html">Video Rotator</a></li>
+                        </ul>
+                    </div>
+                    <!-- Audio Tools -->
+                    <div class="footer-tool-category">
+                        <h4>🎵 Audio Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Audio Cutter.html">Audio Cutter</a></li>
+                            <li><a href="Audio Merger.html">Audio Merger</a></li>
+                            <li><a href="MP3 Converter.html">MP3 Converter</a></li>
+                            <li><a href="Voice Recorder.html">Voice Recorder</a></li>
+                        </ul>
+                    </div>
+                    <!-- Calculator Tools -->
+                    <div class="footer-tool-category">
+                        <h4>🧮 Calculators</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="GST Calculator.html">GST Calculator</a></li>
+                            <li><a href="Currency Converter.html">Currency Converter</a></li>
+                            <li><a href="Loan Calculator.html">Loan Calculator</a></li>
+                            <li><a href="Age Calculator.html">Age Calculator</a></li>
+                            <li><a href="Compound Interest.html">Compound Interest</a></li>
+                        </ul>
+                    </div>
+                    <!-- AI & Dev Tools -->
+                    <div class="footer-tool-category">
+                        <h4>🤖 AI & Dev Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="AI Voiceover.html">AI Voiceover</a></li>
+                            <li><a href="Password Generator.html">Password Generator</a></li>
+                            <li><a href="QR Generator.html">QR Generator</a></li>
+                        </ul>
+                    </div>
+                    <!-- Quick Links -->
+                    <div class="footer-tool-category">
+                        <h4>🔗 Quick Links</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Home.html">Home</a></li>
+                            <li><a href="Tools.html">All Tools</a></li>
+                            <li><a href="Contact.html">Contact</a></li>
+                            <li><a href="CamsCanner.html">CamScanner</a></li>
+                        </ul>
+                    </div>
+                    <!-- Legal -->
+                    <div class="footer-tool-category">
+                        <h4>📜 Legal</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Privacy Policy.html">Privacy Policy</a></li>
+                            <li><a href="Terms of Use.html">Terms of Use</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <div class="copyright">
                 © 2025 Tools House Online (Ayyaz) — clean, fast, free tools.
             </div>
@@ -603,6 +848,89 @@
 
         // Lazy loading? we don't have actual images, only icons (FA), no extra cost.
         // Smooth scrolling on anchor links (if any)
+
+        // ---------- RECENTLY VIEWED TOOLS ----------
+        const MAX_RECENT_TOOLS = 8;
+        const STORAGE_KEY = 'recentlyViewedTools';
+
+        // Load recent tools from localStorage
+        function loadRecentTools() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        // Save recent tools to localStorage
+        function saveRecentTools(tools) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
+        }
+
+        // Add a tool to recently viewed
+        function addRecentTool(name, url, icon) {
+            let recentTools = loadRecentTools();
+            
+            // Remove if already exists
+            recentTools = recentTools.filter(tool => tool.url !== url);
+            
+            // Add to beginning
+            recentTools.unshift({ name, url, icon, timestamp: Date.now() });
+            
+            // Keep only max number
+            if (recentTools.length > MAX_RECENT_TOOLS) {
+                recentTools = recentTools.slice(0, MAX_RECENT_TOOLS);
+            }
+            
+            saveRecentTools(recentTools);
+            displayRecentTools();
+        }
+
+        // Display recent tools
+        function displayRecentTools() {
+            const recentTools = loadRecentTools();
+            const container = document.getElementById('recentToolsList');
+            
+            if (recentTools.length === 0) {
+                container.innerHTML = '<span class="recent-tool-empty">No tools viewed yet. Start exploring!</span>';
+                return;
+            }
+            
+            container.innerHTML = recentTools.map(tool => `
+                <a href="${tool.url}" class="recent-tool-item" onclick="trackToolClick('${tool.name}', '${tool.url}', '${tool.icon}')">
+                    <i class="${tool.icon}"></i>
+                    ${tool.name}
+                </a>
+            `).join('');
+        }
+
+        // Track tool click
+        function trackToolClick(name, url, icon) {
+            addRecentTool(name, url, icon);
+        }
+
+        // Clear recent tools
+        function clearRecentTools() {
+            localStorage.removeItem(STORAGE_KEY);
+            displayRecentTools();
+        }
+
+        // Initialize - add click tracking to all tool buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            displayRecentTools();
+            
+            // Add tracking to all tool cards
+            const toolCards = document.querySelectorAll('.tool-card');
+            toolCards.forEach(card => {
+                const link = card.querySelector('.tool-btn');
+                const name = card.getAttribute('data-name');
+                const iconElement = card.querySelector('.tool-icon');
+                const iconClass = iconElement ? iconElement.className : 'fas fa-tools';
+                
+                if (link && name) {
+                    link.addEventListener('click', function(e) {
+                        addRecentTool(name, link.getAttribute('href'), iconClass);
+                    });
+                }
+            });
+        });
     </script>
     <!-- note: seo headings structured (H1 already, H2 categories, H3 not needed) -->
     <!-- performance: minified CSS & no heavy libs. -->
