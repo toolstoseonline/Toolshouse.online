@@ -726,40 +726,78 @@
             cropDocument() {
                 if (this.pages.length === 0) return;
                 
-                // Create crop modal
+                const img = new Image();
+                img.onload = () => {
+                    this.showCropInterface(img);
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            showCropInterface(img) {
+                // Create crop modal with manual selection
                 const modal = document.createElement('div');
-                modal.className = 'modal-overlay';
                 modal.id = 'crop-modal';
-                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column;';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000; display: flex; flex-direction: column;';
+                
+                const imgWidth = img.width;
+                const imgHeight = img.height;
+                const displayWidth = Math.min(window.innerWidth * 0.9, imgWidth);
+                const scale = displayWidth / imgWidth;
+                const displayHeight = imgHeight * scale;
+                
+                // Initial crop area (80% of image)
+                const initialCrop = {
+                    x: displayWidth * 0.1,
+                    y: displayHeight * 0.1,
+                    w: displayWidth * 0.8,
+                    h: displayHeight * 0.8
+                };
                 
                 modal.innerHTML = `
-                    <div style="padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center;">
-                        <h3 style="margin: 0;"><i class="fas fa-crop"></i> Crop Document</h3>
-                        <button id="close-crop" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;"><i class="fas fa-times"></i></button>
+                    <div style="padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; background: #1f2937;">
+                        <h3 style="margin: 0; font-size: 1rem;"><i class="fas fa-crop"></i> Manual Crop</h3>
+                        <button id="close-crop" style="background: none; border: none; color: white; font-size: 1.25rem; cursor: pointer;"><i class="fas fa-times"></i></button>
                     </div>
-                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow: auto;">
-                        <div style="position: relative; display: inline-block;">
-                            <img id="crop-image" src="${this.pages[this.currentPage].image}" style="max-width: 100%; max-height: 70vh; display: block;">
-                            <div id="crop-overlay" style="position: absolute; top: 10%; left: 10%; right: 10%; bottom: 10%; border: 2px dashed #4f46e5; background: rgba(79, 70, 229, 0.1); cursor: move;">
-                                <div style="position: absolute; top: -5px; left: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: nw-resize;"></div>
-                                <div style="position: absolute; top: -5px; right: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: ne-resize;"></div>
-                                <div style="position: absolute; bottom: -5px; left: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: sw-resize;"></div>
-                                <div style="position: absolute; bottom: -5px; right: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: se-resize;"></div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow: auto; position: relative;" id="crop-container">
+                        <div style="position: relative; display: inline-block;" id="crop-wrapper">
+                            <img id="crop-image" src="${img.src}" style="max-width: 90vw; max-height: 60vh; display: block; user-select: none; -webkit-user-drag: none;">
+                            <div id="crop-selection" style="position: absolute; border: 2px solid #4f46e5; background: rgba(79, 70, 229, 0.2); cursor: move; left: ${initialCrop.x}px; top: ${initialCrop.y}px; width: ${initialCrop.w}px; height: ${initialCrop.h}px;">
+                                <!-- Corner handles -->
+                                <div class="crop-handle" data-handle="nw" style="position: absolute; top: -6px; left: -6px; width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: nw-resize; border-radius: 50%;"></div>
+                                <div class="crop-handle" data-handle="ne" style="position: absolute; top: -6px; right: -6px; width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: ne-resize; border-radius: 50%;"></div>
+                                <div class="crop-handle" data-handle="sw" style="position: absolute; bottom: -6px; left: -6px; width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: sw-resize; border-radius: 50%;"></div>
+                                <div class="crop-handle" data-handle="se" style="position: absolute; bottom: -6px; right: -6px; width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: se-resize; border-radius: 50%;"></div>
+                                <!-- Edge handles -->
+                                <div class="crop-handle" data-handle="n" style="position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: n-resize; border-radius: 50%;"></div>
+                                <div class="crop-handle" data-handle="s" style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: s-resize; border-radius: 50%;"></div>
+                                <div class="crop-handle" data-handle="w" style="position: absolute; left: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: w-resize; border-radius: 50%;"></div>
+                                <div class="crop-handle" data-handle="e" style="position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #4f46e5; border: 2px solid white; cursor: e-resize; border-radius: 50%;"></div>
                             </div>
                         </div>
                     </div>
-                    <div style="padding: 1rem; display: flex; gap: 1rem; justify-content: center;">
-                        <button id="apply-crop" class="btn btn-primary"><i class="fas fa-check"></i> Apply Crop</button>
-                        <button id="cancel-crop" class="btn btn-secondary">Cancel</button>
+                    <div style="padding: 1rem; display: flex; gap: 1rem; justify-content: center; background: #1f2937;">
+                        <button id="reset-crop" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;"><i class="fas fa-undo"></i> Reset</button>
+                        <button id="apply-crop" class="btn btn-primary" style="padding: 0.75rem 1.5rem;"><i class="fas fa-check"></i> Apply Crop</button>
+                        <button id="cancel-crop" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;">Cancel</button>
                     </div>
                 `;
                 
                 document.body.appendChild(modal);
                 
-                // Simple crop - apply auto-crop based on document detection
+                // Setup manual crop interaction
+                this.setupManualCrop(modal, img, scale);
+                
+                // Button handlers
                 document.getElementById('apply-crop').addEventListener('click', () => {
-                    this.applyManualCrop();
-                    modal.remove();
+                    this.applyManualCrop(modal, img, scale);
+                });
+                
+                document.getElementById('reset-crop').addEventListener('click', () => {
+                    const selection = document.getElementById('crop-selection');
+                    selection.style.left = initialCrop.x + 'px';
+                    selection.style.top = initialCrop.y + 'px';
+                    selection.style.width = initialCrop.w + 'px';
+                    selection.style.height = initialCrop.h + 'px';
                 });
                 
                 document.getElementById('cancel-crop').addEventListener('click', () => {
@@ -771,27 +809,143 @@
                 });
             }
             
-            applyManualCrop() {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
-                    
-                    // Detect edges and crop
-                    const edges = this.detectDocumentEdges(canvas);
-                    if (edges) {
-                        const cropped = this.cropToEdges(canvas, edges);
-                        this.pages[this.currentPage].image = cropped;
-                        document.getElementById('preview-image').src = cropped;
-                        this.showToast('Document cropped!');
-                    } else {
-                        this.showToast('Could not detect document edges', 'error');
+            setupManualCrop(modal, img, scale) {
+                const selection = modal.querySelector('#crop-selection');
+                const wrapper = modal.querySelector('#crop-wrapper');
+                const image = modal.querySelector('#crop-image');
+                let isDragging = false;
+                let isResizing = false;
+                let currentHandle = null;
+                let startX, startY, startLeft, startTop, startWidth, startHeight;
+                
+                const getEventPos = (e) => {
+                    if (e.touches) {
+                        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
                     }
+                    return { x: e.clientX, y: e.clientY };
                 };
-                img.src = this.pages[this.currentPage].image;
+                
+                const onStart = (e) => {
+                    if (e.target.classList.contains('crop-handle')) {
+                        isResizing = true;
+                        currentHandle = e.target.dataset.handle;
+                    } else if (e.target === selection) {
+                        isDragging = true;
+                    }
+                    
+                    const pos = getEventPos(e);
+                    startX = pos.x;
+                    startY = pos.y;
+                    startLeft = parseInt(selection.style.left) || 0;
+                    startTop = parseInt(selection.style.top) || 0;
+                    startWidth = parseInt(selection.style.width) || 100;
+                    startHeight = parseInt(selection.style.height) || 100;
+                    
+                    e.preventDefault();
+                };
+                
+                const onMove = (e) => {
+                    if (!isDragging && !isResizing) return;
+                    
+                    const pos = getEventPos(e);
+                    const dx = pos.x - startX;
+                    const dy = pos.y - startY;
+                    
+                    const imgRect = image.getBoundingClientRect();
+                    const wrapperRect = wrapper.getBoundingClientRect();
+                    const maxX = imgRect.width;
+                    const maxY = imgRect.height;
+                    
+                    if (isDragging) {
+                        let newLeft = startLeft + dx;
+                        let newTop = startTop + dy;
+                        
+                        // Constrain to image bounds
+                        newLeft = Math.max(0, Math.min(newLeft, maxX - startWidth));
+                        newTop = Math.max(0, Math.min(newTop, maxY - startHeight));
+                        
+                        selection.style.left = newLeft + 'px';
+                        selection.style.top = newTop + 'px';
+                    } else if (isResizing) {
+                        let newLeft = startLeft;
+                        let newTop = startTop;
+                        let newWidth = startWidth;
+                        let newHeight = startHeight;
+                        
+                        if (currentHandle.includes('e')) newWidth = startWidth + dx;
+                        if (currentHandle.includes('w')) {
+                            newWidth = startWidth - dx;
+                            newLeft = startLeft + dx;
+                        }
+                        if (currentHandle.includes('s')) newHeight = startHeight + dy;
+                        if (currentHandle.includes('n')) {
+                            newHeight = startHeight - dy;
+                            newTop = startTop + dy;
+                        }
+                        
+                        // Minimum size
+                        if (newWidth < 50) newWidth = 50;
+                        if (newHeight < 50) newHeight = 50;
+                        
+                        // Constrain to image bounds
+                        if (newLeft < 0) { newWidth += newLeft; newLeft = 0; }
+                        if (newTop < 0) { newHeight += newTop; newTop = 0; }
+                        if (newLeft + newWidth > maxX) newWidth = maxX - newLeft;
+                        if (newTop + newHeight > maxY) newHeight = maxY - newTop;
+                        
+                        selection.style.left = newLeft + 'px';
+                        selection.style.top = newTop + 'px';
+                        selection.style.width = newWidth + 'px';
+                        selection.style.height = newHeight + 'px';
+                    }
+                    
+                    e.preventDefault();
+                };
+                
+                const onEnd = () => {
+                    isDragging = false;
+                    isResizing = false;
+                    currentHandle = null;
+                };
+                
+                // Mouse events
+                selection.addEventListener('mousedown', onStart);
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onEnd);
+                
+                // Touch events
+                selection.addEventListener('touchstart', onStart, { passive: false });
+                document.addEventListener('touchmove', onMove, { passive: false });
+                document.addEventListener('touchend', onEnd);
+                
+                // Cleanup when modal closes
+                modal.addEventListener('remove', () => {
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onEnd);
+                    document.removeEventListener('touchmove', onMove);
+                    document.removeEventListener('touchend', onEnd);
+                });
+            }
+            
+            applyManualCrop(modal, img, scale) {
+                const selection = modal.querySelector('#crop-selection');
+                const left = parseInt(selection.style.left) / scale;
+                const top = parseInt(selection.style.top) / scale;
+                const width = parseInt(selection.style.width) / scale;
+                const height = parseInt(selection.style.height) / scale;
+                
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, left, top, width, height, 0, 0, width, height);
+                
+                const cropped = canvas.toDataURL('image/jpeg', 0.95);
+                this.pages[this.currentPage].image = cropped;
+                document.getElementById('preview-image').src = cropped;
+                
+                modal.remove();
+                this.showToast('Document cropped!');
             }
 
             enhanceDocument() {
