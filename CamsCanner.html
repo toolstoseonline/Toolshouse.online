@@ -50,7 +50,14 @@
         .capture-btn:active { transform: scale(0.95); }
         
         /* Preview/Save Screen */
-        .preview-container { padding: 1rem; background: #f3f4f6; min-height: 100vh; }
+        .preview-container { 
+            padding: 1rem; 
+            background: #f3f4f6; 
+            min-height: 100vh;
+            max-height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
         .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .preview-header h2 { font-size: 1.25rem; }
         .main-preview { background: white; border-radius: 0.75rem; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
@@ -66,7 +73,18 @@
         .save-option.active { border-color: #4f46e5; background: rgba(79, 70, 229, 0.1); }
         
         /* Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-around; padding: 0.5rem 0; z-index: 100; }
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: white; 
+            border-top: 1px solid #e5e7eb; 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 0.5rem 0; 
+            z-index: 1000; 
+        }
         .nav-btn { flex: 1; padding: 0.5rem; border: none; background: none; color: #6b7280; font-size: 0.75rem; cursor: pointer; }
         .nav-btn i { font-size: 1.25rem; display: block; margin-bottom: 0.25rem; }
         .nav-btn.active { color: #4f46e5; }
@@ -143,7 +161,7 @@
         </section>
 
         <!-- Preview/Save Screen -->
-        <section id="save-screen" class="screen">
+        <section id="save-screen" class="screen" style="height: 100vh; overflow: hidden;">
             <div class="preview-container">
                 <div class="preview-header">
                     <button id="back-to-camera" class="btn btn-secondary"><i class="fas fa-arrow-left"></i></button>
@@ -706,7 +724,74 @@
             }
 
             cropDocument() {
-                this.showToast('Auto-crop applied on capture');
+                if (this.pages.length === 0) return;
+                
+                // Create crop modal
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.id = 'crop-modal';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column;';
+                
+                modal.innerHTML = `
+                    <div style="padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0;"><i class="fas fa-crop"></i> Crop Document</h3>
+                        <button id="close-crop" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow: auto;">
+                        <div style="position: relative; display: inline-block;">
+                            <img id="crop-image" src="${this.pages[this.currentPage].image}" style="max-width: 100%; max-height: 70vh; display: block;">
+                            <div id="crop-overlay" style="position: absolute; top: 10%; left: 10%; right: 10%; bottom: 10%; border: 2px dashed #4f46e5; background: rgba(79, 70, 229, 0.1); cursor: move;">
+                                <div style="position: absolute; top: -5px; left: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: nw-resize;"></div>
+                                <div style="position: absolute; top: -5px; right: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: ne-resize;"></div>
+                                <div style="position: absolute; bottom: -5px; left: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: sw-resize;"></div>
+                                <div style="position: absolute; bottom: -5px; right: -5px; width: 15px; height: 15px; background: #4f46e5; cursor: se-resize;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; display: flex; gap: 1rem; justify-content: center;">
+                        <button id="apply-crop" class="btn btn-primary"><i class="fas fa-check"></i> Apply Crop</button>
+                        <button id="cancel-crop" class="btn btn-secondary">Cancel</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Simple crop - apply auto-crop based on document detection
+                document.getElementById('apply-crop').addEventListener('click', () => {
+                    this.applyManualCrop();
+                    modal.remove();
+                });
+                
+                document.getElementById('cancel-crop').addEventListener('click', () => {
+                    modal.remove();
+                });
+                
+                document.getElementById('close-crop').addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+            
+            applyManualCrop() {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Detect edges and crop
+                    const edges = this.detectDocumentEdges(canvas);
+                    if (edges) {
+                        const cropped = this.cropToEdges(canvas, edges);
+                        this.pages[this.currentPage].image = cropped;
+                        document.getElementById('preview-image').src = cropped;
+                        this.showToast('Document cropped!');
+                    } else {
+                        this.showToast('Could not detect document edges', 'error');
+                    }
+                };
+                img.src = this.pages[this.currentPage].image;
             }
 
             enhanceDocument() {
