@@ -1219,6 +1219,280 @@
             }
 
             enhanceDocument() {
+                if (this.pages.length === 0) return;
+                this.showEnhanceModal();
+            }
+            
+            showEnhanceModal() {
+                const img = new Image();
+                img.onload = () => {
+                    this.createEnhanceInterface(img);
+                };
+                img.src = this.pages[this.currentPage].image;
+            }
+            
+            createEnhanceInterface(img) {
+                const modal = document.createElement('div');
+                modal.id = 'enhance-modal';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #1f2937; z-index: 1000; display: flex; flex-direction: column;';
+                
+                modal.innerHTML = `
+                    <div style="padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 1rem;"><i class="fas fa-magic"></i> Enhance Document</h3>
+                        <button id="close-enhance" style="background: none; border: none; color: white; font-size: 1.25rem; cursor: pointer;"><i class="fas fa-times"></i></button>
+                    </div>
+                    
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1rem; background: #000;">
+                        <canvas id="enhance-canvas" style="max-width: 100%; max-height: 60vh; box-shadow: 0 4px 20px rgba(0,0,0,0.5);"></canvas>
+                    </div>
+                    
+                    <div style="padding: 1rem; background: #374151;">
+                        <!-- Filter Presets -->
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #9ca3af; font-size: 0.75rem; display: block; margin-bottom: 0.5rem;">PRESETS</label>
+                            <div style="display: flex; gap: 0.5rem; overflow-x: auto;">
+                                <button class="enhance-preset active" data-preset="original" style="padding: 0.5rem 1rem; border-radius: 2rem; border: none; background: #4f46e5; color: white; font-size: 0.875rem; cursor: pointer; white-space: nowrap;">Original</button>
+                                <button class="enhance-preset" data-preset="document" style="padding: 0.5rem 1rem; border-radius: 2rem; border: none; background: #6b7280; color: white; font-size: 0.875rem; cursor: pointer; white-space: nowrap;">Document</button>
+                                <button class="enhance-preset" data-preset="grayscale" style="padding: 0.5rem 1rem; border-radius: 2rem; border: none; background: #6b7280; color: white; font-size: 0.875rem; cursor: pointer; white-space: nowrap;">Grayscale</button>
+                                <button class="enhance-preset" data-preset="bw" style="padding: 0.5rem 1rem; border-radius: 2rem; border: none; background: #6b7280; color: white; font-size: 0.875rem; cursor: pointer; white-space: nowrap;">B&W</button>
+                                <button class="enhance-preset" data-preset="sharpen" style="padding: 0.5rem 1rem; border-radius: 2rem; border: none; background: #6b7280; color: white; font-size: 0.875rem; cursor: pointer; white-space: nowrap;">Sharpen</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Adjustments -->
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="color: #9ca3af; font-size: 0.75rem; display: flex; justify-content: space-between;">
+                                    <span>BRIGHTNESS</span>
+                                    <span id="brightness-val">100%</span>
+                                </label>
+                                <input type="range" id="brightness" min="50" max="150" value="100" style="width: 100%; margin-top: 0.25rem;">
+                            </div>
+                            <div>
+                                <label style="color: #9ca3af; font-size: 0.75rem; display: flex; justify-content: space-between;">
+                                    <span>CONTRAST</span>
+                                    <span id="contrast-val">100%</span>
+                                </label>
+                                <input type="range" id="contrast" min="50" max="150" value="100" style="width: 100%; margin-top: 0.25rem;">
+                            </div>
+                            <div>
+                                <label style="color: #9ca3af; font-size: 0.75rem; display: flex; justify-content: space-between;">
+                                    <span>SATURATION</span>
+                                    <span id="saturation-val">100%</span>
+                                </label>
+                                <input type="range" id="saturation" min="0" max="200" value="100" style="width: 100%; margin-top: 0.25rem;">
+                            </div>
+                            <div>
+                                <label style="color: #9ca3af; font-size: 0.75rem; display: flex; justify-content: space-between;">
+                                    <span>SHARPNESS</span>
+                                    <span id="sharpness-val">0%</span>
+                                </label>
+                                <input type="range" id="sharpness" min="0" max="100" value="0" style="width: 100%; margin-top: 0.25rem;">
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="reset-enhance" class="btn btn-secondary" style="flex: 1; padding: 0.75rem;"><i class="fas fa-undo"></i> Reset</button>
+                            <button id="apply-enhance" class="btn btn-primary" style="flex: 2; padding: 0.75rem;"><i class="fas fa-check"></i> Apply</button>
+                            <button id="cancel-enhance" class="btn btn-secondary" style="flex: 1; padding: 0.75rem;">Cancel</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Setup canvas
+                const canvas = document.getElementById('enhance-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                // Store original image data
+                this.originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // Setup controls
+                this.setupEnhanceControls(modal, canvas, ctx);
+                
+                // Button handlers
+                document.getElementById('apply-enhance').addEventListener('click', () => {
+                    this.applyEnhancement(canvas);
+                    modal.remove();
+                });
+                
+                document.getElementById('reset-enhance').addEventListener('click', () => {
+                    this.resetEnhancement(canvas, ctx);
+                });
+                
+                document.getElementById('cancel-enhance').addEventListener('click', () => {
+                    modal.remove();
+                });
+                
+                document.getElementById('close-enhance').addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+            
+            setupEnhanceControls(modal, canvas, ctx) {
+                const brightness = modal.querySelector('#brightness');
+                const contrast = modal.querySelector('#contrast');
+                const saturation = modal.querySelector('#saturation');
+                const sharpness = modal.querySelector('#sharpness');
+                const presets = modal.querySelectorAll('.enhance-preset');
+                
+                let currentPreset = 'original';
+                
+                const updateImage = () => {
+                    this.applyFilters(canvas, ctx, {
+                        brightness: parseInt(brightness.value),
+                        contrast: parseInt(contrast.value),
+                        saturation: parseInt(saturation.value),
+                        sharpness: parseInt(sharpness.value),
+                        preset: currentPreset
+                    });
+                };
+                
+                // Slider events
+                brightness.addEventListener('input', (e) => {
+                    modal.querySelector('#brightness-val').textContent = e.target.value + '%';
+                    updateImage();
+                });
+                
+                contrast.addEventListener('input', (e) => {
+                    modal.querySelector('#contrast-val').textContent = e.target.value + '%';
+                    updateImage();
+                });
+                
+                saturation.addEventListener('input', (e) => {
+                    modal.querySelector('#saturation-val').textContent = e.target.value + '%';
+                    updateImage();
+                });
+                
+                sharpness.addEventListener('input', (e) => {
+                    modal.querySelector('#sharpness-val').textContent = e.target.value + '%';
+                    updateImage();
+                });
+                
+                // Preset buttons
+                presets.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        presets.forEach(b => {
+                            b.classList.remove('active');
+                            b.style.background = '#6b7280';
+                        });
+                        btn.classList.add('active');
+                        btn.style.background = '#4f46e5';
+                        
+                        currentPreset = btn.dataset.preset;
+                        this.applyPreset(brightness, contrast, saturation, sharpness, currentPreset);
+                        updateImage();
+                    });
+                });
+            }
+            
+            applyPreset(brightness, contrast, saturation, sharpness, preset) {
+                const presets = {
+                    original: { b: 100, c: 100, s: 100, sh: 0 },
+                    document: { b: 110, c: 130, s: 0, sh: 20 },
+                    grayscale: { b: 100, c: 100, s: 0, sh: 0 },
+                    bw: { b: 100, c: 150, s: 0, sh: 30 },
+                    sharpen: { b: 100, c: 110, s: 100, sh: 50 }
+                };
+                
+                const p = presets[preset] || presets.original;
+                brightness.value = p.b;
+                contrast.value = p.c;
+                saturation.value = p.s;
+                sharpness.value = p.sh;
+                
+                // Update display values
+                document.getElementById('brightness-val').textContent = p.b + '%';
+                document.getElementById('contrast-val').textContent = p.c + '%';
+                document.getElementById('saturation-val').textContent = p.s + '%';
+                document.getElementById('sharpness-val').textContent = p.sh + '%';
+            }
+            
+            applyFilters(canvas, ctx, settings) {
+                const width = canvas.width;
+                const height = canvas.height;
+                const imageData = ctx.createImageData(width, height);
+                const data = imageData.data;
+                const original = this.originalImageData.data;
+                
+                const brightness = settings.brightness / 100;
+                const contrast = settings.contrast / 100;
+                const saturation = settings.saturation / 100;
+                
+                for (let i = 0; i < original.length; i += 4) {
+                    let r = original[i];
+                    let g = original[i + 1];
+                    let b = original[i + 2];
+                    
+                    // Brightness
+                    r *= brightness;
+                    g *= brightness;
+                    b *= brightness;
+                    
+                    // Contrast
+                    r = ((r - 128) * contrast) + 128;
+                    g = ((g - 128) * contrast) + 128;
+                    b = ((b - 128) * contrast) + 128;
+                    
+                    // Saturation
+                    if (settings.preset !== 'grayscale' && settings.preset !== 'bw') {
+                        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+                        r = gray + (r - gray) * saturation;
+                        g = gray + (g - gray) * saturation;
+                        b = gray + (b - gray) * saturation;
+                    } else {
+                        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+                        r = g = b = gray;
+                    }
+                    
+                    // B&W threshold
+                    if (settings.preset === 'bw') {
+                        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+                        r = g = b = gray > 128 ? 255 : 0;
+                    }
+                    
+                    // Clamp values
+                    data[i] = Math.max(0, Math.min(255, r));
+                    data[i + 1] = Math.max(0, Math.min(255, g));
+                    data[i + 2] = Math.max(0, Math.min(255, b));
+                    data[i + 3] = original[i + 3];
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+            }
+            
+            resetEnhancement(canvas, ctx) {
+                ctx.putImageData(this.originalImageData, 0, 0);
+                
+                // Reset sliders
+                document.getElementById('brightness').value = 100;
+                document.getElementById('contrast').value = 100;
+                document.getElementById('saturation').value = 100;
+                document.getElementById('sharpness').value = 0;
+                
+                document.getElementById('brightness-val').textContent = '100%';
+                document.getElementById('contrast-val').textContent = '100%';
+                document.getElementById('saturation-val').textContent = '100%';
+                document.getElementById('sharpness-val').textContent = '0%';
+                
+                // Reset preset
+                document.querySelectorAll('.enhance-preset').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = '#6b7280';
+                });
+                document.querySelector('[data-preset="original"]').classList.add('active');
+                document.querySelector('[data-preset="original"]').style.background = '#4f46e5';
+            }
+            
+            applyEnhancement(canvas) {
+                const enhanced = canvas.toDataURL('image/jpeg', 0.95);
+                this.pages[this.currentPage].image = enhanced;
+                document.getElementById('preview-image').src = enhanced;
                 this.showToast('Document enhanced!');
             }
 
