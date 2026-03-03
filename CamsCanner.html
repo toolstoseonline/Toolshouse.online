@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f3f4f6; color: #1f2937; overflow-x: hidden; }
@@ -688,7 +689,276 @@
             }
 
             openQRScanner() {
-                this.showToast('QR Scanner - Point camera at QR code');
+                this.showQRScannerModal();
+            }
+            
+            showQRScannerModal() {
+                // Create QR scanner modal
+                const modal = document.createElement('div');
+                modal.id = 'qr-scanner-modal';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000; display: flex; flex-direction: column;';
+                
+                modal.innerHTML = `
+                    <div style="padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; background: #1f2937;">
+                        <h3 style="margin: 0; font-size: 1rem;"><i class="fas fa-qrcode"></i> QR Scanner</h3>
+                        <button id="close-qr" style="background: none; border: none; color: white; font-size: 1.25rem; cursor: pointer;"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div style="flex: 1; position: relative; overflow: hidden;">
+                        <video id="qr-video" style="width: 100%; height: 100%; object-fit: cover;" autoplay playsinline></video>
+                        <canvas id="qr-canvas" style="display: none;"></canvas>
+                        
+                        <!-- Scan overlay -->
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
+                            <div style="width: 250px; height: 250px; border: 2px solid rgba(79, 70, 229, 0.8); position: relative; background: rgba(79, 70, 229, 0.1);">
+                                <!-- Corner brackets -->
+                                <div style="position: absolute; top: -2px; left: -2px; width: 30px; height: 30px; border-top: 4px solid #4f46e5; border-left: 4px solid #4f46e5;"></div>
+                                <div style="position: absolute; top: -2px; right: -2px; width: 30px; height: 30px; border-top: 4px solid #4f46e5; border-right: 4px solid #4f46e5;"></div>
+                                <div style="position: absolute; bottom: -2px; left: -2px; width: 30px; height: 30px; border-bottom: 4px solid #4f46e5; border-left: 4px solid #4f46e5;"></div>
+                                <div style="position: absolute; bottom: -2px; right: -2px; width: 30px; height: 30px; border-bottom: 4px solid #4f46e5; border-right: 4px solid #4f46e5;"></div>
+                                
+                                <!-- Scan line animation -->
+                                <div id="scan-line" style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #10b981; box-shadow: 0 0 10px #10b981; animation: scanMove 2s linear infinite;"></div>
+                            </div>
+                            <p id="qr-hint" style="color: white; margin-top: 1rem; background: rgba(0,0,0,0.6); padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.875rem;">Point camera at QR code</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Scan history -->
+                    <div id="qr-history" style="max-height: 150px; overflow-y: auto; background: #1f2937; padding: 0.5rem; display: none;">
+                        <h4 style="color: white; margin: 0 0 0.5rem 0; font-size: 0.875rem;">Scan History</h4>
+                        <div id="qr-history-list"></div>
+                    </div>
+                    
+                    <style>
+                        @keyframes scanMove {
+                            0% { top: 0; }
+                            50% { top: 100%; }
+                            100% { top: 0; }
+                        }
+                    </style>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Start QR scanning
+                this.startQRScanning(modal);
+                
+                // Close button
+                document.getElementById('close-qr').addEventListener('click', () => {
+                    this.stopQRScanning();
+                    modal.remove();
+                });
+            }
+            
+            async startQRScanning(modal) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment' }
+                    });
+                    
+                    this.qrStream = stream;
+                    const video = document.getElementById('qr-video');
+                    video.srcObject = stream;
+                    
+                    video.onloadedmetadata = () => {
+                        video.play();
+                        this.qrScanning = true;
+                        this.scanQRFrame();
+                    };
+                } catch (err) {
+                    console.error('QR camera error:', err);
+                    this.showToast('Camera access denied', 'error');
+                }
+            }
+            
+            stopQRScanning() {
+                this.qrScanning = false;
+                if (this.qrStream) {
+                    this.qrStream.getTracks().forEach(t => t.stop());
+                    this.qrStream = null;
+                }
+            }
+            
+            scanQRFrame() {
+                if (!this.qrScanning) return;
+                
+                const video = document.getElementById('qr-video');
+                const canvas = document.getElementById('qr-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // Get image data for QR detection
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    
+                    // Simple QR code detection using jsQR if available, or fallback
+                    this.detectAndProcessQR(imageData, canvas);
+                }
+                
+                requestAnimationFrame(() => this.scanQRFrame());
+            }
+            
+            detectAndProcessQR(imageData, canvas) {
+                // Try to use jsQR library if loaded
+                if (window.jsQR) {
+                    const code = window.jsQR(imageData.data, imageData.width, imageData.height);
+                    if (code) {
+                        this.handleQRCodeDetected(code.data);
+                        return;
+                    }
+                }
+                
+                // Fallback: Try to detect QR-like patterns
+                // Look for finder patterns (three corners of QR code)
+                const detected = this.detectQRPatterns(canvas);
+                if (detected) {
+                    this.handleQRCodeDetected('QR Code detected (raw scan)');
+                }
+            }
+            
+            detectQRPatterns(canvas) {
+                // Simple pattern detection - look for dark squares in corners
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                
+                // Sample center area for QR code
+                const centerX = Math.floor(width / 2);
+                const centerY = Math.floor(height / 2);
+                const scanSize = Math.min(width, height) * 0.3;
+                
+                let darkPixels = 0;
+                let totalPixels = 0;
+                
+                for (let y = centerY - scanSize/2; y < centerY + scanSize/2; y += 10) {
+                    for (let x = centerX - scanSize/2; x < centerX + scanSize/2; x += 10) {
+                        const i = (Math.floor(y) * width + Math.floor(x)) * 4;
+                        const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
+                        if (brightness < 100) darkPixels++;
+                        totalPixels++;
+                    }
+                }
+                
+                // If we have significant dark patterns, might be a QR
+                return (darkPixels / totalPixels) > 0.3 && (darkPixels / totalPixels) < 0.7;
+            }
+            
+            handleQRCodeDetected(data) {
+                // Prevent multiple detections
+                if (this.qrLastDetected && Date.now() - this.qrLastDetected < 3000) return;
+                this.qrLastDetected = Date.now();
+                
+                // Stop scanning temporarily
+                this.qrScanning = false;
+                
+                // Update hint
+                const hint = document.getElementById('qr-hint');
+                hint.textContent = 'QR Code detected!';
+                hint.style.background = 'rgba(16, 185, 129, 0.8)';
+                
+                // Show result after short delay
+                setTimeout(() => {
+                    this.showQRResult(data);
+                }, 500);
+            }
+            
+            showQRResult(data) {
+                // Determine type of QR data
+                let type = 'text';
+                let displayData = data;
+                let actions = [];
+                
+                if (data.startsWith('http://') || data.startsWith('https://')) {
+                    type = 'url';
+                    actions.push({ label: 'Open', action: () => window.open(data, '_blank') });
+                } else if (data.startsWith('tel:') || /^[\d\-\+\(\)\s]{7,}$/.test(data)) {
+                    type = 'phone';
+                    const phone = data.replace('tel:', '');
+                    actions.push({ label: 'Call', action: () => window.location.href = `tel:${phone}` });
+                } else if (data.startsWith('mailto:') || data.includes('@')) {
+                    type = 'email';
+                    actions.push({ label: 'Email', action: () => window.location.href = `mailto:${data}` });
+                } else if (data.startsWith('WIFI:')) {
+                    type = 'wifi';
+                }
+                
+                actions.push(
+                    { label: 'Copy', action: () => {
+                        navigator.clipboard.writeText(data);
+                        this.showToast('Copied to clipboard!');
+                    }},
+                    { label: 'Share', action: () => {
+                        if (navigator.share) {
+                            navigator.share({ title: 'QR Code', text: data });
+                        }
+                    }}
+                );
+                
+                // Create result modal
+                const resultModal = document.createElement('div');
+                resultModal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1001; display: flex; align-items: center; justify-content: center; padding: 1rem;';
+                
+                resultModal.innerHTML = `
+                    <div style="background: white; border-radius: 1rem; padding: 1.5rem; max-width: 400px; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 1rem;">
+                            <i class="fas fa-qrcode" style="font-size: 3rem; color: #4f46e5;"></i>
+                            <h3 style="margin: 0.5rem 0 0 0;">QR Code Detected</h3>
+                            <span style="color: #6b7280; font-size: 0.875rem; text-transform: uppercase;">${type}</span>
+                        </div>
+                        <div style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; word-break: break-all; max-height: 150px; overflow-y: auto;">
+                            ${displayData}
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
+                            ${actions.map(a => `<button class="qr-action-btn" style="padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: white; cursor: pointer;">${a.label}</button>`).join('')}
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="qr-scan-again" style="flex: 1; padding: 0.75rem; background: #4f46e5; color: white; border: none; border-radius: 0.5rem; cursor: pointer;"><i class="fas fa-redo"></i> Scan Again</button>
+                            <button id="qr-close" style="padding: 0.75rem 1.5rem; background: #e5e7eb; border: none; border-radius: 0.5rem; cursor: pointer;">Close</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(resultModal);
+                
+                // Action buttons
+                resultModal.querySelectorAll('.qr-action-btn').forEach((btn, i) => {
+                    btn.addEventListener('click', () => {
+                        actions[i].action();
+                    });
+                });
+                
+                document.getElementById('qr-scan-again').addEventListener('click', () => {
+                    resultModal.remove();
+                    this.qrScanning = true;
+                    this.qrLastDetected = 0;
+                    const hint = document.getElementById('qr-hint');
+                    if (hint) {
+                        hint.textContent = 'Point camera at QR code';
+                        hint.style.background = 'rgba(0,0,0,0.6)';
+                    }
+                    this.scanQRFrame();
+                });
+                
+                document.getElementById('qr-close').addEventListener('click', () => {
+                    resultModal.remove();
+                    document.getElementById('qr-scanner-modal')?.remove();
+                    this.stopQRScanning();
+                });
+                
+                // Save to history
+                this.saveQRToHistory(data, type);
+            }
+            
+            saveQRToHistory(data, type) {
+                let history = JSON.parse(localStorage.getItem('camScannerQRHistory') || '[]');
+                history.unshift({ data, type, time: Date.now() });
+                if (history.length > 20) history = history.slice(0, 20);
+                localStorage.setItem('camScannerQRHistory', JSON.stringify(history));
             }
 
             newScan() {
