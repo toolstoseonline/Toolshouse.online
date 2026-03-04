@@ -3,570 +3,1511 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme Generator · English + South Asian languages</title>
+    <meta name="description" content="Free online Image Meme Generator - Create custom memes with text, emojis, and stickers. No login required, works offline!">
+    <meta name="keywords" content="meme generator, meme maker, create memes, funny memes, image editor">
+    <meta name="author" content="MemeGen">
+    <meta property="og:title" content="Image Meme Generator - Create Funny Memes Online">
+    <meta property="og:description" content="Create hilarious memes in seconds. Upload images, add text, emojis, and stickers. Free and easy to use!">
+    <meta property="og:type" content="website">
+    <title>Image Meme Generator - Create Funny Memes Online | Free & Easy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        dark: '#1f2937',
+                        darker: '#111827'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Impact&family=Comic+Neue:wght@700&display=swap');
+        
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
         }
+        
         body {
-            background: linear-gradient(145deg, #1e1e2f 0%, #2a2a40 100%);
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .card {
-            max-width: 1000px;
-            width: 100%;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 48px;
-            padding: 30px 25px;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
+        
+        .font-impact {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
         }
-        h1 {
-            text-align: center;
-            font-weight: 700;
-            font-size: 2.4rem;
-            margin: 0 0 12px 0;
-            letter-spacing: 1px;
-            background: linear-gradient(135deg, #ffd966, #ffb347, #ff8c42);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            word-break: break-word;
+        
+        .font-comic {
+            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
         }
-        .canvas-wrapper {
-            display: flex;
-            justify-content: center;
-            margin: 10px 0 20px;
+        
+        .canvas-container {
+            position: relative;
+            display: inline-block;
         }
-        #memeCanvas {
-            width: 100%;
-            height: auto;
-            max-width: 650px;
-            border-radius: 28px;
-            background: #222;
-            box-shadow: 0 20px 30px -5px black, 0 0 0 2px #ffb347 inset;
-            cursor: pointer;
-            transition: transform 0.2s ease;
+        
+        .draggable-text {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            padding: 4px 8px;
+            border: 2px dashed transparent;
+            transition: border-color 0.2s;
         }
-        #memeCanvas:hover {
-            transform: scale(1.01);
+        
+        .draggable-text:hover {
+            border-color: #6366f1;
         }
-        .control-panel {
-            background: rgba(20, 20, 35, 0.7);
-            border-radius: 36px;
-            padding: 25px 20px;
-            border: 1px solid rgba(255,200,100,0.4);
-            backdrop-filter: blur(8px);
+        
+        .draggable-text.selected {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
         }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 18px;
-            margin-bottom: 20px;
+        
+        .sticker {
+            position: absolute;
+            cursor: move;
+            font-size: 48px;
+            user-select: none;
         }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        
+        .drag-over {
+            border-color: #6366f1 !important;
+            background: rgba(99, 102, 241, 0.1) !important;
         }
-        .input-group label {
-            color: #ffd966;
-            font-weight: 600;
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            margin-left: 8px;
-        }
-        .input-group input, .input-group select {
-            background: rgba(10, 10, 20, 0.8);
-            border: 2px solid #ffb347;
-            border-radius: 60px;
-            padding: 14px 18px;
-            font-size: 1rem;
-            color: white;
+        
+        .range-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
             outline: none;
+        }
+        
+        .dark .range-slider {
+            background: #374151;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-picker {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        
+        .color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 6px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-secondary {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+        }
+        
+        .panel {
+            transition: all 0.3s ease;
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+        
+        .emoji-btn {
+            font-size: 24px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .emoji-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .sticker-item {
+            font-size: 32px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+        
+        .sticker-item:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .ad-banner {
+            min-height: 90px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border: 2px dashed #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .dark .ad-banner {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            border-color: #4b5563;
+            color: #9ca3af;
+        }
+        
+        @media (max-width: 768px) {
+            .emoji-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+        .history-item {
+            cursor: pointer;
             transition: all 0.2s;
         }
-        .input-group input::placeholder {
-            color: #aaa;
-            font-weight: 300;
+        
+        .history-item:hover {
+            transform: scale(1.05);
         }
-        .input-group input:focus, .input-group select:focus {
-            border-color: #ffdd99;
-            box-shadow: 0 0 15px #f90;
-            background: #1e1e30;
-        }
-        .input-group select option {
-            background: #222;
-            color: white;
-        }
-        .font-controls {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            background: rgba(0,0,0,0.3);
-            border-radius: 60px;
-            padding: 8px 15px;
-            margin: 10px 0 5px;
-            border: 1px dashed #ffb347;
-        }
-        .font-controls span {
-            color: #ffd29e;
-            font-weight: 500;
-        }
-        .font-controls input[type="range"] {
-            flex: 2;
-            min-width: 120px;
-            background: #333;
-            height: 6px;
-            border-radius: 10px;
-            accent-color: #ff9800;
-        }
-        .font-controls input[type="color"] {
-            width: 48px;
-            height: 42px;
-            border-radius: 30px;
-            border: 2px solid #ffb347;
-            background: transparent;
+        
+        .text-box-item {
             cursor: pointer;
-            padding: 2px;
+            transition: all 0.2s;
         }
-        .font-controls input[type="number"] {
-            width: 75px;
-            background: #1e1e2f;
-            border: 2px solid #f90;
-            border-radius: 40px;
-            color: white;
-            padding: 8px;
-            text-align: center;
+        
+        .text-box-item:hover {
+            background: rgba(99, 102, 241, 0.1);
         }
-        .button-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 25px;
+        
+        .text-box-item.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
         }
-        .btn {
-            background: linear-gradient(145deg, #2b2b4b, #1f1f35);
-            border: none;
-            border-radius: 60px;
-            padding: 15px 30px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: white;
+        
+        .ai-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        }
+        
+        .ai-loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .template-card {
             cursor: pointer;
-            box-shadow: 0 10px 15px -5px #00000080, 0 0 0 1px #ffb347 inset;
-            transition: 0.15s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1 1 auto;
-            justify-content: center;
+            transition: all 0.3s ease;
         }
-        .btn:hover {
-            background: linear-gradient(145deg, #3d3d66, #2a2a48);
-            box-shadow: 0 15px 20px -5px black, 0 0 0 2px #ffcc66 inset;
-            transform: translateY(-3px);
+        
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
-        .btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 5px 10px -3px black;
-        }
-        .upload-area {
-            display: flex;
-            align-items: center;
-            background: #1a1a2e;
-            border-radius: 60px;
-            border: 2px dashed #ffaa33;
-            padding: 4px 10px 4px 20px;
-        }
-        .upload-area label {
-            font-weight: 600;
-            color: #ffdb9d;
-            margin-right: 12px;
-        }
-        .file-name {
-            color: #ccc;
-            font-size: 0.9rem;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            max-width: 180px;
-        }
-        #imageUpload {
-            display: none;
-        }
-        .fake-upload {
-            background: #ffb347;
-            color: #1a1a2e;
-            padding: 10px 22px;
-            border-radius: 40px;
-            font-weight: 700;
+        
+        .caption-chip {
             cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
+            transition: all 0.2s;
         }
-        .fake-upload:hover {
-            background: #ffc966;
-        }
-        footer {
-            text-align: center;
-            color: #aaa;
-            margin-top: 18px;
-            font-size: 0.9rem;
+        
+        .caption-chip:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: scale(1.05);
         }
     </style>
 </head>
-<body>
-    <div class="card">
-        <!-- Title changed to simple English "Meme Generator" as requested -->
-        <h1>🎭 Meme Generator</h1>
-        <!-- Canvas display -->
-        <div class="canvas-wrapper">
-            <canvas id="memeCanvas" width="650" height="500"></canvas>
+<body class="bg-gray-50 dark:bg-darker min-h-screen transition-colors duration-300">
+    <!-- Ad Banner Space -->
+    <div class="ad-banner w-full" id="adBanner">
+        <span>Advertisement Space - 728x90</span>
+    </div>
+    
+    <!-- Header -->
+    <header class="bg-white dark:bg-dark shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <span class="text-white text-2xl">😂</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">MemeGen</h1>
+                </div>
+                <button id="darkModeToggle" class="p-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <span id="darkModeIcon">🌙</span>
+                </button>
+            </div>
         </div>
+    </header>
 
-        <div class="control-panel">
-            <!-- Image upload + language row (Urdu & all IN/PK included) -->
-            <div class="grid-2">
-                <div class="input-group">
-                    <label>📁 IMAGE</label>
-                    <div class="upload-area">
-                        <span class="file-name" id="fileNameDisplay">No file chosen</span>
-                        <label for="imageUpload" class="fake-upload">Browse</label>
-                        <input type="file" id="imageUpload" accept="image/*">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Panel - Controls -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- AI Features -->
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl shadow-lg p-6 panel border-2 border-emerald-200 dark:border-emerald-800">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                        <span class="mr-2">🤖</span> AI Features
+                        <span class="ml-2 px-2 py-1 bg-emerald-500 text-white text-xs rounded-full">NEW</span>
+                    </h2>
+                    
+                    <!-- AI Caption Generator -->
+                    <div class="space-y-3 mb-4">
+                        <button id="aiCaptionBtn" class="ai-btn w-full text-white px-4 py-3 rounded-xl font-medium flex items-center justify-center space-x-2">
+                            <span>✨</span>
+                            <span>Generate AI Captions</span>
+                        </button>
+                        <div id="aiCaptions" class="hidden flex flex-wrap gap-2">
+                            <!-- AI generated captions will appear here -->
+                        </div>
+                    </div>
+                    
+                    <!-- AI Meme Templates -->
+                    <div>
+                        <button id="aiTemplatesBtn" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-3 rounded-xl font-medium flex items-center justify-center space-x-2 hover:shadow-lg transition-all">
+                            <span>🎨</span>
+                            <span>Popular Meme Templates</span>
+                        </button>
+                        <div id="aiTemplates" class="hidden mt-3 grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+                            <!-- Templates will appear here -->
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>🗣️ LANGUAGE</label>
-                    <select id="languageSelect">
-                        <!-- Pakistani & North Indian languages -->
-                        <option value="ur" selected>🇵🇰 Urdu (اردو)</option>
-                        <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
-                        <option value="bn">🇧🇩 Bengali (বাংলা)</option>
-                        <option value="pa">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
-                        <option value="gu">🇮🇳 Gujarati (ગુજરાતી)</option>
-                        <option value="mr">🇮🇳 Marathi (मराठी)</option>
-                        <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
-                        <option value="te">🇮🇳 Telugu (తెలుగు)</option>
-                        <option value="ml">🇮🇳 Malayalam (മലയാളം)</option>
-                        <option value="kn">🇮🇳 Kannada (ಕನ್ನಡ)</option>
-                        <option value="or">🇮🇳 Odia (ଓଡ଼ିଆ)</option>
-                        <option value="as">🇮🇳 Assamese (অসমীয়া)</option>
-                        <option value="sd">🇵🇰 Sindhi (سنڌي)</option>
-                        <option value="ps">🇵🇰 Pashto (پښتو)</option>
-                        <option value="bal">🇵🇰 Balochi (بلوچی)</option>
-                        <!-- other international -->
-                        <option value="en">🇬🇧 English</option>
-                        <option value="es">🇪🇸 Spanish</option>
-                        <option value="ar">🇸🇦 Arabic</option>
-                    </select>
+
+                <!-- Image Upload -->
+                <div class="bg-white dark:bg-dark rounded-2xl shadow-lg p-6 panel">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                        <span class="mr-2">📷</span> Upload Image
+                    </h2>
+                    <div id="dropZone" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors">
+                        <div class="space-y-3">
+                            <div class="text-4xl">📤</div>
+                            <p class="text-gray-600 dark:text-gray-400">Drag & drop image here</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-500">or click to browse</p>
+                            <input type="file" id="imageInput" accept="image/jpeg,image/png,image/jpg" class="hidden">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Controls -->
+                <div class="bg-white dark:bg-dark rounded-2xl shadow-lg p-6 panel">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white flex items-center">
+                            <span class="mr-2">📝</span> Text Options
+                        </h2>
+                        <button id="addTextBtn" class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-medium">
+                            + Add Text
+                        </button>
+                    </div>
+                    
+                    <!-- Text Boxes List -->
+                    <div id="textBoxesList" class="space-y-2 mb-4 max-h-40 overflow-y-auto">
+                        <!-- Dynamic text boxes will appear here -->
+                    </div>
+                    
+                    <!-- Text Input -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Text Content</label>
+                            <input type="text" id="textInput" placeholder="Enter your text..." 
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        
+                        <!-- Font Style -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Font Style</label>
+                            <select id="fontStyle" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                                <option value="Impact">Impact (Classic)</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Comic Sans MS">Comic Sans</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Font Size -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Font Size: <span id="fontSizeValue">40</span>px
+                            </label>
+                            <input type="range" id="fontSize" min="12" max="120" value="40" class="range-slider w-full">
+                        </div>
+                        
+                        <!-- Colors -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Text Color</label>
+                                <input type="color" id="textColor" value="#ffffff" class="color-picker">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stroke Color</label>
+                                <input type="color" id="strokeColor" value="#000000" class="color-picker">
+                            </div>
+                        </div>
+                        
+                        <!-- Alignment -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Alignment</label>
+                            <div class="flex space-x-2">
+                                <button class="align-btn flex-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-align="left">⬅️</button>
+                                <button class="align-btn flex-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-primary text-white" data-align="center">⬆️</button>
+                                <button class="align-btn flex-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-align="right">➡️</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Stroke Width -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Stroke Width: <span id="strokeWidthValue">3</span>px
+                            </label>
+                            <input type="range" id="strokeWidth" min="0" max="10" value="3" class="range-slider w-full">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emojis & Stickers -->
+                <div class="bg-white dark:bg-dark rounded-2xl shadow-lg p-6 panel">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                        <span class="mr-2">😀</span> Emojis & Stickers
+                    </h2>
+                    
+                    <!-- Tabs -->
+                    <div class="flex space-x-2 mb-4">
+                        <button id="emojiTab" class="flex-1 py-2 px-4 rounded-lg bg-primary text-white font-medium">Emojis</button>
+                        <button id="stickerTab" class="flex-1 py-2 px-4 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium">Stickers</button>
+                    </div>
+                    
+                    <!-- Emoji Grid -->
+                    <div id="emojiPanel" class="emoji-grid">
+                        <span class="emoji-btn">😂</span>
+                        <span class="emoji-btn">🤣</span>
+                        <span class="emoji-btn">😭</span>
+                        <span class="emoji-btn">😍</span>
+                        <span class="emoji-btn">🤔</span>
+                        <span class="emoji-btn">😎</span>
+                        <span class="emoji-btn">🥳</span>
+                        <span class="emoji-btn">😱</span>
+                        <span class="emoji-btn">🤯</span>
+                        <span class="emoji-btn">😴</span>
+                        <span class="emoji-btn">🤮</span>
+                        <span class="emoji-btn">🤡</span>
+                        <span class="emoji-btn">👻</span>
+                        <span class="emoji-btn">💩</span>
+                        <span class="emoji-btn">🔥</span>
+                        <span class="emoji-btn">💯</span>
+                        <span class="emoji-btn">❤️</span>
+                        <span class="emoji-btn">💔</span>
+                    </div>
+                    
+                    <!-- Stickers Panel -->
+                    <div id="stickerPanel" class="hidden grid grid-cols-4 gap-2">
+                        <span class="sticker-item">🎩</span>
+                        <span class="sticker-item">👑</span>
+                        <span class="sticker-item">🕶️</span>
+                        <span class="sticker-item">🎭</span>
+                        <span class="sticker-item">🎪</span>
+                        <span class="sticker-item">🎨</span>
+                        <span class="sticker-item">🎯</span>
+                        <span class="sticker-item">🎲</span>
+                        <span class="sticker-item">🎸</span>
+                        <span class="sticker-item">🎺</span>
+                        <span class="sticker-item">🎻</span>
+                        <span class="sticker-item">🎬</span>
+                    </div>
+                </div>
+
+                <!-- Watermark -->
+                <div class="bg-white dark:bg-dark rounded-2xl shadow-lg p-6 panel">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                        <span class="mr-2">💧</span> Watermark
+                    </h2>
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" id="enableWatermark" class="w-5 h-5 text-primary rounded">
+                            <span class="text-gray-700 dark:text-gray-300">Enable Watermark</span>
+                        </label>
+                        <input type="text" id="watermarkText" placeholder="Your watermark text..." value="Made with MemeGen"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="bg-white dark:bg-dark rounded-2xl shadow-lg p-6 panel">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                        <span class="mr-2">⚡</span> Actions
+                    </h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="undoBtn" class="btn-secondary py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            ↩️ Undo
+                        </button>
+                        <button id="redoBtn" class="btn-secondary py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            ↪️ Redo
+                        </button>
+                        <button id="resetBtn" class="btn-secondary py-2 px-4 border border-red-300 dark:border-red-600 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                            🔄 Reset
+                        </button>
+                        <button id="saveLocalBtn" class="btn-secondary py-2 px-4 border border-green-300 dark:border-green-600 rounded-lg text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20">
+                            💾 Save
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Top & Bottom text -->
-            <div class="grid-2">
-                <div class="input-group">
-                    <label>⬆️ TOP TEXT</label>
-                    <input type="text" id="topText" class="text-input" placeholder="Top text" value="SUCH MEME">
+            <!-- Right Panel - Canvas Preview -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-dark rounded-2xl shadow-lg p-6 sticky top-24">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white flex items-center">
+                            <span class="mr-2">👁️</span> Preview
+                        </h2>
+                        <button id="downloadBtn" class="btn-primary text-white px-6 py-2 rounded-lg font-medium flex items-center space-x-2">
+                            <span>⬇️</span>
+                            <span>Download Meme</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Canvas Container -->
+                    <div class="flex justify-center bg-gray-100 dark:bg-gray-800 rounded-xl p-4 overflow-auto">
+                        <div class="canvas-container">
+                            <canvas id="memeCanvas" class="max-w-full h-auto shadow-lg rounded-lg"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Canvas Info -->
+                    <div class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                        <p>Click and drag text to reposition • Use controls to customize</p>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>⬇️ BOTTOM TEXT</label>
-                    <input type="text" id="bottomText" class="text-input" placeholder="Bottom text" value="VERY OPTIONS">
+                
+                <!-- Saved Memes -->
+                <div class="bg-white dark:bg-dark rounded-2xl shadow-lg p-6 mt-6">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                        <span class="mr-2">📚</span> Saved Memes
+                    </h2>
+                    <div id="savedMemesGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                        <!-- Saved memes will appear here -->
+                        <p class="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">No saved memes yet</p>
+                    </div>
                 </div>
             </div>
+        </div>
+    </main>
 
-            <!-- 🔧 FONT & STYLE OPTIONS (more option) -->
-            <div class="font-controls">
-                <span>🎨 Font:</span>
-                <select id="fontFamilySelect">
-                    <option value="Impact">Impact (classic)</option>
-                    <option value="Arial Black">Arial Black</option>
-                    <option value="Comic Sans MS">Comic Sans</option>
-                    <option value="'Segoe UI'">Segoe UI</option>
-                    <option value="Roboto">Roboto</option>
-                    <option value="'Noto Sans'">Noto Sans (best Urdu)</option>
-                    <option value="'Noto Nastaliq Urdu'">Noto Nastaliq Urdu</option>
-                    <option value="'Noto Sans Devanagari'">Noto Sans Devanagari</option>
-                    <option value="'Mangal'">Mangal (Hindi)</option>
-                    <option value="'Nirmala UI'">Nirmala UI (Indic)</option>
-                </select>
-                <span>🔤 Size:</span>
-                <input type="range" id="fontSizeRange" min="20" max="100" value="48" step="1">
-                <input type="number" id="fontSizeNumber" value="48" min="20" max="100" step="1">
-                <span>⬜ Stroke:</span>
-                <input type="range" id="strokeWidthRange" min="0" max="12" value="4" step="0.5">
-                <span>🎨 Fill:</span>
-                <input type="color" id="fillColor" value="#ffffff">
-                <span>✒️ Stroke:</span>
-                <input type="color" id="strokeColor" value="#000000">
-            </div>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-dark mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-600 dark:text-gray-400">
+                © 2024 MemeGen - Free Online Meme Generator. No login required!
+            </p>
+        </div>
+    </footer>
 
-            <!-- ACTION BUTTONS (all labels in English now) -->
-            <div class="button-row">
-                <button class="btn" id="generateButton">✨ GENERATE</button>
-                <button class="btn" id="downloadButton">📥 DOWNLOAD</button>
-                <button class="btn" id="resetImageButton">🔄 RESET IMAGE</button>
+    <!-- Popup Ad Space (Hidden by default) -->
+    <div id="popupAd" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center">
+        <div class="bg-white dark:bg-dark rounded-2xl p-6 max-w-md mx-4 relative">
+            <button id="closePopupAd" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">&times;</button>
+            <div class="ad-banner rounded-lg" style="min-height: 250px;">
+                <span>Popup Ad Space - 300x250</span>
             </div>
-            <footer>⚡ Urdu, Hindi, Bengali, Punjabi + 10 more · click canvas to redraw</footer>
         </div>
     </div>
 
     <script>
-        (function() {
-            // DOM elements
-            const canvas = document.getElementById('memeCanvas');
-            const ctx = canvas.getContext('2d');
-            const fileInput = document.getElementById('imageUpload');
-            const fileNameSpan = document.getElementById('fileNameDisplay');
-            const topTextInput = document.getElementById('topText');
-            const bottomTextInput = document.getElementById('bottomText');
-            const generateBtn = document.getElementById('generateButton');
-            const downloadBtn = document.getElementById('downloadButton');
-            const resetImageBtn = document.getElementById('resetImageButton');
-            const languageSelect = document.getElementById('languageSelect');
-            const fontFamilySelect = document.getElementById('fontFamilySelect');
-            const fontSizeRange = document.getElementById('fontSizeRange');
-            const fontSizeNumber = document.getElementById('fontSizeNumber');
-            const strokeWidthRange = document.getElementById('strokeWidthRange');
-            const fillColorPicker = document.getElementById('fillColor');
-            const strokeColorPicker = document.getElementById('strokeColor');
-
-            // ------------- LANGUAGE PLACEHOLDERS ----------
-            const languagePlaceholders = {
-                ur: { top: "اوپر والا متن", bottom: "نیچے والا متن" },
-                sd: { top: "مٿيون متن", bottom: "ھيٺيون متن" },
-                ps: { top: "پورتنى متن", bottom: "لاندنى متن" },
-                bal: { top: "نبشتہ گونی", bottom: "نبشتہ ہیزی" },
-                hi: { top: "ऊपर वाला पाठ", bottom: "नीचे वाला पाठ" },
-                bn: { top: "উপরের লেখা", bottom: "নিচের লেখা" },
-                pa: { top: "ਉੱਤੇ ਵਾਲਾ ਲਿਖਤ", bottom: "ਹੇਠਾਂ ਵਾਲਾ ਲਿਖਤ" },
-                gu: { top: "ઉપરનું લખાણ", bottom: "નીચેનું લખાણ" },
-                mr: { top: "वरचा मजकूर", bottom: "खालचा मजकूर" },
-                ta: { top: "மேல் உரை", bottom: "கீழ் உரை" },
-                te: { top: "పై వాక్యం", bottom: "కింది వాక్యం" },
-                ml: { top: "മുകളിലെ വാചകം", bottom: "താഴെയുള്ള വാചകം" },
-                kn: { top: "ಮೇಲಿನ ಪಠ್ಯ", bottom: "ಕೆಳಗಿನ ಪಠ್ಯ" },
-                or: { top: "ଉପର ଲେଖା", bottom: "ତଳ ଲେଖା" },
-                as: { top: "ওপৰৰ লিখনি", bottom: "তলৰ লিখনি" },
-                en: { top: "TOP TEXT", bottom: "BOTTOM TEXT" },
-                es: { top: "TEXTO SUPERIOR", bottom: "TEXTO INFERIOR" },
-                ar: { top: "النص العلوي", bottom: "النص السفلي" }
-            };
-
-            // current image object
-            let currentImg = new Image();
-            let userImageLoaded = false;
-
-            // Draw neutral gradient if no user image
-            function drawDefaultGradient() {
-                const w = canvas.width, h = canvas.height;
-                const grad = ctx.createLinearGradient(0, 0, w*0.8, h);
-                grad.addColorStop(0, '#1a2a3a');
-                grad.addColorStop(0.6, '#2e4b3e');
-                grad.addColorStop(1, '#5e3e5e');
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, w, h);
-                ctx.font = 'bold 28px "Noto Sans", "Segoe UI", sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#ffffff80';
-                ctx.strokeStyle = '#00000060';
-                ctx.lineWidth = 1.5;
-                ctx.fillText('📸 upload an image', w/2, h/2-20);
-                ctx.fillText('Urdu · हिन्दी · বাংলা · اردو', w/2, h/2+30);
+        // App State
+        const state = {
+            image: null,
+            texts: [],
+            stickers: [],
+            selectedTextIndex: -1,
+            history: [],
+            historyIndex: -1,
+            watermark: {
+                enabled: false,
+                text: 'Made with MemeGen'
+            },
+            defaultText: {
+                text: 'Sample Text',
+                x: 0.5,
+                y: 0.1,
+                fontSize: 40,
+                fontFamily: 'Impact',
+                color: '#ffffff',
+                strokeColor: '#000000',
+                strokeWidth: 3,
+                align: 'center'
             }
+        };
 
-            drawDefaultGradient();
+        // DOM Elements
+        const canvas = document.getElementById('memeCanvas');
+        const ctx = canvas.getContext('2d');
+        const imageInput = document.getElementById('imageInput');
+        const dropZone = document.getElementById('dropZone');
+        const textInput = document.getElementById('textInput');
+        const fontStyle = document.getElementById('fontStyle');
+        const fontSize = document.getElementById('fontSize');
+        const fontSizeValue = document.getElementById('fontSizeValue');
+        const textColor = document.getElementById('textColor');
+        const strokeColor = document.getElementById('strokeColor');
+        const strokeWidth = document.getElementById('strokeWidth');
+        const strokeWidthValue = document.getElementById('strokeWidthValue');
+        const textBoxesList = document.getElementById('textBoxesList');
+        const enableWatermark = document.getElementById('enableWatermark');
+        const watermarkText = document.getElementById('watermarkText');
+        const savedMemesGrid = document.getElementById('savedMemesGrid');
 
-            // sync font size
-            function syncFontSize() {
-                fontSizeNumber.value = fontSizeRange.value;
-            }
-            fontSizeRange.addEventListener('input', syncFontSize);
-            fontSizeNumber.addEventListener('input', function() {
-                let val = parseInt(this.value, 10);
-                if (isNaN(val)) val = 48;
-                val = Math.min(100, Math.max(20, val));
-                fontSizeRange.value = val;
-                this.value = val;
-                fullRender();
-            });
+        // Initialize
+        function init() {
+            loadSavedMemes();
+            setupEventListeners();
+            setupDarkMode();
+            saveState();
+        }
 
-            // Update placeholders based on language
-            function updatePlaceholders() {
-                const lang = languageSelect.value;
-                const texts = languagePlaceholders[lang] || languagePlaceholders.ur;
-                topTextInput.placeholder = texts.top;
-                bottomTextInput.placeholder = texts.bottom;
-            }
-            languageSelect.addEventListener('change', updatePlaceholders);
-            updatePlaceholders();
-
-            // File upload
-            fileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    fileNameSpan.textContent = file.name.length > 28 ? file.name.substr(0,25)+'…' : file.name;
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        currentImg = new Image(); // Create new image to avoid caching issues
-                        currentImg.onload = function() {
-                            userImageLoaded = true;
-                            fullRender();
-                        };
-                        currentImg.src = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    fileNameSpan.textContent = 'No file chosen';
-                }
-            });
-
-            // Main draw: background + text
-            function redrawCanvas() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (userImageLoaded && currentImg && currentImg.complete && currentImg.naturalWidth > 0) {
-                    try {
-                        // Calculate aspect ratio to fit image properly
-                        const imgAspect = currentImg.naturalWidth / currentImg.naturalHeight;
-                        const canvasAspect = canvas.width / canvas.height;
-                        
-                        let drawWidth = canvas.width;
-                        let drawHeight = canvas.height;
-                        let offsetX = 0;
-                        let offsetY = 0;
-                        
-                        if (imgAspect > canvasAspect) {
-                            // Image is wider - fit to height
-                            drawHeight = canvas.height;
-                            drawWidth = canvas.height * imgAspect;
-                            offsetX = (canvas.width - drawWidth) / 2;
-                        } else {
-                            // Image is taller - fit to width
-                            drawWidth = canvas.width;
-                            drawHeight = canvas.width / imgAspect;
-                            offsetY = (canvas.height - drawHeight) / 2;
-                        }
-                        
-                        ctx.drawImage(currentImg, offsetX, offsetY, drawWidth, drawHeight);
-                    } catch (e) {
-                        console.error('Error drawing image:', e);
-                        drawDefaultGradient();
-                    }
-                } else {
-                    drawDefaultGradient();
-                }
-                drawTextOverlay();
-            }
-
-            // draw text with current settings
-            function drawTextOverlay() {
-                const topText = topTextInput.value.trim();
-                const bottomText = bottomTextInput.value.trim();
-                
-                // Save context state
-                ctx.save();
-                
-                // font construction with fallback
-                let fontFamily = fontFamilySelect.value;
-                // Remove quotes if present for proper font string
-                fontFamily = fontFamily.replace(/['"]/g, '');
-                
-                let finalFont;
-                if (fontFamily.includes('Nastaliq')) {
-                    finalFont = `900 ${fontSizeRange.value}px "${fontFamily}", "Noto Nastaliq Urdu", "Noto Sans", sans-serif`;
-                } else {
-                    finalFont = `900 ${fontSizeRange.value}px "${fontFamily}", "Noto Sans", "Nirmala UI", "Mangal", "Segoe UI", sans-serif`;
-                }
-                
-                ctx.font = finalFont;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle'; // Better vertical alignment
-                
-                // Set stroke and fill properties
-                ctx.fillStyle = fillColorPicker.value;
-                ctx.strokeStyle = strokeColorPicker.value;
-                ctx.lineWidth = parseFloat(strokeWidthRange.value);
-                
-                // top text
-                if (topText) {
-                    if (ctx.lineWidth > 0) {
-                        ctx.strokeText(topText, canvas.width / 2, 70);
-                    }
-                    ctx.fillText(topText, canvas.width / 2, 70);
-                }
-                
-                // bottom text
-                if (bottomText) {
-                    const yPos = canvas.height - 40;
-                    if (ctx.lineWidth > 0) {
-                        ctx.strokeText(bottomText, canvas.width / 2, yPos);
-                    }
-                    ctx.fillText(bottomText, canvas.width / 2, yPos);
-                }
-                
-                // Restore context state
-                ctx.restore();
-            }
-
-            // full render wrapper
-            function fullRender() {
-                redrawCanvas();
-            }
-
-            // Event listeners
-            generateBtn.addEventListener('click', function(e) {
+        // Event Listeners
+        function setupEventListeners() {
+            // Image Upload
+            dropZone.addEventListener('click', () => imageInput.click());
+            imageInput.addEventListener('change', handleImageUpload);
+            
+            dropZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                fullRender();
+                dropZone.classList.add('drag-over');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    loadImage(file);
+                }
             });
 
-            canvas.addEventListener('click', function() {
-                fullRender();
+            // Text Controls
+            document.getElementById('addTextBtn').addEventListener('click', addTextBox);
+            textInput.addEventListener('input', updateSelectedText);
+            fontStyle.addEventListener('change', updateSelectedText);
+            fontSize.addEventListener('input', (e) => {
+                fontSizeValue.textContent = e.target.value;
+                updateSelectedText();
+            });
+            textColor.addEventListener('input', updateSelectedText);
+            strokeColor.addEventListener('input', updateSelectedText);
+            strokeWidth.addEventListener('input', (e) => {
+                strokeWidthValue.textContent = e.target.value;
+                updateSelectedText();
             });
 
-            downloadBtn.addEventListener('click', function() {
-                const link = document.createElement('a');
-                link.download = 'meme.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+            // Alignment
+            document.querySelectorAll('.align-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.align-btn').forEach(b => {
+                        b.classList.remove('bg-primary', 'text-white');
+                        b.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-700');
+                    });
+                    btn.classList.add('bg-primary', 'text-white');
+                    btn.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-700');
+                    updateSelectedText();
+                });
             });
 
-            resetImageBtn.addEventListener('click', function() {
-                fileInput.value = '';
-                fileNameSpan.textContent = 'No file chosen';
-                userImageLoaded = false;
-                currentImg = new Image();
-                fullRender();
+            // Canvas Mouse Events for dragging
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', handleMouseUp);
+
+            // Emoji & Sticker Tabs
+            document.getElementById('emojiTab').addEventListener('click', () => {
+                document.getElementById('emojiPanel').classList.remove('hidden');
+                document.getElementById('stickerPanel').classList.add('hidden');
+                document.getElementById('emojiTab').classList.add('bg-primary', 'text-white');
+                document.getElementById('emojiTab').classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                document.getElementById('stickerTab').classList.remove('bg-primary', 'text-white');
+                document.getElementById('stickerTab').classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
             });
 
-            // live update on any control
-            const liveElements = [fontFamilySelect, fontSizeRange, strokeWidthRange, fillColorPicker, strokeColorPicker, topTextInput, bottomTextInput];
-            liveElements.forEach(el => el.addEventListener('input', function() {
-                fullRender();
+            document.getElementById('stickerTab').addEventListener('click', () => {
+                document.getElementById('emojiPanel').classList.add('hidden');
+                document.getElementById('stickerPanel').classList.remove('hidden');
+                document.getElementById('stickerTab').classList.add('bg-primary', 'text-white');
+                document.getElementById('stickerTab').classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                document.getElementById('emojiTab').classList.remove('bg-primary', 'text-white');
+                document.getElementById('emojiTab').classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            });
+
+            // Emojis & Stickers
+            document.querySelectorAll('.emoji-btn, .sticker-item').forEach(btn => {
+                btn.addEventListener('click', () => addSticker(btn.textContent));
+            });
+
+            // Watermark
+            enableWatermark.addEventListener('change', (e) => {
+                state.watermark.enabled = e.target.checked;
+                drawCanvas();
+                saveState();
+            });
+            watermarkText.addEventListener('input', (e) => {
+                state.watermark.text = e.target.value;
+                drawCanvas();
+                saveState();
+            });
+
+            // Action Buttons
+            document.getElementById('undoBtn').addEventListener('click', undo);
+            document.getElementById('redoBtn').addEventListener('click', redo);
+            document.getElementById('resetBtn').addEventListener('click', reset);
+            document.getElementById('saveLocalBtn').addEventListener('click', saveToLocal);
+            document.getElementById('downloadBtn').addEventListener('click', downloadMeme);
+
+            // Popup Ad
+            document.getElementById('closePopupAd').addEventListener('click', () => {
+                document.getElementById('popupAd').classList.add('hidden');
+                document.getElementById('popupAd').classList.remove('flex');
+            });
+        }
+
+        // Dark Mode
+        function setupDarkMode() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.textContent = '☀️';
+            }
+            
+            darkModeToggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('darkMode', isDark);
+                darkModeIcon.textContent = isDark ? '☀️' : '🌙';
+            });
+        }
+
+        // Image Handling
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) loadImage(file);
+        }
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                state.image = new Image();
+                state.image.onload = () => {
+                    canvas.width = state.image.width;
+                    canvas.height = state.image.height;
+                    drawCanvas();
+                    saveState();
+                };
+                state.image.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Text Box Management
+        function addTextBox() {
+            const newText = {
+                ...state.defaultText,
+                id: Date.now(),
+                x: 0.5,
+                y: state.texts.length === 0 ? 0.1 : 0.5 + (state.texts.length * 0.15)
+            };
+            state.texts.push(newText);
+            selectTextBox(state.texts.length - 1);
+            updateTextBoxesList();
+            drawCanvas();
+            saveState();
+        }
+
+        function selectTextBox(index) {
+            state.selectedTextIndex = index;
+            updateTextBoxesList();
+            
+            if (index >= 0 && index < state.texts.length) {
+                const text = state.texts[index];
+                textInput.value = text.text;
+                fontStyle.value = text.fontFamily;
+                fontSize.value = text.fontSize;
+                fontSizeValue.textContent = text.fontSize;
+                textColor.value = text.color;
+                strokeColor.value = text.strokeColor;
+                strokeWidth.value = text.strokeWidth;
+                strokeWidthValue.textContent = text.strokeWidth;
+                
+                document.querySelectorAll('.align-btn').forEach(btn => {
+                    if (btn.dataset.align === text.align) {
+                        btn.classList.add('bg-primary', 'text-white');
+                        btn.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-700');
+                    } else {
+                        btn.classList.remove('bg-primary', 'text-white');
+                        btn.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-700');
+                    }
+                });
+            }
+        }
+
+        function updateTextBoxesList() {
+            textBoxesList.innerHTML = '';
+            state.texts.forEach((text, index) => {
+                const div = document.createElement('div');
+                div.className = `text-box-item flex items-center justify-between p-3 border border-gray-300 dark:border-gray-600 rounded-lg ${index === state.selectedTextIndex ? 'active' : ''}`;
+                div.innerHTML = `
+                    <span class="text-gray-800 dark:text-white truncate flex-1">${text.text || 'Empty Text'}</span>
+                    <button class="delete-text ml-2 text-red-500 hover:text-red-700" data-index="${index}">🗑️</button>
+                `;
+                div.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-text')) {
+                        selectTextBox(index);
+                    }
+                });
+                textBoxesList.appendChild(div);
+            });
+            
+            document.querySelectorAll('.delete-text').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const index = parseInt(btn.dataset.index);
+                    state.texts.splice(index, 1);
+                    if (state.selectedTextIndex === index) {
+                        state.selectedTextIndex = -1;
+                        textInput.value = '';
+                    } else if (state.selectedTextIndex > index) {
+                        state.selectedTextIndex--;
+                    }
+                    updateTextBoxesList();
+                    drawCanvas();
+                    saveState();
+                });
+            });
+        }
+
+        function updateSelectedText() {
+            if (state.selectedTextIndex >= 0 && state.selectedTextIndex < state.texts.length) {
+                const text = state.texts[state.selectedTextIndex];
+                text.text = textInput.value;
+                text.fontFamily = fontStyle.value;
+                text.fontSize = parseInt(fontSize.value);
+                text.color = textColor.value;
+                text.strokeColor = strokeColor.value;
+                text.strokeWidth = parseInt(strokeWidth.value);
+                text.align = document.querySelector('.align-btn.bg-primary')?.dataset.align || 'center';
+                
+                updateTextBoxesList();
+                drawCanvas();
+                saveState();
+            }
+        }
+
+        // Sticker Management
+        function addSticker(emoji) {
+            if (!state.image) {
+                alert('Please upload an image first!');
+                return;
+            }
+            state.stickers.push({
+                emoji: emoji,
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                size: 48
+            });
+            drawCanvas();
+            saveState();
+        }
+
+        // Canvas Drawing
+        function drawCanvas() {
+            if (!state.image) {
+                ctx.fillStyle = '#f3f4f6';
+                ctx.fillRect(0, 0, canvas.width || 600, canvas.height || 400);
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Upload an image to start', (canvas.width || 600) / 2, (canvas.height || 400) / 2);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(state.image, 0, 0);
+
+            // Draw stickers
+            state.stickers.forEach(sticker => {
+                ctx.font = `${sticker.size}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.fillText(sticker.emoji, sticker.x, sticker.y);
+            });
+
+            // Draw texts
+            state.texts.forEach((text, index) => {
+                const x = text.x * canvas.width;
+                const y = text.y * canvas.height;
+                
+                ctx.font = `${text.fontSize}px "${text.fontFamily}", Impact, sans-serif`;
+                ctx.textAlign = text.align;
+                ctx.lineWidth = text.strokeWidth;
+                ctx.strokeStyle = text.strokeColor;
+                ctx.fillStyle = text.color;
+                
+                // Draw stroke
+                if (text.strokeWidth > 0) {
+                    ctx.strokeText(text.text, x, y);
+                }
+                // Draw fill
+                ctx.fillText(text.text, x, y);
+                
+                // Draw selection indicator
+                if (index === state.selectedTextIndex) {
+                    const metrics = ctx.measureText(text.text);
+                    const height = text.fontSize;
+                    let rectX = x;
+                    if (text.align === 'center') rectX = x - metrics.width / 2;
+                    else if (text.align === 'right') rectX = x - metrics.width;
+                    
+                    ctx.strokeStyle = '#6366f1';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeRect(rectX - 5, y - height, metrics.width + 10, height + 10);
+                    ctx.setLineDash([]);
+                }
+            });
+
+            // Draw watermark
+            if (state.watermark.enabled && state.watermark.text) {
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.lineWidth = 2;
+                const x = canvas.width - 10;
+                const y = canvas.height - 10;
+                ctx.strokeText(state.watermark.text, x, y);
+                ctx.fillText(state.watermark.text, x, y);
+            }
+        }
+
+        // Dragging
+        let isDragging = false;
+        let dragTarget = null;
+        let dragType = null;
+        let dragOffset = { x: 0, y: 0 };
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        function handleMouseDown(e) {
+            const pos = getMousePos(e);
+            
+            // Check stickers first
+            for (let i = state.stickers.length - 1; i >= 0; i--) {
+                const sticker = state.stickers[i];
+                const dist = Math.sqrt(Math.pow(pos.x - sticker.x, 2) + Math.pow(pos.y - sticker.y, 2));
+                if (dist < sticker.size / 2) {
+                    isDragging = true;
+                    dragTarget = i;
+                    dragType = 'sticker';
+                    dragOffset = { x: pos.x - sticker.x, y: pos.y - sticker.y };
+                    return;
+                }
+            }
+            
+            // Check texts
+            for (let i = state.texts.length - 1; i >= 0; i--) {
+                const text = state.texts[i];
+                const x = text.x * canvas.width;
+                const y = text.y * canvas.height;
+                ctx.font = `${text.fontSize}px "${text.fontFamily}"`;
+                const metrics = ctx.measureText(text.text);
+                const width = metrics.width;
+                const height = text.fontSize;
+                
+                let rectX = x;
+                if (text.align === 'center') rectX = x - width / 2;
+                else if (text.align === 'right') rectX = x - width;
+                
+                if (pos.x >= rectX - 10 && pos.x <= rectX + width + 10 &&
+                    pos.y >= y - height - 5 && pos.y <= y + 5) {
+                    isDragging = true;
+                    dragTarget = i;
+                    dragType = 'text';
+                    dragOffset = { x: pos.x - x, y: pos.y - y };
+                    selectTextBox(i);
+                    return;
+                }
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (!isDragging) return;
+            const pos = getMousePos(e);
+            
+            if (dragType === 'text') {
+                const text = state.texts[dragTarget];
+                let newX = (pos.x - dragOffset.x) / canvas.width;
+                let newY = (pos.y - dragOffset.y) / canvas.height;
+                
+                // Constrain to canvas
+                newX = Math.max(0, Math.min(1, newX));
+                newY = Math.max(0, Math.min(1, newY + text.fontSize / canvas.height));
+                
+                text.x = newX;
+                text.y = newY;
+            } else if (dragType === 'sticker') {
+                const sticker = state.stickers[dragTarget];
+                sticker.x = pos.x - dragOffset.x;
+                sticker.y = pos.y - dragOffset.y;
+            }
+            
+            drawCanvas();
+        }
+
+        function handleMouseUp() {
+            if (isDragging) {
+                isDragging = false;
+                dragTarget = null;
+                dragType = null;
+                saveState();
+            }
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            handleMouseDown(e);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            handleMouseMove(e);
+        }
+
+        // History (Undo/Redo)
+        function saveState() {
+            const stateCopy = JSON.parse(JSON.stringify({
+                texts: state.texts,
+                stickers: state.stickers,
+                watermark: state.watermark
             }));
+            
+            // Remove future states if we're in the middle
+            if (state.historyIndex < state.history.length - 1) {
+                state.history = state.history.slice(0, state.historyIndex + 1);
+            }
+            
+            state.history.push(stateCopy);
+            state.historyIndex++;
+            
+            // Limit history
+            if (state.history.length > 20) {
+                state.history.shift();
+                state.historyIndex--;
+            }
+        }
 
-            // Add resize observer for better rendering
-            window.addEventListener('resize', function() {
-                fullRender();
+        function undo() {
+            if (state.historyIndex > 0) {
+                state.historyIndex--;
+                restoreState(state.history[state.historyIndex]);
+            }
+        }
+
+        function redo() {
+            if (state.historyIndex < state.history.length - 1) {
+                state.historyIndex++;
+                restoreState(state.history[state.historyIndex]);
+            }
+        }
+
+        function restoreState(savedState) {
+            state.texts = savedState.texts;
+            state.stickers = savedState.stickers;
+            state.watermark = savedState.watermark;
+            
+            enableWatermark.checked = state.watermark.enabled;
+            watermarkText.value = state.watermark.text;
+            
+            state.selectedTextIndex = -1;
+            textInput.value = '';
+            updateTextBoxesList();
+            drawCanvas();
+        }
+
+        function reset() {
+            if (confirm('Are you sure you want to reset? All changes will be lost.')) {
+                state.texts = [];
+                state.stickers = [];
+                state.selectedTextIndex = -1;
+                textInput.value = '';
+                updateTextBoxesList();
+                drawCanvas();
+                saveState();
+            }
+        }
+
+        // Local Storage
+        function saveToLocal() {
+            if (!state.image) {
+                alert('Please create a meme first!');
+                return;
+            }
+            
+            const memeData = {
+                image: canvas.toDataURL(),
+                timestamp: Date.now(),
+                texts: state.texts,
+                stickers: state.stickers
+            };
+            
+            let savedMemes = JSON.parse(localStorage.getItem('savedMemes') || '[]');
+            savedMemes.unshift(memeData);
+            
+            // Keep only last 20
+            if (savedMemes.length > 20) {
+                savedMemes = savedMemes.slice(0, 20);
+            }
+            
+            localStorage.setItem('savedMemes', JSON.stringify(savedMemes));
+            loadSavedMemes();
+            
+            // Show success animation
+            const btn = document.getElementById('saveLocalBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Saved!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 1500);
+        }
+
+        function loadSavedMemes() {
+            const savedMemes = JSON.parse(localStorage.getItem('savedMemes') || '[]');
+            
+            if (savedMemes.length === 0) {
+                savedMemesGrid.innerHTML = '<p class="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">No saved memes yet</p>';
+                return;
+            }
+            
+            savedMemesGrid.innerHTML = '';
+            savedMemes.forEach((meme, index) => {
+                const div = document.createElement('div');
+                div.className = 'history-item relative group';
+                div.innerHTML = `
+                    <img src="${meme.image}" alt="Saved meme" class="w-full h-24 object-cover rounded-lg shadow">
+                    <button class="delete-meme absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" data-index="${index}">×</button>
+                `;
+                div.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-meme')) {
+                        loadMemeFromHistory(meme);
+                    }
+                });
+                savedMemesGrid.appendChild(div);
             });
-
-            // final initialization
-            window.addEventListener('load', function() {
-                fullRender();
+            
+            document.querySelectorAll('.delete-meme').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const index = parseInt(btn.dataset.index);
+                    savedMemes.splice(index, 1);
+                    localStorage.setItem('savedMemes', JSON.stringify(savedMemes));
+                    loadSavedMemes();
+                });
             });
+        }
 
-        })();
+        function loadMemeFromHistory(meme) {
+            state.texts = meme.texts || [];
+            state.stickers = meme.stickers || [];
+            state.selectedTextIndex = -1;
+            textInput.value = '';
+            updateTextBoxesList();
+            
+            const img = new Image();
+            img.onload = () => {
+                state.image = img;
+                canvas.width = img.width;
+                canvas.height = img.height;
+                drawCanvas();
+            };
+            img.src = meme.image;
+        }
+
+        // Download
+        function downloadMeme() {
+            if (!state.image) {
+                alert('Please create a meme first!');
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.download = `meme-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // ==================== AI FEATURES ====================
+        
+        // AI Caption Database - Simulated AI with curated funny captions
+        const aiCaptionDatabase = {
+            general: [
+                "When you realize it's Monday tomorrow",
+                "Me pretending to understand",
+                "Nobody: \nAbsolutely nobody: \nMe:",
+                "My brain during an exam",
+                "When the WiFi goes down for 0.5 seconds",
+                "Me explaining to my mom why I need a gaming PC",
+                "That moment when...",
+                "POV: You just said 'I'll start tomorrow'",
+                "My anxiety when someone says 'we need to talk'",
+                "When you hear your name in a conversation",
+                "Me: *tries to be productive* \nAlso me:",
+                "When the food delivery is 2 minutes late",
+                "My sleep schedule: \n📉",
+                "When you finally find the perfect meme template",
+                "Adulting is just googling how to do stuff",
+                "Me refreshing the page for the 100th time",
+                "When someone eats your leftovers",
+                "My bank account watching me buy coffee",
+                "When you accidentally open the front camera",
+                "Me at 3 AM: I should reorganize my entire life"
+            ],
+            relatable: [
+                "Me: I'll go to bed early tonight \nMe at 3 AM:",
+                "When you see the price after adding everything to cart",
+                "My motivation throughout the week: \nMon: 🔥 Tue: 😐 Wed: 💀 Thu: 😴 Fri: 🎉",
+                "When you wave back at someone who wasn't waving at you",
+                "Me pretending I have my life together",
+                "When the meeting could've been an email",
+                "My diet starting tomorrow for the 365th time",
+                "When autocorrect changes a normal word to something weird",
+                "Me waiting for my code to work without errors",
+                "When you remember something embarrassing from 5 years ago"
+            ],
+            programming: [
+                "It works on my machine",
+                "When the code works but you don't know why",
+                "Me: *changes one line* \nCode: 💥",
+                "Documentation: 'Simple and easy' \nReality:",
+                "When you fix one bug and create 10 more",
+                "My code vs. Production code",
+                "When Stack Overflow is down",
+                "console.log('here') everywhere",
+                "When you delete a 'useless' line and everything breaks",
+                "Git push --force be like"
+            ],
+            social: [
+                "When you send a risky text and see 'typing...'",
+                "Me watching my own stories",
+                "When you get left on read",
+                "My Instagram vs. Reality",
+                "When you accidentally like a 3-year-old photo",
+                "Me refreshing to see if I got any likes",
+                "When you post at the wrong time and get 3 views",
+                "My LinkedIn: Professional \nMy Twitter: Chaos"
+            ]
+        };
+
+        // Popular Meme Templates Database
+        const memeTemplates = [
+            { name: "Drake Hotline Bling", emoji: "🙅‍♂️🙆‍♂️", top: "", bottom: "" },
+            { name: "Distracted Boyfriend", emoji: "👀💃", top: "Me", bottom: "My responsibilities" },
+            { name: "Two Buttons", emoji: "🔘🔘", top: "", bottom: "" },
+            { name: "Change My Mind", emoji: "🪑☕", top: "", bottom: "Change my mind" },
+            { name: "Expanding Brain", emoji: "🧠✨", top: "", bottom: "" },
+            { name: "Woman Yelling at Cat", emoji: "😡🐱", top: "", bottom: "" },
+            { name: "Always Has Been", emoji: "🌍🔫", top: "Wait, it's all ____?", bottom: "Always has been" },
+            { name: "Stonks", emoji: "📈🚀", top: "", bottom: "Stonks" },
+            { name: "Sad Pablo Escobar", emoji: "😔🪑", top: "", bottom: "" },
+            { name: "Hide the Pain Harold", emoji: "😅", top: "", bottom: "" },
+            { name: "Galaxy Brain", emoji: "🌌🧠", top: "", bottom: "" },
+            { name: "Is This a Pigeon?", emoji: "🦋❓", top: "Is this a ____?", bottom: "" }
+        ];
+
+        // AI Caption Generator
+        function generateAICaptions() {
+            const aiCaptionBtn = document.getElementById('aiCaptionBtn');
+            const aiCaptionsDiv = document.getElementById('aiCaptions');
+            
+            // Show loading state
+            aiCaptionBtn.innerHTML = '<span class="ai-loading"></span><span class="ml-2">Generating...</span>';
+            aiCaptionBtn.disabled = true;
+            
+            // Simulate AI processing delay
+            setTimeout(() => {
+                // Randomly select captions from different categories
+                const categories = Object.keys(aiCaptionDatabase);
+                const selectedCaptions = [];
+                
+                // Get 6 random captions
+                for (let i = 0; i < 6; i++) {
+                    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+                    const categoryCaptions = aiCaptionDatabase[randomCategory];
+                    const randomCaption = categoryCaptions[Math.floor(Math.random() * categoryCaptions.length)];
+                    if (!selectedCaptions.includes(randomCaption)) {
+                        selectedCaptions.push(randomCaption);
+                    }
+                }
+                
+                // Display captions
+                aiCaptionsDiv.innerHTML = '';
+                selectedCaptions.forEach(caption => {
+                    const chip = document.createElement('span');
+                    chip.className = 'caption-chip px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-full text-sm text-gray-800 dark:text-white';
+                    chip.textContent = caption.length > 30 ? caption.substring(0, 30) + '...' : caption;
+                    chip.title = caption;
+                    chip.addEventListener('click', () => applyAICaption(caption));
+                    aiCaptionsDiv.appendChild(chip);
+                });
+                
+                aiCaptionsDiv.classList.remove('hidden');
+                
+                // Reset button
+                aiCaptionBtn.innerHTML = '<span>✨</span><span>Generate New Captions</span>';
+                aiCaptionBtn.disabled = false;
+            }, 1500);
+        }
+
+        function applyAICaption(caption) {
+            if (!state.image) {
+                alert('Please upload an image first!');
+                return;
+            }
+            
+            // Split caption if it has newlines
+            const lines = caption.split('\\n');
+            
+            // Clear existing texts
+            state.texts = [];
+            
+            if (lines.length === 1) {
+                // Single text - center it
+                state.texts.push({
+                    ...state.defaultText,
+                    id: Date.now(),
+                    text: caption,
+                    x: 0.5,
+                    y: 0.85,
+                    fontSize: 36
+                });
+            } else {
+                // Multiple lines - distribute them
+                lines.forEach((line, index) => {
+                    if (line.trim()) {
+                        state.texts.push({
+                            ...state.defaultText,
+                            id: Date.now() + index,
+                            text: line.trim(),
+                            x: 0.5,
+                            y: 0.15 + (index * 0.15),
+                            fontSize: 32
+                        });
+                    }
+                });
+            }
+            
+            state.selectedTextIndex = -1;
+            textInput.value = '';
+            updateTextBoxesList();
+            drawCanvas();
+            saveState();
+            
+            // Scroll to preview
+            document.querySelector('.lg\\:col-span-2').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // AI Meme Templates
+        function showMemeTemplates() {
+            const aiTemplatesDiv = document.getElementById('aiTemplates');
+            
+            if (!aiTemplatesDiv.classList.contains('hidden')) {
+                aiTemplatesDiv.classList.add('hidden');
+                return;
+            }
+            
+            aiTemplatesDiv.innerHTML = '';
+            memeTemplates.forEach(template => {
+                const card = document.createElement('div');
+                card.className = 'template-card bg-white dark:bg-gray-700 rounded-xl p-3 text-center border border-gray-200 dark:border-gray-600';
+                card.innerHTML = `
+                    <div class="text-3xl mb-2">${template.emoji}</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">${template.name}</div>
+                `;
+                card.addEventListener('click', () => applyTemplate(template));
+                aiTemplatesDiv.appendChild(card);
+            });
+            
+            aiTemplatesDiv.classList.remove('hidden');
+        }
+
+        function applyTemplate(template) {
+            if (!state.image) {
+                alert('Please upload an image first!');
+                return;
+            }
+            
+            // Apply template text structure
+            state.texts = [];
+            
+            if (template.top) {
+                state.texts.push({
+                    ...state.defaultText,
+                    id: Date.now(),
+                    text: template.top,
+                    x: 0.5,
+                    y: 0.1,
+                    fontSize: 40
+                });
+            }
+            
+            if (template.bottom) {
+                state.texts.push({
+                    ...state.defaultText,
+                    id: Date.now() + 1,
+                    text: template.bottom,
+                    x: 0.5,
+                    y: 0.85,
+                    fontSize: 40
+                });
+            }
+            
+            // If no predefined text, add placeholder
+            if (state.texts.length === 0) {
+                state.texts.push({
+                    ...state.defaultText,
+                    id: Date.now(),
+                    text: "Your text here",
+                    x: 0.5,
+                    y: 0.1,
+                    fontSize: 40
+                });
+                state.texts.push({
+                    ...state.defaultText,
+                    id: Date.now() + 1,
+                    text: "Bottom text",
+                    x: 0.5,
+                    y: 0.85,
+                    fontSize: 40
+                });
+            }
+            
+            state.selectedTextIndex = -1;
+            textInput.value = '';
+            updateTextBoxesList();
+            drawCanvas();
+            saveState();
+            
+            // Show template applied notification
+            const btn = document.getElementById('aiTemplatesBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span>✅</span><span>Applied!</span>';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 1500);
+        }
+
+        // AI Smart Suggestions based on image analysis (simulated)
+        function analyzeImageForSuggestions() {
+            if (!state.image) return;
+            
+            // Simulate image analysis with random suggestions
+            const suggestions = [
+                "💡 Try: 'When you see it...'",
+                "💡 Try: 'Nobody asked but...'",
+                "💡 Try: 'POV: You're the main character'",
+                "💡 Try: 'My face when...'",
+                "💡 Try: 'Expectation vs Reality'"
+            ];
+            
+            // Could be displayed in a tooltip or suggestion bar
+            console.log('AI Suggestions:', suggestions);
+        }
+
+        // Setup AI event listeners
+        function setupAIEventListeners() {
+            document.getElementById('aiCaptionBtn').addEventListener('click', generateAICaptions);
+            document.getElementById('aiTemplatesBtn').addEventListener('click', showMemeTemplates);
+        }
+
+        // Show popup ad after 30 seconds
+        setTimeout(() => {
+            document.getElementById('popupAd').classList.remove('hidden');
+            document.getElementById('popupAd').classList.add('flex');
+        }, 30000);
+
+        // Initialize AI features
+        setupAIEventListeners();
+
+        // Initialize app
+        init();
     </script>
 </body>
 </html>
