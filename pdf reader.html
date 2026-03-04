@@ -675,16 +675,122 @@ body {
     background: var(--text-secondary);
 }
 
+/* Notification Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Mobile Optimizations */
+.mobile-device .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 110px;
+    bottom: 0;
+    z-index: 200;
+    transition: left 0.3s ease;
+    width: 85%;
+    max-width: 320px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+.mobile-device .sidebar.mobile-open {
+    left: 0;
+}
+
+.mobile-device .viewer-container {
+    width: 100%;
+}
+
+.mobile-device .toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px;
+    gap: 10px;
+}
+
+.mobile-device .toolbar-group {
+    flex: 1;
+    justify-content: center;
+    min-width: 80px;
+}
+
+.mobile-device .header {
+    padding: 0 10px;
+}
+
+.mobile-device .logo {
+    font-size: 1rem;
+}
+
+.mobile-device .welcome-screen {
+    min-width: auto;
+    min-height: 300px;
+    padding: 20px;
+}
+
+.mobile-device .welcome-content h2 {
+    font-size: 1.5rem;
+}
+
+.mobile-device .library-item {
+    padding: 10px;
+}
+
+.mobile-device .library-item-name {
+    font-size: 13px;
+}
+
+.mobile-device .library-item-meta {
+    font-size: 11px;
+}
+
+.mobile-device .sidebar-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobile-device .tab-btn {
+    white-space: nowrap;
+    padding: 10px 15px;
+}
+
+/* Mobile Toggle Button */
+.mobile-toggle {
+    display: none;
+}
+
+.mobile-device .mobile-toggle {
+    display: flex;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
-        position: absolute;
+        position: fixed;
         left: -100%;
         z-index: 100;
         transition: left 0.3s;
     }
 
-    .sidebar.open {
+    .sidebar.mobile-open {
         left: 0;
     }
 
@@ -946,12 +1052,41 @@ body {
 
             if (existingIndex >= 0) {
                 pdfLibrary[existingIndex] = pdfEntry;
+                console.log(`Updated in library: ${name}`);
             } else {
                 pdfLibrary.push(pdfEntry);
+                console.log(`Saved to library: ${name}`);
             }
 
             localStorage.setItem('pdfLibrary', JSON.stringify(pdfLibrary));
             updateLibraryList();
+
+            // Show notification
+            showNotification(existingIndex >= 0 ? 'PDF updated in library' : 'PDF saved to library');
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: var(--primary-color);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: var(--shadow-lg);
+                z-index: 9999;
+                font-size: 14px;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
         }
 
         function updateLibraryList() {
@@ -1035,6 +1170,81 @@ body {
 
         document.getElementById('library-btn').addEventListener('click', () => {
             document.querySelector('[data-tab="library"]').click();
+        });
+
+        // Initialize library on page load
+        updateLibraryList();
+
+        // Detect device type and adjust UI
+        detectDeviceAndAdjustUI();
+
+        function detectDeviceAndAdjustUI() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+            if (isMobile) {
+                document.body.classList.add('mobile-device');
+                setupMobileUI();
+            } else {
+                document.body.classList.add('desktop-device');
+            }
+
+            // Show library automatically on both devices
+            setTimeout(() => {
+                document.querySelector('[data-tab="library"]').click();
+            }, 100);
+        }
+
+        function setupMobileUI() {
+            // Mobile-specific adjustments
+            const sidebar = document.getElementById('sidebar');
+            const viewer = document.querySelector('.viewer-container');
+
+            // Add mobile toggle button if not exists
+            if (!document.getElementById('mobile-sidebar-toggle')) {
+                const toggleBtn = document.createElement('button');
+                toggleBtn.id = 'mobile-sidebar-toggle';
+                toggleBtn.className = 'btn btn-icon mobile-toggle';
+                toggleBtn.innerHTML = '☰';
+                toggleBtn.title = 'Toggle Sidebar';
+                toggleBtn.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    z-index: 999;
+                    background: var(--primary-color);
+                    color: white;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    box-shadow: var(--shadow-lg);
+                `;
+
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('mobile-open');
+                });
+
+                document.body.appendChild(toggleBtn);
+            }
+
+            // Close sidebar when clicking on viewer
+            viewer.addEventListener('click', () => {
+                if (sidebar.classList.contains('mobile-open')) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            });
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                document.body.classList.add('mobile-device');
+                document.body.classList.remove('desktop-device');
+            } else {
+                document.body.classList.add('desktop-device');
+                document.body.classList.remove('mobile-device');
+                document.getElementById('sidebar').classList.remove('mobile-open');
+            }
         });
 
         async function loadPdf(data) {
