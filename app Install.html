@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Download</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2196f3;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #90caf9;
+            padding: 15px 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-button {
+            background-color: #ffffff;
+            color: #1976d2;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #1976d2;
+            color: #ffffff;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px);
+            padding: 40px 20px;
+        }
+
+        .apps-container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .app-card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 50px 60px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(25, 118, 210, 0.25);
+        }
+
+        .app-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .app-title {
+            color: #1976d2;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .download-btn {
+            background-color: #64b5f6;
+            color: #ffffff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #1976d2;
+        }
+
+        .app-description {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 280px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <button class="nav-button">Home</button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="apps-container">
+            <!-- PC App Card -->
+            <div class="app-card">
+                <div class="app-icon">💻</div>
+                <h2 class="app-title">Pc App</h2>
+                <p class="app-description">This PC Application is designed for desktop users. It works smoothly on Windows and provides fast performance with advanced features for professional use.</p>
+                <button class="download-btn">Download</button>
+            </div>
+
+            <!-- Mobile App Card -->
+            <div class="app-card">
+                <div class="app-icon">📱</div>
+                <h2 class="app-title">Mobile App</h2>
+                <p class="app-description">This Mobile Application is optimized for Android users. It is lightweight, easy to use, and works perfectly on smartphones with smooth performance.</p>
+                <button class="download-btn">Download</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
