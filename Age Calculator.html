@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Age Calculator</title>
-
 <meta name="robots" content="index, follow">
-
 <style>
-
 body{
 font-family: Arial, sans-serif;
 background: linear-gradient(135deg,#42275a,#734b6d);
 text-align:center;
 padding:30px;
 color:white;
+margin:0;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 .container{
@@ -24,8 +25,10 @@ color:black;
 padding:25px;
 border-radius:15px;
 max-width:600px;
+width:100%;
 margin:auto;
 box-shadow:0 10px 25px rgba(0,0,0,0.3);
+box-sizing:border-box;
 }
 
 h1{
@@ -46,16 +49,20 @@ margin:10px 0;
 width:100%;
 border-radius:8px;
 border:1px solid #ccc;
+box-sizing:border-box;
+font-size:16px;
 }
 
 button{
 padding:10px 20px;
-margin:10px;
+margin:10px 5px;
 border:none;
 border-radius:8px;
 background:#42275a;
 color:white;
 cursor:pointer;
+font-size:16px;
+transition:background 0.3s;
 }
 
 button:hover{
@@ -66,46 +73,46 @@ background:#734b6d;
 margin-top:20px;
 font-size:16px;
 font-weight:bold;
+line-height:1.6;
 }
 
 .number-highlight{
 font-size:60px;
 color:#42275a;
+font-weight:bold;
+margin:10px 0;
 }
-
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
 <h1>🎂 Free Age Calculator</h1>
 <div class="subtitle">Calculate exact difference between two dates</div>
 
 <input type="date" id="startDate">
-
 <input type="date" id="endDate">
 
 <button onclick="setToday()">Set End Date as Today</button>
-
 <button onclick="calculateAge()">Calculate</button>
 
 <div class="result" id="result"></div>
-
 </div>
 
 <script>
-
 function setToday(){
 let today = new Date().toISOString().split('T')[0];
 document.getElementById("endDate").value = today;
 }
 
-window.onload = setToday;
+window.onload = function() {
+setToday();
+// Optionally set a default start date (e.g., 30 years ago)
+let thirtyYearsAgo = new Date();
+thirtyYearsAgo.setFullYear(thirtyYearsAgo.getFullYear() - 30);
+document.getElementById("startDate").value = thirtyYearsAgo.toISOString().split('T')[0];
+};
 
 function calculateAge(){
-
 let start = document.getElementById("startDate").value;
 let end = document.getElementById("endDate").value;
 
@@ -148,26 +155,20 @@ let totalSeconds = Math.floor(diff / 1000);
 document.getElementById("result").innerHTML =
 "<div class='number-highlight'>" + years + " Years</div>" +
 months + " Months, " + days + " Days<br><br>" +
-"Total Days: " + totalDays + "<br>" +
-"Total Weeks: " + totalWeeks + "<br>" +
-"Total Hours: " + totalHours + "<br>" +
-"Total Minutes: " + totalMinutes + "<br>" +
-"Total Seconds: " + totalSeconds;
-
+"📅 Total Days: " + totalDays + "<br>" +
+"📊 Total Weeks: " + totalWeeks + "<br>" +
+"⏰ Total Hours: " + totalHours + "<br>" +
+"⏱️ Total Minutes: " + totalMinutes + "<br>" +
+"⚡ Total Seconds: " + totalSeconds;
 }
-
 </script>
 
+<!-- Note: The following script appears to be an ad script. Make sure it's from a trusted source -->
 <script>
 (function(s){
-s.dataset.zone='10673896',
-s.src='https://gizokraijaw.net/vignette.min.js'
-})
-([document.documentElement, document.body]
-.filter(Boolean)
-.pop()
-.appendChild(document.createElement('script')))
+s.dataset.zone='10673896';
+s.src='https://gizokraijaw.net/vignette.min.js';
+})(document.currentScript || document.documentElement.appendChild(document.createElement('script')));
 </script>
-
 </body>
 </html>
