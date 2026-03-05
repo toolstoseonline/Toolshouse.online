@@ -1,144 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Age Calculator</title>
+<title>Free Age Calculator</title>
 
 <meta name="robots" content="index, follow">
+
 <style>
+
 body{
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg,#42275a,#734b6d);
-    text-align:center;
-    padding:30px;
-    color:white;
+font-family: Arial, sans-serif;
+background: linear-gradient(135deg,#42275a,#734b6d);
+text-align:center;
+padding:30px;
+color:white;
 }
+
 .container{
-    background:white;
-    color:black;
-    padding:25px;
-    border-radius:15px;
-    max-width:600px;
-    margin:auto;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+background:white;
+color:black;
+padding:25px;
+border-radius:15px;
+max-width:600px;
+margin:auto;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
 }
+
 h1{
-    font-size:40px;
-    margin-bottom:10px;
-    color:#42275a;
+font-size:40px;
+margin-bottom:10px;
+color:#42275a;
 }
+
 .subtitle{
-    font-size:16px;
-    color:#734b6d;
-    margin-bottom:25px;
+font-size:16px;
+color:#734b6d;
+margin-bottom:25px;
 }
+
 input{
-    padding:10px;
-    margin:10px;
-    width:80%;
-    border-radius:8px;
-    border:1px solid #ccc;
+padding:10px;
+margin:10px 0;
+width:100%;
+border-radius:8px;
+border:1px solid #ccc;
 }
+
 button{
-    padding:10px 20px;
-    margin:10px;
-    border:none;
-    border-radius:8px;
-    background:#42275a;
-    color:white;
-    cursor:pointer;
+padding:10px 20px;
+margin:10px;
+border:none;
+border-radius:8px;
+background:#42275a;
+color:white;
+cursor:pointer;
 }
+
 button:hover{
-    background:#734b6d;
+background:#734b6d;
 }
+
 .result{
-    margin-top:20px;
-    font-size:16px;
-    font-weight:bold;
+margin-top:20px;
+font-size:16px;
+font-weight:bold;
 }
+
 .number-highlight{
-    font-size:60px;
-    color:#42275a;
+font-size:60px;
+color:#42275a;
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="container">
+
 <h1>🎂 Free Age Calculator</h1>
 <div class="subtitle">Calculate exact difference between two dates</div>
 
-<input type="date" id="startDate"><br>
-<input type="date" id="endDate"><br>
+<input type="date" id="startDate">
+
+<input type="date" id="endDate">
 
 <button onclick="setToday()">Set End Date as Today</button>
+
 <button onclick="calculateAge()">Calculate</button>
 
 <div class="result" id="result"></div>
+
 </div>
 
 <script>
 
 function setToday(){
-    let today = new Date().toISOString().split('T')[0];
-    document.getElementById("endDate").value = today;
+let today = new Date().toISOString().split('T')[0];
+document.getElementById("endDate").value = today;
 }
+
+window.onload = setToday;
 
 function calculateAge(){
 
-    let start = document.getElementById("startDate").value;
-    let end = document.getElementById("endDate").value;
+let start = document.getElementById("startDate").value;
+let end = document.getElementById("endDate").value;
 
-    if(!start || !end){
-        alert("Please select both dates!");
-        return;
-    }
+if(!start || !end){
+alert("Please select both dates!");
+return;
+}
 
-    let startDate = new Date(start);
-    let endDate = new Date(end);
+let startDate = new Date(start);
+let endDate = new Date(end);
 
-    if(endDate < startDate){
-        alert("End date must be after start date!");
-        return;
-    }
+if(endDate < startDate){
+alert("End date must be after start date!");
+return;
+}
 
-    // Exact Years Months Days
-    let years = endDate.getFullYear() - startDate.getFullYear();
-    let months = endDate.getMonth() - startDate.getMonth();
-    let days = endDate.getDate() - startDate.getDate();
+let years = endDate.getFullYear() - startDate.getFullYear();
+let months = endDate.getMonth() - startDate.getMonth();
+let days = endDate.getDate() - startDate.getDate();
 
-    if(days < 0){
-        months--;
-        let prevMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0);
-        days += prevMonth.getDate();
-    }
+if(days < 0){
+months--;
+let prevMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0);
+days += prevMonth.getDate();
+}
 
-    if(months < 0){
-        years--;
-        months += 12;
-    }
+if(months < 0){
+years--;
+months += 12;
+}
 
-    // Total difference
-    let diff = endDate - startDate;
-    let totalDays = Math.floor(diff / (1000*60*60*24));
-    let totalWeeks = Math.floor(totalDays / 7);
-    let totalHours = Math.floor(diff / (1000*60*60));
-    let totalMinutes = Math.floor(diff / (1000*60));
-    let totalSeconds = Math.floor(diff / 1000);
+let diff = endDate - startDate;
 
-    document.getElementById("result").innerHTML =
-        "<div class='number-highlight'>" + years + " Years</div>" +
-        months + " Months, " + days + " Days<br><br>" +
-        "Total Days: " + totalDays + "<br>" +
-        "Total Weeks: " + totalWeeks + "<br>" +
-        "Total Hours: " + totalHours + "<br>" +
-        "Total Minutes: " + totalMinutes + "<br>" +
-        "Total Seconds: " + totalSeconds;
+let totalDays = Math.floor(diff / (1000*60*60*24));
+let totalWeeks = Math.floor(totalDays / 7);
+let totalHours = Math.floor(diff / (1000*60*60));
+let totalMinutes = Math.floor(diff / (1000*60));
+let totalSeconds = Math.floor(diff / 1000);
+
+document.getElementById("result").innerHTML =
+"<div class='number-highlight'>" + years + " Years</div>" +
+months + " Months, " + days + " Days<br><br>" +
+"Total Days: " + totalDays + "<br>" +
+"Total Weeks: " + totalWeeks + "<br>" +
+"Total Hours: " + totalHours + "<br>" +
+"Total Minutes: " + totalMinutes + "<br>" +
+"Total Seconds: " + totalSeconds;
+
 }
 
 </script>
-<script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
+
+<script>
+(function(s){
+s.dataset.zone='10673896',
+s.src='https://gizokraijaw.net/vignette.min.js'
+})
+([document.documentElement, document.body]
+.filter(Boolean)
+.pop()
+.appendChild(document.createElement('script')))
+</script>
+
 </body>
 </html>
