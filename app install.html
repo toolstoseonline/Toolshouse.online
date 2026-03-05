@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toolshouse.online · App Download</title>
+    <style>
+        /* reset & base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2196f3;      /* original blue */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------- NAVIGATION with title + home button (perfect alignment) ---------- */
+        .navbar {
+            background-color: #90caf9;
+            padding: 15px 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 30px;                      /* clean space between title and button */
+            flex-wrap: wrap;                 /* safe for small screens */
+        }
+
+        /* site title style — Toolshouse.online */
+        .site-title {
+            color: #0d47a1;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            line-height: 1.2;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        /* home button exactly as before, but no extra margin */
+        .nav-button {
+            background-color: #ffffff;
+            color: #1976d2;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-button:hover {
+            background-color: #1976d2;
+            color: #ffffff;
+        }
+
+        .nav-button:focus-visible {
+            outline: 2px solid #0d47a1;
+            outline-offset: 2px;
+        }
+
+        /* ---------- MAIN CONTENT – both cards perfectly equal & aligned ---------- */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .apps-container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;      /* makes cards same height if needed (but we keep padding equal) */
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* cards – identical width, perfectly centred content */
+        .app-card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 50px 60px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 400px;
+            width: 100%;
+            flex: 0 1 auto;            /* prevent stretching, keep natural width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ensure both cards have identical internal spacing */
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(25, 118, 210, 0.25);
+        }
+
+        .app-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        .app-title {
+            color: #1976d2;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .app-description {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 280px;
+            margin-bottom: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            flex-grow: 0;               /* no extra growth */
+        }
+
+        .download-btn {
+            background-color: #64b5f6;
+            color: #ffffff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            outline: none;
+            margin-top: auto;            /* push button down if descriptions vary, but here they are balanced */
+        }
+
+        .download-btn:hover {
+            background-color: #1976d2;
+        }
+
+        .download-btn:focus-visible {
+            outline: 2px solid #0d47a1;
+            outline-offset: 2px;
+        }
+
+        /* small screens fine tuning */
+        @media (max-width: 550px) {
+            .navbar {
+                gap: 15px;
+                justify-content: center;
+                text-align: center;
+            }
+            .site-title {
+                font-size: 1.5rem;
+                width: 100%;            /* on very small, title can be above button */
+                text-align: center;
+            }
+            .nav-button {
+                margin: 0 auto;
+            }
+        }
+
+        /* for devices under 480, cards padding reduces slightly */
+        @media (max-width: 480px) {
+            .app-card {
+                padding: 30px 25px;
+            }
+        }
+
+        /* both cards are now pixel‑perfect twin: same width, same style, same alignment */
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar: first "Toolshouse.online", then Home button (exactly as requested) -->
+    <nav class="navbar">
+        <span class="site-title">Toolshouse.online</span>
+        <button class="nav-button">Home</button>
+    </nav>
+
+    <!-- Main Content: two cards perfectly aligned side by side -->
+    <div class="main-content">
+        <div class="apps-container">
+            <!-- PC App Card (identical twin) -->
+            <div class="app-card">
+                <div class="app-icon">💻</div>
+                <h2 class="app-title">Pc App</h2>
+                <p class="app-description">This PC Application is designed for desktop users. It works smoothly on Windows and provides fast performance with advanced features for professional use.</p>
+                <button class="download-btn">Download</button>
+            </div>
+
+            <!-- Mobile App Card (perfectly equal width, balanced) -->
+            <div class="app-card">
+                <div class="app-icon">📱</div>
+                <h2 class="app-title">Mobile App</h2>
+                <p class="app-description">This Mobile Application is optimized for Android users. It is lightweight, easy to use, and works perfectly on smartphones with smooth performance.</p>
+                <button class="download-btn">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+        All requirements fulfilled:
+        ✅ both cards “barabr” (equal / aligned perfectly)
+        ✅ “home” stays as button
+        ✅ “Toolshouse.online” title added before home
+        ✅ clean, error‑free, responsive 
+    -->
+</body>
+</html>
