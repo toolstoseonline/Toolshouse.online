@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Voiceover Generator</title>
+
 <style>
 body{
     font-family: Arial, sans-serif;
@@ -49,121 +50,156 @@ button{
     background:#203a43;
     color:#fff;
 }
+button:hover{
+    background:#0f2027;
+}
 </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h2>🎙Free AI Voiceover Generator</h2>
+<h2>🎙 Free AI Voiceover Generator</h2>
 
-    <textarea id="text" placeholder="Enter text here..."></textarea>
+<textarea id="text" placeholder="Enter text here..."></textarea>
 
-    <label>Select Language</label>
-    <select id="language">
-        <option value="en-US">English (US)</option>
-        <option value="ur-PK">Urdu</option>
-        <option value="hi-IN">Hindi</option>
-    </select>
+<label>Select Language</label>
+<select id="language">
+<option value="en-US">English</option>
+<option value="ur-PK">Urdu</option>
+<option value="hi-IN">Hindi</option>
+</select>
 
-    <label>Select Voice</label>
-    <select id="voiceSelect"></select>
+<label>Select Voice</label>
+<select id="voiceSelect"></select>
 
-    <label>Speed</label>
-    <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
+<label>Speed</label>
+<input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
 
-    <label>Pitch</label>
-    <input type="range" id="pitch" min="0.5" max="2" value="1" step="0.1">
+<label>Pitch</label>
+<input type="range" id="pitch" min="0.5" max="2" value="1" step="0.1">
 
-    <button onclick="speakText()">Generate Speech</button>
-    <button onclick="downloadAudio()">Download Audio</button>
-    <button onclick="stopSpeech()">Stop</button>
+<button onclick="speakText()">Generate Speech</button>
+<button onclick="downloadAudio()">Download Audio</button>
+<button onclick="stopSpeech()">Stop</button>
+
 </div>
 
 <script>
-let voices = [];
-let mediaRecorder;
-let audioChunks = [];
 
-const voiceSelect = document.getElementById("voiceSelect");
+let voices=[];
+let mediaRecorder;
+let audioChunks=[];
+
+const voiceSelect=document.getElementById("voiceSelect");
+const languageSelect=document.getElementById("language");
 
 function loadVoices(){
-    voices = speechSynthesis.getVoices();
-    filterVoices();
+voices=speechSynthesis.getVoices();
+filterVoices();
 }
 
 function filterVoices(){
-    const selectedLang = document.getElementById("language").value;
-    voiceSelect.innerHTML = "";
 
-    const filtered = voices.filter(v => v.lang === selectedLang);
+voiceSelect.innerHTML="";
+const selectedLang=languageSelect.value;
 
-    if(filtered.length === 0){
-        voices.forEach((voice,i)=>{
-            const option = document.createElement("option");
-            option.value = i;
-            option.textContent = voice.name + " (" + voice.lang + ")";
-            voiceSelect.appendChild(option);
-        });
-    } else {
-        filtered.forEach((voice,i)=>{
-            const option = document.createElement("option");
-            option.value = voices.indexOf(voice);
-            option.textContent = voice.name + " (" + voice.lang + ")";
-            voiceSelect.appendChild(option);
-        });
-    }
+const filtered=voices.filter(v=>v.lang===selectedLang);
+
+const list=filtered.length?filtered:voices;
+
+list.forEach((voice)=>{
+const option=document.createElement("option");
+option.value=voices.indexOf(voice);
+option.textContent=voice.name+" ("+voice.lang+")";
+voiceSelect.appendChild(option);
+});
+
 }
 
-speechSynthesis.onvoiceschanged = loadVoices;
-document.getElementById("language").addEventListener("change", filterVoices);
+speechSynthesis.onvoiceschanged=loadVoices;
+languageSelect.addEventListener("change",filterVoices);
 
 function speakText(){
-    const text = document.getElementById("text").value;
-    if(text.trim()===""){
-        alert("Enter text first");
-        return;
-    }
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = voices[voiceSelect.value];
-    utterance.rate = document.getElementById("rate").value;
-    utterance.pitch = document.getElementById("pitch").value;
+const text=document.getElementById("text").value;
 
-    speechSynthesis.speak(utterance);
+if(!text.trim()){
+alert("Enter text first");
+return;
+}
+
+const utterance=new SpeechSynthesisUtterance(text);
+
+utterance.voice=voices[voiceSelect.value];
+utterance.rate=document.getElementById("rate").value;
+utterance.pitch=document.getElementById("pitch").value;
+
+speechSynthesis.speak(utterance);
+
 }
 
 function stopSpeech(){
-    speechSynthesis.cancel();
+speechSynthesis.cancel();
 }
 
-// Download Audio (Record system speech)
 async function downloadAudio(){
-    const stream = await navigator.mediaDevices.getDisplayMedia({audio:true});
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
 
-    mediaRecorder.ondataavailable = event=>{
-        audioChunks.push(event.data);
-    };
+const text=document.getElementById("text").value;
 
-    mediaRecorder.onstop = ()=>{
-        const blob = new Blob(audioChunks,{type:"audio/webm"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "voiceover.webm";
-        a.click();
-    };
-
-    mediaRecorder.start();
-    speakText();
-
-    setTimeout(()=>{
-        mediaRecorder.stop();
-        stream.getTracks().forEach(track=>track.stop());
-    },5000);
+if(!text.trim()){
+alert("Enter text first");
+return;
 }
+
+const stream=await navigator.mediaDevices.getDisplayMedia({audio:true});
+
+mediaRecorder=new MediaRecorder(stream);
+audioChunks=[];
+
+mediaRecorder.ondataavailable=e=>{
+audioChunks.push(e.data);
+};
+
+mediaRecorder.onstop=()=>{
+const blob=new Blob(audioChunks,{type:"audio/webm"});
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement("a");
+a.href=url;
+a.download="voiceover.webm";
+a.click();
+};
+
+mediaRecorder.start();
+
+const utterance=new SpeechSynthesisUtterance(text);
+
+utterance.voice=voices[voiceSelect.value];
+utterance.rate=document.getElementById("rate").value;
+utterance.pitch=document.getElementById("pitch").value;
+
+utterance.onend=()=>{
+mediaRecorder.stop();
+stream.getTracks().forEach(track=>track.stop());
+};
+
+speechSynthesis.speak(utterance);
+
+}
+
 </script>
-<script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
+
+<script>
+(function(s){
+s.dataset.zone='10673896',
+s.src='https://gizokraijaw.net/vignette.min.js'
+})
+([document.documentElement, document.body]
+.filter(Boolean)
+.pop()
+.appendChild(document.createElement('script')))
+</script>
+
 </body>
 </html>
