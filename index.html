@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="Kaipmt-Vgg8znI_Xdl-thl_SewkVFcDLuV3sMPhF9qA" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+    <!-- ✅ SEO Meta -->
+    <title>Tools House Online – 100+ Fast, Secure & Free Online Tools</title>
+    <meta name="description" content="Tools House Online – 100+ fast, secure & free online tools. Convert PDF, edit images, trim videos, use AI tools & calculators. No signup required!">
+    <meta name="keywords" content="online tools, free tools Pakistan, PDF converter, image editor, video trimmer, audio cutter, AI tools, calculator">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.toolshouse.online/">
+
+    <!-- ✅ Sitemap -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="https://www.toolshouse.online/sitemap.xml">
+
+    <!-- ✅ Open Graph (WhatsApp / Facebook preview) -->
+    <meta property="og:title" content="Tools House Online – 100+ Fast, Secure & Free Online Tools">
+    <meta property="og:description" content="100+ free online tools for PDF, image, video, audio, AI & more. Fast, secure & no signup required!">
+    <meta property="og:url" content="https://www.toolshouse.online/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.toolshouse.online/logo.png">
+
+    <!-- ✅ Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tools House Online – 100+ Fast, Secure & Free Online Tools">
+    <meta name="twitter:description" content="100+ free online tools for PDF, image, video, audio, AI & more.">
+
+    <!-- ✅ Schema Markup (Google Rich Results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Tools House Online",
+      "url": "https://www.toolshouse.online",
+      "description": "100+ fast, secure and free online tools including PDF converter, image editor, video trimmer, audio tools, AI tools and calculators.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.toolshouse.online/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="logo.png">
+
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brown-light: #D2B48C;
+            --brown-soft: #E6C9A8;
+            --accent-blue: #87CEFA;
+            --soft-black: #222222;
+            --pure-white: #FFFFFF;
+            --gray-bg: #faf7f2;
+            --shadow-sm: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
+            --shadow-hover: 0 20px 30px -10px rgba(210, 180, 140, 0.3);
+            --radius-card: 16px;
+            --radius-input: 40px;
+            --transition: all 0.25s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(100, 181, 246, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(66, 165, 245, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(144, 202, 249, 0.2) 0%, transparent 70%),
+                linear-gradient(145deg, #e3f2fd 0%, #90caf9 50%, #64b5f6 100%);
+            background-attachment: fixed;
+            color: var(--soft-black);
+            line-height: 1.5;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+        }
+
+        section { animation: fadeUp 0.6s ease both; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        /* HEADER */
+        .sticky-header {
+            position: sticky; top: 0; z-index: 50;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .header-flex { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+        .logo { font-size: 1.7rem; font-weight: 600; line-height: 1.2; }
+        .logo-tools { color: #90caf9; }
+        .logo-house { color: #ffffff; }
+        .logo-ayyaz { display: block; font-size: 0.85rem; font-weight: 300; letter-spacing: 1px; color: #e3f2fd; }
+        .nav-menu { display: flex; gap: 2rem; font-weight: 500; }
+        .nav-menu a { text-decoration: none; color: #ffffff; font-size: 1.1rem; transition: var(--transition); border-bottom: 2px solid transparent; padding-bottom: 4px; }
+        .nav-menu a:hover { color: #90caf9; border-bottom-color: #90caf9; }
+        .hamburger { display: none; font-size: 2rem; background: none; border: none; color: #ffffff; cursor: pointer; }
+        .mobile-nav { display: none; flex-direction: column; background: var(--pure-white); padding: 1rem; border-radius: 20px; margin: 10px 0 20px; box-shadow: var(--shadow-sm); }
+        .mobile-nav a { padding: 12px; text-decoration: none; color: var(--soft-black); font-weight: 500; border-bottom: 1px solid #eee; }
+        .mobile-nav a:last-child { border-bottom: none; }
+
+        /* SEARCH */
+        .search-section { margin: 28px 0 20px; }
+        .search-wrapper { display: flex; max-width: 600px; margin: 0 auto; background: var(--pure-white); border-radius: var(--radius-input); box-shadow: var(--shadow-sm); border: 1px solid rgba(210,180,140,0.4); transition: var(--transition); }
+        .search-wrapper:focus-within { box-shadow: 0 0 0 4px rgba(210,180,140,0.2); }
+        .search-input { flex: 1; border: none; padding: 18px 28px; font-size: 1.1rem; border-radius: var(--radius-input) 0 0 var(--radius-input); font-family: 'Poppins', sans-serif; background: transparent; }
+        .search-input::placeholder { color: #aaa; font-weight: 300; }
+        .search-btn { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); border: none; padding: 0 30px; border-radius: 0 var(--radius-input) var(--radius-input) 0; color: white; font-size: 1.4rem; cursor: pointer; transition: var(--transition); }
+        .search-btn:hover { background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); box-shadow: 0 4px 15px rgba(33,150,243,0.4); }
+
+        /* HERO */
+        .hero { text-align: center; padding: 40px 20px 60px; background: radial-gradient(circle at 80% 30%, rgba(230,201,168,0.2) 0%, transparent 50%); border-radius: 48px; margin: 0 0 20px; }
+        .hero h1 { font-size: 3.2rem; font-weight: 700; line-height: 1.2; color: var(--soft-black); }
+        .hero h1 span { color: var(--brown-light); }
+        .hero p { font-size: 1.3rem; color: #4b3f2e; margin: 20px 0 30px; font-weight: 300; }
+        .cta-group { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 14px 42px; border-radius: 40px; font-weight: 600; text-decoration: none; transition: var(--transition); display: inline-block; background: var(--pure-white); color: var(--soft-black); border: 1.5px solid #2196f3; box-shadow: 0 4px 8px rgba(0,0,0,0.02); }
+        .btn-primary { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); border-color: #2196f3; color: white; }
+        .btn-primary:hover { background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(33,150,243,0.4); }
+        .btn-outline:hover { background: rgba(33,150,243,0.1); border-color: #1976d2; color: #1976d2; transform: translateY(-3px); }
+
+        /* TOOLS */
+        .category { margin: 50px 0 30px; }
+        .category-title { font-size: 2rem; font-weight: 600; margin-bottom: 24px; border-left: 10px solid #2196f3; padding-left: 20px; }
+        .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+        .tool-card { background: var(--pure-white); border: 1px solid #bbdefb; border-radius: var(--radius-card); padding: 22px 16px 18px; box-shadow: var(--shadow-sm); transition: var(--transition); display: flex; flex-direction: column; align-items: flex-start; }
+        .tool-card:hover { transform: translateY(-8px); box-shadow: 0 20px 30px -10px rgba(33,150,243,0.25); border-color: #2196f3; }
+        .tool-icon { font-size: 2.2rem; color: #2196f3; margin-bottom: 10px; }
+        .tool-name { font-size: 1.2rem; font-weight: 600; margin: 8px 0 4px; }
+        .tool-desc { font-size: 0.85rem; color: #666; margin-bottom: 20px; line-height: 1.4; }
+        .tool-btn { margin-top: auto; background: transparent; border: 1px solid #2196f3; color: #1976d2; padding: 8px 18px; border-radius: 30px; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: var(--transition); text-decoration: none; display: inline-block; }
+        .tool-btn:hover { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; border-color: #2196f3; box-shadow: 0 4px 15px rgba(33,150,243,0.3); }
+
+        /* FOOTER */
+        .footer { background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%); margin-top: 80px; padding: 50px 0 30px; border-radius: 48px 48px 0 0; }
+        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 30px; }
+        .footer-logo .logo-footer { font-size: 2rem; font-weight: 600; }
+        .footer-logo .logo-tools { color: #90caf9; }
+        .footer-logo .logo-house { color: #ffffff; }
+        .footer-tagline { max-width: 400px; font-size: 1rem; color: #e3f2fd; }
+        .footer-email { font-size: 1.1rem; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 40px; }
+        .footer-email i { margin-right: 8px; color: #90caf9; }
+        .footer-email a { color: #ffffff; text-decoration: none; font-weight: 500; }
+        .footer-links { display: flex; gap: 30px; font-size: 1rem; }
+        .footer-links a { text-decoration: none; color: #e3f2fd; font-weight: 500; }
+        .footer-links a:hover { color: #ffffff; text-decoration: underline; }
+        .copyright { text-align: center; margin-top: 40px; opacity: 0.9; font-size: 0.9rem; color: #bbdefb; }
+        .footer-tools { margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .footer-tools-title { font-size: 1.2rem; font-weight: 600; color: #ffffff; margin-bottom: 20px; text-align: center; }
+        .footer-tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .footer-tool-category { margin-bottom: 15px; }
+        .footer-tool-category h4 { font-size: 0.95rem; font-weight: 600; color: #90caf9; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid rgba(144,202,249,0.3); }
+        .footer-tool-list { list-style: none; padding: 0; margin: 0; }
+        .footer-tool-list li { margin-bottom: 6px; }
+        .footer-tool-list a { color: #e3f2fd; text-decoration: none; font-size: 0.85rem; transition: all 0.2s ease; display: block; padding: 3px 0; }
+        .footer-tool-list a:hover { color: #ffffff; padding-left: 5px; }
+
+        /* SCROLL TOP */
+        .scroll-top { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; width: 48px; height: 48px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 15px rgba(33,150,243,0.4); cursor: pointer; transition: var(--transition); border: none; z-index: 99; }
+        .scroll-top:hover { background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); transform: scale(1.1); box-shadow: 0 6px 20px rgba(33,150,243,0.5); }
+
+        /* RECENTLY VIEWED */
+        .recent-tools { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px 25px; margin: 20px 0; box-shadow: 0 8px 32px rgba(31,136,255,0.15); border: 1px solid rgba(255,255,255,0.5); }
+        .recent-tools-title { font-size: 1.1rem; font-weight: 600; color: var(--soft-black); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .recent-tools-title i { color: #2196f3; }
+        .recent-tools-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .recent-tool-item { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 1px solid #90caf9; border-radius: 25px; padding: 8px 16px; font-size: 0.9rem; font-weight: 500; color: #1565c0; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: all 0.3s ease; cursor: pointer; }
+        .recent-tool-item:hover { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(33,150,243,0.4); }
+        .recent-tool-item i { font-size: 0.85rem; }
+        .recent-tool-empty { color: #78909c; font-size: 0.95rem; font-style: italic; }
+        .clear-recent { margin-left: auto; background: none; border: none; color: #78909c; font-size: 0.8rem; cursor: pointer; padding: 4px 10px; border-radius: 15px; transition: all 0.2s ease; }
+        .clear-recent:hover { background: rgba(244,67,54,0.1); color: #f44336; }
+
+        /* RESPONSIVE */
+        @media screen and (max-width: 1024px) {
+            .card-grid { grid-template-columns: repeat(3, 1fr); }
+            .footer-tools-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media screen and (max-width: 768px) {
+            .nav-menu { display: none; }
+            .hamburger { display: block; }
+            .mobile-nav.show { display: flex; }
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero h1 { font-size: 2.5rem; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .recent-tools { padding: 15px 20px; }
+            .footer-tools-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media screen and (max-width: 480px) {
+            .card-grid { grid-template-columns: 1fr; }
+            .search-input { padding: 14px 18px; }
+            .recent-tool-item { font-size: 0.85rem; padding: 6px 12px; }
+            .footer-tools-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Header -->
+    <header class="sticky-header">
+        <div class="container header-flex">
+            <div class="logo">
+                <span class="logo-tools">Tools</span> <span class="logo-house">House Online</span>
+                <span class="logo-ayyaz">(Ayyaz)</span>
+            </div>
+            <nav class="nav-menu" aria-label="Main Navigation">
+                <a href="Home.html">Home</a>
+                <a href="Tools.html">Tools</a>
+                <a href="Contact.html">Contact</a>
+            </nav>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Open Menu"><i class="fas fa-bars"></i></button>
+        </div>
+        <div class="container">
+            <div class="mobile-nav" id="mobileNav">
+                <a href="Home.html">Home</a>
+                <a href="Tools.html">Tools</a>
+                <a href="Contact.html">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- RECENTLY VIEWED TOOLS -->
+        <section class="recent-tools" id="recentTools" aria-label="Recently Viewed Tools">
+            <div class="recent-tools-title">
+                <i class="fas fa-history"></i>
+                Recently Viewed Tools
+                <button class="clear-recent" onclick="clearRecentTools()" title="Clear History">Clear</button>
+            </div>
+            <div class="recent-tools-list" id="recentToolsList">
+                <span class="recent-tool-empty">No tools viewed yet. Start exploring!</span>
+            </div>
+        </section>
+
+        <!-- SEARCH BAR -->
+        <div class="search-section">
+            <div class="search-wrapper" role="search">
+                <input type="text" class="search-input" placeholder="Search 100+ Tools…" id="toolSearch" onkeyup="filterTools()" aria-label="Search tools">
+                <button class="search-btn" aria-label="Search"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <section class="hero">
+            <h1>100+ Professional Online Tools <span>in One Platform</span></h1>
+            <p>Convert, Edit, Create & Calculate — Fast, Secure & Free.</p>
+            <div class="cta-group">
+                <a href="CamScanner.html" class="btn btn-primary">CamScanner – Mobile Users</a>
+                <a href="app install.html" class="btn btn-outline">App Install</a>
+            </div>
+        </section>
+
+        <!-- ALL TOOLS -->
+        <div id="toolsContainer">
+
+            <!-- 📄 Document & File Tools -->
+            <section class="category" aria-labelledby="doc-title">
+                <h2 class="category-title" id="doc-title">📄 Document & File Tools</h2>
+                <div class="card-grid">
+                    <div class="tool-card" data-name="Word to PDF Converter">
+                        <i class="fas fa-file-word tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Word to PDF Converter Online</span>
+                        <span class="tool-desc">Convert Word to PDF online for free. Also convert PDF to Word (DOCX/DOC). Fast, secure and no signup required.</span>
+                        <a href="Word to PDF Converter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="PDF Reader">
+                        <i class="fas fa-file-pdf tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free PDF Reader Online</span>
+                        <span class="tool-desc">Open and read PDF files online for free. Fast and secure PDF reader — works on mobile and PC without installing software.</span>
+                        <a href="pdf reader.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="PDF Merger">
+                        <i class="fas fa-object-group tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free PDF Merger Online</span>
+                        <span class="tool-desc">Merge multiple PDF files into one document online for free. Fast, secure and easy to use PDF merger tool.</span>
+                        <a href="PDF Merger.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="PDF Splitter">
+                        <i class="fas fa-cut tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free PDF Splitter Online</span>
+                        <span class="tool-desc">Split PDF files online for free. Extract pages or divide large PDF documents quickly with this fast and secure PDF splitter tool.</span>
+                        <a href="PDF Splitter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="PDF Compressor">
+                        <i class="fas fa-compress-alt tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free PDF Compressor Online</span>
+                        <span class="tool-desc">Compress PDF files online for free. Reduce PDF file size without losing quality. Fast and secure PDF compressor tool.</span>
+                        <a href="PDF Compressor.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="File Compressor">
+                        <i class="fas fa-file-archive tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free File Compressor Online</span>
+                        <span class="tool-desc">Compress files online for free. ZIP/RAR compressor tool to reduce file size quickly. Fast, secure and easy to use.</span>
+                        <a href="File Compressor.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="File Splitter">
+                        <i class="fas fa-columns tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free File Splitter Online</span>
+                        <span class="tool-desc">Split large files into smaller parts online for free. Fast, secure and easy to use file splitter tool for big files.</span>
+                        <a href="File Splitter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="File Converter">
+                        <i class="fas fa-exchange-alt tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free File Converter Online</span>
+                        <span class="tool-desc">Convert files online for free. Fast and secure file converter tool to change file formats quickly on mobile and PC.</span>
+                        <a href="File Converter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🖼 Image Tools -->
+            <section class="category" aria-labelledby="img-title">
+                <h2 class="category-title" id="img-title">🖼 Photo / Image Editing Tools</h2>
+                <div class="card-grid">
+                    <div class="tool-card" data-name="Image Converter">
+                        <i class="fas fa-eraser tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free Image Converter Online</span>
+                        <span class="tool-desc">Convert images online for free. Easily change JPG, PNG and WEBP image formats with this fast and secure image converter tool.</span>
+                        <a href="Image Converter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Collage Maker">
+                        <i class="fas fa-images tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free Collage Maker Online</span>
+                        <span class="tool-desc">Create beautiful photo collages online for free. Combine multiple photos into one collage with this fast and easy collage maker tool.</span>
+                        <a href="Collage Maker.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Image Resizer">
+                        <i class="fas fa-expand-arrows-alt tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free Image Resizer Online</span>
+                        <span class="tool-desc">Resize images online for free. Change image width and height easily with this fast and secure image resizer tool.</span>
+                        <a href="Image Resizer.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Filter Effects">
+                        <i class="fas fa-magic tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free Photo Filters & Effects Online</span>
+                        <span class="tool-desc">Apply beautiful photo filters and effects online for free. Add Instagram-like filters to your images quickly with this fast photo editor tool.</span>
+                        <a href="Filter & Effects.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Photo Retouch">
+                        <i class="fas fa-brush tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free Photo Retouch Online</span>
+                        <span class="tool-desc">Retouch portrait photos online for free. Enhance skin, remove imperfections and improve photo quality with this fast photo retouch tool.</span>
+                        <a href="Photo Retouch.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Excel to PDF">
+                        <i class="fas fa-water tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Excel to PDF Converter Online</span>
+                        <span class="tool-desc">Convert Excel files to PDF online for free. Upload XLS or XLSX files and download your PDF instantly. Fast and secure.</span>
+                        <a href="Excel to PDF.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Image Enhancer">
+                        <i class="fas fa-sun tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Image Enhancer Online</span>
+                        <span class="tool-desc">Enhance and upscale your images online for free. Improve image quality, sharpen details, and increase resolution instantly.</span>
+                        <a href="Image Enhancer.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Meme Generator">
+                        <i class="fas fa-smile tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Meme Generator Online</span>
+                        <span class="tool-desc">Create funny memes easily with our free Meme Generator Online. Add text to images and make viral memes instantly.</span>
+                        <a href="Meme Generator.html" class="tool-btn">Open Tool</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎬 Video Tools -->
+            <section class="category" aria-labelledby="vid-title">
+                <h2 class="category-title" id="vid-title">🎬 Video Editing Tools</h2>
+                <div class="card-grid">
+                    <div class="tool-card" data-name="Video Trimmer">
+                        <i class="fas fa-cut tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Video Trimmer Online</span>
+                        <span class="tool-desc">Trim and cut video segments easily with our free Video Trimmer Online. Upload your video and remove unwanted parts in seconds.</span>
+                        <a href="Video Trimmer.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Video Speed Controller">
+                        <i class="fas fa-tachometer-alt tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Video Speed Controller Online</span>
+                        <span class="tool-desc">Change video speed easily with our free Video Speed Controller. Speed up or slow down videos instantly without installing any software.</span>
+                        <a href="Speed Controller.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Subtitle Adder">
+                        <i class="fas fa-closed-captioning tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Subtitle Adder Online</span>
+                        <span class="tool-desc">Add subtitles to your videos easily with our free Subtitle Adder. Upload your video and SRT file to add subtitles instantly.</span>
+                        <a href="Subtitle Adder.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Video Compressor">
+                        <i class="fas fa-compress tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Video Compressor Online</span>
+                        <span class="tool-desc">Compress videos and reduce file size quickly with our free Video Compressor. Optimize video files for easy sharing without losing quality.</span>
+                        <a href="Video Compressor.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Video Reverser">
+                        <i class="fas fa-backward tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Video Reverser Online</span>
+                        <span class="tool-desc">Reverse your videos easily with our free Video Reverser. Play videos backwards instantly without installing any software.</span>
+                        <a href="Video Reverser.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Video Rotator">
+                        <i class="fas fa-redo-alt tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Video Rotator Online</span>
+                        <span class="tool-desc">Rotate videos easily with our free Video Rotator. Turn your video 90°, 180°, or 270° in seconds without installing any software.</span>
+                        <a href="Video Rotator.html" class="tool-btn">Open Tool</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎵 Audio Tools -->
+            <section class="category" aria-labelledby="audio-title">
+                <h2 class="category-title" id="audio-title">🎵 Audio Tools</h2>
+                <div class="card-grid">
+                    <div class="tool-card" data-name="Audio Cutter">
+                        <i class="fas fa-cut tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Audio Cutter Online</span>
+                        <span class="tool-desc">Cut and trim audio files online for free. Fast and secure audio cutter tool to trim MP3 and other audio formats instantly.</span>
+                        <a href="Audio Cutter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Audio Merger">
+                        <i class="fas fa-code-branch tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Audio Merger Online</span>
+                        <span class="tool-desc">Merge multiple audio files into one online for free. Combine MP3 and other audio tracks easily with this fast and secure audio merger tool.</span>
+                        <a href="Audio Merger.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="MP3 Converter">
+                        <i class="fas fa-music tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Free MP3 Converter Online</span>
+                        <span class="tool-desc">Convert audio files to MP3 format online for free. Change AAC, WAV, M4A and more to high-quality MP3. No signup required.</span>
+                        <a href="MP3 Converter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Voice Recorder">
+                        <i class="fas fa-microphone tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Online Voice Recorder</span>
+                        <span class="tool-desc">Record voice and audio online for free. No software installation needed. Perfect for quick memos, voice notes, and interviews. Works on mobile and PC.</span>
+                        <a href="Voice Recorder.html" class="tool-btn">Open Tool</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🧮 Calculator & Financial -->
+            <section class="category" aria-labelledby="calc-title">
+                <h2 class="category-title" id="calc-title">🧮 Calculator & Financial</h2>
+                <div class="card-grid">
+                    <div class="tool-card" data-name="GST Calculator">
+                        <i class="fas fa-calculator tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">GST Calculator Online</span>
+                        <span class="tool-desc">Calculate GST easily with our free online GST calculator. Add or remove GST, find net price and tax amount instantly. Perfect for businesses and retailers.</span>
+                        <a href="GST Calculator.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Currency Converter">
+                        <i class="fas fa-coins tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Currency Converter Online</span>
+                        <span class="tool-desc">Convert currencies instantly with live exchange rates. Free online currency converter for USD, PKR, EUR, GBP, and 150+ world currencies.</span>
+                        <a href="Currency Converter.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Loan Calculator">
+                        <i class="fas fa-hand-holding-usd tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Loan Calculator Online</span>
+                        <span class="tool-desc">Calculate loan EMI, interest, and total payment instantly. Check home loan, car loan, personal loan EMI with principal and interest breakdown.</span>
+                        <a href="Loan Calculator.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Age Calculator">
+                        <i class="fas fa-chart-line tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Age Calculator Online</span>
+                        <span class="tool-desc">Calculate exact age in years, months, weeks, days, hours, and minutes. Free online age calculator — just enter birth date and get instant results.</span>
+                        <a href="Age Calculator.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Compound Interest">
+                        <i class="fas fa-chart-line tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Compound Interest Calculator</span>
+                        <span class="tool-desc">Calculate compound interest and investment growth online for free. See how your money grows with yearly, quarterly or monthly compounding.</span>
+                        <a href="Compound Interest.html" class="tool-btn">Open Tool</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🤖 AI & Dev Tools -->
+            <section class="category" aria-labelledby="ai-title">
+                <h2 class="category-title" id="ai-title">🤖 AI & Dev Tools</h2>
+                <div class="card-grid">
+                    <div class="tool-card" data-name="AI Voiceover">
+                        <i class="fas fa-headphones tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">AI Voiceover Generator</span>
+                        <span class="tool-desc">Convert text to natural-sounding speech with our free AI voiceover generator. Choose from multiple voices and languages. Perfect for videos and presentations.</span>
+                        <a href="AI Voiceover.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="Password Generator">
+                        <i class="fas fa-key tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">Password Generator Online</span>
+                        <span class="tool-desc">Generate strong, random, and secure passwords instantly. Customize length, numbers, symbols, uppercase and lowercase letters. Free online password generator.</span>
+                        <a href="Password Generator.html" class="tool-btn">Open Tool</a>
+                    </div>
+                    <div class="tool-card" data-name="QR Generator">
+                        <i class="fas fa-qrcode tool-icon" aria-hidden="true"></i>
+                        <span class="tool-name">QR Code Generator Online</span>
+                        <span class="tool-desc">Generate QR codes for free — URLs, text, WiFi, vCard, email, and more. Customize with colors and download in high quality. No signup required.</span>
+                        <a href="QR Generator.html" class="tool-btn">Open Tool</a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo-footer">
+                        <span class="logo-tools">Tools</span> <span class="logo-house">House Online</span>
+                    </div>
+                    <div class="footer-tagline">Tools House Online provides 100+ free online tools including PDF converter, image editor, video trimmer, audio tools, AI tools and calculators — fast, secure and free.</div>
+                </div>
+                <div class="footer-email">
+                    <i class="far fa-envelope"></i> <a href="mailto:toolstoseonline@gmail.com">toolstoseonline@gmail.com</a>
+                </div>
+                <div class="footer-links">
+                    <a href="Privacy Policy.html">Privacy Policy</a>
+                    <a href="Terms of Use.html">Terms of Use</a>
+                    <a href="Contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-tools">
+                <div class="footer-tools-title">📋 All Tools</div>
+                <div class="footer-tools-grid">
+                    <div class="footer-tool-category">
+                        <h4>📄 Document & File</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Word to PDF Converter.html">Word to PDF</a></li>
+                            <li><a href="pdf reader.html">PDF Reader</a></li>
+                            <li><a href="PDF Merger.html">PDF Merger</a></li>
+                            <li><a href="PDF Splitter.html">PDF Splitter</a></li>
+                            <li><a href="PDF Compressor.html">PDF Compressor</a></li>
+                            <li><a href="File Compressor.html">File Compressor</a></li>
+                            <li><a href="File Splitter.html">File Splitter</a></li>
+                            <li><a href="File Converter.html">File Converter</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-tool-category">
+                        <h4>🖼 Image Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Image Converter.html">Image Converter</a></li>
+                            <li><a href="Collage Maker.html">Collage Maker</a></li>
+                            <li><a href="Image Resizer.html">Image Resizer</a></li>
+                            <li><a href="Filter & Effects.html">Filter & Effects</a></li>
+                            <li><a href="Photo Retouch.html">Photo Retouch</a></li>
+                            <li><a href="Excel to PDF.html">Excel to PDF</a></li>
+                            <li><a href="Image Enhancer.html">Image Enhancer</a></li>
+                            <li><a href="Meme Generator.html">Meme Generator</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-tool-category">
+                        <h4>🎬 Video Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Video Trimmer.html">Video Trimmer</a></li>
+                            <li><a href="Speed Controller.html">Speed Controller</a></li>
+                            <li><a href="Subtitle Adder.html">Subtitle Adder</a></li>
+                            <li><a href="Video Compressor.html">Video Compressor</a></li>
+                            <li><a href="Video Reverser.html">Video Reverser</a></li>
+                            <li><a href="Video Rotator.html">Video Rotator</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-tool-category">
+                        <h4>🎵 Audio Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Audio Cutter.html">Audio Cutter</a></li>
+                            <li><a href="Audio Merger.html">Audio Merger</a></li>
+                            <li><a href="MP3 Converter.html">MP3 Converter</a></li>
+                            <li><a href="Voice Recorder.html">Voice Recorder</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-tool-category">
+                        <h4>🧮 Calculators</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="GST Calculator.html">GST Calculator</a></li>
+                            <li><a href="Currency Converter.html">Currency Converter</a></li>
+                            <li><a href="Loan Calculator.html">Loan Calculator</a></li>
+                            <li><a href="Age Calculator.html">Age Calculator</a></li>
+                            <li><a href="Compound Interest.html">Compound Interest</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-tool-category">
+                        <h4>🤖 AI & Dev Tools</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="AI Voiceover.html">AI Voiceover</a></li>
+                            <li><a href="Password Generator.html">Password Generator</a></li>
+                            <li><a href="QR Generator.html">QR Generator</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-tool-category">
+                        <h4>🔗 Quick Links</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Home.html">Home</a></li>
+                            <li><a href="Tools.html">All Tools</a></li>
+                            <li><a href="Contact.html">Contact</a></li>
+                            <li><a href="CamScanner.html">CamScanner</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-tool-category">
+                        <h4>📜 Legal</h4>
+                        <ul class="footer-tool-list">
+                            <li><a href="Privacy Policy.html">Privacy Policy</a></li>
+                            <li><a href="Terms of Use.html">Terms of Use</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2025 Tools House Online — Fast, Secure & Free Online Tools
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+        const hamburger = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        hamburger.addEventListener('click', () => { mobileNav.classList.toggle('show'); });
+
+        const scrollBtn = document.getElementById('scrollTop');
+        scrollBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+        function filterTools() {
+            const query = document.getElementById('toolSearch').value.toLowerCase().trim();
+            document.querySelectorAll('.tool-card').forEach(card => {
+                const name = card.getAttribute('data-name') || card.querySelector('.tool-name')?.innerText || '';
+                card.style.display = name.toLowerCase().includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        const MAX_RECENT_TOOLS = 8;
+        const STORAGE_KEY = 'recentlyViewedTools';
+
+        function loadRecentTools() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
+        function saveRecentTools(tools) { localStorage.setItem(STORAGE_KEY, JSON.stringify(tools)); }
+
+        function addRecentTool(name, url, icon) {
+            let recentTools = loadRecentTools().filter(t => t.url !== url);
+            recentTools.unshift({ name, url, icon, timestamp: Date.now() });
+            if (recentTools.length > MAX_RECENT_TOOLS) recentTools = recentTools.slice(0, MAX_RECENT_TOOLS);
+            saveRecentTools(recentTools);
+            displayRecentTools();
+        }
+
+        function displayRecentTools() {
+            const recentTools = loadRecentTools();
+            const container = document.getElementById('recentToolsList');
+            if (recentTools.length === 0) {
+                container.innerHTML = '<span class="recent-tool-empty">No tools viewed yet. Start exploring!</span>';
+                return;
+            }
+            container.innerHTML = recentTools.map(tool => `
+                <a href="${tool.url}" class="recent-tool-item" onclick="trackToolClick('${tool.name}', '${tool.url}', '${tool.icon}')">
+                    <i class="${tool.icon}"></i>${tool.name}
+                </a>`).join('');
+        }
+
+        function trackToolClick(name, url, icon) { addRecentTool(name, url, icon); }
+        function clearRecentTools() { localStorage.removeItem(STORAGE_KEY); displayRecentTools(); }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayRecentTools();
+            document.querySelectorAll('.tool-card').forEach(card => {
+                const link = card.querySelector('.tool-btn');
+                const name = card.getAttribute('data-name');
+                const iconClass = card.querySelector('.tool-icon')?.className || 'fas fa-tools';
+                if (link && name) {
+                    link.addEventListener('click', function() { addRecentTool(name, link.getAttribute('href'), iconClass); });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
