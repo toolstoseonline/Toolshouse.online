@@ -8,10 +8,8 @@
 <link rel="canonical" href="https://www.toolshouse.online/Excel to PDF.html">
 <!-- SheetJS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
 :root{
   --bg:#0f172a;
@@ -21,9 +19,7 @@
   --success:#22c55e;
   --error:#ef4444;
 }
-
 *{box-sizing:border-box;font-family:system-ui,sans-serif;}
-
 body{
   background:var(--bg);
   color:var(--text);
@@ -33,7 +29,6 @@ body{
   min-height:100vh;
   padding:20px;
 }
-
 .container{
   background:var(--card);
   width:100%;
@@ -42,9 +37,7 @@ body{
   border-radius:14px;
   box-shadow:0 20px 40px rgba(0,0,0,.5);
 }
-
 h1{text-align:center;margin-bottom:20px;}
-
 input,button{
   width:100%;
   padding:12px;
@@ -54,16 +47,13 @@ input,button{
   background:#1f2937;
   color:white;
 }
-
 button{
   background:var(--accent);
   font-weight:bold;
   cursor:pointer;
 }
-
 .status{text-align:center;font-size:14px;}
 .error{color:var(--error);text-align:center;}
-
 iframe{
   width:100%;
   height:300px;
@@ -71,90 +61,123 @@ iframe{
   margin-top:10px;
   border-radius:8px;
 }
-
+/* FIX 5: width:100% add kiya download button mein */
 .download-btn{
   display:none;
   background:var(--success);
   color:black;
   font-weight:bold;
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border-radius:8px;
+  text-align:center;
+  text-decoration:none;
+  font-size:15px;
 }
 </style>
 </head>
 <body>
-
 <div class="container">
 <h1>Excel to PDF Converter</h1>
-
 <input type="file" id="excelFile" accept=".xlsx,.xls">
-
 <button id="convertBtn">Convert to PDF</button>
-
 <p class="status" id="status"></p>
 <p class="error" id="error"></p>
-
 <iframe id="preview"></iframe>
-
 <a id="downloadBtn" class="download-btn" download="converted.pdf">Download PDF</a>
 </div>
-
 <script>
 const { jsPDF } = window.jspdf;
+const fileInput    = document.getElementById("excelFile");
+const convertBtn   = document.getElementById("convertBtn");
+const statusText   = document.getElementById("status");
+const errorText    = document.getElementById("error");
+const preview      = document.getElementById("preview");
+const downloadBtn  = document.getElementById("downloadBtn");
 
-const fileInput=document.getElementById("excelFile");
-const convertBtn=document.getElementById("convertBtn");
-const statusText=document.getElementById("status");
-const errorText=document.getElementById("error");
-const preview=document.getElementById("preview");
-const downloadBtn=document.getElementById("downloadBtn");
+convertBtn.addEventListener("click", () => {
+  errorText.textContent  = "";
+  statusText.textContent = "";
+  downloadBtn.style.display = "none";
 
-convertBtn.addEventListener("click",()=>{
-  errorText.textContent="";
-  statusText.textContent="";
-  downloadBtn.style.display="none";
-
-  const file=fileInput.files[0];
-
-  if(!file){
-    errorText.textContent="Please upload an Excel file.";
+  const file = fileInput.files[0];
+  if (!file) {
+    errorText.textContent = "Please upload an Excel file.";
     return;
   }
 
-  statusText.textContent="Processing file...";
-  convertBtn.disabled=true;
+  statusText.textContent  = "Processing file...";
+  convertBtn.disabled     = true;
 
-  const reader=new FileReader();
+  const reader = new FileReader();
   reader.readAsArrayBuffer(file);
 
-  reader.onload=function(e){
-    const data=new Uint8Array(e.target.result);
-    const workbook=XLSX.read(data,{type:"array"});
-    const sheetName=workbook.SheetNames[0];
-    const sheet=XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{header:1});
+  reader.onload = function(e) {
+    try {
+      const data     = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet    = XLSX.utils.sheet_to_json(
+                         workbook.Sheets[sheetName], { header: 1 }
+                       );
 
-    const doc=new jsPDF();
-    let y=10;
+      const doc        = new jsPDF();
+      const pageWidth  = doc.internal.pageSize.getWidth();
+      const maxWidth   = pageWidth - 20; // left(10) + right(10) margin
+      let   y          = 10;
 
-    sheet.forEach(row=>{
-      doc.text(row.join(" | "),10,y);
-      y+=10;
-      if(y>280){
-        doc.addPage();
-        y=10;
-      }
-    });
+      // FIX 3: empty rows filter karo
+      const filteredSheet = sheet.filter(row =>
+        Array.isArray(row) && row.some(cell => cell !== null && cell !== undefined && cell !== "")
+      );
 
-    const pdfBlob=doc.output("blob");
-    const pdfUrl=URL.createObjectURL(pdfBlob);
+      filteredSheet.forEach(row => {
+        // FIX 2: long text wrap karo — splitTextToSize use karo
+        const rowText  = row.map(cell => (cell !== null && cell !== undefined) ? String(cell) : "").join(" | ");
+        const lines    = doc.splitTextToSize(rowText, maxWidth);
 
-    preview.src=pdfUrl;
-    downloadBtn.href=pdfUrl;
-    downloadBtn.style.display="block";
+        lines.forEach(line => {
+          if (y > 280) {
+            doc.addPage();
+            y = 10;
+          }
+          doc.text(line, 10, y);
+          y += 8;
+        });
 
-    statusText.textContent="Conversion completed!";
-    convertBtn.disabled=false;
+        y += 2; // row ke baad thodi space
+      });
+
+      const pdfBlob = doc.output("blob");
+      const pdfUrl  = URL.createObjectURL(pdfBlob);
+
+      preview.src           = pdfUrl;
+      downloadBtn.href      = pdfUrl;
+      downloadBtn.style.display = "block";
+      statusText.textContent = "Conversion completed!";
+
+    } catch (err) {
+      // FIX 1: error handling — corrupt/invalid file
+      errorText.textContent = "File read karne mein masla hua. Valid Excel file upload karein.";
+      statusText.textContent = "";
+    }
+
+    // FIX 4: button hamesha re-enable ho — try/catch ke baad
+    convertBtn.disabled = false;
+  };
+
+  // FIX 1: reader.onerror bhi handle karo
+  reader.onerror = function() {
+    errorText.textContent  = "File load nahi ho saki. Dobara try karein.";
+    statusText.textContent = "";
+    convertBtn.disabled    = false; // FIX 4: yahan bhi re-enable
   };
 });
 </script>
-<script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
+
+<!-- FIX 6: Suspicious ad/malware script REMOVE kar diya -->
+<!-- (function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/...'}) -->
+
 </body>
 </html>
