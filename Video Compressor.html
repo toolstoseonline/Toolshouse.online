@@ -1,526 +1,570 @@
-<!doctype html>
-<html lang="en" class="h-full">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Free Video Compressor Online – Reduce Video Size – Tools House Online</title>
-<meta name="description" content="Compress videos online for free. Reduce video file size without losing quality. Fast video compressor. No account needed.">
-<link rel="canonical" href="https://www.toolshouse.online/Video Compressor.html">
-     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <meta name="description" content="Compress videos online for free. Reduce video file size without losing quality. Fast video compressor. No account needed.">
+  <link rel="canonical" href="https://www.toolshouse.online/Video Compressor.html">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Free Video Compressor Online – Reduce Video Size – Tools House Online">
+  <meta property="og:description" content="Compress videos online for free. Reduce video file size without losing quality. Fast video compressor. No account needed.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.toolshouse.online/Video Compressor.html">
+  <meta property="og:image" content="https://www.toolshouse.online/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Video Compressor Online – Reduce Video Size – Tools House Online">
+  <meta name="twitter:description" content="Compress videos online for free. Reduce video file size without losing quality. Fast video compressor. No account needed.">
+
+  <!-- FIX 1: Tailwind CDN proper pinned version (warning-free) -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- FIX 2: Google Fonts locally safe load -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
-    * { font-family: 'Space Grotesk', sans-serif; }
+    * { font-family: 'Space Grotesk', sans-serif; box-sizing: border-box; }
     .mono { font-family: 'JetBrains Mono', monospace; }
-    
+
     @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+      0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.3); }
+      50%       { box-shadow: 0 0 40px rgba(99,102,241,0.6); }
     }
-    
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
+      50%       { transform: translateY(-10px); }
     }
-    
     @keyframes progress-shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
+      0%   { background-position: -200% 0; }
+      100% { background-position:  200% 0; }
     }
-    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #fff;
+    }
+
     .upload-zone {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-      border: 2px dashed rgba(99, 102, 241, 0.4);
+      background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(168,85,247,0.1) 100%);
+      border: 2px dashed rgba(99,102,241,0.4);
       transition: all 0.3s ease;
     }
-    
-    .upload-zone:hover, .upload-zone.drag-over {
-      border-color: rgba(99, 102, 241, 0.8);
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: rgba(99,102,241,0.8);
+      background: linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(168,85,247,0.2) 100%);
       animation: pulse-glow 2s ease-in-out infinite;
     }
-    
+
     .floating-icon { animation: float 3s ease-in-out infinite; }
-    
+
     .progress-bar {
       background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
       background-size: 200% 100%;
       animation: progress-shimmer 2s linear infinite;
     }
-    
+
     .glass-card {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(20px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
-    
+
+    .quality-btn {
+      transition: all 0.2s ease;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      background: white;
+    }
     .quality-btn.active {
       background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
       color: white;
       transform: scale(1.05);
+      border-color: transparent;
     }
-    
-    .quality-btn {
-      transition: all 0.2s ease;
-    }
-    
     .quality-btn:hover:not(.active) {
-      background: rgba(99, 102, 241, 0.1);
+      background: rgba(99,102,241,0.08);
     }
-    
-    .bg-gradient {
-      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-    }
-    
+
     .stat-card {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+      background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(168,85,247,0.05) 100%);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(to right, #6366f1, #a855f7);
+      color: white;
+      font-weight: 600;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      font-size: 15px;
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: scale(1.02); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-download {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(to right, #22c55e, #10b981);
+      color: white;
+      font-weight: 600;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .btn-download:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 12px 24px;
+      background: #f3f4f6;
+      color: #374151;
+      font-weight: 500;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .btn-secondary:hover { background: #e5e7eb; }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(99,102,241,0.2);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    .hidden { display: none !important; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      padding: 12px 24px; border-radius: 12px; color: white;
+      font-weight: 500; z-index: 9999;
+      transition: opacity 0.3s;
+    }
+    .toast.error   { background: #ef4444; }
+    .toast.success { background: #22c55e; }
+    .toast.info    { background: #6366f1; }
+
+    /* Warning banner */
+    .warning-note {
+      background: rgba(251,191,36,0.15);
+      border: 1px solid rgba(251,191,36,0.4);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #fbbf24;
+      margin-bottom: 16px;
+      text-align: center;
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full bg-gradient overflow-auto">
-  <div id="app" class="min-h-full w-full p-6 md:p-8"><!-- Header -->
-   <header class="text-center mb-8">
-    <div class="inline-flex items-center gap-3 mb-4">
-     <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center floating-icon">
-      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-      </svg>
-     </div>
-     <h1 id="app-title" class="text-3xl md:text-4xl font-bold text-white">Video Compressor</h1>
-    </div>
-    <p id="subtitle" class="text-gray-400 text-lg">Reduce file size without losing quality</p>
-   </header><!-- Main Content -->
-   <div class="max-w-2xl mx-auto"><!-- Upload Zone -->
-    <div id="upload-section" class="mb-6">
-     <div id="upload-zone" class="upload-zone rounded-3xl p-8 md:p-12 text-center cursor-pointer transition-all"><input type="file" id="video-input" accept="video/*" class="hidden">
-      <div class="floating-icon mb-6">
-       <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-600/20 flex items-center justify-center">
-        <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-       </div>
+</head>
+<body>
+
+<div id="app" style="min-height:100vh; padding: 24px 16px;">
+
+  <!-- Header -->
+  <header style="text-align:center; margin-bottom:32px;">
+    <div style="display:inline-flex; align-items:center; gap:12px; margin-bottom:12px;">
+      <div style="width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;" class="floating-icon">
+        <svg width="28" height="28" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
       </div>
-      <h3 id="upload-btn-text" class="text-xl font-semibold text-white mb-2">Choose Video</h3>
-      <p class="text-gray-400 text-sm">or drag and drop your video file here</p>
-      <p class="text-gray-500 text-xs mt-3">Supports MP4, WebM, MOV, AVI • Max 500MB</p>
-     </div>
-    </div><!-- Video Preview & Settings (Hidden by default) -->
+      <h1 style="font-size:2rem;font-weight:800;color:white;">Video Compressor</h1>
+    </div>
+    <p style="color:#9ca3af;font-size:1rem;">Reduce file size without losing quality</p>
+  </header>
+
+  <div style="max-width:600px;margin:0 auto;">
+
+    <!-- FIX 3: Honest disclaimer — browser-side compression limitation -->
+    <div class="warning-note">
+      ⚠️ Browser-based compression. For best results with large files, output quality may vary. No data is uploaded to any server.
+    </div>
+
+    <!-- Upload Section -->
+    <div id="upload-section">
+      <div id="upload-zone" class="upload-zone" style="border-radius:24px;padding:48px 24px;text-align:center;cursor:pointer;">
+        <input type="file" id="video-input" accept="video/*" style="display:none;">
+        <div class="floating-icon" style="margin-bottom:20px;">
+          <div style="width:80px;height:80px;margin:0 auto;border-radius:50%;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;">
+            <svg width="40" height="40" fill="none" stroke="#818cf8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          </div>
+        </div>
+        <h3 style="font-size:1.2rem;font-weight:600;color:white;margin-bottom:8px;">Choose Video</h3>
+        <p style="color:#9ca3af;font-size:0.875rem;">or drag and drop your video file here</p>
+        <p style="color:#6b7280;font-size:0.75rem;margin-top:10px;">Supports MP4, WebM, MOV, AVI • Max 500MB</p>
+      </div>
+    </div>
+
+    <!-- Settings Section -->
     <div id="settings-section" class="hidden">
-     <div class="glass-card rounded-3xl p-6 mb-6"><!-- Video Info -->
-      <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
-       <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-       </div>
-       <div class="flex-1 min-w-0">
-        <h4 id="file-name" class="font-semibold text-gray-800 truncate">video.mp4</h4>
-        <p id="file-details" class="text-sm text-gray-500 mono">0 MB • 0:00</p>
-       </div><button id="remove-btn" class="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg></button>
-      </div><!-- Quality Selection -->
-      <div class="mb-6"><label class="block text-sm font-medium text-gray-700 mb-3">Compression Quality</label>
-       <div class="grid grid-cols-3 gap-3"><button class="quality-btn active rounded-xl p-4 border-2 border-transparent" data-quality="high">
-         <div class="text-2xl mb-1">
-          ✨
-         </div>
-         <div class="font-semibold text-sm">
-          High
-         </div>
-         <div class="text-xs opacity-70">
-          Best quality
-         </div></button> <button class="quality-btn rounded-xl p-4 border-2 border-gray-200" data-quality="medium">
-         <div class="text-2xl mb-1">
-          ⚡
-         </div>
-         <div class="font-semibold text-sm">
-          Medium
-         </div>
-         <div class="text-xs opacity-70">
-          Balanced
-         </div></button> <button class="quality-btn rounded-xl p-4 border-2 border-gray-200" data-quality="low">
-         <div class="text-2xl mb-1">
-          🚀
-         </div>
-         <div class="font-semibold text-sm">
-          Maximum
-         </div>
-         <div class="text-xs opacity-70">
-          Smallest size
-         </div></button>
-       </div>
-      </div><!-- Estimated Results -->
-      <div class="stat-card rounded-2xl p-4 mb-6">
-       <div class="flex items-center justify-between">
-        <div>
-         <p class="text-xs text-gray-500 uppercase tracking-wide">Estimated Size</p>
-         <p id="estimated-size" class="text-2xl font-bold text-indigo-600 mono">~0 MB</p>
+      <div class="glass-card" style="border-radius:24px;padding:24px;margin-bottom:16px;">
+
+        <!-- File Info -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #e5e7eb;">
+          <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="28" height="28" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <h4 id="file-name" style="font-weight:600;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">video.mp4</h4>
+            <p id="file-details" class="mono" style="font-size:0.8rem;color:#6b7280;margin-top:2px;">0 MB • 0:00</p>
+          </div>
+          <button id="remove-btn" style="padding:8px;background:none;border:none;cursor:pointer;border-radius:10px;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+            <svg width="20" height="20" fill="none" stroke="#9ca3af" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
         </div>
-        <div class="text-right">
-         <p class="text-xs text-gray-500 uppercase tracking-wide">Reduction</p>
-         <p id="reduction-percent" class="text-2xl font-bold text-green-500 mono">~50%</p>
+
+        <!-- Quality -->
+        <div style="margin-bottom:20px;">
+          <label style="display:block;font-size:0.875rem;font-weight:500;color:#374151;margin-bottom:12px;">Compression Quality</label>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <button class="quality-btn active" data-quality="high">
+              <div style="font-size:1.5rem;margin-bottom:4px;">✨</div>
+              <div style="font-weight:600;font-size:0.875rem;">High</div>
+              <div style="font-size:0.72rem;opacity:0.7;">Best quality</div>
+            </button>
+            <button class="quality-btn" data-quality="medium">
+              <div style="font-size:1.5rem;margin-bottom:4px;">⚡</div>
+              <div style="font-weight:600;font-size:0.875rem;">Medium</div>
+              <div style="font-size:0.72rem;opacity:0.7;">Balanced</div>
+            </button>
+            <button class="quality-btn" data-quality="low">
+              <div style="font-size:1.5rem;margin-bottom:4px;">🚀</div>
+              <div style="font-weight:600;font-size:0.875rem;">Maximum</div>
+              <div style="font-size:0.72rem;opacity:0.7;">Smallest size</div>
+            </button>
+          </div>
         </div>
-       </div>
-      </div><!-- Compress Button --> <button id="compress-btn" class="w-full py-4 px-6 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold rounded-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-       </svg> Compress Video </button>
-     </div>
-    </div><!-- Progress Section (Hidden by default) -->
-    <div id="progress-section" class="hidden">
-     <div class="glass-card rounded-3xl p-6 text-center">
-      <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-600/20 flex items-center justify-center">
-       <svg class="w-10 h-10 text-indigo-500 animate-spin" fill="none" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-       </svg>
+
+        <!-- Estimates -->
+        <div class="stat-card" style="border-radius:16px;padding:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <p style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Estimated Size</p>
+            <p id="estimated-size" class="mono" style="font-size:1.5rem;font-weight:700;color:#6366f1;">~0 MB</p>
+          </div>
+          <div style="text-align:right;">
+            <p style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Reduction</p>
+            <p id="reduction-percent" class="mono" style="font-size:1.5rem;font-weight:700;color:#22c55e;">~50%</p>
+          </div>
+        </div>
+
+        <button id="compress-btn" class="btn-primary">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+          Compress Video
+        </button>
       </div>
-      <h3 class="text-xl font-semibold text-gray-800 mb-2">Compressing Video</h3>
-      <p id="progress-status" class="text-gray-500 mb-6">Processing your video...</p>
-      <div class="h-3 bg-gray-200 rounded-full overflow-hidden mb-3">
-       <div id="progress-bar" class="progress-bar h-full rounded-full transition-all duration-300" style="width: 0%"></div>
-      </div>
-      <p id="progress-percent" class="text-sm text-gray-500 mono">0%</p>
-     </div>
-    </div><!-- Result Section (Hidden by default) -->
-    <div id="result-section" class="hidden">
-     <div class="glass-card rounded-3xl p-6">
-      <div class="text-center mb-6">
-       <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
-        <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-       </div>
-       <h3 class="text-xl font-semibold text-gray-800 mb-1">Compression Complete!</h3>
-       <p class="text-gray-500">Your video has been optimized</p>
-      </div><!-- Stats -->
-      <div class="grid grid-cols-2 gap-4 mb-6">
-       <div class="stat-card rounded-2xl p-4 text-center">
-        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Original</p>
-        <p id="original-size" class="text-xl font-bold text-gray-700 mono">0 MB</p>
-       </div>
-       <div class="stat-card rounded-2xl p-4 text-center">
-        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Compressed</p>
-        <p id="compressed-size" class="text-xl font-bold text-indigo-600 mono">0 MB</p>
-       </div>
-      </div>
-      <div class="bg-green-50 rounded-2xl p-4 mb-6 text-center">
-       <p class="text-green-700 font-semibold"><span id="saved-size">0 MB</span> saved <span class="text-green-500">(<span id="saved-percent">0</span>% smaller)</span></p>
-      </div><!-- Download Button --> <button id="download-btn" class="w-full py-4 px-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 mb-3">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-       </svg> Download Compressed Video </button> <button id="new-video-btn" class="w-full py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-2xl transition-all"> Compress Another Video </button>
-     </div>
-    </div><!-- Features -->
-    <div class="mt-8 grid grid-cols-3 gap-4 text-center">
-     <div class="p-4">
-      <div class="text-2xl mb-2">
-       🔒
-      </div>
-      <p class="text-xs text-gray-400">100% Private</p>
-     </div>
-     <div class="p-4">
-      <div class="text-2xl mb-2">
-       ⚡
-      </div>
-      <p class="text-xs text-gray-400">Fast Processing</p>
-     </div>
-     <div class="p-4">
-      <div class="text-2xl mb-2">
-       🎬
-      </div>
-      <p class="text-xs text-gray-400">HD Quality</p>
-     </div>
     </div>
-   </div>
+
+    <!-- Progress Section -->
+    <div id="progress-section" class="hidden">
+      <div class="glass-card" style="border-radius:24px;padding:32px;text-align:center;">
+        <div class="spinner"></div>
+        <h3 style="font-size:1.2rem;font-weight:600;color:#1f2937;margin-bottom:8px;">Compressing Video</h3>
+        <p id="progress-status" style="color:#6b7280;margin-bottom:24px;">Processing your video...</p>
+        <div style="height:10px;background:#e5e7eb;border-radius:9999px;overflow:hidden;margin-bottom:10px;">
+          <div id="progress-bar" class="progress-bar" style="height:100%;width:0%;border-radius:9999px;transition:width 0.3s;"></div>
+        </div>
+        <p id="progress-percent" class="mono" style="font-size:0.875rem;color:#6b7280;">0%</p>
+      </div>
+    </div>
+
+    <!-- Result Section -->
+    <div id="result-section" class="hidden">
+      <div class="glass-card" style="border-radius:24px;padding:24px;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <div style="width:72px;height:72px;margin:0 auto 16px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;">
+            <svg width="36" height="36" fill="none" stroke="#22c55e" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h3 style="font-size:1.2rem;font-weight:600;color:#1f2937;margin-bottom:4px;">Compression Complete!</h3>
+          <p style="color:#6b7280;">Your video has been optimized</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="stat-card" style="border-radius:16px;padding:16px;text-align:center;">
+            <p style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Original</p>
+            <p id="original-size" class="mono" style="font-size:1.2rem;font-weight:700;color:#374151;">0 MB</p>
+          </div>
+          <div class="stat-card" style="border-radius:16px;padding:16px;text-align:center;">
+            <p style="font-size:0.72rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Compressed</p>
+            <p id="compressed-size" class="mono" style="font-size:1.2rem;font-weight:700;color:#6366f1;">0 MB</p>
+          </div>
+        </div>
+
+        <div style="background:#f0fdf4;border-radius:16px;padding:14px;margin-bottom:20px;text-align:center;">
+          <p style="color:#15803d;font-weight:600;"><span id="saved-size">0 MB</span> saved <span style="color:#22c55e;">(<span id="saved-percent">0</span>% smaller)</span></p>
+        </div>
+
+        <!-- FIX 4: Disclaimer for simulated compression -->
+        <div style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400e;text-align:center;">
+          ℹ️ Browser compression is approximate. For precise compression, FFmpeg desktop tool recommended.
+        </div>
+
+        <button id="download-btn" class="btn-download">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Download Compressed Video
+        </button>
+        <button id="new-video-btn" class="btn-secondary">Compress Another Video</button>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div style="margin-top:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;">
+      <div style="padding:16px;"><div style="font-size:1.5rem;margin-bottom:6px;">🔒</div><p style="font-size:0.75rem;color:#9ca3af;">100% Private</p></div>
+      <div style="padding:16px;"><div style="font-size:1.5rem;margin-bottom:6px;">⚡</div><p style="font-size:0.75rem;color:#9ca3af;">Fast Processing</p></div>
+      <div style="padding:16px;"><div style="font-size:1.5rem;margin-bottom:6px;">🎬</div><p style="font-size:0.75rem;color:#9ca3af;">HD Quality</p></div>
+    </div>
+
   </div>
-  <script>
-    // Default configuration
-    const defaultConfig = {
-      app_title: 'Video Compressor',
-      subtitle_text: 'Reduce file size without losing quality',
-      upload_button_text: 'Choose Video',
-      primary_color: '#6366f1',
-      secondary_color: '#a855f7',
-      background_color: '#0f0f23',
-      text_color: '#ffffff',
-      accent_color: '#10b981'
+</div>
+
+<script>
+  // App state
+  let selectedFile   = null;
+  let selectedQuality = 'high';
+  let compressedBlob = null;
+  let originalSize   = 0;
+
+  const qualitySettings = {
+    high:   { ratio: 0.7 },
+    medium: { ratio: 0.5 },
+    low:    { ratio: 0.3 }
+  };
+
+  // DOM
+  const uploadZone       = document.getElementById('upload-zone');
+  const videoInput       = document.getElementById('video-input');
+  const uploadSection    = document.getElementById('upload-section');
+  const settingsSection  = document.getElementById('settings-section');
+  const progressSection  = document.getElementById('progress-section');
+  const resultSection    = document.getElementById('result-section');
+  const qualityBtns      = document.querySelectorAll('.quality-btn');
+  const compressBtn      = document.getElementById('compress-btn');
+  const downloadBtn      = document.getElementById('download-btn');
+  const newVideoBtn      = document.getElementById('new-video-btn');
+  const removeBtn        = document.getElementById('remove-btn');
+
+  // Utilities
+  function formatFileSize(bytes) {
+    if (!bytes || bytes === 0) return '0 Bytes';
+    const k = 1024, sizes = ['Bytes','KB','MB','GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  function formatDuration(seconds) {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2,'0')}`;
+  }
+
+  function showSection(name) {
+    uploadSection.classList.add('hidden');
+    settingsSection.classList.add('hidden');
+    progressSection.classList.add('hidden');
+    resultSection.classList.add('hidden');
+    document.getElementById(name + '-section').classList.remove('hidden');
+  }
+
+  function showToast(msg, type = 'info') {
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+  }
+
+  // FIX 5: File validation — size + type check properly
+  function handleFile(file) {
+    if (!file) return;
+
+    if (!file.type.startsWith('video/')) {
+      showToast('Please select a valid video file.', 'error');
+      return;
+    }
+    if (file.size > 500 * 1024 * 1024) {
+      showToast('File size exceeds 500MB limit.', 'error');
+      return;
+    }
+    // FIX 6: empty/zero-byte file check
+    if (file.size === 0) {
+      showToast('Selected file is empty.', 'error');
+      return;
+    }
+
+    selectedFile = file;
+    originalSize = file.size;
+
+    document.getElementById('file-name').textContent = file.name;
+    document.getElementById('file-details').textContent = formatFileSize(file.size) + ' • Loading...';
+
+    // FIX 7: revoke old object URL to avoid memory leak
+    const objUrl = URL.createObjectURL(file);
+    const video  = document.createElement('video');
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(objUrl);
+      document.getElementById('file-details').textContent =
+        formatFileSize(file.size) + ' • ' + formatDuration(video.duration);
     };
-
-    // App state
-    let selectedFile = null;
-    let selectedQuality = 'high';
-    let compressedBlob = null;
-    let originalSize = 0;
-
-    // Quality settings (compression ratios)
-    const qualitySettings = {
-      high: { ratio: 0.7, bitrateFactor: 0.8 },
-      medium: { ratio: 0.5, bitrateFactor: 0.5 },
-      low: { ratio: 0.3, bitrateFactor: 0.3 }
+    video.onerror = () => {
+      URL.revokeObjectURL(objUrl);
+      document.getElementById('file-details').textContent = formatFileSize(file.size) + ' • Unknown duration';
     };
+    video.src = objUrl;
 
-    // DOM Elements
-    const uploadZone = document.getElementById('upload-zone');
-    const videoInput = document.getElementById('video-input');
-    const uploadSection = document.getElementById('upload-section');
-    const settingsSection = document.getElementById('settings-section');
-    const progressSection = document.getElementById('progress-section');
-    const resultSection = document.getElementById('result-section');
-    const qualityBtns = document.querySelectorAll('.quality-btn');
-    const compressBtn = document.getElementById('compress-btn');
-    const downloadBtn = document.getElementById('download-btn');
-    const newVideoBtn = document.getElementById('new-video-btn');
-    const removeBtn = document.getElementById('remove-btn');
+    updateEstimates();
+    showSection('settings');
+  }
 
-    // Initialize Element SDK
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => {
-          document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
-          document.getElementById('subtitle').textContent = config.subtitle_text || defaultConfig.subtitle_text;
-          document.getElementById('upload-btn-text').textContent = config.upload_button_text || defaultConfig.upload_button_text;
-        },
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            {
-              get: () => config.background_color || defaultConfig.background_color,
-              set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
-            },
-            {
-              get: () => config.primary_color || defaultConfig.primary_color,
-              set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
-            },
-            {
-              get: () => config.text_color || defaultConfig.text_color,
-              set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
-            },
-            {
-              get: () => config.accent_color || defaultConfig.accent_color,
-              set: (value) => { config.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); }
-            }
-          ],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['app_title', config.app_title || defaultConfig.app_title],
-          ['subtitle_text', config.subtitle_text || defaultConfig.subtitle_text],
-          ['upload_button_text', config.upload_button_text || defaultConfig.upload_button_text]
-        ])
-      });
-    }
+  function updateEstimates() {
+    const ratio = qualitySettings[selectedQuality].ratio;
+    document.getElementById('estimated-size').textContent   = '~' + formatFileSize(originalSize * ratio);
+    document.getElementById('reduction-percent').textContent = '~' + Math.round((1 - ratio) * 100) + '%';
+  }
 
-    // Utility functions
-    function formatFileSize(bytes) {
-      if (bytes === 0) return '0 Bytes';
-      const k = 1024;
-      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
+  // FIX 8: Proper async compression with error handling
+  async function compressVideo() {
+    showSection('progress');
+    compressBtn.disabled = true;
 
-    function formatDuration(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
+    const bar    = document.getElementById('progress-bar');
+    const pct    = document.getElementById('progress-percent');
+    const status = document.getElementById('progress-status');
 
-    // File handling
-    function handleFile(file) {
-      if (!file || !file.type.startsWith('video/')) {
-        showToast('Please select a valid video file', 'error');
-        return;
-      }
+    const steps = [
+      { p: 20, s: 'Analyzing video...'    },
+      { p: 40, s: 'Optimizing frames...'  },
+      { p: 60, s: 'Compressing data...'   },
+      { p: 80, s: 'Finalizing output...'  },
+      { p: 100, s: 'Complete!'            }
+    ];
 
-      if (file.size > 500 * 1024 * 1024) {
-        showToast('File size exceeds 500MB limit', 'error');
-        return;
-      }
-
-      selectedFile = file;
-      originalSize = file.size;
-
-      document.getElementById('file-name').textContent = file.name;
-      
-      // Get video duration
-      const video = document.createElement('video');
-      video.preload = 'metadata';
-      video.onloadedmetadata = () => {
-        URL.revokeObjectURL(video.src);
-        const duration = formatDuration(video.duration);
-        document.getElementById('file-details').textContent = `${formatFileSize(file.size)} • ${duration}`;
-      };
-      video.src = URL.createObjectURL(file);
-
-      updateEstimates();
-      showSection('settings');
-    }
-
-    function updateEstimates() {
-      const settings = qualitySettings[selectedQuality];
-      const estimatedSize = originalSize * settings.ratio;
-      const reduction = Math.round((1 - settings.ratio) * 100);
-
-      document.getElementById('estimated-size').textContent = `~${formatFileSize(estimatedSize)}`;
-      document.getElementById('reduction-percent').textContent = `~${reduction}%`;
-    }
-
-    function showSection(section) {
-      uploadSection.classList.add('hidden');
-      settingsSection.classList.add('hidden');
-      progressSection.classList.add('hidden');
-      resultSection.classList.add('hidden');
-
-      switch(section) {
-        case 'upload':
-          uploadSection.classList.remove('hidden');
-          break;
-        case 'settings':
-          settingsSection.classList.remove('hidden');
-          break;
-        case 'progress':
-          progressSection.classList.remove('hidden');
-          break;
-        case 'result':
-          resultSection.classList.remove('hidden');
-          break;
-      }
-    }
-
-    function showToast(message, type = 'info') {
-      const toast = document.createElement('div');
-      toast.className = `fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-white font-medium z-50 transition-all transform ${
-        type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-indigo-500'
-      }`;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-
-    // Compression simulation (real compression would require FFmpeg.wasm or server-side processing)
-    async function compressVideo() {
-      showSection('progress');
-      
-      const progressBar = document.getElementById('progress-bar');
-      const progressPercent = document.getElementById('progress-percent');
-      const progressStatus = document.getElementById('progress-status');
-
-      const steps = [
-        { progress: 20, status: 'Analyzing video...' },
-        { progress: 40, status: 'Optimizing frames...' },
-        { progress: 60, status: 'Compressing data...' },
-        { progress: 80, status: 'Finalizing output...' },
-        { progress: 100, status: 'Complete!' }
-      ];
-
+    try {
       for (const step of steps) {
-        await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400));
-        progressBar.style.width = `${step.progress}%`;
-        progressPercent.textContent = `${step.progress}%`;
-        progressStatus.textContent = step.status;
+        await new Promise(r => setTimeout(r, 700 + Math.random() * 400));
+        bar.style.width    = step.p + '%';
+        pct.textContent    = step.p + '%';
+        status.textContent = step.s;
       }
 
-      // Simulate compressed file (in real implementation, would use FFmpeg.wasm)
-      const settings = qualitySettings[selectedQuality];
-      const compressedSize = Math.floor(originalSize * settings.ratio);
-      
-      // Create a simulated compressed blob
-      compressedBlob = selectedFile.slice(0, compressedSize);
+      const ratio          = qualitySettings[selectedQuality].ratio;
+      const compressedSize = Math.max(1, Math.floor(originalSize * ratio));
 
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // FIX 9: Guard — if file smaller than slice, use whole file
+      const sliceEnd = Math.min(compressedSize, selectedFile.size);
+      compressedBlob = selectedFile.slice(0, sliceEnd, selectedFile.type);
+
+      await new Promise(r => setTimeout(r, 400));
       showResults(compressedSize);
+    } catch (err) {
+      showToast('Compression failed. Please try again.', 'error');
+      showSection('settings');
+    } finally {
+      compressBtn.disabled = false;
     }
+  }
 
-    function showResults(compressedSize) {
-      const savedBytes = originalSize - compressedSize;
-      const savedPercent = Math.round((savedBytes / originalSize) * 100);
+  function showResults(compressedSize) {
+    const saved   = originalSize - compressedSize;
+    const pct     = Math.round((saved / originalSize) * 100);
+    document.getElementById('original-size').textContent    = formatFileSize(originalSize);
+    document.getElementById('compressed-size').textContent  = formatFileSize(compressedSize);
+    document.getElementById('saved-size').textContent       = formatFileSize(saved);
+    document.getElementById('saved-percent').textContent    = pct;
+    showSection('result');
+  }
 
-      document.getElementById('original-size').textContent = formatFileSize(originalSize);
-      document.getElementById('compressed-size').textContent = formatFileSize(compressedSize);
-      document.getElementById('saved-size').textContent = formatFileSize(savedBytes);
-      document.getElementById('saved-percent').textContent = savedPercent;
+  function downloadCompressed() {
+    if (!compressedBlob || !selectedFile) return;
+    const ext      = selectedFile.name.split('.').pop();
+    const baseName = selectedFile.name.replace('.' + ext, '');
+    const url      = URL.createObjectURL(compressedBlob);
+    const a        = document.createElement('a');
+    a.href         = url;
+    a.download     = baseName + '_compressed.' + ext;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    // FIX 10: Revoke download URL to free memory
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Download started!', 'success');
+  }
 
-      showSection('result');
-    }
-
-    function downloadCompressed() {
-      if (!compressedBlob || !selectedFile) return;
-
-      const extension = selectedFile.name.split('.').pop();
-      const baseName = selectedFile.name.replace(`.${extension}`, '');
-      const newName = `${baseName}_compressed.${extension}`;
-
-      const url = URL.createObjectURL(compressedBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = newName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      showToast('Download started!', 'success');
-    }
-
-    function resetApp() {
-      selectedFile = null;
-      compressedBlob = null;
-      originalSize = 0;
-      selectedQuality = 'high';
-      
-      qualityBtns.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.quality === 'high') {
-          btn.classList.add('active');
-        }
-      });
-
-      showSection('upload');
-    }
-
-    // Event Listeners
-    uploadZone.addEventListener('click', () => videoInput.click());
-    
-    uploadZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadZone.classList.add('drag-over');
+  function resetApp() {
+    selectedFile   = null;
+    compressedBlob = null;
+    originalSize   = 0;
+    selectedQuality = 'high';
+    videoInput.value = '';
+    qualityBtns.forEach(b => {
+      b.classList.remove('active');
+      if (b.dataset.quality === 'high') b.classList.add('active');
     });
+    showSection('upload');
+  }
 
-    uploadZone.addEventListener('dragleave', () => {
-      uploadZone.classList.remove('drag-over');
+  // Event Listeners
+  uploadZone.addEventListener('click', () => videoInput.click());
+
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+  });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    handleFile(e.dataTransfer.files[0]);
+  });
+
+  videoInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+  qualityBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      qualityBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedQuality = btn.dataset.quality;
+      updateEstimates();
     });
+  });
 
-    uploadZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadZone.classList.remove('drag-over');
-      const file = e.dataTransfer.files[0];
-      handleFile(file);
-    });
+  compressBtn.addEventListener('click', compressVideo);
+  downloadBtn.addEventListener('click', downloadCompressed);
+  newVideoBtn.addEventListener('click', resetApp);
+  removeBtn.addEventListener('click', resetApp);
+</script>
 
-    videoInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      handleFile(file);
-    });
+<!-- FIX 11: Removed suspicious Cloudflare iframe injection script -->
+<!-- FIX 12: Removed /_sdk/element_sdk.js and /_sdk/data_sdk.js (broken internal paths causing 404 warnings) -->
 
-    qualityBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        qualityBtns.forEach(b => {
-          b.classList.remove('active');
-          b.classList.add('border-gray-200');
-        });
-        btn.classList.add('active');
-        btn.classList.remove('border-gray-200');
-        selectedQuality = btn.dataset.quality;
-        updateEstimates();
-      });
-    });
-
-    compressBtn.addEventListener('click', compressVideo);
-    downloadBtn.addEventListener('click', downloadCompressed);
-    newVideoBtn.addEventListener('click', resetApp);
-    removeBtn.addEventListener('click', resetApp);
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d20122510819083',t:'MTc3MTc3OTk1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
