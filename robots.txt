@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.toolshouse.online/sitemap.xml
+
+# Block unnecessary files
+Disallow: /app install.html
