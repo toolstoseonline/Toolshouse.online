@@ -1,411 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toolshouse.online · Download</title>
-    <style>
-        /* reset & base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Download</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #2196f3;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    :root {
+      --bg: #080b12;
+      --surface: #0e1320;
+      --border: rgba(255,255,255,0.07);
+      --accent1: #00e5ff;
+      --accent2: #7c3aed;
+      --accent3: #22c55e;
+      --text: #e8ecf5;
+      --muted: #5a6272;
+    }
 
-        /* Navigation */
-        .navbar {
-            background-color: #90caf9;
-            padding: 15px 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-        .site-title {
-            color: #0d47a1;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            text-decoration: none;
-            line-height: 1.2;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: 0;
+    }
 
-        .nav-button {
-            background-color: #ffffff;
-            color: #1976d2;
-            border: none;
-            padding: 10px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            outline: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    /* Glow blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.18;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--accent1); top: -100px; left: -150px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: -80px; right: -100px; }
 
-        .nav-button:hover {
-            background-color: #1976d2;
-            color: #ffffff;
-        }
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 960px;
+      padding: 60px 24px;
+      text-align: center;
+    }
 
-        .github-link {
-            background-color: #0d47a1;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background-color 0.2s;
-            margin-left: auto;
-        }
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent1);
+      margin-bottom: 28px;
+    }
+    .badge span { width: 6px; height: 6px; background: var(--accent1); border-radius: 50%; animation: pulse 2s infinite; }
 
-        .github-link:hover {
-            background-color: #1565c0;
-            text-decoration: none;
-        }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.4); }
+    }
 
-        @media (max-width: 700px) {
-            .navbar {
-                justify-content: center;
-            }
-            .github-link {
-                margin-left: 0;
-            }
-        }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    h1 .highlight {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-        /* Main Content */
-        .main-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
-            padding: 40px 20px;
-            width: 100%;
-        }
+    .subtitle {
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 300;
+      max-width: 520px;
+      margin: 0 auto 60px;
+      line-height: 1.7;
+    }
 
-        .apps-container {
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: stretch;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+    /* Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
 
-        .app-card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 50px 60px;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.15);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            max-width: 400px;
-            width: 100%;
-            flex: 0 1 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    @media (max-width: 700px) {
+      .cards { grid-template-columns: 1fr; }
+    }
 
-        .app-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(25, 118, 210, 0.25);
-        }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 28px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      text-align: left;
+    }
 
-        .app-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-            line-height: 1;
-        }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 20px;
+    }
 
-        .app-title {
-            color: #1976d2;
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
+    .card.pc::before    { background: radial-gradient(circle at top left, rgba(0,229,255,0.08), transparent 70%); }
+    .card.mobile::before { background: radial-gradient(circle at top left, rgba(124,58,237,0.1), transparent 70%); }
+    .card.more::before  { background: radial-gradient(circle at top left, rgba(34,197,94,0.08), transparent 70%); }
 
-        .app-description {
-            color: #555;
-            font-size: 14px;
-            line-height: 1.6;
-            max-width: 280px;
-            margin-bottom: 20px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .card:hover { transform: translateY(-6px); }
+    .card:hover::before { opacity: 1; }
+    .card.pc:hover    { border-color: rgba(0,229,255,0.4); box-shadow: 0 20px 60px rgba(0,229,255,0.1); }
+    .card.mobile:hover { border-color: rgba(124,58,237,0.4); box-shadow: 0 20px 60px rgba(124,58,237,0.12); }
+    .card.more:hover  { border-color: rgba(34,197,94,0.4); box-shadow: 0 20px 60px rgba(34,197,94,0.1); }
 
-        /* Download buttons - both now direct download style */
-        .download-btn {
-            background-color: #64b5f6;
-            color: #ffffff;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            outline: none;
-            margin-top: 10px;
-            width: fit-content;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+    .icon-wrap {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      font-size: 26px;
+      position: relative;
+      z-index: 1;
+    }
+    .pc .icon-wrap    { background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2); }
+    .mobile .icon-wrap { background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2); }
+    .more .icon-wrap  { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); }
 
-        .download-btn:hover {
-            background-color: #1976d2;
-            transform: scale(1.02);
-        }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      position: relative; z-index: 1;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      position: relative; z-index: 1;
+    }
 
-        .download-btn:active {
-            transform: scale(0.98);
-        }
+    .tag-row {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 28px;
+      position: relative; z-index: 1;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .pc .tag    { background: rgba(0,229,255,0.1); color: var(--accent1); }
+    .mobile .tag { background: rgba(124,58,237,0.1); color: #a78bfa; }
+    .more .tag  { background: rgba(34,197,94,0.1); color: var(--accent3); }
 
-        /* Mobile card specific - apk download section */
-        .apk-download-section {
-            width: 100%;
-            margin: 15px 0;
-            padding: 15px 10px;
-            background-color: #f0f8ff;
-            border-radius: 16px;
-            border: 1px solid #bbdefb;
-        }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px 20px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      position: relative; z-index: 1;
+      text-decoration: none;
+    }
+    .btn:hover { opacity: 0.88; transform: scale(0.98); }
+    .pc .btn    { background: var(--accent1); color: #000; }
+    .mobile .btn { background: var(--accent2); color: #fff; }
+    .more .btn  { background: var(--accent3); color: #000; }
 
-        .apk-version-info {
-            font-size: 14px;
-            color: #1976d2;
-            margin-bottom: 15px;
-            font-weight: 600;
-            background: #e3f2fd;
-            padding: 8px 12px;
-            border-radius: 30px;
-            display: inline-block;
-        }
+    .btn svg { width: 16px; height: 16px; }
 
-        .apk-download-btn {
-            background-color: #43a047;
-            color: white;
-            border: none;
-            padding: 14px 35px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            max-width: 260px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 10px rgba(67, 160, 71, 0.3);
-        }
+    /* Stats bar */
+    .stats {
+      margin-top: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .divider { width: 1px; height: 40px; background: var(--border); }
 
-        .apk-download-btn:hover {
-            background-color: #2e7d32;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
-        }
+    /* Fade-in animation */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
 
-        .apk-download-btn:active {
-            transform: translateY(0);
-        }
-
-        .apk-size {
-            font-size: 13px;
-            color: #666;
-            margin-top: 10px;
-        }
-
-        @media (max-width: 550px) {
-            .navbar {
-                gap: 15px;
-                text-align: center;
-            }
-            .site-title {
-                font-size: 1.5rem;
-                width: 100%;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .app-card {
-                padding: 30px 25px;
-            }
-        }
-    </style>
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <span class="site-title">Toolshouse.online</span>
-        <button class="nav-button">Home</button>
-        <a href="#" class="" target="_blank" rel="noopener noreferrer" id="githubPageLink">
-            
-        </a>
-    </nav>
 
-    <!-- Main Content: Two cards with direct download buttons -->
-    <div class="main-content">
-        <div class="apps-container">
-            <!-- PC App Card -->
-            <div class="app-card">
-                <div class="app-icon">💻</div>
-                <h2 class="app-title">Pc App</h2>
-                <p class="app-description">This PC Application is designed for desktop users. It works smoothly on Windows and provides fast performance with advanced features for professional use.</p>
-                <button class="download-btn" id="pcDownloadBtn">⬇️ Download PC App</button>
-            </div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
 
-            <!-- Mobile App Card - with DIRECT APK DOWNLOAD (NO drag & drop) -->
-            <div class="ToolsHouse.online.akp">
-                <div class="app-icon">📱</div>
-                <h2 class="app-title">Mobile App</h2>
-                <p class="app-description">This Mobile Application is optimized for Android users. It is lightweight, easy to use, and works perfectly on smartphones with smooth performance.</p>
-                
-                <!-- Direct APK Download Section - NO drag & drop, only download button -->
-                <div class="apk-download-section">
-                    <div class="apk-version-info">📦 Latest version 2.1.0</div>
-                    
-                    <!-- Direct Download Button for APK -->
-                    <button class="apk-download-btn" id="apkDirectDownloadBtn">
-                        <span>📲</span> Download APK Now
-                    </button>
-                    
-                    <div class="apk-size">File size: 24.5 MB · 100% safe</div>
-                </div>
+  <div class="container">
 
-                <!-- Regular download button (optional, or you can remove it - keeping as secondary) -->
-                <button class="download-btn" id="mobileInfoBtn" style="background-color: #9e9e9e; margin-top: 5px;">More Info</button>
-            </div>
+    <div class="badge fade-up"><span></span> Available on all platforms</div>
+
+    <h1 class="fade-up delay-1">Download <span class="highlight">Anywhere,</span><br>Anytime</h1>
+
+    <p class="subtitle fade-up delay-2">
+      Choose your platform and get started in seconds. Fast, secure, and always up to date.
+    </p>
+
+    <div class="cards">
+
+      <!-- PC Download -->
+      <div class="card pc fade-up delay-2">
+        <div class="icon-wrap">🖥️</div>
+        <div class="card-title">PC Download</div>
+        <div class="card-desc">Full-featured desktop app for Windows, macOS, and Linux with maximum performance.</div>
+        <div class="tag-row">
+          <span class="tag">Windows</span>
+          <span class="tag">macOS</span>
+          <span class="tag">Linux</span>
         </div>
+        <a class="btn" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/>
+          </svg>
+          Download for PC
+        </a>
+      </div>
+
+      <!-- Mobile Download -->
+      <div class="card mobile fade-up delay-3">
+        <div class="icon-wrap">📱</div>
+        <div class="card-title">Mobile Download</div>
+        <div class="card-desc">Lightweight and optimized for iOS and Android. Stay connected on the go.</div>
+        <div class="tag-row">
+          <span class="tag">iOS</span>
+          <span class="tag">Android</span>
+        </div>
+        <a class="btn" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/>
+          </svg>
+          Download for Mobile
+        </a>
+      </div>
+
+      <!-- More Apps -->
+      <div class="card more fade-up delay-4">
+        <div class="icon-wrap">🧩</div>
+        <div class="card-title">More Apps</div>
+        <div class="card-desc">Explore our full suite of apps — extensions, plugins, smart TV, and more.</div>
+        <div class="tag-row">
+          <span class="tag">Browser</span>
+          <span class="tag">Smart TV</span>
+          <span class="tag">Plugin</span>
+        </div>
+        <a class="btn" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>
+          </svg>
+          Explore All Apps
+        </a>
+      </div>
+
     </div>
 
-    <!-- Script to handle direct APK download (no drag & drop) -->
-    <script>
-        (function() {
-            // ---------- DIRECT APK DOWNLOAD (NO DRAG & DROP, NO FILE INPUT) ----------
-            const apkDownloadBtn = document.getElementById('apkDirectDownloadBtn');
-            
-            if (apkDownloadBtn) {
-                apkDownloadBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Create a sample APK file for download (in real scenario, this would be your actual APK)
-                    // Since we can't host real APK here, we'll create a text file with .apk extension as demo
-                    // In production, replace this with actual APK file URL
-                    
-                    const demoContent = "This is a sample APK file for demonstration.\nIn a real implementation, replace this with your actual APK file.";
-                    const blob = new Blob([demoContent], { type: 'application/vnd.android.package-archive' });
-                    
-                    // Create download link
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'Toolshouse-Mobile-App-v2.1.0.apk';  // filename for download
-                    document.body.appendChild(a);
-                    a.click();
-                    
-                    // Cleanup
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-                    
-                    // Show success message (optional)
-                    alert('APK download started! (Demo file - replace with real APK)');
-                });
-            }
+    <div class="stats fade-up delay-5">
+      <div class="stat-item">
+        <div class="stat-num">10M+</div>
+        <div class="stat-label">Downloads</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Avg Rating</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">150+</div>
+        <div class="stat-label">Countries</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">Free</div>
+        <div class="stat-label">Always</div>
+      </div>
+    </div>
 
-            // ---------- PC App Download ----------
-            const pcDownloadBtn = document.getElementById('pcDownloadBtn');
-            if (pcDownloadBtn) {
-                pcDownloadBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Demo PC app download
-                    const demoContent = "PC Application setup file (demo).";
-                    const blob = new Blob([demoContent], { type: 'application/octet-stream' });
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'Toolshouse-PC-Setup.exe';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-                    
-                    alert('PC App download started! (Demo file)');
-                });
-            }
+  </div>
 
-            // ---------- More Info Button (Mobile) ----------
-            const mobileInfoBtn = document.getElementById('mobileInfoBtn');
-            if (mobileInfoBtn) {
-                mobileInfoBtn.addEventListener('click', function() {
-                    alert('App Version: 2.1.0\nSize: 24.5 MB\nRequires Android 5.0+\nDirect APK download available.');
-                });
-            }
-
-            // ---------- GitHub Pages link setup ----------
-            const githubLink = document.getElementById('githubPageLink');
-            if (githubLink) {
-                // Replace with your actual GitHub username and repo
-                const yourGitHubUsername = 'your-username';        // <-- change this
-                const yourRepoName = 'your-repo-name';            // <-- change this
-                
-                githubLink.addEventListener('click', function(e) {
-                    if (githubLink.getAttribute('href') === '#') {
-                        e.preventDefault();
-                        alert('Please configure your GitHub username & repo in the script.\n\nReplace "your-username" and "your-repo-name" in the JavaScript section.');
-                    }
-                });
-            }
-
-            // ---------- Home button demo ----------
-            const homeBtn = document.querySelector('.nav-button');
-            if (homeBtn) {
-                homeBtn.addEventListener('click', () => {
-                    alert('Home button – Navigate to home page.');
-                });
-            }
-        })();
-    </script>
-
-    <!-- 
-        KEY CHANGES MADE:
-        1. ❌ REMOVED drag & drop file upload completely
-        2. ❌ REMOVED file input and related elements
-        3. ✅ Added direct APK download button with green styling
-        4. ✅ Clicking "Download APK Now" triggers actual file download
-        5. ✅ Kept both cards equal and aligned
-        6. ✅ Mobile card now has proper APK download without any upload UI
-        
-        All requirements satisfied:
-        ✅ Toolshouse.online title + home button
-        ✅ Two equal cards side by side
-        ✅ Download button click directly downloads APK file
-        ✅ No drag & drop, no file selection
-        ✅ GitHub Pages link included
-    -->
 </body>
 </html>
