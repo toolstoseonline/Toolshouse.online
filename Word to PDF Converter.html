@@ -1,296 +1,557 @@
 <!DOCTYPE html>
-<html>
-<head>  
-     <script>(function(s){s.dataset.zone='10673861',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))  </script>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
-<title>Word to PDF Converter Online Free – Tools House Online</title>
-<meta name="description" content="Convert Word to PDF online for free. No signup required. Fast, secure and easy DOC/DOCX to PDF converter. Works on mobile and PC.">
-<link rel="canonical" href="https://www.toolshouse.online/Word to PDF Converter.html">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Word to PDF Converter Online Free – Tools House Online">
-<meta property="og:description" content="Convert Word to PDF online for free. No signup required. Fast, secure and easy DOC/DOCX to PDF converter. Works on mobile and PC.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.toolshouse.online/Word to PDF Converter.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Word to PDF Converter Online Free – Tools House Online">
-<meta name="twitter:description" content="Convert Word to PDF online for free. No signup required. Fast, secure and easy DOC/DOCX to PDF converter. Works on mobile and PC.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word to PDF Converter</title>
 
-
-
-    
-<!-- Mammoth for DOCX reading -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
-
+<!-- JSZip (required by docx-preview) -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<!-- docx-preview v0.1.15 — last version with UMD/browser bundle -->
+<script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.min.js"></script>
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap');
 
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    padding:15px;
-}
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --accent: #c0392b;
+    --warm: #e8dcc8;
+    --shadow: rgba(26,26,46,0.15);
+  }
 
-.card{
-    background:#ffffff;
-    width:95%;
-    max-width:450px;
-    padding:40px 30px;
-    border-radius:20px;
-    box-shadow:0 25px 50px rgba(0,0,0,0.2);
-    text-align:center;
-    animation:fadeIn 0.6s ease;
-}
+  * { margin:0; padding:0; box-sizing:border-box; }
 
-h2{
-    margin-bottom:25px;
-    color:#333;
-    font-size:1.8rem;
-}
+  body {
+    min-height: 100vh;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(192,57,43,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(26,26,46,0.06) 0%, transparent 50%);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
 
-.file-input{
-    margin-bottom:20px;
-}
+  .wrapper {
+    width: 100%;
+    max-width: 540px;
+  }
 
-input[type="file"]{
-    padding:12px;
-    border:2px dashed #764ba2;
-    border-radius:12px;
-    width:100%;
-    cursor:pointer;
-    transition:0.3s;
-    background:#f9f9f9;
-}
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
 
-input[type="file"]:hover{
-    background:#f3f0ff;
-    border-color:#5a3796;
-}
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
 
-button{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:#764ba2;
-    color:white;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
-    margin-bottom:15px;
-}
+  .header h1 span {
+    color: var(--accent);
+  }
 
-button:hover:not(:disabled){
-    background:#5a3796;
-    transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(0,0,0,0.2);
-}
+  .header p {
+    margin-top: 10px;
+    color: #666;
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
 
-button:disabled{
-    background:#b19cd9;
-    cursor:not-allowed;
-    opacity:0.7;
-}
+  /* Main card */
+  .card {
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 var(--ink);
+    border: 2px solid var(--ink);
+    padding: 36px 36px 28px;
+    position: relative;
+    overflow: hidden;
+  }
 
-.loading{
-    margin:15px 0;
-    color:#764ba2;
-    font-weight:500;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-}
+  .card::before {
+    content: 'DOC → PDF';
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--accent);
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
 
-.spinner{
-    width:20px;
-    height:20px;
-    border:3px solid #f3f3f3;
-    border-top:3px solid #764ba2;
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-}
+  /* Drop zone */
+  .drop-zone {
+    border: 2px dashed #c0bdb5;
+    border-radius: 3px;
+    padding: 44px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--paper);
+    position: relative;
+  }
 
-@keyframes spin{
-    0%{transform:rotate(0deg);}
-    100%{transform:rotate(360deg);}
-}
+  .drop-zone:hover,
+  .drop-zone.drag-over {
+    border-color: var(--accent);
+    background: #fdf5f4;
+  }
 
-.footer-text{
-    margin-top:15px;
-    font-size:13px;
-    color:#888;
-}
+  .drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
 
-.warning{
-    color:#e67e22;
-    font-size:12px;
-    margin-top:8px;
-    text-align:left;
-    padding-left:5px;
-}
+  .drop-icon {
+    font-size: 2.8rem;
+    display: block;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
 
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(20px);}
-    to{opacity:1; transform:translateY(0);}
-}
+  .drop-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 5px;
+  }
 
-@media(max-width:480px){
-    .card{
-        padding:30px 20px;
-    }
-    
-    h2{
-        font-size:1.5rem;
-    }
-}
+  .drop-sub {
+    font-size: 0.8rem;
+    color: #999;
+  }
+
+  /* File info */
+  .file-info {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f8f8f8;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .file-info.show { display: flex; }
+
+  .file-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+  .file-details { flex: 1; overflow: hidden; }
+
+  .file-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink);
+  }
+
+  .file-size {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 2px;
+  }
+
+  .file-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 1.1rem;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.2s;
+    width: auto;
+    margin: 0;
+  }
+
+  .file-remove:hover { color: var(--accent); }
+
+  /* Progress */
+  .progress-wrap {
+    display: none;
+    margin-top: 18px;
+  }
+
+  .progress-wrap.show { display: block; }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: #888;
+    margin-bottom: 6px;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* Convert button */
+  .convert-btn {
+    display: block;
+    width: 100%;
+    margin-top: 22px;
+    padding: 16px;
+    background: var(--ink);
+    color: #fff;
+    border: 2px solid var(--ink);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.15s ease;
+    box-shadow: 3px 3px 0 var(--accent);
+  }
+
+  .convert-btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--accent);
+  }
+
+  .convert-btn:active:not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 var(--accent);
+  }
+
+  .convert-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 3px 3px 0 #aaa;
+    border-color: #aaa;
+    background: #888;
+  }
+
+  /* Status message */
+  .status {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 3px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    border: 1.5px solid;
+  }
+
+  .status.show { display: block; }
+  .status.success { background: #f0faf4; color: #1a7a3c; border-color: #a8d8bc; }
+  .status.error { background: #fdf4f4; color: #a0291a; border-color: #e8bab6; }
+  .status.info { background: #fdf9f0; color: #8a6200; border-color: #e0d090; }
+
+  /* Footer note */
+  .note {
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: #bbb;
+    text-align: center;
+  }
+
+  /* Hidden preview container */
+  #previewContainer {
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 794px;
+    background: white;
+    z-index: -1;
+  }
 </style>
-
 </head>
-
 <body>
 
-<div class="card">
-    <h2>📄 Word to PDF Converter</h2>
+<div class="wrapper">
+  <div class="header">
+    <h1>Word to <span>PDF</span></h1>
+    <p>Preserves your formatting — headings, bold, tables & more</p>
+  </div>
 
-    <div class="file-input">
-        <input type="file" id="fileInput" accept=".docx">
-        <div class="warning">Max file size: 10MB (larger files may take time)</div>
+  <div class="card">
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".docx">
+      <span class="drop-icon">📄</span>
+      <span class="drop-label">Drop your DOCX file here</span>
+      <span class="drop-sub">or click to browse · Max 20MB</span>
     </div>
 
-    <button onclick="convert()" id="convertBtn">Convert to PDF</button>
-    
-    <div id="loading" class="loading" style="display:none;">
-        <div class="spinner"></div>
-        <span>Converting... Please wait</span>
+    <div class="file-info" id="fileInfo">
+      <span class="file-icon">📝</span>
+      <div class="file-details">
+        <div class="file-name" id="fileName">—</div>
+        <div class="file-size" id="fileSize">—</div>
+      </div>
+      <button class="file-remove" id="removeBtn" title="Remove file">✕</button>
     </div>
 
-    <div class="footer-text">
-        ⚡ Fast • 🔒 Secure • ☁️ No Upload to Server
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span id="progressText">Preparing…</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
     </div>
+
+    <button class="convert-btn" id="convertBtn" disabled>Convert to PDF</button>
+
+    <div class="status" id="status"></div>
+
+    <div class="note">🔒 All processing happens in your browser — nothing is uploaded</div>
+  </div>
 </div>
 
+<!-- Off-screen render area -->
+<div id="previewContainer"></div>
+
 <script>
-async function convert() {
-    const fileInput = document.getElementById("fileInput");
-    const file = fileInput.files[0];
-    const convertBtn = document.getElementById("convertBtn");
-    const loadingDiv = document.getElementById("loading");
+  const fileInput  = document.getElementById('fileInput');
+  const dropZone   = document.getElementById('dropZone');
+  const fileInfo   = document.getElementById('fileInfo');
+  const fileNameEl = document.getElementById('fileName');
+  const fileSizeEl = document.getElementById('fileSize');
+  const removeBtn  = document.getElementById('removeBtn');
+  const convertBtn = document.getElementById('convertBtn');
+  const statusEl   = document.getElementById('status');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const progressPct  = document.getElementById('progressPct');
+  const preview    = document.getElementById('previewContainer');
 
-    if (!file) {
-        alert("📂 Please upload a DOCX file.");
-        return;
+  let selectedFile = null;
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  function setFile(file) {
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.docx')) {
+      showStatus('error', '❌ Only .docx files are supported.');
+      return;
     }
-
-    if (!file.name.toLowerCase().endsWith(".docx")) {
-        alert("❌ Only DOCX files are supported.");
-        return;
+    if (file.size > 20 * 1024 * 1024) {
+      showStatus('error', '❌ File too large (max 20MB).');
+      return;
     }
+    selectedFile = file;
+    fileNameEl.textContent = file.name;
+    fileSizeEl.textContent = formatSize(file.size);
+    fileInfo.classList.add('show');
+    convertBtn.disabled = false;
+    clearStatus();
+  }
 
-    // Check file size (10MB limit warning)
-    if (file.size > 10 * 1024 * 1024) {
-        const proceed = confirm("⚠️ File is larger than 10MB. Conversion may take time. Continue?");
-        if (!proceed) return;
-    }
-
-    // Disable button and show loading
+  function clearFile() {
+    selectedFile = null;
+    fileInput.value = '';
+    fileInfo.classList.remove('show');
     convertBtn.disabled = true;
-    loadingDiv.style.display = "flex";
+    clearStatus();
+    setProgress(0, '', false);
+  }
 
-    const reader = new FileReader();
+  function showStatus(type, msg) {
+    statusEl.className = 'status show ' + type;
+    statusEl.textContent = msg;
+  }
 
-    reader.onload = async function(e) {
-        try {
-            const arrayBuffer = e.target.result;
+  function clearStatus() {
+    statusEl.className = 'status';
+    statusEl.textContent = '';
+  }
 
-            // Extract text from DOCX
-            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-            const text = result.value;
+  function setProgress(pct, label, show) {
+    progressWrap.classList.toggle('show', show);
+    progressFill.style.width = pct + '%';
+    progressText.textContent = label;
+    progressPct.textContent = pct + '%';
+  }
 
-            if (!text.trim()) {
-                alert("⚠️ No text found in the document.");
-                return;
-            }
+  // File input
+  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
 
-            // Create PDF with multiple pages
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+  // Drag-drop
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    setFile(e.dataTransfer.files[0]);
+  });
 
-            // PDF settings
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            const margin = 15;
-            const maxLineWidth = pageWidth - (margin * 2);
-            const lineHeight = 7; // mm per line
-            let y = margin;
+  removeBtn.addEventListener('click', clearFile);
 
-            // Split text into lines that fit the page width
-            const lines = pdf.splitTextToSize(text, maxLineWidth);
+  // ── CONVERT ──────────────────────────────────────────────────────────────────
+  convertBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
 
-            // Add lines to PDF with pagination
-            for (let i = 0; i < lines.length; i++) {
-                // Check if we need a new page (leaving bottom margin)
-                if (y > pageHeight - margin) {
-                    pdf.addPage();
-                    y = margin;
-                }
-                
-                pdf.text(lines[i], margin, y);
-                y += lineHeight;
-            }
+    // Safety check: ensure docx-preview loaded correctly
+    if (typeof docx === 'undefined' || typeof docx.renderAsync !== 'function') {
+      showStatus('error', '❌ Library failed to load. Please refresh the page and try again.');
+      return;
+    }
 
-            // Generate filename
-            const fileName = file.name.replace(/\.docx$/i, "") + ".pdf";
-            
-            // Save the PDF
-            pdf.save(fileName);
-            
-            // Success message
-            setTimeout(() => {
-                alert("✅ Conversion complete! PDF downloaded.");
-            }, 100);
+    convertBtn.disabled = true;
+    clearStatus();
+    showStatus('info', '⏳ Converting… This may take a moment for large files.');
+    setProgress(10, 'Reading document…', true);
 
-        } catch (error) {
-            alert("❌ Conversion failed. Please check the file and try again.");
-            console.error("Conversion error:", error);
-        } finally {
-            // Re-enable button and hide loading
-            convertBtn.disabled = false;
-            loadingDiv.style.display = "none";
+    try {
+      const arrayBuffer = await selectedFile.arrayBuffer();
+
+      setProgress(30, 'Rendering document…', true);
+
+      // Render the DOCX into the hidden div using docx-preview
+      preview.innerHTML = '';
+      await docx.renderAsync(arrayBuffer, preview, null, {
+        className: 'docx-preview',
+        inWrapper: true,
+        ignoreWidth: false,
+        ignoreHeight: false,
+        ignoreFonts: false,
+        breakPages: true,
+        useBase64URL: true,
+        useMathMLPolyfill: false,
+        renderChanges: false,
+        renderHeaders: true,
+        renderFooters: true,
+        renderFootnotes: true,
+        renderEndnotes: true,
+      });
+
+      setProgress(55, 'Capturing pages…', true);
+
+      // Give the browser a moment to finish rendering
+      await new Promise(r => setTimeout(r, 300));
+
+      const { jsPDF } = window.jspdf;
+
+      // A4 dimensions in mm
+      const A4_W = 210;
+      const A4_H = 297;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      // Find all rendered pages inside the preview
+      const pages = preview.querySelectorAll('.docx-wrapper > section');
+
+      if (pages.length === 0) {
+        // Fallback: capture the whole container as one big image
+        await captureFull(pdf, preview, A4_W, A4_H);
+      } else {
+        for (let i = 0; i < pages.length; i++) {
+          const pct = 55 + Math.round(((i + 1) / pages.length) * 35);
+          setProgress(pct, `Exporting page ${i + 1} of ${pages.length}…`, true);
+
+          if (i > 0) pdf.addPage();
+          await capturePage(pdf, pages[i], A4_W, A4_H);
+          // Small pause to let the browser breathe on large docs
+          if (i % 5 === 4) await new Promise(r => setTimeout(r, 50));
         }
-    };
+      }
 
-    reader.onerror = function() {
-        alert("❌ Error reading file.");
-        convertBtn.disabled = false;
-        loadingDiv.style.display = "none";
-    };
+      setProgress(95, 'Saving PDF…', true);
+      const outName = selectedFile.name.replace(/\.docx$/i, '') + '.pdf';
+      pdf.save(outName);
 
-    reader.readAsArrayBuffer(file);
-}
+      setProgress(100, 'Done!', true);
+      showStatus('success', `✅ "${outName}" downloaded successfully!`);
 
-// Optional: Clear file input when clicking on it again
-document.getElementById('fileInput').addEventListener('click', function() {
-    this.value = '';
-});
+    } catch (err) {
+      console.error(err);
+      showStatus('error', '❌ Conversion failed: ' + (err.message || 'Unknown error'));
+      setProgress(0, '', false);
+    } finally {
+      convertBtn.disabled = false;
+      preview.innerHTML = '';
+    }
+  });
+
+  async function capturePage(pdf, el, pdfW, pdfH) {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+    });
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+    const ratio   = canvas.width / canvas.height;
+    const imgH    = pdfW / ratio;
+
+    if (imgH <= pdfH) {
+      // Fits on one page
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, imgH);
+    } else {
+      // Tall section: slice into page-height chunks
+      const scaleFactor = canvas.width / pdfW; // px per mm
+      let sliceTop = 0;
+      let firstSlice = true;
+
+      while (sliceTop < canvas.height) {
+        const sliceHeightPx = Math.min(pdfH * scaleFactor, canvas.height - sliceTop);
+        const sliceCanvas   = document.createElement('canvas');
+        sliceCanvas.width   = canvas.width;
+        sliceCanvas.height  = sliceHeightPx;
+        sliceCanvas.getContext('2d').drawImage(
+          canvas, 0, sliceTop, canvas.width, sliceHeightPx,
+          0, 0, canvas.width, sliceHeightPx
+        );
+        const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
+        const sliceH    = sliceHeightPx / scaleFactor;
+
+        if (!firstSlice) pdf.addPage();
+        pdf.addImage(sliceData, 'JPEG', 0, 0, pdfW, sliceH);
+        sliceTop += sliceHeightPx;
+        firstSlice = false;
+      }
+    }
+  }
+
+  async function captureFull(pdf, el, pdfW, pdfH) {
+    await capturePage(pdf, el, pdfW, pdfH);
+  }
 </script>
-<script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
 </body>
 </html>
