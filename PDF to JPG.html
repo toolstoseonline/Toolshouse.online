@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PDF to JPG Converter</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1e;--surface:#111827;--card:#1e293b;--border:#2d3748;
+  --accent:#6366f1;--accent2:#8b5cf6;--text:#e2e8f0;--muted:#94a3b8;--faint:#475569;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+/* ── HEADER ── */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:14px}
+header .logo{font-size:26px}
+header h1{font-size:18px;font-weight:700;color:#f1f5f9}
+header p{font-size:12px;color:var(--muted);margin-top:1px}
+.header-badges{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.badge{background:var(--card);border:1px solid var(--border);border-radius:99px;padding:4px 12px;font-size:11px;color:var(--muted)}
+
+/* ── MAIN LAYOUT ── */
+main{flex:1;display:flex;gap:0}
+
+/* ── LEFT PANEL ── */
+#leftPanel{width:320px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px;gap:16px;overflow-y:auto}
+
+/* ── DROP ZONE ── */
+.dropzone{border:2px dashed var(--faint);border-radius:14px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);position:relative}
+.dropzone:hover,.dropzone.over{border-color:var(--accent);background:#1e1b4b18}
+.dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{font-size:40px;margin-bottom:10px}
+.dz-title{font-size:14px;font-weight:600;color:#f1f5f9}
+.dz-sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* ── FILE CHIP ── */
+.file-chip{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid #2563eb44;border-radius:10px;padding:10px 14px}
+.fc-icon{font-size:26px}
+.fc-name{font-size:13px;font-weight:600;color:#93c5fd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.fc-size{font-size:11px;color:var(--faint)}
+.fc-rm{margin-left:auto;background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px}
+.fc-rm:hover{background:#450a0a}
+
+/* ── SETTINGS ── */
+.section-label{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.setting-row label{font-size:13px;color:var(--muted)}
+.setting-val{font-size:12px;color:#f1f5f9;font-weight:600;min-width:44px;text-align:right}
+select,input[type=range]{background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:13px;padding:5px 8px;outline:none}
+select{cursor:pointer}
+select:focus{border-color:var(--accent)}
+input[type=range]{accent-color:var(--accent);width:110px;border:none;padding:0}
+
+.page-range-wrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.page-range-wrap input[type=text]{background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:13px;padding:5px 8px;width:120px;outline:none}
+.page-range-wrap input:focus{border-color:var(--accent)}
+
+.color-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.color-btn{width:28px;height:28px;border-radius:6px;border:2px solid transparent;cursor:pointer;transition:all .15s}
+.color-btn.active{border-color:#fff;transform:scale(1.15)}
+
+/* ── CONVERT BTN ── */
+.btn-convert{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:11px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-convert:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
+.btn-convert:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── PROGRESS ── */
+.progress-wrap{display:none}
+.progress-bg{background:var(--bg);border-radius:99px;height:8px;overflow:hidden;margin-bottom:6px}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;width:0%;transition:width .3s}
+.progress-label{font-size:12px;color:var(--muted);text-align:center}
+
+/* ── STATS BAR ── */
+.stats-bar{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;flex:1;text-align:center}
+.stat-val{font-size:18px;font-weight:700;color:var(--accent)}
+.stat-lbl{font-size:10px;color:var(--faint);margin-top:2px;text-transform:uppercase}
+
+/* ── DOWNLOAD ACTIONS ── */
+.dl-actions{display:flex;flex-direction:column;gap:8px}
+.btn-dl{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-dl.primary{background:#14532d;color:#86efac;border:1px solid #16a34a}
+.btn-dl.primary:hover{background:#166534}
+.btn-dl.secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-dl.secondary:hover{border-color:var(--accent);color:#a5b4fc}
+
+/* ── RIGHT PANEL (PREVIEW) ── */
+#rightPanel{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+
+.preview-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.preview-header h2{font-size:15px;font-weight:600;color:#f1f5f9}
+.view-toggle{display:flex;gap:6px}
+.vt-btn{padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;cursor:pointer}
+.vt-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ── EMPTY STATE ── */
+#emptyState{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--faint)}
+#emptyState .es-icon{font-size:60px;opacity:.4}
+#emptyState p{font-size:14px;text-align:center;max-width:280px;line-height:1.6}
+
+/* ── GRID / LIST VIEW ── */
+#previewGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+#previewList{display:flex;flex-direction:column;gap:10px}
+
+/* ── IMAGE CARD (GRID) ── */
+.img-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s}
+.img-card:hover{border-color:var(--accent)}
+.img-card img{width:100%;display:block;background:#0f172a}
+.img-card-footer{padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.img-card-name{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.img-card-dl{background:var(--accent);border:none;border-radius:6px;color:#fff;font-size:11px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.img-card-dl:hover{opacity:.85}
+
+/* ── IMAGE ROW (LIST) ── */
+.img-row{background:var(--card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:14px;padding:10px 14px;transition:border-color .15s}
+.img-row:hover{border-color:var(--accent)}
+.img-row img{width:56px;height:56px;object-fit:cover;border-radius:6px;flex-shrink:0;background:#0f172a}
+.ir-info{flex:1;min-width:0}
+.ir-name{font-size:13px;color:#f1f5f9;font-weight:500}
+.ir-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.ir-dl{background:var(--accent);border:none;border-radius:7px;color:#fff;font-size:12px;padding:6px 14px;cursor:pointer}
+.ir-dl:hover{opacity:.85}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid var(--green);border-radius:10px;padding:10px 22px;font-size:13px;color:#86efac;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.show{opacity:1}
+
+/* ── FOOTER ── */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:10px 28px;font-size:11px;color:var(--faint);text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🖼️</div>
+  <div>
+    <h1>PDF to JPG Converter</h1>
+    <p>Convert every page of your PDF into high-quality images — 100% in your browser</p>
+  </div>
+  <div class="header-badges">
+    <div class="badge">🔒 Private — no upload</div>
+    <div class="badge">⚡ Fast &amp; free</div>
+    <div class="badge">📦 ZIP download</div>
+  </div>
+</header>
+
+<main>
+  <!-- ── LEFT PANEL ── -->
+  <div id="leftPanel">
+
+    <!-- Drop zone -->
+    <div>
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept=".pdf"/>
+        <div class="dz-icon">📄</div>
+        <div class="dz-title">Drop PDF here</div>
+        <div class="dz-sub">or click to browse</div>
+      </div>
+      <div class="file-chip" id="fileChip" style="display:none;margin-top:10px">
+        <span class="fc-icon">📄</span>
+        <div style="min-width:0;flex:1">
+          <div class="fc-name" id="chipName">—</div>
+          <div class="fc-size" id="chipSize">—</div>
+        </div>
+        <button class="fc-rm" id="removeBtn" title="Remove">✕</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div>
+      <div class="section-label">⚙️ Settings</div>
+
+      <div class="setting-row">
+        <label>Format</label>
+        <select id="formatSel">
+          <option value="jpeg">JPG</option>
+          <option value="png">PNG</option>
+          <option value="webp">WebP</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <label>Quality</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="range" id="qualityRange" min="10" max="100" value="92" oninput="document.getElementById('qualityVal').textContent=this.value+'%'"/>
+          <span class="setting-val" id="qualityVal">92%</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <label>DPI / Scale</label>
+        <select id="dpiSel">
+          <option value="1">72 dpi (screen)</option>
+          <option value="1.5">108 dpi</option>
+          <option value="2" selected>150 dpi (default)</option>
+          <option value="3">216 dpi (high)</option>
+          <option value="4">300 dpi (print)</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <label>Pages</label>
+        <select id="pageMode" onchange="togglePageRange()">
+          <option value="all">All pages</option>
+          <option value="range">Custom range</option>
+          <option value="odd">Odd pages</option>
+          <option value="even">Even pages</option>
+        </select>
+      </div>
+
+      <div id="pageRangeWrap" style="display:none;margin-bottom:10px">
+        <div class="page-range-wrap">
+          <input type="text" id="pageRangeInput" placeholder="e.g. 1,3,5-8"/>
+          <span style="font-size:11px;color:var(--faint)">comma or dash</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <label>Background</label>
+        <div>
+          <div class="color-row">
+            <div class="color-btn active" style="background:#ffffff" data-color="#ffffff" onclick="setBg(this)"></div>
+            <div class="color-btn" style="background:#000000" data-color="#000000" onclick="setBg(this)"></div>
+            <div class="color-btn" style="background:#f5f5dc" data-color="#f5f5dc" onclick="setBg(this)"></div>
+            <div class="color-btn" style="background:#e8f4f8" data-color="#e8f4f8" onclick="setBg(this)"></div>
+            <div class="color-btn" style="background:transparent;border:1px dashed #64748b;position:relative" data-color="transparent" onclick="setBg(this)" title="Transparent (PNG only)">
+              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#94a3b8">α</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <label>Filename prefix</label>
+        <input type="text" id="prefixInput" value="page" style="background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:13px;padding:5px 8px;width:100px;outline:none"/>
+      </div>
+    </div>
+
+    <!-- Convert button -->
+    <button class="btn-convert" id="convertBtn" disabled onclick="startConvert()">
+      ⚡ Convert to Images
+    </button>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bg"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel">Starting…</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar" style="display:none">
+      <div class="stat"><div class="stat-val" id="statPages">0</div><div class="stat-lbl">Pages</div></div>
+      <div class="stat"><div class="stat-val" id="statConverted">0</div><div class="stat-lbl">Done</div></div>
+      <div class="stat"><div class="stat-val" id="statSize">0</div><div class="stat-lbl">Total KB</div></div>
+    </div>
+
+    <!-- Download actions -->
+    <div class="dl-actions" id="dlActions" style="display:none">
+      <button class="btn-dl primary" onclick="downloadAll()">📦 Download All as ZIP</button>
+      <button class="btn-dl secondary" onclick="downloadSelected()">⬇️ Download Selected</button>
+      <button class="btn-dl secondary" onclick="resetAll()">🔄 Convert Another PDF</button>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div id="rightPanel">
+    <div id="emptyState">
+      <div class="es-icon">🖼️</div>
+      <p>Upload a PDF and click <strong>Convert</strong> to see your images here.</p>
+      <p style="font-size:12px;color:var(--faint)">Supports multi-page PDFs · JPG · PNG · WebP · ZIP download</p>
+    </div>
+
+    <div id="previewSection" style="display:none">
+      <div class="preview-header">
+        <h2 id="previewTitle">Images</h2>
+        <div class="view-toggle">
+          <button class="vt-btn active" id="gridBtn" onclick="setView('grid')">⊞ Grid</button>
+          <button class="vt-btn" id="listBtn" onclick="setView('list')">≡ List</button>
+        </div>
+      </div>
+
+      <div id="selBar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:-4px">
+        <button class="btn-dl secondary" style="padding:5px 12px;font-size:12px" onclick="selectAll()">☑ Select All</button>
+        <button class="btn-dl secondary" style="padding:5px 12px;font-size:12px" onclick="deselectAll()">☐ Deselect All</button>
+        <span id="selCount" style="font-size:12px;color:var(--muted)">0 selected</span>
+      </div>
+
+      <div id="previewGrid"></div>
+      <div id="previewList" style="display:none"></div>
+    </div>
+  </div>
+</main>
+
+<footer>PDF to JPG Converter · Runs entirely in your browser · No files uploaded · No data stored</footer>
+<div id="toast"></div>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- JSZip for ZIP download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script>
+'use strict';
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+/* ── STATE ── */
+let pdfDoc       = null;
+let convertedImages = []; // [{dataUrl, blob, name, width, height, sizeKb, selected}]
+let bgColor      = '#ffffff';
+let viewMode     = 'grid';
+let totalPagesCount = 0;
+
+/* ── FILE INPUT ── */
+const fileInput = document.getElementById('fileInput');
+const dropzone  = document.getElementById('dropzone');
+
+fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+dropzone.addEventListener('dragover',  e => { e.preventDefault(); dropzone.classList.add('over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('over'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('over');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+document.getElementById('removeBtn').onclick = resetAll;
+
+async function handleFile(file) {
+  if (!file) return;
+  if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
+    showToast('⚠️ Please select a PDF file', true); return;
+  }
+  const ab = await file.arrayBuffer();
+  pdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
+  totalPagesCount = pdfDoc.numPages;
+
+  document.getElementById('chipName').textContent = file.name;
+  document.getElementById('chipSize').textContent = fmtSize(file.size) + ' · ' + totalPagesCount + ' page' + (totalPagesCount > 1 ? 's' : '');
+  document.getElementById('fileChip').style.display = 'flex';
+  document.getElementById('dropzone').style.display = 'none';
+  document.getElementById('convertBtn').disabled = false;
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('previewSection').style.display = 'none';
+  convertedImages = [];
+  updateStats();
+}
+
+/* ── SETTINGS HELPERS ── */
+function togglePageRange() {
+  const mode = document.getElementById('pageMode').value;
+  document.getElementById('pageRangeWrap').style.display = mode === 'range' ? 'block' : 'none';
+}
+
+function setBg(el) {
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  bgColor = el.dataset.color;
+}
+
+/* ── PARSE PAGE RANGE ── */
+function parsePages(totalPages) {
+  const mode = document.getElementById('pageMode').value;
+  if (mode === 'all')  return Array.from({length: totalPages}, (_, i) => i + 1);
+  if (mode === 'odd')  return Array.from({length: totalPages}, (_, i) => i + 1).filter(p => p % 2 === 1);
+  if (mode === 'even') return Array.from({length: totalPages}, (_, i) => i + 1).filter(p => p % 2 === 0);
+  // range
+  const raw = document.getElementById('pageRangeInput').value.trim();
+  if (!raw) return Array.from({length: totalPages}, (_, i) => i + 1);
+  const pages = new Set();
+  raw.split(',').forEach(part => {
+    part = part.trim();
+    if (part.includes('-')) {
+      const [a, b] = part.split('-').map(Number);
+      for (let i = Math.max(1, a); i <= Math.min(totalPages, b); i++) pages.add(i);
+    } else {
+      const n = parseInt(part);
+      if (n >= 1 && n <= totalPages) pages.add(n);
+    }
+  });
+  return [...pages].sort((a, b) => a - b);
+}
+
+/* ── CONVERT ── */
+async function startConvert() {
+  if (!pdfDoc) return;
+
+  const format  = document.getElementById('formatSel').value;
+  const quality = parseInt(document.getElementById('qualityRange').value) / 100;
+  const scale   = parseFloat(document.getElementById('dpiSel').value);
+  const prefix  = document.getElementById('prefixInput').value.trim() || 'page';
+  const pages   = parsePages(totalPagesCount);
+
+  if (pages.length === 0) { showToast('⚠️ No pages in range'); return; }
+
+  // Reset output
+  convertedImages = [];
+  document.getElementById('previewGrid').innerHTML = '';
+  document.getElementById('previewList').innerHTML = '';
+  document.getElementById('previewSection').style.display = 'block';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('dlActions').style.display = 'none';
+  document.getElementById('statsBar').style.display = 'flex';
+  document.getElementById('convertBtn').disabled = true;
+
+  setProgress(true, 0, 'Preparing…');
+
+  let totalKb = 0;
+
+  for (let idx = 0; idx < pages.length; idx++) {
+    const pageNum = pages[idx];
+    const pct = Math.round((idx / pages.length) * 100);
+    setProgress(true, pct, `Converting page ${pageNum} of ${totalPagesCount}…`);
+
+    try {
+      const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width  = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      if (bgColor !== 'transparent') {
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      const mimeType = 'image/' + (format === 'jpg' ? 'jpeg' : format);
+      const dataUrl  = canvas.toDataURL(mimeType, quality);
+      const blob     = dataUrlToBlob(dataUrl);
+      const sizeKb   = Math.round(blob.size / 1024);
+      totalKb += sizeKb;
+
+      const name = `${prefix}-${String(pageNum).padStart(3,'0')}.${format === 'jpeg' ? 'jpg' : format}`;
+
+      const imgObj = {
+        dataUrl, blob, name,
+        width:  canvas.width,
+        height: canvas.height,
+        sizeKb,
+        pageNum,
+        selected: true,
+      };
+      convertedImages.push(imgObj);
+
+      // Add card to grid/list immediately
+      addImageCard(imgObj, convertedImages.length - 1);
+      addImageRow(imgObj, convertedImages.length - 1);
+
+      document.getElementById('statConverted').textContent = convertedImages.length;
+      document.getElementById('statSize').textContent = totalKb;
+
+    } catch (err) {
+      console.error('Page ' + pageNum, err);
+    }
+  }
+
+  setProgress(true, 100, 'Done!');
+  await delay(400);
+  setProgress(false);
+
+  document.getElementById('statPages').textContent = pages.length;
+  document.getElementById('convertBtn').disabled = false;
+  document.getElementById('dlActions').style.display = 'flex';
+  document.getElementById('previewTitle').textContent = `${convertedImages.length} image${convertedImages.length !== 1 ? 's' : ''} converted`;
+  updateSelCount();
+  showToast(`✅ ${convertedImages.length} image${convertedImages.length !== 1 ? 's' : ''} converted!`);
+}
+
+/* ── BUILD CARDS ── */
+function addImageCard(img, idx) {
+  const grid = document.getElementById('previewGrid');
+  const card = document.createElement('div');
+  card.className = 'img-card';
+  card.id = 'card-' + idx;
+  card.innerHTML = `
+    <div style="position:relative">
+      <img src="${img.dataUrl}" alt="${img.name}" loading="lazy"/>
+      <label style="position:absolute;top:8px;left:8px;cursor:pointer">
+        <input type="checkbox" checked onchange="toggleSel(${idx},this.checked)" style="width:16px;height:16px;accent-color:var(--accent)"/>
+      </label>
+      <span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 7px;border-radius:99px">P${img.pageNum}</span>
+    </div>
+    <div class="img-card-footer">
+      <div>
+        <div class="img-card-name">${img.name}</div>
+        <div style="font-size:10px;color:var(--faint);margin-top:2px">${img.width}×${img.height} · ${img.sizeKb} KB</div>
+      </div>
+      <button class="img-card-dl" onclick="downloadOne(${idx})">⬇</button>
+    </div>`;
+  grid.appendChild(card);
+}
+
+function addImageRow(img, idx) {
+  const list = document.getElementById('previewList');
+  const row = document.createElement('div');
+  row.className = 'img-row';
+  row.id = 'row-' + idx;
+  row.innerHTML = `
+    <input type="checkbox" checked onchange="toggleSel(${idx},this.checked)" style="width:15px;height:15px;accent-color:var(--accent);flex-shrink:0"/>
+    <img src="${img.dataUrl}" alt="${img.name}" loading="lazy"/>
+    <div class="ir-info">
+      <div class="ir-name">${img.name}</div>
+      <div class="ir-meta">Page ${img.pageNum} · ${img.width}×${img.height} px · ${img.sizeKb} KB</div>
+    </div>
+    <button class="ir-dl" onclick="downloadOne(${idx})">⬇ Download</button>`;
+  list.appendChild(row);
+}
+
+/* ── VIEW TOGGLE ── */
+function setView(mode) {
+  viewMode = mode;
+  document.getElementById('previewGrid').style.display = mode === 'grid' ? 'grid' : 'none';
+  document.getElementById('previewList').style.display = mode === 'list' ? 'flex' : 'none';
+  document.getElementById('gridBtn').classList.toggle('active', mode === 'grid');
+  document.getElementById('listBtn').classList.toggle('active', mode === 'list');
+}
+
+/* ── SELECTION ── */
+function toggleSel(idx, checked) {
+  convertedImages[idx].selected = checked;
+  // sync the other view's checkbox
+  const gridCb = document.querySelector(`#card-${idx} input[type=checkbox]`);
+  const listCb = document.querySelector(`#row-${idx} input[type=checkbox]`);
+  if (gridCb) gridCb.checked = checked;
+  if (listCb) listCb.checked = checked;
+  updateSelCount();
+}
+function selectAll()   { convertedImages.forEach((_,i) => toggleSel(i,true)); }
+function deselectAll() { convertedImages.forEach((_,i) => toggleSel(i,false)); }
+function updateSelCount() {
+  const n = convertedImages.filter(i => i.selected).length;
+  document.getElementById('selCount').textContent = n + ' selected';
+}
+
+/* ── DOWNLOAD ── */
+function downloadOne(idx) {
+  const img = convertedImages[idx];
+  const url = URL.createObjectURL(img.blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = img.name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+  showToast('⬇️ Downloading ' + img.name);
+}
+
+async function downloadAll() {
+  await downloadZip(convertedImages);
+}
+
+async function downloadSelected() {
+  const sel = convertedImages.filter(i => i.selected);
+  if (!sel.length) { showToast('⚠️ No images selected', true); return; }
+  await downloadZip(sel);
+}
+
+async function downloadZip(imgs) {
+  if (!imgs.length) return;
+  showToast('📦 Building ZIP…');
+  const zip = new JSZip();
+  const folder = zip.folder('pdf-images');
+  imgs.forEach(img => folder.file(img.name, img.blob));
+  const content = await zip.generateAsync({ type:'blob', compression:'DEFLATE', compressionOptions:{level:6} });
+  const url = URL.createObjectURL(content);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pdf-images.zip'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  showToast(`✅ ZIP with ${imgs.length} images downloaded!`);
+}
+
+/* ── UTILITIES ── */
+function dataUrlToBlob(dataUrl) {
+  const [header, data] = dataUrl.split(',');
+  const mime = header.match(/:(.*?);/)[1];
+  const bytes = atob(data);
+  const arr = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+function fmtSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+function setProgress(show, pct, label) {
+  document.getElementById('progressWrap').style.display = show ? 'block' : 'none';
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = label || '';
+}
+
+function updateStats() {
+  document.getElementById('statPages').textContent     = totalPagesCount;
+  document.getElementById('statConverted').textContent = 0;
+  document.getElementById('statSize').textContent      = 0;
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function showToast(msg, isWarn = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderColor = isWarn ? 'var(--amber)' : 'var(--green)';
+  t.style.color       = isWarn ? '#fcd34d'       : '#86efac';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function resetAll() {
+  pdfDoc = null;
+  convertedImages = [];
+  totalPagesCount = 0;
+  document.getElementById('fileChip').style.display = 'none';
+  document.getElementById('dropzone').style.display = '';
+  fileInput.value = '';
+  document.getElementById('convertBtn').disabled = true;
+  document.getElementById('previewSection').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('statsBar').style.display = 'none';
+  document.getElementById('dlActions').style.display = 'none';
+  document.getElementById('previewGrid').innerHTML = '';
+  document.getElementById('previewList').innerHTML = '';
+  setProgress(false);
+}
+</script>
+</body>
+</html>
