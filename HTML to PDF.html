@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to PDF Converter - Working Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .editor-section, .preview-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .tool-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .html-editor {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            resize: vertical;
+            background: white;
+        }
+
+        .html-editor:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            overflow: auto;
+            padding: 10px;
+        }
+
+        .pdf-settings {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .setting-item label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .setting-item select, 
+        .setting-item input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .templates {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .template-btn {
+            padding: 5px 12px;
+            background: #e0e7ff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .template-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .stats {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            font-size: 0.85em;
+            color: #666;
+            text-align: center;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+            font-weight: 500;
+        }
+
+        .notification-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .notification-error {
+            background: #f56565;
+            color: white;
+        }
+
+        .notification-info {
+            background: #4299e1;
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 HTML to PDF Converter</h1>
+        <p class="subtitle">Convert HTML code to professional PDF documents</p>
+
+        <div class="main-content">
+            <!-- Left Panel - HTML Editor -->
+            <div class="editor-section">
+                <div class="section-title">✏️ HTML Editor</div>
+                
+                <div class="templates">
+                    <span style="font-size: 0.85em; color: #666;">Quick Templates:</span>
+                    <button class="template-btn" data-template="basic">📄 Basic</button>
+                    <button class="template-btn" data-template="invoice">💰 Invoice</button>
+                    <button class="template-btn" data-template="resume">📝 Resume</button>
+                    <button class="template-btn" data-template="report">📊 Report</button>
+                </div>
+
+                <textarea id="htmlEditor" class="html-editor" placeholder="Enter your HTML code here..."></textarea>
+                
+                <div class="stats" id="editorStats">
+                    Characters: 0 | Lines: 0 | Words: 0
+                </div>
+                
+                <div class="toolbar" style="margin-top: 10px;">
+                    <button id="clearEditorBtn" class="tool-btn">🗑️ Clear Editor</button>
+                    <button id="resetDefaultBtn" class="tool-btn">🔄 Reset Default</button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Preview & Settings -->
+            <div class="preview-section">
+                <div class="section-title">👁️ Live Preview</div>
+                
+                <div class="toolbar">
+                    <button id="refreshPreviewBtn" class="tool-btn">🔄 Refresh Preview</button>
+                </div>
+
+                <div class="preview-frame" id="previewFrame">
+                    <div id="previewContent" style="padding: 20px; font-family: Arial;">
+                        <p>Loading preview...</p>
+                    </div>
+                </div>
+
+                <!-- PDF Settings -->
+                <div class="pdf-settings">
+                    <div class="section-title" style="font-size: 1.1em; margin-bottom: 10px;">⚙️ PDF Settings</div>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>📄 Paper Size:</label>
+                            <select id="pageSize">
+                                <option value="a4">A4</option>
+                                <option value="letter">Letter</option>
+                                <option value="legal">Legal</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>📐 Orientation:</label>
+                            <select id="orientation">
+                                <option value="portrait">Portrait</option>
+                                <option value="landscape">Landscape</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>📏 Margin (mm):</label>
+                            <select id="margin">
+                                <option value="10">Small (10mm)</option>
+                                <option value="15" selected>Normal (15mm)</option>
+                                <option value="20">Large (20mm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="convertBtn" class="btn btn-primary">🔄 Convert to PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Converting HTML to PDF...</p>
+            <p style="font-size: 0.85em; margin-top: 10px;">Please wait...</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        class HTMLToPDFConverter {
+            constructor() {
+                this.initializeElements();
+                this.attachEventListeners();
+                this.setDefaultHTML();
+                this.updatePreview();
+            }
+
+            initializeElements() {
+                this.htmlEditor = document.getElementById('htmlEditor');
+                this.previewContent = document.getElementById('previewContent');
+                this.convertBtn = document.getElementById('convertBtn');
+                this.refreshPreviewBtn = document.getElementById('refreshPreviewBtn');
+                this.clearEditorBtn = document.getElementById('clearEditorBtn');
+                this.resetDefaultBtn = document.getElementById('resetDefaultBtn');
+                this.editorStats = document.getElementById('editorStats');
+                
+                this.pageSize = document.getElementById('pageSize');
+                this.orientation = document.getElementById('orientation');
+                this.margin = document.getElementById('margin');
+                
+                this.loading = document.getElementById('loading');
+            }
+
+            attachEventListeners() {
+                this.convertBtn.addEventListener('click', () => this.convertToPDF());
+                this.refreshPreviewBtn.addEventListener('click', () => this.updatePreview());
+                this.clearEditorBtn.addEventListener('click', () => this.clearEditor());
+                this.resetDefaultBtn.addEventListener('click', () => this.setDefaultHTML());
+                this.htmlEditor.addEventListener('input', () => {
+                    this.updateStats();
+                    this.updatePreview();
+                });
+                
+                // Template buttons
+                document.querySelectorAll('.template-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.loadTemplate(btn.dataset.template));
+                });
+            }
+
+            setDefaultHTML() {
+                const defaultHTML = `<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+        color: #333;
+    }
+    h1 {
+        color: #667eea;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+    }
+    .card {
+        background: #f8f9ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background: #667eea;
+        color: white;
+    }
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+    .feature-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+</style>
+</head>
+<body>
+    <h1>HTML to PDF Converter</h1>
+    <p>This is a working HTML to PDF converter. You can edit the HTML code on the left and see the live preview here.</p>
+    
+    <div class="card">
+        <h3>✨ Features:</h3>
+        <ul class="feature-list">
+            <li>✓ Live HTML editing with instant preview</li>
+            <li>✓ Multiple templates (Basic, Invoice, Resume, Report)</li>
+            <li>✓ Custom PDF settings (size, orientation, margins)</li>
+            <li>✓ Real-time statistics (characters, lines, words)</li>
+            <li>✓ Professional PDF output</li>
+        </ul>
+    </div>
+    
+    <h3>Sample Data Table:</h3>
+    <table>
+        <tr>
+            <th>Feature</th>
+            <th>Status</th>
+            <th>Version</th>
+        </tr>
+        <tr>
+            <td>HTML Editor</td>
+            <td>✅ Working</td>
+            <td>1.0</td>
+        </tr>
+        <tr>
+            <td>Live Preview</td>
+            <td>✅ Working</td>
+            <td>1.0</td>
+        </tr>
+        <tr>
+            <td>PDF Export</td>
+            <td>✅ Working</td>
+            <td>1.0</td>
+        </tr>
+    </table>
+    
+    <p><strong>Note:</strong> You can customize the PDF size, orientation, and margins from the settings panel on the right.</p>
+    <p style="color: #667eea; font-style: italic;">Edit the HTML code on the left to see changes in real-time!</p>
+</body>
+</html>`;
+                
+                this.htmlEditor.value = defaultHTML;
+                this.updateStats();
+                this.showNotification('Default template loaded!', 'success');
+            }
+
+            loadTemplate(type) {
+                let templateHTML = '';
+                
+                switch(type) {
+                    case 'basic':
+                        templateHTML = this.getBasicTemplate();
+                        break;
+                    case 'invoice':
+                        templateHTML = this.getInvoiceTemplate();
+                        break;
+                    case 'resume':
+                        templateHTML = this.getResumeTemplate();
+                        break;
+                    case 'report':
+                        templateHTML = this.getReportTemplate();
+                        break;
+                }
+                
+                this.htmlEditor.value = templateHTML;
+                this.updateStats();
+                this.updatePreview();
+                this.showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} template loaded!`, 'success');
+            }
+
+            getBasicTemplate() {
+                return `<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    h1 { color: #667eea; }
+    .content { margin: 20px 0; }
+</style>
+</head>
+<body>
+    <h1>Basic HTML Document</h1>
+    <div class="content">
+        <p>This is a basic HTML template. You can modify the content and styles as needed.</p>
+        <p>Features:</p>
+        <ul>
+            <li>Clean layout</li>
+            <li>Responsive design</li>
+            <li>Easy to customize</li>
+        </ul>
+    </div>
+</body>
+</html>`;
+            }
+
+            getInvoiceTemplate() {
+                return `<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .invoice-box {
+        border: 1px solid #eee;
+        padding: 30px;
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 20px;
+    }
+    .company {
+        font-size: 28px;
+        font-weight: bold;
+        color: #667eea;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background: #667eea;
+        color: white;
+    }
+    .total {
+        text-align: right;
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+    <div class="invoice-box">
+        <div class="header">
+            <div class="company">ACME Corporation</div>
+            <div>123 Business Street, New York, NY 10001</div>
+            <div>Email: info@acme.com | Phone: (555) 123-4567</div>
+        </div>
+        
+        <h2>INVOICE</h2>
+        <p><strong>Invoice #:</strong> INV-2024-001<br>
+        <strong>Date:</strong> March 25, 2024<br>
+        <strong>Due Date:</strong> April 25, 2024</p>
+        
+        <h3>Bill To:</h3>
+        <p>John Doe<br>456 Client Street<br>New York, NY 10002</p>
+        
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>WEB-001</td>
+                <td>Web Development Service</td>
+                <td>40 hours</td>
+                <td>$50.00</td>
+                <td>$2,000.00</td>
+            </tr>
+            <tr>
+                <td>HOST-001</td>
+                <td>Hosting (Annual)</td>
+                <td>1 year</td>
+                <td>$120.00</td>
+                <td>$120.00</td>
+            </tr>
+            <tr>
+                <td>DOM-001</td>
+                <td>Domain Registration</td>
+                <td>1 year</td>
+                <td>$15.00</td>
+                <td>$15.00</td>
+            </tr>
+        </table>
+        
+        <div class="total">
+            <p>Subtotal: $2,135.00</p>
+            <p>Tax (10%): $213.50</p>
+            <p><strong>Total Amount: $2,348.50</strong></p>
+        </div>
+        
+        <p style="margin-top: 30px;">Thank you for your business!</p>
+    </div>
+</body>
+</html>`;
+            }
+
+            getResumeTemplate() {
+                return `<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 20px;
+    }
+    .name {
+        font-size: 36px;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 5px;
+    }
+    .title {
+        font-size: 18px;
+        color: #666;
+    }
+    .contact {
+        margin-top: 10px;
+        color: #666;
+    }
+    .section {
+        margin: 25px 0;
+    }
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #667eea;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+    .job, .education {
+        margin-bottom: 20px;
+    }
+    .job-title, .degree {
+        font-weight: bold;
+        font-size: 16px;
+    }
+    .company, .school {
+        color: #667eea;
+        margin: 5px 0;
+    }
+    .date {
+        color: #999;
+        font-size: 12px;
+    }
+    ul {
+        margin: 5px 0 0 20px;
+    }
+</style>
+</head>
+<body>
+    <div class="header">
+        <div class="name">Sarah Johnson</div>
+        <div class="title">Senior Full Stack Developer</div>
+        <div class="contact">
+            📧 sarah.johnson@email.com | 📱 (555) 123-4567 | 🌐 github.com/sarahjohnson
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Professional Summary</div>
+        <p>Experienced Full Stack Developer with 6+ years of experience in building scalable web applications. Expertise in JavaScript, React, Node.js, and cloud technologies. Passionate about creating efficient solutions and mentoring junior developers.</p>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Work Experience</div>
+        
+        <div class="job">
+            <div class="job-title">Senior Full Stack Developer</div>
+            <div class="company">Tech Innovations Inc. | San Francisco, CA</div>
+            <div class="date">January 2021 - Present</div>
+            <ul>
+                <li>Led development of 5+ major web applications serving 100k+ users</li>
+                <li>Improved application performance by 40% through code optimization</li>
+                <li>Mentored 3 junior developers and conducted code reviews</li>
+                <li>Implemented CI/CD pipeline reducing deployment time by 60%</li>
+            </ul>
+        </div>
+        
+        <div class="job">
+            <div class="job-title">Web Developer</div>
+            <div class="company">Digital Creative Agency | New York, NY</div>
+            <div class="date">June 2018 - December 2020</div>
+            <ul>
+                <li>Developed responsive websites for 20+ clients across various industries</li>
+                <li>Collaborated with designers to implement pixel-perfect UI components</li>
+                <li>Optimized websites for SEO achieving top 3 rankings for key clients</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Education</div>
+        <div class="education">
+            <div class="degree">Master of Science in Computer Science</div>
+            <div class="school">Stanford University</div>
+            <div class="date">2016 - 2018</div>
+        </div>
+        <div class="education">
+            <div class="degree">Bachelor of Science in Software Engineering</div>
+            <div class="school">University of California, Berkeley</div>
+            <div class="date">2012 - 2016</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Technical Skills</div>
+        <ul>
+            <li><strong>Languages:</strong> JavaScript, TypeScript, Python, Java, HTML5, CSS3</li>
+            <li><strong>Frontend:</strong> React, Vue.js, Angular, Next.js, Tailwind CSS</li>
+            <li><strong>Backend:</strong> Node.js, Express, Django, Spring Boot</li>
+            <li><strong>Databases:</strong> MongoDB, PostgreSQL, MySQL, Redis</li>
+            <li><strong>Cloud:</strong> AWS, Azure, Google Cloud Platform</li>
+            <li><strong>Tools:</strong> Git, Docker, Kubernetes, Jenkins</li>
+        </ul>
+    </div>
+</body>
+</html>`;
+            }
+
+            getReportTemplate() {
+                return `<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    h1 {
+        color: #667eea;
+        text-align: center;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+    }
+    .report-header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #666;
+    }
+    .metrics {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px 0;
+        flex-wrap: wrap;
+    }
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 150px;
+        margin: 10px;
+    }
+    .metric-value {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    .metric-label {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background: #667eea;
+        color: white;
+    }
+    tr:nth-child(even) {
+        background: #f8f9ff;
+    }
+    .conclusion {
+        background: #f8f9ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+    footer {
+        text-align: center;
+        margin-top: 50px;
+        color: #999;
+        font-size: 12px;
+    }
+</style>
+</head>
+<body>
+    <h1>Q1 2024 Performance Report</h1>
+    <div class="report-header">
+        <p>Prepared on: March 25, 2024 | Reporting Period: Jan 1 - Mar 31, 2024</p>
+        <p>Prepared by: Analytics Department</p>
+    </div>
+    
+    <div class="metrics">
+        <div class="metric-card">
+            <div class="metric-value">+45%</div>
+            <div class="metric-label">Revenue Growth</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">12,500</div>
+            <div class="metric-label">Active Users</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">98.5%</div>
+            <div class="metric-label">System Uptime</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">4.8/5</div>
+            <div class="metric-label">Customer Satisfaction</div>
+        </div>
+    </div>
+    
+    <h3>Quarterly Performance Metrics</h3>
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Q1 2023</th>
+            <th>Q1 2024</th>
+            <th>Growth</th>
+        </tr>
+        <tr>
+            <td>Revenue</td>
+            <td>$1.2M</td>
+            <td>$1.74M</td>
+            <td style="color: green;">+45%</td>
+        </tr>
+        <tr>
+            <td>New Customers</td>
+            <td>1,200</td>
+            <td>1,800</td>
+            <td style="color: green;">+50%</td>
+        </tr>
+        <tr>
+            <td>Support Tickets</td>
+            <td>450</td>
+            <td>320</td>
+            <td style="color: green;">-29%</td>
+        </tr>
+        <tr>
+            <td>Response Time</td>
+            <td>2.5s</td>
+            <td>1.2s</td>
+            <td style="color: green;">-52%</td>
+        </tr>
+    </table>
+    
+    <h3>Key Achievements</h3>
+    <ul>
+        <li>Successfully launched mobile app with 5,000+ downloads</li>
+        <li>Implemented AI-powered customer support reducing response time by 50%</li>
+        <li>Expanded to 3 new international markets</li>
+        <li>Received industry award for "Best Innovation in Tech"</li>
+    </ul>
+    
+    <div class="conclusion">
+        <h3>Conclusion & Recommendations</h3>
+        <p>The company has shown exceptional growth in Q1 2024, surpassing all key performance indicators. Based on the current trajectory, we project continued growth in Q2 with focus on:</p>
+        <ul>
+            <li>Expanding into Asian markets</li>
+            <li>Launching new product features based on user feedback</li>
+            <li>Increasing marketing budget by 30%</li>
+            <li>Hiring 5 new developers to accelerate development</li>
+        </ul>
+    </div>
+    
+    <footer>
+        <p>Confidential - For Internal Use Only</p>
+        <p>© 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>`;
+            }
+
+            updatePreview() {
+                try {
+                    const htmlContent = this.htmlEditor.value;
+                    this.previewContent.innerHTML = htmlContent;
+                } catch (error) {
+                    console.error('Preview error:', error);
+                    this.previewContent.innerHTML = '<p style="color: red;">Error rendering HTML. Please check your code.</p>';
+                }
+            }
+
+            updateStats() {
+                const content = this.htmlEditor.value;
+                const chars = content.length;
+                const lines = content.split('\n').length;
+                const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+                this.editorStats.textContent = `Characters: ${chars} | Lines: ${lines} | Words: ${words}`;
+            }
+
+            clearEditor() {
+                this.htmlEditor.value = '';
+                this.updateStats();
+                this.updatePreview();
+                this.showNotification('Editor cleared!', 'info');
+            }
+
+            async convertToPDF() {
+                this.loading.style.display = 'flex';
+                this.convertBtn.disabled = true;
+                
+                try {
+                    // Get the HTML content
+                    const htmlContent = this.htmlEditor.value;
+                    
+                    // Create a temporary container for PDF generation
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = htmlContent;
+                    tempDiv.style.padding = '20px';
+                    tempDiv.style.background = 'white';
+                    document.body.appendChild(tempDiv);
+                    
+                    // Get settings
+                    const opt = {
+                        margin: parseInt(this.margin.value),
+                        filename: `document_${new Date().toISOString().slice(0,19)}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2, useCORS: true, logging: false },
+                        jsPDF: { 
+                            unit: 'mm', 
+                            format: this.pageSize.value, 
+                            orientation: this.orientation.value 
+                        }
+                    };
+                    
+                    // Generate PDF
+                    await html2pdf().set(opt).from(tempDiv).save();
+                    
+                    // Clean up
+                    document.body.removeChild(tempDiv);
+                    
+                    this.showNotification('PDF created and downloaded successfully!', 'success');
+                } catch (error) {
+                    console.error('Conversion error:', error);
+                    this.showNotification('Error converting to PDF. Please check your HTML code.', 'error');
+                } finally {
+                    this.loading.style.display = 'none';
+                    this.convertBtn.disabled = false;
+                }
+            }
+
+            showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // Initialize the converter
+        document.addEventListener('DOMContentLoaded', () => {
+            new HTMLToPDFConverter();
+        });
+    </script>
+</body>
+</html>
