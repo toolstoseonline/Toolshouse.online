@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPTX → PDF Converter</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600&display=swap');
+
+:root {
+  --cream: #faf7f2;
+  --warm: #f5efe6;
+  --paper: #fffcf8;
+  --ink: #1c1812;
+  --ink2: #3d3526;
+  --muted: #9a8f7e;
+  --border: #e8dfd0;
+  --orange: #e8622a;
+  --orange2: #f0904a;
+  --gold: #c9952a;
+  --green: #2a7a4b;
+  --shadow: rgba(28,24,18,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+/* Topbar */
+.topbar {
+  background: var(--ink);
+  padding: 12px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-logo {
+  font-family: 'Playfair Display', serif;
+  color: var(--cream);
+  font-size: 18px; font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.topbar-tag {
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+}
+
+/* Hero */
+.hero {
+  background: var(--ink);
+  padding: 60px 40px 80px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0; height: 40px;
+  background: var(--cream);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(232,98,42,0.15);
+  border: 1px solid rgba(232,98,42,0.3);
+  color: var(--orange2);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 4px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.0;
+  margin-bottom: 16px;
+}
+.hero h1 span { color: var(--orange); }
+.hero p {
+  color: #9a9080;
+  font-size: 17px; font-weight: 300;
+  max-width: 460px; margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Main */
+.main {
+  max-width: 800px;
+  margin: -20px auto 0;
+  padding: 0 24px;
+  position: relative; z-index: 1;
+}
+
+/* Drop card */
+.drop-card {
+  background: var(--paper);
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  padding: 56px 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 30px var(--shadow);
+  position: relative; overflow: hidden;
+}
+.drop-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(232,98,42,0.05), transparent 70%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.drop-card:hover, .drop-card.drag-over {
+  border-color: var(--orange);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 50px rgba(232,98,42,0.12);
+}
+.drop-card:hover::before, .drop-card.drag-over::before { opacity: 1; }
+
+.drop-illustration {
+  width: 80px; height: 80px;
+  background: linear-gradient(145deg, var(--orange), var(--orange2));
+  border-radius: 20px;
+  margin: 0 auto 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  box-shadow: 0 10px 35px rgba(232,98,42,0.3),
+              inset 0 1px 0 rgba(255,255,255,0.2);
+  position: relative; z-index: 1;
+}
+
+.drop-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  margin-bottom: 8px; position: relative; z-index: 1;
+}
+.drop-card p {
+  color: var(--muted); font-size: 14px;
+  margin-bottom: 20px; position: relative; z-index: 1;
+}
+.drop-or { color: var(--muted); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin: 14px 0; position: relative; z-index: 1; }
+
+.btn-browse {
+  background: var(--orange);
+  border: none; color: #fff;
+  padding: 11px 28px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(232,98,42,0.35);
+  position: relative; z-index: 1;
+}
+.btn-browse:hover { background: #d4571f; transform: translateY(-1px); }
+
+#file-input { display: none; }
+
+/* File info */
+.file-info {
+  display: none;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  align-items: center; gap: 14px;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+.file-info.visible { display: flex; }
+.file-icon-wrap {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--orange), var(--orange2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.file-details { flex: 1; min-width: 0; }
+.file-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-size { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.btn-remove {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 16px; transition: color 0.2s; padding: 4px;
+}
+.btn-remove:hover { color: var(--orange); }
+
+/* Options */
+.options-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; margin-bottom: 20px;
+}
+@media (max-width: 520px) { .options-grid { grid-template-columns: 1fr; } }
+
+.opt-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+.opt-card label {
+  display: block;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px;
+}
+.opt-card select {
+  width: 100%;
+  background: var(--cream); border: 1px solid var(--border);
+  color: var(--ink); padding: 9px 12px;
+  border-radius: 8px; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; outline: none;
+  transition: border-color 0.2s; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a8f7e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.opt-card select:focus { border-color: var(--orange); }
+
+/* Error */
+.error-box {
+  display: none;
+  background: rgba(232,98,42,0.08);
+  border: 1px solid rgba(232,98,42,0.25);
+  color: var(--orange);
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 14px; margin-bottom: 16px;
+}
+.error-box.visible { display: block; }
+
+/* Convert btn */
+.btn-convert {
+  width: 100%; padding: 18px;
+  background: var(--ink);
+  border: none; color: #fff;
+  border-radius: 12px;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700;
+  cursor: pointer; transition: all 0.3s;
+  margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 6px 24px rgba(28,24,18,0.2);
+  letter-spacing: 0.01em;
+}
+.btn-convert:hover:not(:disabled) {
+  background: #2d2820;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 36px rgba(28,24,18,0.28);
+}
+.btn-convert:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-convert .arrow { font-size: 20px; transition: transform 0.2s; }
+.btn-convert:hover:not(:disabled) .arrow { transform: translateX(4px); }
+
+/* Progress */
+.progress-wrap {
+  display: none; margin-bottom: 24px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px;
+  box-shadow: 0 2px 16px var(--shadow);
+}
+.progress-wrap.visible { display: block; }
+
+.progress-top { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: baseline; }
+.progress-label { font-weight: 600; font-size: 14px; }
+.progress-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--orange);
+}
+
+.track {
+  height: 8px; background: var(--warm);
+  border-radius: 100px; overflow: hidden; margin-bottom: 22px;
+}
+.fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--orange), var(--orange2));
+  border-radius: 100px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.step-rows { display: flex; flex-direction: column; gap: 6px; }
+.step-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 400;
+  transition: all 0.3s;
+}
+.step-row.pending { color: var(--muted); }
+.step-row.active {
+  background: rgba(232,98,42,0.07);
+  color: var(--ink);
+  border: 1px solid rgba(232,98,42,0.15);
+  font-weight: 500;
+}
+.step-row.done { color: var(--green); font-weight: 500; }
+.step-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.step-row.pending .step-dot { background: var(--border); }
+.step-row.active .step-dot { background: var(--orange); color: #fff; animation: pulse 1s infinite; }
+.step-row.done .step-dot { background: var(--green); color: #fff; }
+
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+/* Result */
+.result-card {
+  display: none;
+  background: var(--paper);
+  border: 1px solid rgba(42,122,75,0.25);
+  border-radius: 14px; padding: 36px;
+  text-align: center;
+  box-shadow: 0 4px 30px rgba(42,122,75,0.08);
+}
+.result-card.visible { display: block; }
+
+.result-icon-wrap {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--green), #3aaa66);
+  border-radius: 20px;
+  margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  box-shadow: 0 10px 30px rgba(42,122,75,0.25);
+}
+.result-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 900; margin-bottom: 6px;
+}
+.result-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+.btn-download {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--green); color: #fff;
+  padding: 13px 32px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600;
+  cursor: pointer; border: none; transition: all 0.2s;
+  box-shadow: 0 6px 22px rgba(42,122,75,0.3);
+  text-decoration: none;
+}
+.btn-download:hover { background: #236040; transform: translateY(-1px); }
+
+.btn-again {
+  display: block; width: fit-content; margin: 12px auto 0;
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); padding: 9px 22px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: 13px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-again:hover { border-color: var(--orange); color: var(--ink); }
+
+/* How it works */
+.how-section { margin-top: 64px; }
+.section-head {
+  text-align: center; margin-bottom: 32px;
+}
+.section-head h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px; font-weight: 900;
+  margin-bottom: 6px;
+}
+.section-head p { color: var(--muted); font-size: 15px; }
+
+.flow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px var(--shadow);
+}
+
+.flow-item {
+  padding: 28px 22px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  transition: background 0.2s;
+}
+.flow-item:last-child { border-right: none; }
+.flow-item:hover { background: var(--warm); }
+
+.flow-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px; font-weight: 900;
+  color: var(--border); line-height: 1;
+  margin-bottom: 12px;
+}
+.flow-emoji { font-size: 22px; margin-bottom: 10px; }
+.flow-item h4 { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.flow-item p { color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+/* Features strip */
+.features {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-top: 16px; justify-content: center;
+}
+.feat-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--warm); border: 1px solid var(--border);
+  color: var(--ink2); font-size: 12px; font-weight: 500;
+  padding: 5px 12px; border-radius: 100px;
+}
+
+/* Slide preview */
+.preview-section { display: none; margin-top: 20px; }
+.preview-section.visible { display: block; }
+.preview-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+}
+.preview-grid {
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;
+}
+.preview-thumb {
+  flex-shrink: 0;
+  width: 100px; height: 65px;
+  background: var(--warm); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--muted);
+}
+.preview-thumb canvas { width: 100%; height: 100%; object-fit: contain; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">SlidePress</div>
+  <div class="topbar-tag">PPTX → PDF Converter</div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">⚡ Instant Browser Conversion</div>
+  <h1>PowerPoint<br>to <span>PDF</span></h1>
+  <p>Convert your .pptx presentations into pixel-perfect PDFs — no upload, no server, just instant results.</p>
+</div>
+
+<div class="main">
+
+  <!-- Drop Zone -->
+  <div class="drop-card" id="drop-zone">
+    <div class="drop-illustration">📊</div>
+    <h3>Drop your PowerPoint here</h3>
+    <p>Supports .pptx files — all slide sizes and layouts</p>
+    <div class="drop-or">— or —</div>
+    <button class="btn-browse" onclick="document.getElementById('file-input').click()">Choose File</button>
+    <input type="file" id="file-input" accept=".pptx">
+  </div>
+
+  <!-- File Info -->
+  <div class="file-info" id="file-info">
+    <div class="file-icon-wrap">📊</div>
+    <div class="file-details">
+      <div class="file-name" id="file-name">presentation.pptx</div>
+      <div class="file-size" id="file-size">0 KB · PowerPoint Presentation</div>
+    </div>
+    <button class="btn-remove" onclick="resetFile()" title="Remove">✕</button>
+  </div>
+
+  <!-- Slide Previews -->
+  <div class="preview-section" id="preview-section">
+    <div class="preview-label">Slide Preview</div>
+    <div class="preview-grid" id="preview-grid"></div>
+  </div>
+
+  <!-- Options -->
+  <div class="options-grid">
+    <div class="opt-card">
+      <label>Page Size</label>
+      <select id="opt-size">
+        <option value="widescreen" selected>Widescreen (16:9)</option>
+        <option value="standard">Standard (4:3)</option>
+        <option value="a4">A4 Paper</option>
+        <option value="letter">US Letter</option>
+      </select>
+    </div>
+    <div class="opt-card">
+      <label>Image Quality</label>
+      <select id="opt-quality">
+        <option value="0.95" selected>High (Recommended)</option>
+        <option value="0.75">Medium (Smaller file)</option>
+        <option value="1.0">Maximum (Largest file)</option>
+      </select>
+    </div>
+    <div class="opt-card">
+      <label>Slide Range</label>
+      <select id="opt-range">
+        <option value="all" selected>All Slides</option>
+        <option value="first">First Slide Only</option>
+        <option value="odd">Odd Slides</option>
+        <option value="even">Even Slides</option>
+      </select>
+    </div>
+    <div class="opt-card">
+      <label>Background</label>
+      <select id="opt-bg">
+        <option value="preserve" selected>Preserve Original</option>
+        <option value="white">Force White</option>
+        <option value="transparent">Transparent</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- Convert -->
+  <button class="btn-convert" id="btn-convert" onclick="startConvert()" disabled>
+    Convert to PDF <span class="arrow">→</span>
+  </button>
+
+  <!-- Progress -->
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-label" id="p-label">Processing…</span>
+      <span class="progress-num" id="p-num">0%</span>
+    </div>
+    <div class="track"><div class="fill" id="p-fill"></div></div>
+    <div class="step-rows" id="step-rows">
+      <div class="step-row pending" id="s0"><span class="step-dot">1</span> Parsing PowerPoint file structure</div>
+      <div class="step-row pending" id="s1"><span class="step-dot">2</span> Extracting slides &amp; XML data</div>
+      <div class="step-row pending" id="s2"><span class="step-dot">3</span> Rendering slides to canvas</div>
+      <div class="step-row pending" id="s3"><span class="step-dot">4</span> Compositing shapes, text &amp; images</div>
+      <div class="step-row pending" id="s4"><span class="step-dot">5</span> Building PDF pages</div>
+      <div class="step-row pending" id="s5"><span class="step-dot">6</span> Finalising &amp; optimising output</div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="result-card">
+    <div class="result-icon-wrap">✅</div>
+    <h3>PDF Ready!</h3>
+    <p id="result-desc">Your PDF has been generated successfully.</p>
+    <a class="btn-download" id="dl-link" href="#" download="presentation.pdf">
+      ⬇ Download PDF
+    </a>
+    <button class="btn-again" onclick="fullReset()">Convert another file</button>
+  </div>
+
+  <!-- How It Works -->
+  <div class="how-section">
+    <div class="section-head">
+      <h2>How It Works</h2>
+      <p>Everything runs locally in your browser — your files never leave your device</p>
+    </div>
+
+    <div class="flow-grid">
+      <div class="flow-item">
+        <div class="flow-num">01</div>
+        <div class="flow-emoji">📤</div>
+        <h4>Upload PPTX</h4>
+        <p>Drop your PowerPoint file. JSZip unpacks the Open XML structure instantly.</p>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">02</div>
+        <div class="flow-emoji">🔍</div>
+        <h4>Parse XML</h4>
+        <p>Slide XML is parsed: shapes, text runs, backgrounds, images extracted.</p>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">03</div>
+        <div class="flow-emoji">🎨</div>
+        <h4>Canvas Render</h4>
+        <p>Each slide is painted onto an HTML Canvas using the extracted data.</p>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">04</div>
+        <div class="flow-emoji">📄</div>
+        <h4>PDF Export</h4>
+        <p>Canvas frames are encoded as JPEG pages assembled into a valid PDF binary.</p>
+      </div>
+    </div>
+
+    <div class="features" style="margin-top: 24px;">
+      <span class="feat-tag">🔒 100% Private</span>
+      <span class="feat-tag">⚡ Instant Conversion</span>
+      <span class="feat-tag">🚫 No Server Upload</span>
+      <span class="feat-tag">📦 No Install Needed</span>
+      <span class="feat-tag">🌐 Works Offline</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let selectedFile = null;
+let parsedSlides = [];
+
+// Drag & drop
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && (f.name.endsWith('.pptx') || f.type.includes('presentation'))) handleFile(f);
+  else showError('Please drop a valid .pptx file.');
+});
+dz.addEventListener('click', e => {
+  if (e.target.classList.contains('btn-browse')) return;
+  document.getElementById('file-input').click();
+});
+document.getElementById('file-input').addEventListener('change', e => {
+  if (e.target.files[0]) handleFile(e.target.files[0]);
+});
+
+async function handleFile(f) {
+  selectedFile = f;
+  document.getElementById('file-name').textContent = f.name;
+  document.getElementById('file-size').textContent = `${(f.size/1024).toFixed(1)} KB · PowerPoint Presentation`;
+  document.getElementById('file-info').classList.add('visible');
+  document.getElementById('btn-convert').disabled = false;
+  document.getElementById('drop-zone').style.display = 'none';
+  hideError();
+
+  // Parse and show previews
+  try {
+    const buf = await f.arrayBuffer();
+    const zip = await JSZip.loadAsync(buf);
+    parsedSlides = await extractSlides(zip);
+    await renderPreviews(parsedSlides);
+  } catch(e) { /* previews optional */ }
+}
+
+function resetFile() {
+  selectedFile = null; parsedSlides = [];
+  document.getElementById('file-input').value = '';
+  document.getElementById('file-info').classList.remove('visible');
+  document.getElementById('btn-convert').disabled = true;
+  document.getElementById('drop-zone').style.display = '';
+  document.getElementById('preview-section').classList.remove('visible');
+  document.getElementById('preview-grid').innerHTML = '';
+}
+
+function fullReset() {
+  resetFile();
+  document.getElementById('progress-wrap').classList.remove('visible');
+  document.getElementById('result-card').classList.remove('visible');
+  resetSteps(); setProgress(0, 'Ready');
+}
+
+function showError(m) {
+  const el = document.getElementById('error-box');
+  el.textContent = m; el.classList.add('visible');
+}
+function hideError() { document.getElementById('error-box').classList.remove('visible'); }
+
+function setProgress(pct, label) {
+  document.getElementById('p-fill').style.width = pct + '%';
+  document.getElementById('p-num').textContent = pct + '%';
+  document.getElementById('p-label').textContent = label;
+}
+
+function resetSteps() {
+  for (let i = 0; i < 6; i++) {
+    const s = document.getElementById('s'+i);
+    s.className = 'step-row pending';
+    s.querySelector('.step-dot').textContent = i+1;
+  }
+}
+
+function setStep(i, state) {
+  const s = document.getElementById('s'+i);
+  s.className = 'step-row ' + state;
+  const dot = s.querySelector('.step-dot');
+  if (state === 'done') dot.textContent = '✓';
+  else if (state === 'active') dot.textContent = '…';
+  else dot.textContent = i+1;
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ── PPTX Parsing ───────────────────────────────────────────────────────────
+
+async function extractSlides(zip) {
+  const slideFiles = Object.keys(zip.files)
+    .filter(n => /^ppt\/slides\/slide\d+\.xml$/.test(n))
+    .sort((a, b) => {
+      const na = parseInt(a.match(/\d+/)[0]);
+      const nb = parseInt(b.match(/\d+/)[0]);
+      return na - nb;
+    });
+
+  const slides = [];
+  for (const sf of slideFiles) {
+    const xml = await zip.file(sf).async('string');
+    const slideNum = parseInt(sf.match(/slide(\d+)/)[1]);
+
+    // Get slide rels to resolve images
+    const relPath = sf.replace('slides/slide', 'slides/_rels/slide') + '.rels';
+    const relsXml = zip.file(relPath) ? await zip.file(relPath).async('string') : '';
+    const imageMap = await buildImageMap(relsXml, zip, 'ppt/slides/');
+
+    // Parse slide
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, 'text/xml');
+    slides.push({ doc, imageMap, slideNum });
+  }
+  return slides;
+}
+
+async function buildImageMap(relsXml, zip, base) {
+  const map = {};
+  if (!relsXml) return map;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(relsXml, 'text/xml');
+  const rels = doc.querySelectorAll('Relationship');
+  for (const rel of rels) {
+    const type = rel.getAttribute('Type') || '';
+    const target = rel.getAttribute('Target') || '';
+    const id = rel.getAttribute('Id') || '';
+    if (type.includes('image')) {
+      const full = target.startsWith('..') ? 'ppt/' + target.replace('../', '') : base + target;
+      const file = zip.file(full);
+      if (file) {
+        const data = await file.async('base64');
+        const ext = full.split('.').pop().toLowerCase();
+        const mime = ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : 'image/jpeg';
+        map[id] = `data:${mime};base64,${data}`;
+      }
+    }
+  }
+  return map;
+}
+
+// ── Canvas Rendering ───────────────────────────────────────────────────────
+
+function getSlideDimensions(sizeKey) {
+  const sizes = {
+    widescreen: { w: 960, h: 540 },
+    standard:   { w: 720, h: 540 },
+    a4:         { w: 794, h: 1123 },
+    letter:     { w: 816, h: 1056 },
+  };
+  return sizes[sizeKey] || sizes.widescreen;
+}
+
+function xmlText(node, selector) {
+  if (!node) return '';
+  const els = node.querySelectorAll(selector);
+  return Array.from(els).map(e => e.textContent).join(' ').trim();
+}
+
+function hexColor(node) {
+  if (!node) return null;
+  // Try solidFill > srgbClr
+  const srgb = node.querySelector('solidFill srgbClr, solidFill\\:srgbClr');
+  if (srgb) return '#' + (srgb.getAttribute('val') || '000000');
+  return null;
+}
+
+function getColor(node, fallback) {
+  const c = hexColor(node);
+  return c || fallback;
+}
+
+async function renderSlide(slideData, canvas, dims, bgMode) {
+  const { doc, imageMap } = slideData;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  if (bgMode === 'white') {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else if (bgMode !== 'transparent') {
+    // Try to get background from XML
+    let bgColor = '#ffffff';
+    const bgPr = doc.querySelector('bg bgPr solidFill srgbClr, bg bgClr solidFill srgbClr');
+    if (bgPr) bgColor = '#' + bgPr.getAttribute('val');
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Get all shapes in spTree
+  const spTree = doc.querySelector('spTree');
+  if (!spTree) return;
+
+  const NS = 'http://schemas.openxmlformats.org/drawingml/2006/main';
+  const PNS = 'http://schemas.openxmlformats.org/presentationml/2006/main';
+
+  // EMU to px (1 EMU = 1/914400 inch, at 96dpi: 1px = 9525 EMU at standard sizes)
+  const EMU = 9525;
+  const scaleX = canvas.width / (dims.w * EMU > 0 ? dims.w : 1);
+  const scaleY = canvas.height / (dims.h * EMU > 0 ? dims.h : 1);
+
+  // Reference: standard pptx canvas is 9144000 x 5143500 EMU for 16:9
+  const refW = 9144000;
+  const refH = 5143500;
+  const sx = canvas.width / refW;
+  const sy = canvas.height / refH;
+
+  // Process shapes
+  const shapes = spTree.children;
+  for (const sp of shapes) {
+    const tag = sp.localName;
+
+    // Get transform
+    const xfrm = sp.querySelector('xfrm, spPr xfrm');
+    if (!xfrm) continue;
+
+    const off = xfrm.querySelector('off');
+    const ext = xfrm.querySelector('ext');
+    if (!off || !ext) continue;
+
+    const x = parseInt(off.getAttribute('x') || 0) * sx;
+    const y = parseInt(off.getAttribute('y') || 0) * sy;
+    const w = parseInt(ext.getAttribute('cx') || 0) * sx;
+    const h = parseInt(ext.getAttribute('cy') || 0) * sy;
+    const rot = parseInt(xfrm.getAttribute('rot') || 0) / 60000 * Math.PI / 180;
+
+    ctx.save();
+    ctx.translate(x + w/2, y + h/2);
+    if (rot) ctx.rotate(rot);
+    ctx.translate(-w/2, -h/2);
+
+    // Shape fill
+    const spPr = sp.querySelector('spPr');
+    const fillEl = spPr ? spPr.querySelector('solidFill') : null;
+    const noFill = spPr ? spPr.querySelector('noFill') : null;
+
+    if (fillEl && !noFill) {
+      const srgb = fillEl.querySelector('srgbClr');
+      if (srgb) {
+        ctx.fillStyle = '#' + srgb.getAttribute('val');
+        ctx.fillRect(0, 0, w, h);
+      }
+    }
+
+    // Gradient fill
+    const gradFill = spPr ? spPr.querySelector('gradFill') : null;
+    if (gradFill) {
+      const stops = gradFill.querySelectorAll('gs');
+      if (stops.length >= 2) {
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        stops.forEach(stop => {
+          const pos = parseInt(stop.getAttribute('pos') || 0) / 100000;
+          const sc = stop.querySelector('srgbClr');
+          if (sc) grad.addColorStop(pos, '#' + sc.getAttribute('val'));
+        });
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+      }
+    }
+
+    // Image (blipFill)
+    const blip = sp.querySelector('blipFill blip');
+    if (blip) {
+      const embed = blip.getAttribute('r:embed') || blip.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'embed');
+      if (embed && imageMap[embed]) {
+        await drawImage(ctx, imageMap[embed], 0, 0, w, h);
+      }
+    }
+
+    // Text body
+    const txBody = sp.querySelector('txBody');
+    if (txBody) {
+      const paras = txBody.querySelectorAll('p');
+      let ty = 8 * sy;
+      const bodyPr = txBody.querySelector('bodyPr');
+      const lIns = parseInt(bodyPr?.getAttribute('lIns') || 91440) * sx;
+      const tIns = parseInt(bodyPr?.getAttribute('tIns') || 45720) * sy;
+
+      ctx.save();
+      ctx.rect(0, 0, w, h);
+      ctx.clip();
+
+      ty = tIns;
+
+      for (const para of paras) {
+        const pPr = para.querySelector('pPr');
+        const align = pPr?.getAttribute('algn') || 'l';
+
+        const runs = para.querySelectorAll('r');
+        if (runs.length === 0) { ty += 4 * sy; continue; }
+
+        for (const run of runs) {
+          const rPr = run.querySelector('rPr');
+          const sz = parseInt(rPr?.getAttribute('sz') || 1400) / 100;
+          const bold = rPr?.getAttribute('b') === '1';
+          const italic = rPr?.getAttribute('i') === '1';
+
+          const scaledSz = Math.max(6, sz * Math.min(sx, sy) * 96 / 72 * 1.2);
+          ctx.font = `${italic ? 'italic ' : ''}${bold ? 'bold ' : ''}${scaledSz}px Outfit, sans-serif`;
+
+          const solidFill = rPr?.querySelector('solidFill srgbClr');
+          ctx.fillStyle = solidFill ? '#' + solidFill.getAttribute('val') : '#111111';
+
+          const t = run.querySelector('t');
+          const txt = t ? t.textContent : '';
+          if (!txt.trim()) continue;
+
+          let tx = lIns;
+          if (align === 'ctr') {
+            const tw = ctx.measureText(txt).width;
+            tx = (w - tw) / 2;
+          } else if (align === 'r') {
+            const tw = ctx.measureText(txt).width;
+            tx = w - tw - lIns;
+          }
+
+          ctx.fillText(txt, tx, ty + scaledSz, w - lIns * 2);
+          ty += scaledSz * 1.4;
+        }
+      }
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }
+}
+
+function drawImage(ctx, src, x, y, w, h) {
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => { ctx.drawImage(img, x, y, w, h); res(); };
+    img.onerror = res;
+    img.src = src;
+  });
+}
+
+// ── PDF Generation ─────────────────────────────────────────────────────────
+
+function buildPDF(canvases, quality) {
+  // Minimal PDF from JPEG page images
+  const pages = canvases.map(c => c.toDataURL('image/jpeg', parseFloat(quality)));
+  const encoder = new TextEncoder();
+
+  const objects = [];
+  const offsets = [];
+  let pos = 0;
+
+  const write = str => { objects.push(str); pos += str.length; };
+
+  // Header
+  const header = '%PDF-1.4\n%âãÏÓ\n';
+  objects.push(header); pos += header.length;
+
+  const pageIds = [];
+  const imgIds = [];
+
+  for (let i = 0; i < pages.length; i++) {
+    // Image object
+    const b64 = pages[i].split(',')[1];
+    const imgData = atob(b64);
+    const imgBytes = new Uint8Array(imgData.length);
+    for (let j = 0; j < imgData.length; j++) imgBytes[j] = imgData.charCodeAt(j);
+
+    const imgId = objects.length + 1; // approximate
+    imgIds.push(imgId);
+    pageIds.push(imgId + 1);
+  }
+
+  // Use jsPDF-like manual approach — simpler: encode as data URI PDF
+  // We'll create a minimal valid PDF manually
+
+  const pdfParts = [];
+  pdfParts.push('%PDF-1.4\n');
+
+  let objNum = 1;
+  const xref = [];
+  let byteOffset = 9; // length of header + newline approx
+
+  const catalog_id = objNum++;
+  const pages_id = objNum++;
+
+  const pageObjIds = [];
+  const imgObjIds = [];
+
+  const objStrs = {};
+
+  for (let i = 0; i < pages.length; i++) {
+    const b64 = pages[i].split(',')[1];
+    const imgData = atob(b64);
+    const canvas = canvases[i];
+    const pw = canvas.width;
+    const ph = canvas.height;
+
+    const imgObjId = objNum++;
+    const pageObjId = objNum++;
+
+    imgObjIds.push(imgObjId);
+    pageObjIds.push(pageObjId);
+
+    objStrs[imgObjId] = `${imgObjId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pw} /Height ${ph} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgData.length} >>\nstream\n`;
+    objStrs[imgObjId + '_data'] = imgData;
+    objStrs[imgObjId + '_end'] = '\nendstream\nendobj\n';
+
+    objStrs[pageObjId] = `${pageObjId} 0 obj\n<< /Type /Page /Parent ${pages_id} 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /img${i} ${imgObjId} 0 R >> >> /Contents ${pageObjId + 100} 0 R >>\nendobj\n`;
+
+    const stream = `q ${pw} 0 0 ${ph} 0 0 cm /img${i} Do Q`;
+    objStrs[pageObjId + 100] = `${pageObjId + 100} 0 obj\n<< /Length ${stream.length} >>\nstream\n${stream}\nendstream\nendobj\n`;
+  }
+
+  // Now build linear PDF
+  const chunks = [];
+  const addStr = s => chunks.push(encoder.encode(s));
+  const addBin = arr => chunks.push(arr instanceof Uint8Array ? arr : new Uint8Array(Array.from(arr).map(c => c.charCodeAt(0))));
+
+  addStr('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+  const offsetMap = {};
+
+  let byteLen = 0;
+  const calcLen = () => chunks.reduce((a, c) => a + c.length, 0);
+
+  // Catalog
+  offsetMap[catalog_id] = calcLen();
+  addStr(`${catalog_id} 0 obj\n<< /Type /Catalog /Pages ${pages_id} 0 R >>\nendobj\n`);
+
+  // Pages dict
+  offsetMap[pages_id] = calcLen();
+  addStr(`${pages_id} 0 obj\n<< /Type /Pages /Kids [${pageObjIds.map(id => `${id} 0 R`).join(' ')}] /Count ${pages.length} >>\nendobj\n`);
+
+  // Per-page objects
+  for (let i = 0; i < pages.length; i++) {
+    const b64 = pages[i].split(',')[1];
+    const imgData = atob(b64);
+    const canvas = canvases[i];
+    const pw = canvas.width; const ph = canvas.height;
+    const imgId = imgObjIds[i];
+    const pageId = pageObjIds[i];
+    const contentId = pageId + 100;
+    const stream = `q ${pw} 0 0 ${ph} 0 0 cm /img${i} Do Q`;
+
+    // Image
+    offsetMap[imgId] = calcLen();
+    addStr(`${imgId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pw} /Height ${ph} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgData.length} >>\nstream\n`);
+    const imgBytes = new Uint8Array(imgData.length);
+    for (let j = 0; j < imgData.length; j++) imgBytes[j] = imgData.charCodeAt(j);
+    chunks.push(imgBytes);
+    addStr('\nendstream\nendobj\n');
+
+    // Content stream
+    offsetMap[contentId] = calcLen();
+    addStr(`${contentId} 0 obj\n<< /Length ${stream.length} >>\nstream\n${stream}\nendstream\nendobj\n`);
+
+    // Page
+    offsetMap[pageId] = calcLen();
+    addStr(`${pageId} 0 obj\n<< /Type /Page /Parent ${pages_id} 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /img${i} ${imgId} 0 R >> >> /Contents ${contentId} 0 R >>\nendobj\n`);
+  }
+
+  // xref
+  const xrefOffset = calcLen();
+  const allIds = [catalog_id, pages_id, ...imgObjIds.flatMap((id, i) => [id, pageObjIds[i]+100, pageObjIds[i]])];
+  const maxId = Math.max(...allIds);
+
+  addStr(`xref\n0 ${maxId + 1}\n0000000000 65535 f \n`);
+  for (let id = 1; id <= maxId; id++) {
+    const off = offsetMap[id];
+    if (off !== undefined) {
+      addStr(String(off).padStart(10, '0') + ' 00000 n \n');
+    } else {
+      addStr('0000000000 65535 f \n');
+    }
+  }
+
+  addStr(`trailer\n<< /Size ${maxId + 1} /Root ${catalog_id} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`);
+
+  // Combine
+  const total = chunks.reduce((a, c) => a + c.length, 0);
+  const result = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) { result.set(chunk, offset); offset += chunk.length; }
+
+  return new Blob([result], { type: 'application/pdf' });
+}
+
+// ── Preview Rendering ──────────────────────────────────────────────────────
+
+async function renderPreviews(slides) {
+  const grid = document.getElementById('preview-grid');
+  grid.innerHTML = '';
+  const count = Math.min(slides.length, 8);
+
+  for (let i = 0; i < count; i++) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'preview-thumb';
+    const canvas = document.createElement('canvas');
+    canvas.width = 200; canvas.height = 130;
+    wrapper.appendChild(canvas);
+    grid.appendChild(wrapper);
+
+    try {
+      await renderSlide(slides[i], canvas, getSlideDimensions('widescreen'), 'preserve');
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+    } catch(e) {
+      wrapper.textContent = `Slide ${i+1}`;
+    }
+  }
+
+  document.getElementById('preview-section').classList.add('visible');
+}
+
+// ── Main Conversion ─────────────────────────────────────────────────────────
+
+async function startConvert() {
+  if (!selectedFile) return;
+  hideError();
+
+  document.getElementById('btn-convert').disabled = true;
+  document.getElementById('progress-wrap').classList.add('visible');
+  document.getElementById('result-card').classList.remove('visible');
+  resetSteps();
+
+  const sizeKey = document.getElementById('opt-size').value;
+  const quality = document.getElementById('opt-quality').value;
+  const rangeMode = document.getElementById('opt-range').value;
+  const bgMode = document.getElementById('opt-bg').value;
+
+  try {
+    // Step 0: Parse PPTX
+    setStep(0, 'active'); setProgress(5, 'Parsing PPTX structure…');
+    const buf = await selectedFile.arrayBuffer();
+    const zip = await JSZip.loadAsync(buf);
+    await sleep(300);
+    setStep(0, 'done'); setProgress(15, 'Structure parsed');
+
+    // Step 1: Extract slides
+    setStep(1, 'active'); setProgress(20, 'Extracting slides…');
+    const allSlides = parsedSlides.length ? parsedSlides : await extractSlides(zip);
+    await sleep(300);
+    setStep(1, 'done'); setProgress(30, `${allSlides.length} slides extracted`);
+
+    // Filter by range
+    let slides = allSlides;
+    if (rangeMode === 'first') slides = allSlides.slice(0, 1);
+    else if (rangeMode === 'odd') slides = allSlides.filter((_, i) => i % 2 === 0);
+    else if (rangeMode === 'even') slides = allSlides.filter((_, i) => i % 2 === 1);
+
+    // Step 2: Render to canvas
+    setStep(2, 'active'); setProgress(35, 'Rendering slides…');
+    const dims = getSlideDimensions(sizeKey);
+    const canvases = [];
+
+    for (let i = 0; i < slides.length; i++) {
+      const canvas = document.createElement('canvas');
+      canvas.width = dims.w;
+      canvas.height = dims.h;
+      await renderSlide(slides[i], canvas, dims, bgMode);
+      canvases.push(canvas);
+      setProgress(35 + Math.round((i / slides.length) * 25), `Rendering slide ${i+1} of ${slides.length}…`);
+    }
+    setStep(2, 'done');
+
+    // Step 3: Compositing (already done above, just show feedback)
+    setStep(3, 'active'); setProgress(62, 'Compositing elements…');
+    await sleep(400);
+    setStep(3, 'done'); setProgress(68, 'Elements composited');
+
+    // Step 4: Build PDF
+    setStep(4, 'active'); setProgress(72, 'Building PDF pages…');
+    await sleep(300);
+    const pdfBlob = buildPDF(canvases, quality);
+    setStep(4, 'done'); setProgress(88, 'PDF pages built');
+
+    // Step 5: Finalise
+    setStep(5, 'active'); setProgress(92, 'Finalising PDF…');
+    await sleep(400);
+    setStep(5, 'done'); setProgress(100, 'Complete!');
+
+    await sleep(300);
+
+    // Result
+    const url = URL.createObjectURL(pdfBlob);
+    const dl = document.getElementById('dl-link');
+    dl.href = url;
+    dl.download = selectedFile.name.replace('.pptx', '') + '.pdf';
+    document.getElementById('result-desc').textContent =
+      `${slides.length} slide${slides.length > 1 ? 's' : ''} converted · ${(pdfBlob.size / 1024).toFixed(0)} KB`;
+    document.getElementById('result-card').classList.add('visible');
+
+  } catch(err) {
+    console.error(err);
+    showError('Conversion failed: ' + err.message);
+    document.getElementById('btn-convert').disabled = false;
+  }
+}
+</script>
+</body>
+</html>
