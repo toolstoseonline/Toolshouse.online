@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PDF Redaction Tool</title>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #f4f9ff;
+}
+canvas {
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+button {
+    padding: 10px 15px;
+    margin: 10px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<h2>PDF Redaction Tool</h2>
+
+<input type="file" id="upload" accept="application/pdf"><br>
+
+<canvas id="pdfCanvas"></canvas><br>
+
+<button onclick="downloadPDF()">Download Redacted PDF</button>
+
+<script>
+let pdfDoc = null;
+let canvas = document.getElementById('pdfCanvas');
+let ctx = canvas.getContext('2d');
+
+let rectangles = [];
+let startX, startY, isDrawing = false;
+
+document.getElementById('upload').addEventListener('change', function(e) {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = function() {
+        let typedarray = new Uint8Array(this.result);
+
+        pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+            pdfDoc = pdf;
+            renderPage(1);
+        });
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+function renderPage(num) {
+    pdfDoc.getPage(num).then(function(page) {
+        let viewport = page.getViewport({ scale: 1.5 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        let renderContext = {
+            canvasContext: ctx,
+            viewport: viewport
+        };
+        page.render(renderContext);
+    });
+}
+
+// Draw rectangle (redaction)
+canvas.addEventListener('mousedown', function(e) {
+    startX = e.offsetX;
+    startY = e.offsetY;
+    isDrawing = true;
+});
+
+canvas.addEventListener('mouseup', function(e) {
+    if (!isDrawing) return;
+    isDrawing = false;
+
+    let width = e.offsetX - startX;
+    let height = e.offsetY - startY;
+
+    rectangles.push({x: startX, y: startY, w: width, h: height});
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(startX, startY, width, height);
+});
+
+// Download PDF
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    let pdf = new jsPDF();
+
+    let imgData = canvas.toDataURL("image/png");
+
+    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+    pdf.save("redacted.pdf");
+}
+</script>
+
+</body>
+</html>
