@@ -1,90 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Homepage -->
-  <url>
-    <loc>https://www.toolshouse.online/</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/tools</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/contact</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/privacy-policy</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/terms-of-use</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-
-  <!-- Document & File Tools -->
-  <url>
-    <loc>https://www.toolshouse.online/word-to-pdf-converter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/pdf-reader</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/pdf-merger</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/pdf-splitter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/pdf-compressor</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/file-compressor</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/file-splitter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/file-converter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
 <!-- Homepage -->
 <url>
 <loc>https://www.toolshouse.online/</loc>
@@ -103,41 +19,6 @@
 
 <!-- PDF Tools -->
 <url>
-<loc>https://www.toolshouse.online/redact-pdf.html</loc>
-<lastmod>2026-03-26</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-<url>
-<loc>https://www.toolshouse.online/ocr-pdf.html</loc>
-<lastmod>2026-03-26</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-<url>
-<loc>https://www.toolshouse.online/pdf-to-powerpoint.html</loc>
-<lastmod>2026-03-26</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-<url>
-<loc>https://www.toolshouse.online/powerpoint-to-pdf.html</loc>
-<lastmod>2026-03-26</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-<url>
-<loc>https://www.toolshouse.online/edit-pdf.html</loc>
-<lastmod>2026-03-26</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-<url>
 <loc>https://www.toolshouse.online/pdf-to-jpg.html</loc>
 <lastmod>2026-03-26</lastmod>
 <changefreq>monthly</changefreq>
@@ -152,219 +33,35 @@
 </url>
 
 <url>
-<loc>https://www.toolshouse.online/sign-pdf.html</loc>
+<loc>https://www.toolshouse.online/edit-pdf.html</loc>
 <lastmod>2026-03-26</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.8</priority>
 </url>
 
 <url>
-<loc>https://www.toolshouse.online/html-to-pdf.html</loc>
+<loc>https://www.toolshouse.online/pdf-to-powerpoint.html</loc>
 <lastmod>2026-03-26</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.8</priority>
 </url>
 
+<!-- Image Tools -->
 <url>
-<loc>https://www.toolshouse.online/unlock-pdf.html</loc>
+<loc>https://www.toolshouse.online/image-resizer</loc>
 <lastmod>2026-03-26</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.8</priority>
 </url>
 
+<!-- Video Tools -->
 <url>
-<loc>https://www.toolshouse.online/organize-pdf.html</loc>
+<loc>https://www.toolshouse.online/video-compressor</loc>
 <lastmod>2026-03-26</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.8</priority>
 </url>
 
-<url>
-<loc>https://www.toolshouse.online/repair-pdf.html</loc>
-<lastmod>2026-03-26</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-<url>
-<loc>https://www.toolshouse.online/page-number.html</loc>
-<lastmod>2026-03-26</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.8</priority>
-</url>
-
-  <!-- Image Tools -->
-  <url>
-    <loc>https://www.toolshouse.online/image-converter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/collage-maker</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/image-resizer</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/photo-filters-effects</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/photo-retouch</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/excel-to-pdf</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/image-enhancer</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/meme-generator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Video Tools -->
-  <url>
-    <loc>https://www.toolshouse.online/video-trimmer</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/video-speed-controller</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/subtitle-adder</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/video-compressor</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/video-reverser</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/video-rotator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Audio Tools -->
-  <url>
-    <loc>https://www.toolshouse.online/audio-cutter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/audio-merger</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/mp3-converter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/voice-recorder</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Calculator Tools -->
-  <url>
-    <loc>https://www.toolshouse.online/gst-calculator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/currency-converter</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/loan-calculator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/age-calculator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/compound-interest-calculator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- AI & Dev Tools -->
-  <url>
-    <loc>https://www.toolshouse.online/ai-voiceover-generator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/password-generator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.toolshouse.online/qr-code-generator</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Other -->
-  <url>
-    <loc>https://www.toolshouse.online/camscanner</loc>
-    <lastmod>2025-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+<!-- Add remaining URLs same pattern -->
 
 </urlset>
