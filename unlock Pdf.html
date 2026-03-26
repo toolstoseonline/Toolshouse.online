@@ -3,1970 +3,507 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Lock & Converter Pro</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<title>PDF Tools</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --bg: #050508;
-  --surface: #0d0d14;
-  --panel: #11111c;
-  --card: #16161f;
-  --border: #1e1e2e;
-  --border2: #2a2a40;
-  --accent: #00d4ff;
-  --accent2: #7c3aed;
-  --accent3: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --text: #e2e8f0;
-  --muted: #64748b;
-  --glow: rgba(0,212,255,0.08);
-  --glow2: rgba(124,58,237,0.08);
-  --r: 10px;
-}
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f4f0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    color: #1a1a1a;
+  }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    border: 0.5px solid #e0ddd6;
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Space Grotesk', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
 
-/* Animated bg grid */
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0;
-  background-image:
-    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-}
-body::after {
-  content: '';
-  position: fixed; inset: 0; z-index: 0;
-  background:
-    radial-gradient(ellipse 60% 40% at 10% 20%, rgba(0,212,255,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 35% at 90% 80%, rgba(124,58,237,0.07) 0%, transparent 60%);
-  pointer-events: none;
-}
+  .header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
 
-.app { position: relative; z-index: 1; }
+  .header p {
+    font-size: 14px;
+    color: #888;
+  }
 
-/* ── Header ── */
-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 32px;
-  background: rgba(13,13,20,0.9);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 200;
-}
-.logo {
-  display: flex; align-items: center; gap: 12px;
-  font-family: 'Orbitron', monospace;
-  font-size: 18px; font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 1px;
-}
-.logo-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-  box-shadow: 0 0 20px rgba(0,212,255,0.3);
-}
-.header-badges { display: flex; gap: 8px; }
-.hbadge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.5px;
-}
-.hbadge.cyan { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); }
-.hbadge.purple { background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.3); color: #a78bfa; }
-.hbadge.green { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--accent3); }
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: #f5f4f0;
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 2rem;
+  }
 
-/* ── Layout ── */
-.layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  min-height: calc(100vh - 65px);
-}
+  .tab {
+    flex: 1;
+    padding: 9px 12px;
+    border: none;
+    background: transparent;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
 
-/* ── Sidebar ── */
-.sidebar {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  padding: 20px 16px;
-  overflow-y: auto;
-  display: flex; flex-direction: column; gap: 4px;
-}
+  .tab.active {
+    background: #fff;
+    color: #1a1a1a;
+    font-weight: 500;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
 
-.nav-section {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 3px;
-  color: var(--muted);
-  text-transform: uppercase;
-  padding: 14px 12px 6px;
-}
+  .tab-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
 
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--r);
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid transparent;
-  font-size: 13px;
-  color: var(--muted);
-  position: relative;
-}
-.nav-item:hover { background: var(--glow); color: var(--text); border-color: var(--border); }
-.nav-item.active {
-  background: var(--glow);
-  border-color: rgba(0,212,255,0.3);
-  color: var(--accent);
-}
-.nav-item.active::before {
-  content: '';
-  position: absolute; left: 0; top: 20%; bottom: 20%;
-  width: 3px; background: var(--accent);
-  border-radius: 0 3px 3px 0;
-}
-.nav-icon { font-size: 16px; width: 20px; text-align: center; }
-.nav-badge {
-  margin-left: auto;
-  font-size: 9px;
-  font-family: 'JetBrains Mono', monospace;
-  padding: 2px 6px; border-radius: 10px;
-}
-.nav-badge.new { background: rgba(16,185,129,0.15); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
-.nav-badge.hot { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
 
-/* ── Main ── */
-.main {
-  background: var(--bg);
-  overflow-y: auto;
-  padding: 32px;
-}
+  /* Drop zone */
+  .drop-zone {
+    border: 1.5px dashed #d0cec8;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    margin-bottom: 1.25rem;
+  }
 
-/* ── Section Panels ── */
-.tool-panel { display: none; }
-.tool-panel.active { display: block; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: #6c63ff;
+    background: #f9f8ff;
+  }
 
-.panel-header {
-  margin-bottom: 28px;
-}
-.panel-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 22px; font-weight: 700;
-  color: var(--text);
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 6px;
-}
-.panel-title .icon-badge {
-  width: 40px; height: 40px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-}
-.panel-sub { color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .drop-zone.has-file {
+    border-color: #22c55e;
+    background: #f0fdf4;
+  }
 
-/* ── Upload Zone ── */
-.drop-zone {
-  border: 2px dashed var(--border2);
-  border-radius: 14px;
-  padding: 40px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  background: var(--panel);
-  position: relative;
-  overflow: hidden;
-}
-.drop-zone::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--glow);
-  opacity: 0; transition: opacity 0.3s;
-}
-.drop-zone:hover::before, .drop-zone.active::before { opacity: 1; }
-.drop-zone:hover, .drop-zone.active {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(0,212,255,0.1);
-}
-.drop-zone .dz-icon { font-size: 48px; margin-bottom: 12px; }
-.drop-zone h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-.drop-zone p { font-size: 13px; color: var(--muted); }
-.drop-zone .dz-types {
-  display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap;
-}
-.dz-type {
-  padding: 3px 10px; border-radius: 20px; font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border2);
-  color: var(--muted);
-}
-input[type=file] { display: none; }
+  .drop-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 10px;
+    color: #aaa;
+  }
 
-/* ── Cards ── */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 24px;
-  margin-bottom: 20px;
-  transition: border-color 0.2s;
-}
-.card:hover { border-color: var(--border2); }
-.card-title {
-  font-size: 13px; font-weight: 600;
-  color: var(--accent);
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-}
-.card-title::after {
-  content: ''; flex: 1; height: 1px;
-  background: linear-gradient(90deg, var(--border2), transparent);
-}
+  .drop-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 4px;
+  }
 
-/* ── Forms ── */
-.form-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
-.form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; }
-label.fl { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; text-transform: uppercase; }
+  .drop-sub {
+    font-size: 12px;
+    color: #aaa;
+  }
 
-.input-field {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 10px 14px;
-  color: var(--text);
-  font-size: 13px;
-  font-family: 'Space Grotesk', sans-serif;
-  outline: none;
-  transition: all 0.2s;
-  width: 100%;
-}
-.input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.08); }
-.input-field::placeholder { color: var(--muted); }
+  .file-name {
+    font-size: 13px;
+    color: #22c55e;
+    font-weight: 500;
+    margin-top: 6px;
+    word-break: break-all;
+  }
 
-.input-pass {
-  position: relative;
-}
-.input-pass input { padding-right: 44px; }
-.eye-btn {
-  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  background: none; border: none; cursor: pointer;
-  color: var(--muted); font-size: 16px;
-  transition: color 0.2s;
-}
-.eye-btn:hover { color: var(--accent); }
+  input[type="file"] { display: none; }
 
-/* Password strength */
-.strength-bar {
-  height: 3px; border-radius: 2px; margin-top: 6px;
-  background: var(--border);
-  overflow: hidden;
-}
-.strength-fill {
-  height: 100%; border-radius: 2px;
-  transition: all 0.3s;
-  width: 0%;
-}
+  /* Password input */
+  .field {
+    margin-bottom: 1.25rem;
+  }
 
-/* Checkboxes / Toggles */
-.perm-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.perm-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 12px;
-}
-.perm-item:hover { border-color: var(--border2); }
-.perm-item input { accent-color: var(--accent); width: 14px; height: 14px; }
-.perm-item.blocked { opacity: 0.5; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+  }
 
-/* Toggle switch */
-.toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.toggle {
-  position: relative; width: 40px; height: 22px;
-  display: inline-block;
-}
-.toggle input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-  position: absolute; inset: 0;
-  background: var(--border2); border-radius: 11px;
-  cursor: pointer; transition: 0.3s;
-}
-.toggle-slider::before {
-  content: ''; position: absolute;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--text); left: 3px; top: 3px;
-  transition: 0.3s;
-}
-.toggle input:checked + .toggle-slider { background: var(--accent); }
-.toggle input:checked + .toggle-slider::before { transform: translateX(18px); background: #000; }
-.toggle-label { font-size: 13px; color: var(--text); }
-.toggle-desc { font-size: 11px; color: var(--muted); margin-left: auto; }
+  .field input[type="text"],
+  .field input[type="password"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 0.5px solid #d0cec8;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s;
+  }
 
-/* ── Buttons ── */
-.btn {
-  padding: 11px 22px;
-  border: none; border-radius: 9px;
-  font-family: 'Orbitron', monospace;
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.25s;
-  display: inline-flex; align-items: center; gap: 8px;
-  text-transform: uppercase;
-}
-.btn-cyan {
-  background: linear-gradient(135deg, var(--accent), #0ea5e9);
-  color: #000;
-  box-shadow: 0 4px 20px rgba(0,212,255,0.25);
-}
-.btn-cyan:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,255,0.4); }
-.btn-purple {
-  background: linear-gradient(135deg, var(--accent2), #6d28d9);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(124,58,237,0.25);
-}
-.btn-purple:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,0.4); }
-.btn-green {
-  background: linear-gradient(135deg, var(--accent3), #059669);
-  color: #000;
-  box-shadow: 0 4px 20px rgba(16,185,129,0.25);
-}
-.btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(16,185,129,0.35); }
-.btn-danger {
-  background: linear-gradient(135deg, var(--danger), #b91c1c);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(239,68,68,0.25);
-}
-.btn-danger:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(239,68,68,0.35); }
-.btn-ghost {
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--muted);
-}
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--glow); }
-.btn:active { transform: translateY(0) scale(0.98); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .field input:focus {
+    border-color: #6c63ff;
+  }
 
-/* ── File list ── */
-.file-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.file-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 13px;
-  transition: all 0.2s;
-}
-.file-item:hover { border-color: var(--border2); }
-.file-icon { font-size: 20px; }
-.file-name { flex: 1; color: var(--text); font-weight: 500; word-break: break-all; }
-.file-size { color: var(--muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
-.file-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; transition: color 0.2s; }
-.file-del:hover { color: var(--danger); }
-.file-handle { color: var(--muted); cursor: grab; font-size: 14px; }
+  /* Button */
+  .btn {
+    width: 100%;
+    padding: 11px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
 
-/* ── Progress ── */
-.progress-wrap { margin-top: 16px; display: none; }
-.progress-wrap.show { display: block; }
-.progress-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
-.progress-bar {
-  height: 6px; border-radius: 3px;
-  background: var(--border);
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%; border-radius: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  transition: width 0.4s;
-  width: 0%;
-  box-shadow: 0 0 8px rgba(0,212,255,0.4);
-}
+  .btn:hover { background: #333; }
+  .btn:active { transform: scale(0.99); }
+  .btn:disabled { background: #ccc; cursor: not-allowed; }
 
-/* ── Result Box ── */
-.result-box {
-  margin-top: 16px; padding: 14px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  display: none;
-  animation: fadeIn 0.3s ease;
-}
-.result-box.show { display: flex; align-items: center; gap: 10px; }
-.result-box.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--accent3); }
-.result-box.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
-.result-box.info { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25); color: var(--accent); }
+  /* Status */
+  .status {
+    margin-top: 1rem;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
 
-/* ── PDF Preview ── */
-.preview-wrap {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  overflow: hidden;
-}
-.preview-wrap canvas { max-width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.5); border-radius: 4px; }
+  .status.error {
+    display: flex;
+    background: #fff1f1;
+    color: #c0392b;
+    border: 0.5px solid #fcd5d5;
+  }
 
-/* ── Stats row ── */
-.stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-.stat-card {
-  flex: 1; min-width: 120px;
-  padding: 16px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  text-align: center;
-}
-.stat-val { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; color: var(--accent); }
-.stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+  .status.success {
+    display: flex;
+    background: #f0fdf4;
+    color: #166534;
+    border: 0.5px solid #bbf7d0;
+  }
 
-/* ── Select / Range ── */
-select.input-field { cursor: pointer; }
-input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-.range-row { display: flex; align-items: center; gap: 10px; }
-.range-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); min-width: 32px; text-align: right; }
+  .status.loading {
+    display: flex;
+    background: #f5f4f0;
+    color: #555;
+  }
 
-/* ── Color swatches ── */
-.color-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.cswatch {
-  width: 28px; height: 28px; border-radius: 6px;
-  border: 2px solid transparent; cursor: pointer;
-  transition: all 0.2s;
-}
-.cswatch:hover, .cswatch.active { border-color: var(--accent); transform: scale(1.1); }
+  /* Spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #ccc;
+    border-top-color: #555;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  /* Image preview strip */
+  .preview-strip {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
 
-/* ── Toast ── */
-.toast {
-  position: fixed; bottom: 28px; right: 28px;
-  background: var(--card);
-  border: 1px solid var(--border2);
-  padding: 14px 20px 14px 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-  transform: translateX(120%);
-  transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
-  z-index: 9999;
-  max-width: 320px;
-}
-.toast.show { transform: translateX(0); }
-.toast-icon { font-size: 20px; }
-.toast-text { flex: 1; }
-.toast-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; }
+  .preview-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 0.5px solid #e0ddd6;
+  }
 
-/* ── Tabs inside panel ── */
-.ptabs { display: flex; gap: 4px; background: var(--surface); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
-.ptab {
-  flex: 1; padding: 8px 12px; text-align: center;
-  background: transparent; border: none; cursor: pointer;
-  color: var(--muted); font-size: 12px;
-  font-family: 'Space Grotesk', sans-serif;
-  border-radius: 7px; transition: all 0.2s;
-}
-.ptab.active { background: var(--card); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
-
-/* ── Watermark preview ── */
-.wm-preview {
-  position: relative;
-  display: inline-block;
-  background: #fff;
-  width: 200px; height: 260px;
-  overflow: hidden;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-}
-.wm-text-overlay {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; font-weight: 700;
-  pointer-events: none;
-  text-align: center;
-  line-height: 1.2;
-  word-break: break-word;
-  padding: 20px;
-}
-
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .layout { grid-template-columns: 1fr; }
-  .sidebar { display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 10px; gap: 0; border-right: none; border-bottom: 1px solid var(--border); max-height: 60px; }
-  .nav-section { display: none; }
-  .nav-item { flex-direction: column; gap: 2px; font-size: 10px; padding: 6px 10px; white-space: nowrap; }
-  .nav-badge { display: none; }
-  .main { padding: 16px; }
-}
+  .preview-count {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    background: #f5f4f0;
+    border: 0.5px solid #e0ddd6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+  }
 </style>
 </head>
 <body>
-<div class="app">
 
-<!-- Header -->
-<header>
-  <div class="logo">
-    <div class="logo-icon">🔐</div>
-    PDFShield Pro
-  </div>
-  <div class="header-badges">
-    <span class="hbadge cyan">🔒 LOCK</span>
-    <span class="hbadge purple">🔓 UNLOCK</span>
-    <span class="hbadge green">⚡ CONVERT</span>
-  </div>
-</header>
-
-<div class="layout">
-
-<!-- Sidebar -->
-<nav class="sidebar">
-  <div class="nav-section">Security</div>
-  <div class="nav-item active" onclick="showPanel('lock')">
-    <span class="nav-icon">🔒</span> Lock PDF
-  </div>
-  <div class="nav-item" onclick="showPanel('unlock')">
-    <span class="nav-icon">🔓</span> Unlock PDF
-    <span class="nav-badge hot">HOT</span>
-  </div>
-  <div class="nav-item" onclick="showPanel('permissions')">
-    <span class="nav-icon">🛡️</span> Permissions
+<div class="card">
+  <div class="header">
+    <h1>PDF Tools</h1>
+    <p>Lock or convert — nothing else</p>
   </div>
 
-  <div class="nav-section">Transform</div>
-  <div class="nav-item" onclick="showPanel('merge')">
-    <span class="nav-icon">🔗</span> Merge PDFs
-  </div>
-  <div class="nav-item" onclick="showPanel('split')">
-    <span class="nav-icon">✂️</span> Split PDF
-  </div>
-  <div class="nav-item" onclick="showPanel('rotate')">
-    <span class="nav-icon">🔄</span> Rotate Pages
-  </div>
-  <div class="nav-item" onclick="showPanel('compress')">
-    <span class="nav-icon">🗜️</span> Compress
-    <span class="nav-badge new">NEW</span>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('lock')">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      Lock PDF
+    </button>
+    <button class="tab" onclick="switchTab('convert')">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="12" y1="18" x2="12" y2="12"/>
+        <line x1="9" y1="15" x2="15" y2="15"/>
+      </svg>
+      Convert to PDF
+    </button>
   </div>
 
-  <div class="nav-section">Enhance</div>
-  <div class="nav-item" onclick="showPanel('watermark')">
-    <span class="nav-icon">💧</span> Watermark
-  </div>
-  <div class="nav-item" onclick="showPanel('metadata')">
-    <span class="nav-icon">📋</span> Metadata
-  </div>
-  <div class="nav-item" onclick="showPanel('convert')">
-    <span class="nav-icon">🔁</span> Convert
-  </div>
-  <div class="nav-item" onclick="showPanel('info')">
-    <span class="nav-icon">ℹ️</span> PDF Info
-  </div>
-</nav>
-
-<!-- Main Content -->
-<main class="main">
-
-<!-- ═══════════════ LOCK PDF ═══════════════ -->
-<div class="tool-panel active" id="panel-lock">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,212,255,0.05));border:1px solid rgba(0,212,255,0.3)">🔒</div>
-      Lock PDF with Password
+  <!-- ── Lock Panel ── -->
+  <div id="panel-lock" class="panel active">
+    <!-- Drop zone for PDF -->
+    <div class="drop-zone" id="lock-zone" onclick="document.getElementById('lock-file').click()"
+         ondragover="onDrag(event,'lock-zone')" ondragleave="offDrag('lock-zone')"
+         ondrop="onDrop(event,'lock-file','lock-zone',['application/pdf'])">
+      <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <div class="drop-title">Drop your PDF here</div>
+      <div class="drop-sub">or click to browse</div>
+      <div class="file-name" id="lock-fname"></div>
     </div>
-    <div class="panel-sub">Encrypt your PDF with AES-256 password protection. Set open password, owner password, and control user permissions.</div>
-  </div>
+    <input type="file" id="lock-file" accept=".pdf,application/pdf"
+           onchange="onFileSelect(this,'lock-zone','lock-fname')">
 
-  <div class="drop-zone" id="lockDrop" onclick="document.getElementById('lockFile').click()" ondragover="dz(event,'lockDrop')" ondragleave="dzl('lockDrop')" ondrop="dzDrop(event,'lockFile','lockDrop')">
-    <div class="dz-icon">📄</div>
-    <h3>Drop PDF file here</h3>
-    <p>or click to browse your files</p>
-    <div class="dz-types"><span class="dz-type">PDF</span></div>
-  </div>
-  <input type="file" id="lockFile" accept=".pdf" onchange="handleSingleFile(this,'lockFileName','lockFileInfo')">
-
-  <div id="lockFileName" class="file-list" style="margin-top:12px"></div>
-
-  <div class="card" style="margin-top:20px">
-    <div class="card-title">🔐 Password Settings</div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label class="fl">Open Password (User)</label>
-        <div class="input-pass">
-          <input type="password" class="input-field" id="openPass" placeholder="Password to open PDF" oninput="strengthCheck(this,'openStrength','openStrengthFill')">
-          <button class="eye-btn" onclick="toggleEye('openPass',this)">👁</button>
-        </div>
-        <div class="strength-bar"><div class="strength-fill" id="openStrengthFill"></div></div>
-        <span id="openStrength" style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace"></span>
-      </div>
-      <div class="form-group">
-        <label class="fl">Owner Password (Admin)</label>
-        <div class="input-pass">
-          <input type="password" class="input-field" id="ownerPass" placeholder="Password to edit/print PDF" oninput="strengthCheck(this,'ownerStrength','ownerStrengthFill')">
-          <button class="eye-btn" onclick="toggleEye('ownerPass',this)">👁</button>
-        </div>
-        <div class="strength-bar"><div class="strength-fill" id="ownerStrengthFill"></div></div>
-        <span id="ownerStrength" style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace"></span>
-      </div>
+    <!-- Password field -->
+    <div class="field">
+      <label for="lock-pass">Password</label>
+      <input type="password" id="lock-pass" placeholder="Enter a strong password">
     </div>
 
-    <div class="card-title" style="margin-top:8px">🛡️ User Permissions</div>
-    <div class="perm-grid" id="lockPerms">
-      <label class="perm-item"><input type="checkbox" id="perm_print" checked> 🖨️ Allow Printing</label>
-      <label class="perm-item"><input type="checkbox" id="perm_copy"> 📋 Allow Copy</label>
-      <label class="perm-item"><input type="checkbox" id="perm_modify"> ✏️ Allow Modify</label>
-      <label class="perm-item"><input type="checkbox" id="perm_annot" checked> 💬 Allow Annotations</label>
-      <label class="perm-item"><input type="checkbox" id="perm_form" checked> 📝 Allow Form Fill</label>
-      <label class="perm-item"><input type="checkbox" id="perm_access" checked> ♿ Allow Accessibility</label>
-    </div>
+    <button class="btn" onclick="runLock()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      Lock & Download
+    </button>
 
-    <div class="btn-row" style="margin-top:20px">
-      <button class="btn btn-cyan" onclick="lockPDF()">🔒 Lock & Encrypt PDF</button>
-      <button class="btn btn-ghost" onclick="clearTool('lock')">✕ Clear</button>
-    </div>
+    <div class="status" id="lock-status"></div>
   </div>
 
-  <div class="progress-wrap" id="lockProgress">
-    <div class="progress-label"><span>Encrypting PDF…</span><span id="lockPct">0%</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="lockFill"></div></div>
+  <!-- ── Convert Panel ── -->
+  <div id="panel-convert" class="panel">
+    <!-- Drop zone for images -->
+    <div class="drop-zone" id="conv-zone" onclick="document.getElementById('conv-file').click()"
+         ondragover="onDrag(event,'conv-zone')" ondragleave="offDrag('conv-zone')"
+         ondrop="onDrop(event,'conv-file','conv-zone',['image/jpeg','image/png','image/webp'])">
+      <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <div class="drop-title">Drop images here</div>
+      <div class="drop-sub">JPG or PNG — multiple files OK</div>
+    </div>
+    <input type="file" id="conv-file" accept="image/*" multiple
+           onchange="onImagesSelect(this)">
+
+    <!-- Thumbnail preview -->
+    <div class="preview-strip" id="conv-preview"></div>
+
+    <button class="btn" onclick="runConvert()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      Convert & Download
+    </button>
+
+    <div class="status" id="conv-status"></div>
   </div>
-  <div class="result-box" id="lockResult"></div>
-</div>
-
-<!-- ═══════════════ UNLOCK PDF ═══════════════ -->
-<div class="tool-panel" id="panel-unlock">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.3)">🔓</div>
-      Unlock / Remove Password
-    </div>
-    <div class="panel-sub">Remove password protection from a PDF. You must provide the current password to unlock it.</div>
-  </div>
-
-  <div class="drop-zone" id="unlockDrop" onclick="document.getElementById('unlockFile').click()" ondragover="dz(event,'unlockDrop')" ondragleave="dzl('unlockDrop')" ondrop="dzDrop(event,'unlockFile','unlockDrop')">
-    <div class="dz-icon">🔐</div>
-    <h3>Drop Protected PDF here</h3>
-    <p>or click to browse</p>
-  </div>
-  <input type="file" id="unlockFile" accept=".pdf" onchange="handleSingleFile(this,'unlockFileName')">
-  <div id="unlockFileName" class="file-list" style="margin-top:12px"></div>
-
-  <div class="card" style="margin-top:20px">
-    <div class="card-title">🔑 Enter Current Password</div>
-    <div class="form-group">
-      <label class="fl">PDF Password</label>
-      <div class="input-pass">
-        <input type="password" class="input-field" id="unlockPass" placeholder="Enter the current password">
-        <button class="eye-btn" onclick="toggleEye('unlockPass',this)">👁</button>
-      </div>
-    </div>
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-danger" onclick="unlockPDF()">🔓 Remove Password</button>
-      <button class="btn btn-ghost" onclick="clearTool('unlock')">✕ Clear</button>
-    </div>
-  </div>
-
-  <div class="progress-wrap" id="unlockProgress">
-    <div class="progress-label"><span>Removing protection…</span><span id="unlockPct">0%</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="unlockFill"></div></div>
-  </div>
-  <div class="result-box" id="unlockResult"></div>
-</div>
-
-<!-- ═══════════════ PERMISSIONS ═══════════════ -->
-<div class="tool-panel" id="panel-permissions">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(124,58,237,0.05));border:1px solid rgba(124,58,237,0.3)">🛡️</div>
-      PDF Permissions Manager
-    </div>
-    <div class="panel-sub">Control what users can do with your PDF — printing, copying, editing, and more. Requires owner password.</div>
-  </div>
-
-  <div class="drop-zone" id="permDrop" onclick="document.getElementById('permFile').click()" ondragover="dz(event,'permDrop')" ondragleave="dzl('permDrop')" ondrop="dzDrop(event,'permFile','permDrop')">
-    <div class="dz-icon">🛡️</div>
-    <h3>Drop PDF here</h3>
-    <p>Set granular permissions</p>
-  </div>
-  <input type="file" id="permFile" accept=".pdf" onchange="handleSingleFile(this,'permFileName')">
-  <div id="permFileName" class="file-list" style="margin-top:12px"></div>
-
-  <div class="card" style="margin-top:20px">
-    <div class="card-title">🔑 Owner Password</div>
-    <div class="form-group">
-      <label class="fl">Owner / Admin Password (required to set permissions)</label>
-      <div class="input-pass">
-        <input type="password" class="input-field" id="permOwnerPass" placeholder="Set an owner password">
-        <button class="eye-btn" onclick="toggleEye('permOwnerPass',this)">👁</button>
-      </div>
-    </div>
-    <div class="form-group" style="margin-top:10px">
-      <label class="fl">Open Password (optional — leave blank for no open password)</label>
-      <input type="password" class="input-field" id="permOpenPass" placeholder="Optional open password">
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">⚙️ Permission Controls</div>
-    <div class="perm-grid">
-      <label class="perm-item"><input type="checkbox" id="pp_print" checked> 🖨️ Printing</label>
-      <label class="perm-item"><input type="checkbox" id="pp_printHigh"> 🖨️ High-Quality Print</label>
-      <label class="perm-item"><input type="checkbox" id="pp_copy"> 📋 Copy Content</label>
-      <label class="perm-item"><input type="checkbox" id="pp_modify"> ✏️ Modify Document</label>
-      <label class="perm-item"><input type="checkbox" id="pp_annot" checked> 💬 Add Annotations</label>
-      <label class="perm-item"><input type="checkbox" id="pp_form" checked> 📝 Fill Forms</label>
-      <label class="perm-item"><input type="checkbox" id="pp_access" checked> ♿ Accessibility</label>
-      <label class="perm-item"><input type="checkbox" id="pp_assemble"> 📦 Assemble Doc</label>
-    </div>
-    <div class="btn-row" style="margin-top:20px">
-      <button class="btn btn-purple" onclick="applyPermissions()">🛡️ Apply Permissions</button>
-      <button class="btn btn-ghost">✕ Clear</button>
-    </div>
-  </div>
-
-  <div class="result-box" id="permResult"></div>
-</div>
-
-<!-- ═══════════════ MERGE ═══════════════ -->
-<div class="tool-panel" id="panel-merge">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.3)">🔗</div>
-      Merge PDFs
-    </div>
-    <div class="panel-sub">Combine multiple PDF files into one. Drag to reorder files before merging.</div>
-  </div>
-
-  <div class="drop-zone" id="mergeDrop" onclick="document.getElementById('mergeFiles').click()" ondragover="dz(event,'mergeDrop')" ondragleave="dzl('mergeDrop')" ondrop="dzDropMulti(event,'mergeFiles','mergeDrop')">
-    <div class="dz-icon">📚</div>
-    <h3>Drop multiple PDF files here</h3>
-    <p>or click to select files</p>
-    <div class="dz-types"><span class="dz-type">PDF × many</span></div>
-  </div>
-  <input type="file" id="mergeFiles" accept=".pdf" multiple onchange="handleMultiFiles(this)">
-
-  <div id="mergeFileList" class="file-list" style="margin-top:12px"></div>
-
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">⚙️ Merge Options</div>
-    <div class="toggle-row">
-      <label class="toggle"><input type="checkbox" id="mergeBookmarks" checked><span class="toggle-slider"></span></label>
-      <span class="toggle-label">Preserve bookmarks / outlines</span>
-    </div>
-    <div class="toggle-row">
-      <label class="toggle"><input type="checkbox" id="mergeBlank"><span class="toggle-slider"></span></label>
-      <span class="toggle-label">Add blank page between files</span>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-green" onclick="mergePDFs()">🔗 Merge All PDFs</button>
-      <button class="btn btn-ghost" onclick="mergeFileData=[];renderMergeList()">✕ Clear List</button>
-    </div>
-  </div>
-
-  <div class="progress-wrap" id="mergeProgress">
-    <div class="progress-label"><span>Merging PDFs…</span><span id="mergePct">0%</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="mergeFill"></div></div>
-  </div>
-  <div class="result-box" id="mergeResult"></div>
-</div>
-
-<!-- ═══════════════ SPLIT ═══════════════ -->
-<div class="tool-panel" id="panel-split">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3)">✂️</div>
-      Split PDF
-    </div>
-    <div class="panel-sub">Extract specific pages or split into individual pages. Multiple split modes available.</div>
-  </div>
-
-  <div class="drop-zone" id="splitDrop" onclick="document.getElementById('splitFile').click()" ondragover="dz(event,'splitDrop')" ondragleave="dzl('splitDrop')" ondrop="dzDrop(event,'splitFile','splitDrop')">
-    <div class="dz-icon">✂️</div>
-    <h3>Drop PDF to split</h3>
-    <p>or click to browse</p>
-  </div>
-  <input type="file" id="splitFile" accept=".pdf" onchange="handleSingleFile(this,'splitFileName');loadSplitInfo()">
-  <div id="splitFileName" class="file-list" style="margin-top:12px"></div>
-
-  <div id="splitStats" class="stats-row" style="margin-top:16px;display:none">
-    <div class="stat-card"><div class="stat-val" id="splitPages">0</div><div class="stat-label">TOTAL PAGES</div></div>
-    <div class="stat-card"><div class="stat-val" id="splitSize">0</div><div class="stat-label">FILE SIZE</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">✂️ Split Mode</div>
-    <div class="ptabs">
-      <button class="ptab active" onclick="splitMode('range',this)">Page Range</button>
-      <button class="ptab" onclick="splitMode('every',this)">Every N Pages</button>
-      <button class="ptab" onclick="splitMode('all',this)">All Pages</button>
-      <button class="ptab" onclick="splitMode('extract',this)">Extract Pages</button>
-    </div>
-
-    <div id="split-range">
-      <div class="form-group">
-        <label class="fl">Page Range (e.g. 1-3, 5, 7-10)</label>
-        <input type="text" class="input-field" id="splitRange" placeholder="1-3, 5, 7-10">
-      </div>
-    </div>
-    <div id="split-every" style="display:none">
-      <div class="form-group">
-        <label class="fl">Split every N pages</label>
-        <input type="number" class="input-field" id="splitEvery" value="1" min="1">
-      </div>
-    </div>
-    <div id="split-all" style="display:none">
-      <p style="font-size:13px;color:var(--muted)">Each page will become a separate PDF file, downloaded as individual files.</p>
-    </div>
-    <div id="split-extract" style="display:none">
-      <div class="form-group">
-        <label class="fl">Pages to extract (comma-separated, e.g. 1,3,5)</label>
-        <input type="text" class="input-field" id="splitExtract" placeholder="1, 3, 5">
-      </div>
-    </div>
-
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-warning" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;box-shadow:0 4px 20px rgba(245,158,11,0.25)" onclick="splitPDF()">✂️ Split PDF</button>
-      <button class="btn btn-ghost" onclick="clearTool('split')">✕ Clear</button>
-    </div>
-  </div>
-
-  <div class="progress-wrap" id="splitProgress">
-    <div class="progress-label"><span>Splitting…</span><span id="splitPct">0%</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="splitFill"></div></div>
-  </div>
-  <div class="result-box" id="splitResult"></div>
-</div>
-
-<!-- ═══════════════ ROTATE ═══════════════ -->
-<div class="tool-panel" id="panel-rotate">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(6,182,212,0.05));border:1px solid rgba(6,182,212,0.3)">🔄</div>
-      Rotate Pages
-    </div>
-    <div class="panel-sub">Rotate all pages or specific pages in your PDF by 90°, 180°, or 270°.</div>
-  </div>
-
-  <div class="drop-zone" id="rotateDrop" onclick="document.getElementById('rotateFile').click()" ondragover="dz(event,'rotateDrop')" ondragleave="dzl('rotateDrop')" ondrop="dzDrop(event,'rotateFile','rotateDrop')">
-    <div class="dz-icon">🔄</div><h3>Drop PDF here</h3><p>to rotate pages</p>
-  </div>
-  <input type="file" id="rotateFile" accept=".pdf" onchange="handleSingleFile(this,'rotateFileName')">
-  <div id="rotateFileName" class="file-list" style="margin-top:12px"></div>
-
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">🔄 Rotation Settings</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="fl">Rotation Angle</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-ghost" id="rot90" onclick="setRot(90)" style="flex:1">↻ 90°</button>
-          <button class="btn btn-ghost" id="rot180" onclick="setRot(180)" style="flex:1">↻ 180°</button>
-          <button class="btn btn-ghost" id="rot270" onclick="setRot(270)" style="flex:1">↺ 270°</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="fl">Which Pages</label>
-        <select class="input-field" id="rotatePages">
-          <option value="all">All pages</option>
-          <option value="odd">Odd pages only</option>
-          <option value="even">Even pages only</option>
-          <option value="range">Custom range</option>
-        </select>
-      </div>
-    </div>
-    <div id="rotRangeWrap" style="display:none;margin-bottom:12px">
-      <div class="form-group">
-        <label class="fl">Page Range (e.g. 1,3,5-8)</label>
-        <input type="text" class="input-field" id="rotRange" placeholder="1, 3, 5-8">
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-cyan" onclick="rotatePDF()">🔄 Apply Rotation</button>
-      <button class="btn btn-ghost" onclick="clearTool('rotate')">✕ Clear</button>
-    </div>
-  </div>
-
-  <div class="result-box" id="rotateResult"></div>
-</div>
-
-<!-- ═══════════════ COMPRESS ═══════════════ -->
-<div class="tool-panel" id="panel-compress">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.3)">🗜️</div>
-      Compress PDF
-    </div>
-    <div class="panel-sub">Reduce PDF file size by removing redundant objects and optimizing the structure.</div>
-  </div>
-
-  <div class="drop-zone" id="compressDrop" onclick="document.getElementById('compressFile').click()" ondragover="dz(event,'compressDrop')" ondragleave="dzl('compressDrop')" ondrop="dzDrop(event,'compressFile','compressDrop')">
-    <div class="dz-icon">🗜️</div><h3>Drop PDF to compress</h3><p>or click to browse</p>
-  </div>
-  <input type="file" id="compressFile" accept=".pdf" onchange="handleSingleFile(this,'compressFileName')">
-  <div id="compressFileName" class="file-list" style="margin-top:12px"></div>
-
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">⚙️ Compression Level</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-      <button class="btn btn-ghost" id="clvl1" onclick="setCompLevel(1)" style="flex:1">🟢 Low<br><small>Best quality</small></button>
-      <button class="btn btn-ghost" id="clvl2" onclick="setCompLevel(2)" style="flex:1;border-color:var(--accent);color:var(--accent)">🟡 Medium<br><small>Balanced</small></button>
-      <button class="btn btn-ghost" id="clvl3" onclick="setCompLevel(3)" style="flex:1">🔴 High<br><small>Smallest size</small></button>
-    </div>
-    <div class="toggle-row">
-      <label class="toggle"><input type="checkbox" id="compMeta" checked><span class="toggle-slider"></span></label>
-      <span class="toggle-label">Remove metadata</span>
-    </div>
-    <div class="toggle-row">
-      <label class="toggle"><input type="checkbox" id="compDup" checked><span class="toggle-slider"></span></label>
-      <span class="toggle-label">Remove duplicate objects</span>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-green" onclick="compressPDF()">🗜️ Compress PDF</button>
-      <button class="btn btn-ghost" onclick="clearTool('compress')">✕ Clear</button>
-    </div>
-  </div>
-
-  <div class="progress-wrap" id="compressProgress">
-    <div class="progress-label"><span>Compressing…</span><span id="compressPct">0%</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="compressFill"></div></div>
-  </div>
-  <div class="result-box" id="compressResult"></div>
-</div>
-
-<!-- ═══════════════ WATERMARK ═══════════════ -->
-<div class="tool-panel" id="panel-watermark">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(124,58,237,0.05));border:1px solid rgba(124,58,237,0.3)">💧</div>
-      Add Watermark
-    </div>
-    <div class="panel-sub">Add a text watermark to all pages of your PDF. Customize font, color, opacity, and position.</div>
-  </div>
-
-  <div class="drop-zone" id="wmDrop" onclick="document.getElementById('wmFile').click()" ondragover="dz(event,'wmDrop')" ondragleave="dzl('wmDrop')" ondrop="dzDrop(event,'wmFile','wmDrop')">
-    <div class="dz-icon">💧</div><h3>Drop PDF here</h3><p>to add watermark</p>
-  </div>
-  <input type="file" id="wmFile" accept=".pdf" onchange="handleSingleFile(this,'wmFileName')">
-  <div id="wmFileName" class="file-list" style="margin-top:12px"></div>
-
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">💧 Watermark Settings</div>
-    <div class="form-row">
-      <div class="form-group" style="flex:2">
-        <label class="fl">Watermark Text</label>
-        <input type="text" class="input-field" id="wmText" value="CONFIDENTIAL" placeholder="Watermark text" oninput="updateWMPreview()">
-      </div>
-      <div class="form-group">
-        <label class="fl">Font Size</label>
-        <div class="range-row">
-          <input type="range" min="12" max="80" value="40" id="wmSize" oninput="wmSizeVal.textContent=this.value;updateWMPreview()">
-          <span class="range-val" id="wmSizeVal">40</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="fl">Opacity</label>
-        <div class="range-row">
-          <input type="range" min="5" max="100" value="30" id="wmOpacity" oninput="wmOpacVal.textContent=this.value+'%';updateWMPreview()">
-          <span class="range-val" id="wmOpacVal">30%</span>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="fl">Rotation</label>
-        <div class="range-row">
-          <input type="range" min="-90" max="90" value="-45" id="wmRotation" oninput="wmRotVal.textContent=this.value+'°';updateWMPreview()">
-          <span class="range-val" id="wmRotVal">-45°</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="fl">Color</label>
-        <div class="color-row">
-          <div class="cswatch active" style="background:#cc0000" onclick="setWMColor('#cc0000',this)"></div>
-          <div class="cswatch" style="background:#1a1a2e" onclick="setWMColor('#1a1a2e',this)"></div>
-          <div class="cswatch" style="background:#0066cc" onclick="setWMColor('#0066cc',this)"></div>
-          <div class="cswatch" style="background:#1b4332" onclick="setWMColor('#1b4332',this)"></div>
-          <div class="cswatch" style="background:#6b21a8" onclick="setWMColor('#6b21a8',this)"></div>
-          <div class="cswatch" style="background:#92400e" onclick="setWMColor('#92400e',this)"></div>
-          <input type="color" value="#cc0000" id="wmColorPicker" onchange="setWMColor(this.value,null);updateWMPreview()" style="width:28px;height:28px;border-radius:6px;border:2px solid var(--border);cursor:pointer;padding:0">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="fl">Position</label>
-        <select class="input-field" id="wmPosition" onchange="updateWMPreview()">
-          <option value="center">Center (diagonal)</option>
-          <option value="topLeft">Top Left</option>
-          <option value="topRight">Top Right</option>
-          <option value="bottomLeft">Bottom Left</option>
-          <option value="bottomRight">Bottom Right</option>
-          <option value="tile">Tiled Pattern</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="margin-top:16px">
-      <label class="fl" style="margin-bottom:8px;display:block">Live Preview</label>
-      <div class="wm-preview" id="wmPreview">
-        <div style="background:#e8e8e8;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:12px">Page</div>
-        <div class="wm-text-overlay" id="wmTextOverlay">CONFIDENTIAL</div>
-      </div>
-    </div>
-
-    <div class="btn-row" style="margin-top:20px">
-      <button class="btn btn-purple" onclick="addWatermark()">💧 Add Watermark</button>
-      <button class="btn btn-ghost" onclick="clearTool('watermark')">✕ Clear</button>
-    </div>
-  </div>
-
-  <div class="result-box" id="wmResult"></div>
-</div>
-
-<!-- ═══════════════ METADATA ═══════════════ -->
-<div class="tool-panel" id="panel-metadata">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,212,255,0.05));border:1px solid rgba(0,212,255,0.3)">📋</div>
-      Edit PDF Metadata
-    </div>
-    <div class="panel-sub">View and edit the title, author, subject, keywords, and other metadata of your PDF.</div>
-  </div>
-
-  <div class="drop-zone" id="metaDrop" onclick="document.getElementById('metaFile').click()" ondragover="dz(event,'metaDrop')" ondragleave="dzl('metaDrop')" ondrop="dzDrop(event,'metaFile','metaDrop')">
-    <div class="dz-icon">📋</div><h3>Drop PDF here</h3><p>to view/edit metadata</p>
-  </div>
-  <input type="file" id="metaFile" accept=".pdf" onchange="loadMetadata(this)">
-
-  <div id="metaFields" style="display:none">
-    <div class="card" style="margin-top:16px">
-      <div class="card-title">📄 Document Information</div>
-      <div class="form-row">
-        <div class="form-group"><label class="fl">Title</label><input type="text" class="input-field" id="metaTitle" placeholder="Document Title"></div>
-        <div class="form-group"><label class="fl">Author</label><input type="text" class="input-field" id="metaAuthor" placeholder="Author Name"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="fl">Subject</label><input type="text" class="input-field" id="metaSubject" placeholder="Subject"></div>
-        <div class="form-group"><label class="fl">Keywords</label><input type="text" class="input-field" id="metaKeywords" placeholder="keyword1, keyword2"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="fl">Creator</label><input type="text" class="input-field" id="metaCreator" placeholder="Creator app"></div>
-        <div class="form-group"><label class="fl">Producer</label><input type="text" class="input-field" id="metaProducer" placeholder="Producer"></div>
-      </div>
-      <div class="toggle-row" style="margin-top:8px">
-        <label class="toggle"><input type="checkbox" id="metaClearDates"><span class="toggle-slider"></span></label>
-        <span class="toggle-label">Clear creation/modification dates</span>
-      </div>
-      <div class="btn-row" style="margin-top:16px">
-        <button class="btn btn-cyan" onclick="saveMetadata()">💾 Save Metadata</button>
-        <button class="btn btn-ghost" onclick="clearMeta()">✕ Clear Fields</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="result-box" id="metaResult"></div>
-</div>
-
-<!-- ═══════════════ CONVERT ═══════════════ -->
-<div class="tool-panel" id="panel-convert">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.3)">🔁</div>
-      PDF Converter
-    </div>
-    <div class="panel-sub">Convert PDF pages to PNG/JPEG images, or convert images to PDF — all in the browser.</div>
-  </div>
-
-  <div class="ptabs" id="convertTabs">
-    <button class="ptab active" onclick="setConvertMode('toImg',this)">PDF → Images</button>
-    <button class="ptab" onclick="setConvertMode('toPDF',this)">Images → PDF</button>
-  </div>
-
-  <!-- PDF to Images -->
-  <div id="convertToImg">
-    <div class="drop-zone" id="convImgDrop" onclick="document.getElementById('convImgFile').click()" ondragover="dz(event,'convImgDrop')" ondragleave="dzl('convImgDrop')" ondrop="dzDrop(event,'convImgFile','convImgDrop')">
-      <div class="dz-icon">📄➡️🖼️</div><h3>Drop PDF here</h3><p>Convert pages to images</p>
-    </div>
-    <input type="file" id="convImgFile" accept=".pdf" onchange="handleSingleFile(this,'convImgFileName')">
-    <div id="convImgFileName" class="file-list" style="margin-top:12px"></div>
-    <div class="card" style="margin-top:16px">
-      <div class="card-title">⚙️ Export Settings</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="fl">Format</label>
-          <select class="input-field" id="imgFormat">
-            <option value="png">PNG (transparent)</option>
-            <option value="jpeg">JPEG (smaller size)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="fl">Quality / DPI Scale</label>
-          <div class="range-row">
-            <input type="range" min="1" max="4" value="2" id="imgDPI" oninput="imgDPIVal.textContent=this.value+'x'">
-            <span class="range-val" id="imgDPIVal">2x</span>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="fl">Pages</label>
-        <select class="input-field" id="imgPages">
-          <option value="all">All pages</option>
-          <option value="first">First page only</option>
-          <option value="range">Custom range</option>
-        </select>
-      </div>
-      <div id="imgPageRange" style="display:none;margin-top:10px">
-        <input type="text" class="input-field" id="imgRangeInput" placeholder="e.g. 1-3, 5">
-      </div>
-      <div class="btn-row" style="margin-top:16px">
-        <button class="btn btn-green" onclick="pdfToImages()">🖼️ Convert to Images</button>
-      </div>
-    </div>
-    <div class="progress-wrap" id="convImgProgress">
-      <div class="progress-label"><span>Converting…</span><span id="convImgPct">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="convImgFill"></div></div>
-    </div>
-    <div id="imgOutputGrid" style="display:none;margin-top:16px">
-      <div class="card-title" style="margin-bottom:12px">🖼️ Converted Images</div>
-      <div id="imgGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px"></div>
-    </div>
-  </div>
-
-  <!-- Images to PDF -->
-  <div id="convertToPDF" style="display:none">
-    <div class="drop-zone" id="convPDFDrop" onclick="document.getElementById('convPDFFiles').click()" ondragover="dz(event,'convPDFDrop')" ondragleave="dzl('convPDFDrop')" ondrop="dzDropMultiImg(event,'convPDFDrop')">
-      <div class="dz-icon">🖼️➡️📄</div><h3>Drop images here</h3><p>Combine into one PDF</p>
-      <div class="dz-types"><span class="dz-type">PNG</span><span class="dz-type">JPG</span><span class="dz-type">WEBP</span></div>
-    </div>
-    <input type="file" id="convPDFFiles" accept="image/*" multiple onchange="handleImgFiles(this)">
-    <div id="imgFileList" class="file-list" style="margin-top:12px"></div>
-    <div class="card" style="margin-top:16px">
-      <div class="card-title">⚙️ PDF Settings</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="fl">Page Size</label>
-          <select class="input-field" id="imgPageSize">
-            <option value="auto">Auto (fit image)</option>
-            <option value="A4">A4</option>
-            <option value="letter">Letter</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="fl">Image Fit</label>
-          <select class="input-field" id="imgFit">
-            <option value="fill">Fill page</option>
-            <option value="fit">Fit (maintain ratio)</option>
-          </select>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-green" onclick="imagesToPDF()">📄 Create PDF</button>
-        <button class="btn btn-ghost" onclick="imgFileData=[];renderImgList()">✕ Clear</button>
-      </div>
-    </div>
-    <div class="progress-wrap" id="convPDFProgress">
-      <div class="progress-label"><span>Creating PDF…</span><span id="convPDFPct">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="convPDFFill"></div></div>
-    </div>
-    <div class="result-box" id="convPDFResult"></div>
-  </div>
-</div>
-
-<!-- ═══════════════ PDF INFO ═══════════════ -->
-<div class="tool-panel" id="panel-info">
-  <div class="panel-header">
-    <div class="panel-title">
-      <div class="icon-badge" style="background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,212,255,0.05));border:1px solid rgba(0,212,255,0.3)">ℹ️</div>
-      PDF Information
-    </div>
-    <div class="panel-sub">View detailed information about your PDF — pages, size, security, metadata, and a thumbnail preview.</div>
-  </div>
-
-  <div class="drop-zone" id="infoDrop" onclick="document.getElementById('infoFile').click()" ondragover="dz(event,'infoDrop')" ondragleave="dzl('infoDrop')" ondrop="dzDrop(event,'infoFile','infoDrop')">
-    <div class="dz-icon">ℹ️</div><h3>Drop PDF here</h3><p>to inspect its details</p>
-  </div>
-  <input type="file" id="infoFile" accept=".pdf" onchange="loadPDFInfo(this)">
-
-  <div id="infoPanel" style="display:none;margin-top:20px">
-    <div class="stats-row" id="infoStats"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap">
-      <div class="card">
-        <div class="card-title">📄 Document Details</div>
-        <div id="infoDetails" style="font-size:13px;line-height:2;font-family:'JetBrains Mono',monospace;color:var(--muted)"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">🖼️ Page 1 Preview</div>
-        <div class="preview-wrap" id="infoPreview"></div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:0">
-      <div class="card-title">🔒 Security Info</div>
-      <div id="infoSecurity" style="font-size:13px;line-height:2;font-family:'JetBrains Mono',monospace;color:var(--muted)"></div>
-    </div>
-  </div>
-</div>
-
-</main>
-</div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast">
-  <span class="toast-icon" id="toastIcon">✅</span>
-  <span class="toast-text" id="toastText"></span>
-  <button class="toast-close" onclick="this.parentElement.classList.remove('show')">×</button>
 </div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-const {PDFDocument, rgb, StandardFonts, degrees} = PDFLib;
-
-// ── Navigation ──────────────────────────────────────
-function showPanel(id) {
-  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  event.currentTarget.classList.add('active');
+// ─── Tab switching ────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) =>
+    t.classList.toggle('active', ['lock','convert'][i] === name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
 }
 
-// ── Drag & Drop helpers ─────────────────────────────
-function dz(e,id){ e.preventDefault(); document.getElementById(id).classList.add('active'); }
-function dzl(id){ document.getElementById(id).classList.remove('active'); }
-function dzDrop(e,inputId,dropId){
-  e.preventDefault(); dzl(dropId);
-  const f = e.dataTransfer.files[0];
-  if(!f) return;
-  const dt = new DataTransfer(); dt.items.add(f);
-  const inp = document.getElementById(inputId);
-  inp.files = dt.files;
-  inp.dispatchEvent(new Event('change'));
+// ─── Drag-and-drop helpers ────────────────────────────────────────────────────
+function onDrag(e, zoneId) {
+  e.preventDefault();
+  document.getElementById(zoneId).classList.add('drag-over');
 }
-function dzDropMulti(e,inputId,dropId){
-  e.preventDefault(); dzl(dropId);
-  const files = e.dataTransfer.files;
-  if(!files.length) return;
+function offDrag(zoneId) {
+  document.getElementById(zoneId).classList.remove('drag-over');
+}
+function onDrop(e, inputId, zoneId, allowed) {
+  e.preventDefault();
+  offDrag(zoneId);
+  const file = e.dataTransfer.files[0];
+  if (!file || !allowed.includes(file.type)) return;
+  const input = document.getElementById(inputId);
   const dt = new DataTransfer();
-  [...files].forEach(f=>dt.items.add(f));
-  const inp = document.getElementById(inputId);
-  inp.files = dt.files;
-  inp.dispatchEvent(new Event('change'));
-}
-function dzDropMultiImg(e,dropId){
-  e.preventDefault(); dzl(dropId);
-  const files = [...e.dataTransfer.files].filter(f=>f.type.startsWith('image/'));
-  imgFileData.push(...files); renderImgList();
+  [...e.dataTransfer.files].forEach(f => dt.items.add(f));
+  input.files = dt.files;
+  input.dispatchEvent(new Event('change'));
 }
 
-// ── File handlers ───────────────────────────────────
-function handleSingleFile(inp, listId) {
-  const f = inp.files[0]; if(!f) return;
-  const el = document.getElementById(listId);
-  el.innerHTML = `<div class="file-item"><span class="file-icon">📄</span><span class="file-name">${f.name}</span><span class="file-size">${fmtSize(f.size)}</span></div>`;
+// ─── Lock: file selected ──────────────────────────────────────────────────────
+function onFileSelect(input, zoneId, nameId) {
+  const zone = document.getElementById(zoneId);
+  const label = document.getElementById(nameId);
+  if (input.files[0]) {
+    zone.classList.add('has-file');
+    label.textContent = input.files[0].name;
+  }
 }
 
-let mergeFileData = [];
-function handleMultiFiles(inp){
-  mergeFileData = [...inp.files];
-  renderMergeList();
-}
-function renderMergeList(){
-  const el = document.getElementById('mergeFileList');
-  if(!mergeFileData.length){ el.innerHTML=''; return; }
-  el.innerHTML = mergeFileData.map((f,i)=>`
-    <div class="file-item">
-      <span class="file-handle">⠿</span>
-      <span class="file-icon">📄</span>
-      <span class="file-name">${f.name}</span>
-      <span class="file-size">${fmtSize(f.size)}</span>
-      <button class="file-del" onclick="mergeFileData.splice(${i},1);renderMergeList()">×</button>
-    </div>`).join('');
-}
+// ─── Convert: images selected — show thumbnails ───────────────────────────────
+function onImagesSelect(input) {
+  const preview = document.getElementById('conv-preview');
+  preview.innerHTML = '';
+  const files = [...input.files];
+  if (!files.length) return;
 
-let imgFileData = [];
-function handleImgFiles(inp){ imgFileData=[...inp.files]; renderImgList(); }
-function renderImgList(){
-  const el = document.getElementById('imgFileList');
-  if(!imgFileData.length){ el.innerHTML=''; return; }
-  el.innerHTML = imgFileData.map((f,i)=>`
-    <div class="file-item">
-      <span class="file-icon">🖼️</span>
-      <span class="file-name">${f.name}</span>
-      <span class="file-size">${fmtSize(f.size)}</span>
-      <button class="file-del" onclick="imgFileData.splice(${i},1);renderImgList()">×</button>
-    </div>`).join('');
-}
-
-function fmtSize(b){ if(b<1024) return b+'B'; if(b<1048576) return (b/1024).toFixed(1)+'KB'; return (b/1048576).toFixed(2)+'MB'; }
-
-// ── Password helpers ────────────────────────────────
-function toggleEye(id, btn){
-  const inp = document.getElementById(id);
-  inp.type = inp.type==='password'?'text':'password';
-  btn.textContent = inp.type==='password'?'👁':'🙈';
-}
-function strengthCheck(inp, labelId, fillId){
-  const v = inp.value; let s=0, label='', color='';
-  if(v.length>4) s++;
-  if(v.length>8) s++;
-  if(/[A-Z]/.test(v)) s++;
-  if(/[0-9]/.test(v)) s++;
-  if(/[^A-Za-z0-9]/.test(v)) s++;
-  const labels=['','Very Weak','Weak','Fair','Strong','Very Strong'];
-  const colors=['','#ef4444','#f97316','#f59e0b','#22c55e','#10b981'];
-  document.getElementById(labelId).textContent = v ? labels[s] : '';
-  const fill = document.getElementById(fillId);
-  fill.style.width = v ? (s*20)+'%' : '0%';
-  fill.style.background = colors[s]||'var(--border)';
-}
-
-// ── Progress helper ─────────────────────────────────
-function showProgress(id, show){
-  document.getElementById(id+'Progress').classList.toggle('show', show);
-}
-async function fakeProgress(fillId, pctId, ms=800){
-  let p=0;
-  return new Promise(res=>{
-    const interval = setInterval(()=>{
-      p = Math.min(p + Math.random()*25, 90);
-      document.getElementById(fillId).style.width = p+'%';
-      document.getElementById(pctId).textContent = Math.round(p)+'%';
-      if(p>=90){ clearInterval(interval); res(); }
-    }, ms/10);
+  // Show first 4 as thumbs + count badge
+  const show = files.slice(0, 4);
+  show.forEach(f => {
+    const img = document.createElement('img');
+    img.className = 'preview-thumb';
+    img.src = URL.createObjectURL(f);
+    preview.appendChild(img);
   });
-}
-function finishProgress(fillId, pctId){
-  document.getElementById(fillId).style.width='100%';
-  document.getElementById(pctId).textContent='100%';
+  if (files.length > 4) {
+    const badge = document.createElement('div');
+    badge.className = 'preview-count';
+    badge.textContent = '+' + (files.length - 4);
+    preview.appendChild(badge);
+  }
+
+  document.getElementById('conv-zone').classList.add('has-file');
 }
 
-// ── Result helper ───────────────────────────────────
-function showResult(id, type, html){
-  const el = document.getElementById(id+'Result');
-  el.className = 'result-box show '+type;
-  el.innerHTML = html;
+// ─── Status helper ────────────────────────────────────────────────────────────
+function setStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'status ' + type;
+  el.innerHTML = type === 'loading'
+    ? `<div class="spinner"></div><span>${msg}</span>`
+    : `<span>${msg}</span>`;
+}
+function clearStatus(id) {
+  document.getElementById(id).className = 'status';
 }
 
-// ── Toast ───────────────────────────────────────────
-let toastT;
-function showToast(msg, icon='✅'){
-  document.getElementById('toastText').textContent = msg;
-  document.getElementById('toastIcon').textContent = icon;
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  clearTimeout(toastT);
-  toastT = setTimeout(()=>t.classList.remove('show'), 3500);
+// ─── LOCK: send PDF + password to Flask /lock ──────────────────────────────────
+// HOW IT WORKS:
+//   1. Read selected file and password from the form
+//   2. Build FormData and POST to /lock
+//   3. Python (lock_pdf) encrypts with pypdf and returns bytes
+//   4. Browser receives blob → triggers download
+async function runLock() {
+  const file = document.getElementById('lock-file').files[0];
+  const pass = document.getElementById('lock-pass').value.trim();
+
+  if (!file) return setStatus('lock-status','error','Please select a PDF file.');
+  if (!pass)  return setStatus('lock-status','error','Please enter a password.');
+
+  setStatus('lock-status','loading','Locking PDF…');
+
+  const form = new FormData();
+  form.append('file', file);
+  form.append('password', pass);
+
+  try {
+    const res = await fetch('/lock', { method: 'POST', body: form });
+    if (!res.ok) {
+      const err = await res.json();
+      return setStatus('lock-status','error', err.error || 'Server error');
+    }
+    const blob = await res.blob();          // receive encrypted PDF
+    download(blob, 'locked.pdf');
+    setStatus('lock-status','success','Locked PDF downloaded!');
+  } catch {
+    setStatus('lock-status','error','Cannot reach server. Run: python pdf_tools.py');
+  }
 }
 
-// ── Download helper ─────────────────────────────────
-function downloadBytes(bytes, filename, mime='application/pdf'){
-  const blob = new Blob([bytes], {type:mime});
+// ─── CONVERT: send images to Flask /convert ───────────────────────────────────
+// HOW IT WORKS:
+//   1. Read all selected images
+//   2. POST to /convert as multipart
+//   3. Python (convert_to_pdf) places each image on an A4 page with reportlab
+//   4. Browser receives blob → triggers download
+async function runConvert() {
+  const files = document.getElementById('conv-file').files;
+  if (!files.length) return setStatus('conv-status','error','Please select at least one image.');
+
+  setStatus('conv-status','loading','Converting to PDF…');
+
+  const form = new FormData();
+  [...files].forEach(f => form.append('images[]', f));
+
+  try {
+    const res = await fetch('/convert', { method: 'POST', body: form });
+    if (!res.ok) {
+      const err = await res.json();
+      return setStatus('conv-status','error', err.error || 'Server error');
+    }
+    const blob = await res.blob();          // receive generated PDF
+    download(blob, 'converted.pdf');
+    setStatus('conv-status','success','PDF downloaded!');
+  } catch {
+    setStatus('conv-status','error','Cannot reach server. Run: python pdf_tools.py');
+  }
+}
+
+// ─── Download helper ──────────────────────────────────────────────────────────
+function download(blob, name) {
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href=url; a.download=filename; a.click();
+  const a   = document.createElement('a');
+  a.href = url; a.download = name;
+  a.click();
   URL.revokeObjectURL(url);
-}
-
-// ── Clear Tool ──────────────────────────────────────
-function clearTool(name){
-  document.querySelectorAll(`#panel-${name} .file-list`).forEach(el=>el.innerHTML='');
-  document.querySelectorAll(`#panel-${name} .result-box`).forEach(el=>el.className='result-box');
-  document.querySelectorAll(`#panel-${name} .progress-wrap`).forEach(el=>el.classList.remove('show'));
-}
-
-// ─────────────────────────────────────────────────────
-// 🔒 LOCK PDF
-// ─────────────────────────────────────────────────────
-async function lockPDF(){
-  const fileInput = document.getElementById('lockFile');
-  const openPass = document.getElementById('openPass').value;
-  const ownerPass = document.getElementById('ownerPass').value;
-  if(!fileInput.files[0]) return showToast('Please select a PDF file', '⚠️');
-  if(!openPass && !ownerPass) return showToast('Enter at least one password', '⚠️');
-
-  showProgress('lock', true);
-  await fakeProgress('lockFill','lockPct');
-
-  try {
-    const bytes = await fileInput.files[0].arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes, {ignoreEncryption: true});
-    const finalBytes = await pdfDoc.save({
-      userPassword: openPass || undefined,
-      ownerPassword: ownerPass || openPass,
-      permissions: {
-        printing: document.getElementById('perm_print').checked ? 'highResolution' : 'none',
-        modifying: document.getElementById('perm_modify').checked,
-        copying: document.getElementById('perm_copy').checked,
-        annotating: document.getElementById('perm_annot').checked,
-        fillingForms: document.getElementById('perm_form').checked,
-        contentAccessibility: document.getElementById('perm_access').checked,
-        documentAssembly: false,
-      }
-    });
-    finishProgress('lockFill','lockPct');
-    downloadBytes(finalBytes, 'locked-' + fileInput.files[0].name);
-    showResult('lock','success','✅ PDF locked and downloaded successfully!');
-    showToast('PDF encrypted & downloaded!', '🔒');
-  } catch(e){
-    showResult('lock','error','❌ Error: ' + e.message);
-    showToast('Failed: '+e.message, '❌');
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// 🔓 UNLOCK PDF
-// ─────────────────────────────────────────────────────
-async function unlockPDF(){
-  const fileInput = document.getElementById('unlockFile');
-  const pass = document.getElementById('unlockPass').value;
-  if(!fileInput.files[0]) return showToast('Please select a PDF file', '⚠️');
-
-  showProgress('unlock', true);
-  await fakeProgress('unlockFill','unlockPct');
-
-  try {
-    const bytes = await fileInput.files[0].arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes, {
-      password: pass || undefined,
-      ignoreEncryption: !pass
-    });
-    const finalBytes = await pdfDoc.save();
-    finishProgress('unlockFill','unlockPct');
-    downloadBytes(finalBytes, 'unlocked-' + fileInput.files[0].name);
-    showResult('unlock','success','✅ Password removed! PDF downloaded.');
-    showToast('PDF unlocked!', '🔓');
-  } catch(e){
-    showResult('unlock','error','❌ Wrong password or unable to decrypt: ' + e.message);
-    showToast('Failed — check password', '❌');
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// 🛡️ PERMISSIONS
-// ─────────────────────────────────────────────────────
-async function applyPermissions(){
-  const fileInput = document.getElementById('permFile');
-  const ownerPass = document.getElementById('permOwnerPass').value;
-  const openPass = document.getElementById('permOpenPass').value;
-  if(!fileInput.files[0]) return showToast('Please select a PDF file', '⚠️');
-  if(!ownerPass) return showToast('Owner password required', '⚠️');
-  try {
-    const bytes = await fileInput.files[0].arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes, {ignoreEncryption:true});
-    const finalBytes = await pdfDoc.save({
-      userPassword: openPass || undefined,
-      ownerPassword: ownerPass,
-      permissions: {
-        printing: document.getElementById('pp_printHigh').checked ? 'highResolution' : (document.getElementById('pp_print').checked ? 'lowResolution' : 'none'),
-        modifying: document.getElementById('pp_modify').checked,
-        copying: document.getElementById('pp_copy').checked,
-        annotating: document.getElementById('pp_annot').checked,
-        fillingForms: document.getElementById('pp_form').checked,
-        contentAccessibility: document.getElementById('pp_access').checked,
-        documentAssembly: document.getElementById('pp_assemble').checked,
-      }
-    });
-    downloadBytes(finalBytes, 'permissions-' + fileInput.files[0].name);
-    showResult('perm','success','✅ Permissions applied and PDF downloaded.');
-    showToast('Permissions updated!', '🛡️');
-  } catch(e){
-    showResult('perm','error','❌ Error: '+e.message);
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// 🔗 MERGE PDFs
-// ─────────────────────────────────────────────────────
-async function mergePDFs(){
-  if(mergeFileData.length < 2) return showToast('Add at least 2 PDFs to merge', '⚠️');
-  showProgress('merge',true);
-  await fakeProgress('mergeFill','mergePct',600);
-  try {
-    const merged = await PDFDocument.create();
-    const addBlank = document.getElementById('mergeBlank').checked;
-    for(let i=0; i<mergeFileData.length; i++){
-      const bytes = await mergeFileData[i].arrayBuffer();
-      const doc = await PDFDocument.load(bytes, {ignoreEncryption:true});
-      const pages = await merged.copyPages(doc, doc.getPageIndices());
-      pages.forEach(p=>merged.addPage(p));
-      if(addBlank && i < mergeFileData.length-1){
-        const pg = merged.addPage([595,842]);
-      }
-    }
-    const finalBytes = await merged.save();
-    finishProgress('mergeFill','mergePct');
-    downloadBytes(finalBytes, 'merged.pdf');
-    showResult('merge','success',`✅ Merged ${mergeFileData.length} PDFs (${fmtSize(finalBytes.length)}) — downloaded!`);
-    showToast('PDFs merged!', '🔗');
-  } catch(e){
-    showResult('merge','error','❌ Error: '+e.message);
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// ✂️ SPLIT PDF
-// ─────────────────────────────────────────────────────
-let splitModeVal = 'range';
-function splitMode(m, btn){
-  splitModeVal = m;
-  document.querySelectorAll('#panel-split .ptab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  ['range','every','all','extract'].forEach(k=>{
-    document.getElementById('split-'+k).style.display = k===m?'block':'none';
-  });
-}
-
-async function loadSplitInfo(){
-  const f = document.getElementById('splitFile').files[0];
-  if(!f) return;
-  const bytes = await f.arrayBuffer();
-  const doc = await pdfjsLib.getDocument({data:bytes}).promise;
-  document.getElementById('splitPages').textContent = doc.numPages;
-  document.getElementById('splitSize').textContent = fmtSize(f.size);
-  document.getElementById('splitStats').style.display = 'flex';
-}
-
-function parsePageRange(str, total){
-  const pages = new Set();
-  str.split(',').forEach(part=>{
-    part = part.trim();
-    if(part.includes('-')){
-      const [a,b] = part.split('-').map(Number);
-      for(let i=a;i<=Math.min(b,total);i++) pages.add(i);
-    } else {
-      const n = parseInt(part);
-      if(n>=1&&n<=total) pages.add(n);
-    }
-  });
-  return [...pages].sort((a,b)=>a-b);
-}
-
-async function splitPDF(){
-  const f = document.getElementById('splitFile').files[0];
-  if(!f) return showToast('Please select a PDF file','⚠️');
-  showProgress('split',true);
-  await fakeProgress('splitFill','splitPct',600);
-  try {
-    const bytes = await f.arrayBuffer();
-    const srcDoc = await PDFDocument.load(bytes,{ignoreEncryption:true});
-    const total = srcDoc.getPageCount();
-
-    if(splitModeVal==='all'){
-      for(let i=0;i<total;i++){
-        const newDoc = await PDFDocument.create();
-        const [pg] = await newDoc.copyPages(srcDoc,[i]);
-        newDoc.addPage(pg);
-        const out = await newDoc.save();
-        downloadBytes(out, `page_${i+1}.pdf`);
-        await new Promise(r=>setTimeout(r,100));
-      }
-      finishProgress('splitFill','splitPct');
-      showResult('split','success',`✅ Split into ${total} individual PDF files!`);
-    } else if(splitModeVal==='every'){
-      const n = Math.max(1,parseInt(document.getElementById('splitEvery').value)||1);
-      let part=1;
-      for(let i=0;i<total;i+=n){
-        const newDoc = await PDFDocument.create();
-        const indices = [];
-        for(let j=i;j<Math.min(i+n,total);j++) indices.push(j);
-        const pages = await newDoc.copyPages(srcDoc, indices);
-        pages.forEach(p=>newDoc.addPage(p));
-        const out = await newDoc.save();
-        downloadBytes(out, `split_part${part++}.pdf`);
-        await new Promise(r=>setTimeout(r,100));
-      }
-      finishProgress('splitFill','splitPct');
-      showResult('split','success','✅ Split complete!');
-    } else {
-      const rangeStr = splitModeVal==='range'
-        ? document.getElementById('splitRange').value
-        : document.getElementById('splitExtract').value;
-      if(!rangeStr) return showToast('Enter page range','⚠️');
-      const pages = parsePageRange(rangeStr, total);
-      if(!pages.length) return showToast('No valid pages','⚠️');
-      const newDoc = await PDFDocument.create();
-      const copied = await newDoc.copyPages(srcDoc, pages.map(p=>p-1));
-      copied.forEach(p=>newDoc.addPage(p));
-      const out = await newDoc.save();
-      finishProgress('splitFill','splitPct');
-      downloadBytes(out, `split_pages_${rangeStr.replace(/,/g,'_')}.pdf`);
-      showResult('split','success',`✅ Extracted ${pages.length} pages!`);
-    }
-    showToast('Split complete!','✂️');
-  } catch(e){
-    showResult('split','error','❌ Error: '+e.message);
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// 🔄 ROTATE
-// ─────────────────────────────────────────────────────
-let rotAngle = 90;
-function setRot(deg){
-  rotAngle=deg;
-  ['90','180','270'].forEach(d=>{
-    const b = document.getElementById('rot'+d);
-    b.className = 'btn '+(d==deg?'btn-cyan':'btn-ghost');
-  });
-}
-document.getElementById('rotatePages').addEventListener('change', e=>{
-  document.getElementById('rotRangeWrap').style.display = e.target.value==='range'?'block':'none';
-});
-setRot(90);
-
-async function rotatePDF(){
-  const f = document.getElementById('rotateFile').files[0];
-  if(!f) return showToast('Select a PDF first','⚠️');
-  try {
-    const bytes = await f.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes,{ignoreEncryption:true});
-    const total = pdfDoc.getPageCount();
-    const mode = document.getElementById('rotatePages').value;
-    let pagesToRotate = [];
-    if(mode==='all') pagesToRotate = pdfDoc.getPages();
-    else if(mode==='odd') pagesToRotate = pdfDoc.getPages().filter((_,i)=>i%2===0);
-    else if(mode==='even') pagesToRotate = pdfDoc.getPages().filter((_,i)=>i%2===1);
-    else {
-      const nums = parsePageRange(document.getElementById('rotRange').value, total);
-      pagesToRotate = nums.map(n=>pdfDoc.getPages()[n-1]);
-    }
-    pagesToRotate.forEach(pg=>{
-      const cur = pg.getRotation().angle;
-      pg.setRotation(degrees((cur+rotAngle)%360));
-    });
-    const out = await pdfDoc.save();
-    downloadBytes(out, 'rotated-'+f.name);
-    showResult('rotate','success',`✅ Rotated ${pagesToRotate.length} page(s) by ${rotAngle}°`);
-    showToast('Pages rotated!','🔄');
-  } catch(e){
-    showResult('rotate','error','❌ '+e.message);
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// 🗜️ COMPRESS
-// ─────────────────────────────────────────────────────
-let compLevel = 2;
-function setCompLevel(l){
-  compLevel=l;
-  [1,2,3].forEach(n=>{
-    const b = document.getElementById('clvl'+n);
-    b.style.borderColor = n===l?'var(--accent)':'';
-    b.style.color = n===l?'var(--accent)':'';
-  });
-}
-
-async function compressPDF(){
-  const f = document.getElementById('compressFile').files[0];
-  if(!f) return showToast('Select a PDF first','⚠️');
-  showProgress('compress',true);
-  await fakeProgress('compressFill','compressPct',700);
-  try {
-    const bytes = await f.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes,{ignoreEncryption:true});
-    if(document.getElementById('compMeta').checked){
-      pdfDoc.setTitle(''); pdfDoc.setAuthor(''); pdfDoc.setSubject(''); pdfDoc.setKeywords([]);
-    }
-    const out = await pdfDoc.save({ useObjectStreams: compLevel >= 2, addDefaultPage: false });
-    finishProgress('compressFill','compressPct');
-    const saving = Math.max(0, f.size - out.length);
-    const pct = f.size > 0 ? Math.round(saving/f.size*100) : 0;
-    downloadBytes(out, 'compressed-'+f.name);
-    showResult('compress','success',`✅ Compressed! ${fmtSize(f.size)} → ${fmtSize(out.length)} (${pct}% smaller)`);
-    showToast('PDF compressed!','🗜️');
-  } catch(e){
-    showResult('compress','error','❌ '+e.message);
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// 💧 WATERMARK
-// ─────────────────────────────────────────────────────
-let wmColor = '#cc0000';
-function setWMColor(c, el){
-  wmColor=c;
-  if(el){ document.querySelectorAll('#panel-watermark .cswatch').forEach(s=>s.classList.remove('active')); el.classList.add('active'); }
-  updateWMPreview();
-}
-function updateWMPreview(){
-  const text = document.getElementById('wmText').value || 'WATERMARK';
-  const size = document.getElementById('wmSize').value;
-  const opacity = document.getElementById('wmOpacity').value/100;
-  const rotation = document.getElementById('wmRotation').value;
-  const overlay = document.getElementById('wmTextOverlay');
-  overlay.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:${size*0.4}px;font-weight:700;color:${wmColor};opacity:${opacity};transform:rotate(${rotation}deg);pointer-events:none;text-align:center;padding:20px;word-break:break-word`;
-  overlay.textContent = text;
-}
-updateWMPreview();
-
-async function addWatermark(){
-  const f = document.getElementById('wmFile').files[0];
-  if(!f) return showToast('Select a PDF first','⚠️');
-  const text = document.getElementById('wmText').value || 'WATERMARK';
-  const opacity = parseFloat(document.getElementById('wmOpacity').value)/100;
-  const fontSize = parseInt(document.getElementById('wmSize').value);
-  const rotation = parseInt(document.getElementById('wmRotation').value);
-  const position = document.getElementById('wmPosition').value;
-  try {
-    const bytes = await f.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes,{ignoreEncryption:true});
-    const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const hex = wmColor.replace('#','');
-    const r2 = parseInt(hex.slice(0,2),16)/255;
-    const g2 = parseInt(hex.slice(2,4),16)/255;
-    const b2 = parseInt(hex.slice(4,6),16)/255;
-
-    pdfDoc.getPages().forEach(page=>{
-      const {width, height} = page.getSize();
-      const textWidth = font.widthOfTextAtSize(text, fontSize);
-      let x = width/2, y = height/2;
-      if(position==='topLeft'){ x=50; y=height-80; }
-      else if(position==='topRight'){ x=width-textWidth-30; y=height-80; }
-      else if(position==='bottomLeft'){ x=50; y=50; }
-      else if(position==='bottomRight'){ x=width-textWidth-30; y=50; }
-      const addWM = (px,py) => page.drawText(text, {
-        x:px, y:py, size:fontSize, font,
-        color:rgb(r2,g2,b2), opacity,
-        rotate: degrees(rotation),
-      });
-      if(position==='tile'){
-        for(let tx=0; tx<width; tx+=200)
-          for(let ty=0; ty<height; ty+=150)
-            addWM(tx, ty);
-      } else {
-        addWM(x - (position==='center'?textWidth/2:0), y);
-      }
-    });
-    const out = await pdfDoc.save();
-    downloadBytes(out, 'watermarked-'+f.name);
-    showResult('wm','success','✅ Watermark added to all pages!');
-    showToast('Watermark applied!','💧');
-  } catch(e){
-    showResult('wm','error','❌ '+e.message);
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// 📋 METADATA
-// ─────────────────────────────────────────────────────
-let metaFileBytes = null, metaFileName = '';
-async function loadMetadata(inp){
-  const f = inp.files[0]; if(!f) return;
-  metaFileName = f.name;
-  metaFileBytes = await f.arrayBuffer();
-  try {
-    const pdfDoc = await PDFDocument.load(metaFileBytes,{ignoreEncryption:true});
-    document.getElementById('metaTitle').value = pdfDoc.getTitle()||'';
-    document.getElementById('metaAuthor').value = pdfDoc.getAuthor()||'';
-    document.getElementById('metaSubject').value = pdfDoc.getSubject()||'';
-    document.getElementById('metaKeywords').value = (pdfDoc.getKeywords()||[]).join(', ');
-    document.getElementById('metaCreator').value = pdfDoc.getCreator()||'';
-    document.getElementById('metaProducer').value = pdfDoc.getProducer()||'';
-    document.getElementById('metaFields').style.display='block';
-    showToast('Metadata loaded!','📋');
-  } catch(e){ showResult('meta','error','❌ '+e.message); }
-}
-async function saveMetadata(){
-  if(!metaFileBytes) return showToast('Load a PDF first','⚠️');
-  try {
-    const pdfDoc = await PDFDocument.load(metaFileBytes,{ignoreEncryption:true});
-    pdfDoc.setTitle(document.getElementById('metaTitle').value);
-    pdfDoc.setAuthor(document.getElementById('metaAuthor').value);
-    pdfDoc.setSubject(document.getElementById('metaSubject').value);
-    pdfDoc.setKeywords(document.getElementById('metaKeywords').value.split(',').map(k=>k.trim()).filter(Boolean));
-    pdfDoc.setCreator(document.getElementById('metaCreator').value);
-    pdfDoc.setProducer(document.getElementById('metaProducer').value);
-    if(document.getElementById('metaClearDates').checked){
-      pdfDoc.setCreationDate(new Date(0));
-      pdfDoc.setModificationDate(new Date(0));
-    }
-    const out = await pdfDoc.save();
-    downloadBytes(out, 'metadata-'+metaFileName);
-    showResult('meta','success','✅ Metadata updated and PDF downloaded!');
-    showToast('Metadata saved!','📋');
-  } catch(e){ showResult('meta','error','❌ '+e.message); }
-}
-function clearMeta(){
-  ['metaTitle','metaAuthor','metaSubject','metaKeywords','metaCreator','metaProducer'].forEach(id=>document.getElementById(id).value='');
-}
-
-// ─────────────────────────────────────────────────────
-// 🔁 CONVERT — PDF to Images
-// ─────────────────────────────────────────────────────
-function setConvertMode(mode, btn){
-  document.querySelectorAll('#convertTabs .ptab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('convertToImg').style.display = mode==='toImg'?'block':'none';
-  document.getElementById('convertToPDF').style.display = mode==='toPDF'?'block':'none';
-}
-document.getElementById('imgPages').addEventListener('change', e=>{
-  document.getElementById('imgPageRange').style.display = e.target.value==='range'?'block':'none';
-});
-
-async function pdfToImages(){
-  const f = document.getElementById('convImgFile').files[0];
-  if(!f) return showToast('Select a PDF first','⚠️');
-  const fmt = document.getElementById('imgFormat').value;
-  const dpiScale = parseFloat(document.getElementById('imgDPI').value);
-  const pagesMode = document.getElementById('imgPages').value;
-
-  showProgress('convImg',true);
-  try {
-    const bytes = await f.arrayBuffer();
-    const pdfDoc = await pdfjsLib.getDocument({data:bytes}).promise;
-    const total = pdfDoc.numPages;
-    let pagesToConvert = [];
-    if(pagesMode==='first') pagesToConvert=[1];
-    else if(pagesMode==='range'){
-      pagesToConvert = parsePageRange(document.getElementById('imgRangeInput').value, total);
-    } else {
-      for(let i=1;i<=total;i++) pagesToConvert.push(i);
-    }
-
-    document.getElementById('imgOutputGrid').style.display='block';
-    document.getElementById('imgGrid').innerHTML='';
-
-    for(let i=0;i<pagesToConvert.length;i++){
-      const pn = pagesToConvert[i];
-      document.getElementById('convImgFill').style.width = ((i+1)/pagesToConvert.length*100)+'%';
-      document.getElementById('convImgPct').textContent = Math.round((i+1)/pagesToConvert.length*100)+'%';
-      const page = await pdfDoc.getPage(pn);
-      const vp = page.getViewport({scale: dpiScale});
-      const canvas = document.createElement('canvas');
-      canvas.width=vp.width; canvas.height=vp.height;
-      const ctx2 = canvas.getContext('2d');
-      if(fmt==='jpeg'){ ctx2.fillStyle='#fff'; ctx2.fillRect(0,0,vp.width,vp.height); }
-      await page.render({canvasContext:ctx2,viewport:vp}).promise;
-      const mime = fmt==='png'?'image/png':'image/jpeg';
-      const dataUrl = canvas.toDataURL(mime, 0.92);
-      const fname = `page_${pn}.${fmt}`;
-      // thumbnail card
-      const card = document.createElement('div');
-      card.style.cssText='background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;';
-      card.innerHTML=`<img src="${dataUrl}" style="width:100%;display:block"><div style="padding:8px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--muted);font-family:JetBrains Mono,monospace">Page ${pn}</span><a href="${dataUrl}" download="${fname}" style="font-size:11px;color:var(--accent);text-decoration:none;border:1px solid rgba(0,212,255,0.3);padding:3px 8px;border-radius:5px">↓ ${fmt.toUpperCase()}</a></div>`;
-      document.getElementById('imgGrid').appendChild(card);
-    }
-    showToast(`Converted ${pagesToConvert.length} page(s)!`,'🖼️');
-  } catch(e){ showToast('Error: '+e.message,'❌'); }
-}
-
-// ─────────────────────────────────────────────────────
-// 🔁 CONVERT — Images to PDF
-// ─────────────────────────────────────────────────────
-async function imagesToPDF(){
-  if(!imgFileData.length) return showToast('Add images first','⚠️');
-  showProgress('convPDF',true);
-  await fakeProgress('convPDFFill','convPDFPct',600);
-  try {
-    const pdfDoc = await PDFDocument.create();
-    const pageSize = document.getElementById('imgPageSize').value;
-    const fitMode = document.getElementById('imgFit').value;
-    for(const file of imgFileData){
-      const bytes = await file.arrayBuffer();
-      let img;
-      if(file.type==='image/png') img = await pdfDoc.embedPng(bytes);
-      else img = await pdfDoc.embedJpg(bytes);
-      const {width:iw, height:ih} = img;
-      let pw=iw, ph=ih;
-      if(pageSize==='A4'){ pw=595; ph=842; }
-      else if(pageSize==='letter'){ pw=612; ph=792; }
-      const page = pdfDoc.addPage([pw,ph]);
-      let dw=iw,dh=ih,dx=0,dy=0;
-      if(fitMode==='fit'){
-        const r=Math.min(pw/iw,ph/ih);
-        dw=iw*r; dh=ih*r; dx=(pw-dw)/2; dy=(ph-dh)/2;
-      } else { dw=pw; dh=ph; }
-      page.drawImage(img,{x:dx,y:dy,width:dw,height:dh});
-    }
-    const out = await pdfDoc.save();
-    finishProgress('convPDFFill','convPDFPct');
-    downloadBytes(out,'images-to-pdf.pdf');
-    showResult('convPDF','success',`✅ Created PDF from ${imgFileData.length} image(s)!`);
-    showToast('PDF created!','📄');
-  } catch(e){
-    showResult('convPDF','error','❌ '+e.message);
-  }
-}
-
-// ─────────────────────────────────────────────────────
-// ℹ️ PDF INFO
-// ─────────────────────────────────────────────────────
-async function loadPDFInfo(inp){
-  const f = inp.files[0]; if(!f) return;
-  try {
-    const bytes = await f.arrayBuffer();
-    // pdf-lib for metadata
-    const pdfLib = await PDFDocument.load(bytes,{ignoreEncryption:true});
-    // pdfjs for pages
-    const pdfjs = await pdfjsLib.getDocument({data:bytes.slice(0)}).promise;
-    const total = pdfjs.numPages;
-    const firstPage = await pdfjs.getPage(1);
-    const vp = firstPage.getViewport({scale:1});
-
-    document.getElementById('infoPanel').style.display='block';
-    document.getElementById('infoStats').innerHTML=`
-      <div class="stat-card"><div class="stat-val">${total}</div><div class="stat-label">PAGES</div></div>
-      <div class="stat-card"><div class="stat-val">${fmtSize(f.size)}</div><div class="stat-label">FILE SIZE</div></div>
-      <div class="stat-card"><div class="stat-val">${Math.round(vp.width)}×${Math.round(vp.height)}</div><div class="stat-label">PAGE SIZE (pt)</div></div>
-      <div class="stat-card"><div class="stat-val">${pdfLib.getPageCount()}</div><div class="stat-label">PDF-LIB PAGES</div></div>`;
-
-    document.getElementById('infoDetails').innerHTML=`
-      <div><span style="color:var(--accent)">Title:</span> ${pdfLib.getTitle()||'—'}</div>
-      <div><span style="color:var(--accent)">Author:</span> ${pdfLib.getAuthor()||'—'}</div>
-      <div><span style="color:var(--accent)">Subject:</span> ${pdfLib.getSubject()||'—'}</div>
-      <div><span style="color:var(--accent)">Creator:</span> ${pdfLib.getCreator()||'—'}</div>
-      <div><span style="color:var(--accent)">Producer:</span> ${pdfLib.getProducer()||'—'}</div>
-      <div><span style="color:var(--accent)">Keywords:</span> ${(pdfLib.getKeywords()||[]).join(', ')||'—'}</div>`;
-
-    const info = await pdfjs.getMetadata().catch(()=>({}));
-    document.getElementById('infoSecurity').innerHTML=`
-      <div><span style="color:var(--accent)">Encrypted:</span> ${pdfjs.loadingTask?'—':'No'}</div>
-      <div><span style="color:var(--accent)">File Name:</span> ${f.name}</div>
-      <div><span style="color:var(--accent)">File Type:</span> ${f.type||'application/pdf'}</div>
-      <div><span style="color:var(--accent)">Last Modified:</span> ${new Date(f.lastModified).toLocaleString()}</div>`;
-
-    // Render preview
-    const previewCanvas = document.createElement('canvas');
-    const pvp = firstPage.getViewport({scale:0.6});
-    previewCanvas.width=pvp.width; previewCanvas.height=pvp.height;
-    await firstPage.render({canvasContext:previewCanvas.getContext('2d'),viewport:pvp}).promise;
-    const prev = document.getElementById('infoPreview');
-    prev.innerHTML=''; prev.appendChild(previewCanvas);
-
-    showToast('PDF info loaded!','ℹ️');
-  } catch(e){ showToast('Error: '+e.message,'❌'); }
 }
 </script>
 </body>
