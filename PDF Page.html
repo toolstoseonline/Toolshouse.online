@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PDF Page Numbering</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+    body {
+        font-family: Arial;
+        text-align: center;
+        padding: 20px;
+        background: #f0f8ff;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<h2>PDF Page Number Generator</h2>
+<button onclick="generatePDF()">Download PDF</button>
+
+<script>
+async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const totalPages = 5; // total pages
+
+    for (let i = 1; i <= totalPages; i++) {
+        doc.setFontSize(20);
+        doc.text("This is page " + i, 20, 50);
+
+        // Add page number at bottom
+        doc.setFontSize(10);
+        doc.text("Page " + i + " of " + totalPages, 90, 290);
+
+        if (i < totalPages) {
+            doc.addPage();
+        }
+    }
+
+    doc.save("page-numbered.pdf");
+}
+</script>
+
+</body>
+</html>
