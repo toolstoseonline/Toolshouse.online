@@ -2,109 +2,708 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF Organizer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>PDF Organizer - Visual Page Reorder</title>
     
-    <!-- CSS: Styling the application -->
+    <!-- CSS: Styling the application with preview panel -->
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
+            background: #e9eef3;
+            margin: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            padding: 24px;
         }
-        .container {
+        
+        /* Main Dashboard Layout - Two columns for preview and controls */
+        .dashboard {
+            max-width: 1400px;
+            width: 100%;
             background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        /* Header area */
+        .header {
+            background: linear-gradient(135deg, #1e2a3a, #0f1724);
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+        
+        .header h2 {
+            margin: 0 0 6px 0;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            font-size: 1.8rem;
+        }
+        
+        .header p {
+            margin: 0;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        /* Two column flexible layout */
+        .split-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+        }
+        
+        /* Left panel: Controls */
+        .controls-panel {
+            flex: 1.2;
+            min-width: 280px;
+            background: #fafcff;
+            padding: 1.8rem;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        /* Right panel: PDF Preview */
+        .preview-panel {
+            flex: 2.5;
+            background: #f1f5f9;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* File area styling */
+        .file-area {
+            background: #f0f4fa;
+            border: 2px dashed #b9cadf;
+            border-radius: 20px;
+            padding: 1rem;
             text-align: center;
-            width: 350px;
+            margin-bottom: 24px;
+            transition: background 0.2s;
+            cursor: pointer;
         }
-        input[type="file"] { margin: 20px 0; }
+        
+        .file-area:hover {
+            background: #e6edf6;
+            border-color: #3b82f6;
+        }
+        
+        .file-label {
+            font-weight: 500;
+            color: #1e293b;
+            display: inline-block;
+            background: white;
+            padding: 8px 18px;
+            border-radius: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-top: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .order-group {
+            margin: 24px 0 20px;
+        }
+        
+        .order-group label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 10px;
+            color: #0f1724;
+        }
+        
+        .info-hint {
+            font-size: 12px;
+            color: #4b5563;
+            background: #eef2ff;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        
         input[type="text"] {
-            width: 90%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            background: white;
+            font-family: monospace;
         }
-        button {
-            background-color: #28a745;
+        
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(100deg, #2563eb, #1d4ed8);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 16px;
+            width: 100%;
+            transition: transform 0.1s, background 0.2s;
+            margin-top: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
-        button:hover { background-color: #218838; }
-        .info { font-size: 12px; color: #666; margin-top: -10px; }
+        
+        .btn-primary:hover {
+            background: linear-gradient(100deg, #1d4ed8, #1e3a8a);
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            width: auto;
+        }
+        
+        /* PDF preview container */
+        .pdf-viewer-wrapper {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 500px;
+        }
+        
+        .preview-header {
+            padding: 12px 20px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .preview-header span {
+            font-weight: 600;
+            color: #0f1724;
+        }
+        
+        .page-nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.1s;
+        }
+        
+        .nav-btn:hover {
+            background: #e2e8f0;
+        }
+        
+        .page-indicator {
+            font-size: 0.85rem;
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        
+        .canvas-container {
+            background: #525659;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            min-height: 400px;
+            overflow: auto;
+            flex: 1;
+        }
+        
+        canvas {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .empty-preview {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 24px;
+        }
+        
+        .badge {
+            background: #e6f0ff;
+            border-radius: 30px;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        hr {
+            margin: 16px 0;
+            border-color: #e2e8f0;
+        }
+        
+        @media (max-width: 780px) {
+            .split-layout {
+                flex-direction: column;
+            }
+            .controls-panel {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            .dashboard {
+                border-radius: 20px;
+            }
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
+    
+    <!-- PDF.js library for rendering PDF on screen -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 </head>
 <body>
 
-    <!-- HTML: The Structure -->
-    <div class="container">
-        <h2>PDF Page Organizer</h2>
-        
-        <!-- File Input -->
-        <input type="file" id="pdfInput" accept=".pdf">
-        
-        <!-- Order Input -->
-        <p class="info">Enter page order (e.g., 3,1,2)</p>
-        <input type="text" id="orderInput" placeholder="e.g., 3,1,2">
-        
-        <!-- Action Button -->
-        <button onclick="processPDF()">Organize & Download</button>
+<div class="dashboard">
+    <div class="header">
+        <h2>📄 PDF Page Organizer</h2>
+        <p>Reorder, preview, and download your custom PDF — visual page selector included</p>
     </div>
+    
+    <div class="split-layout">
+        <!-- LEFT SIDE: Controls & upload -->
+        <div class="controls-panel">
+            <!-- File upload area with visual feedback -->
+            <div class="file-area" id="fileDropArea">
+                <div>📂 Drag & drop or click to upload PDF</div>
+                <input type="file" id="pdfInput" accept=".pdf">
+                <label for="pdfInput" class="file-label">Choose PDF file</label>
+                <div id="fileNameDisplay" style="font-size:12px; margin-top:8px; color:#3b82f6;"></div>
+            </div>
+            
+            <div class="order-group">
+                <label>✏️ Custom Page Order</label>
+                <div class="info-hint">
+                    💡 Enter page numbers separated by commas (e.g., <strong>3,1,2,4</strong>)<br>
+                    You can repeat pages or create new sequence. Preview reflects original PDF.
+                </div>
+                <input type="text" id="orderInput" placeholder="Example: 5,1,3,2,4" value="">
+                <button class="btn-primary" id="organizeBtn">✨ Organize & Download PDF</button>
+                <button class="btn-secondary" id="resetPreviewBtn" style="margin-top: 10px;">🔄 Reset & Clear Preview</button>
+            </div>
+            
+            <hr>
+            <div class="info-hint" style="background:#f1f5f9;">
+                ⚡ <strong>On-Screen Preview</strong>: After loading PDF, browse pages with navigation.<br>
+                Your order string will be validated and used to build final organized PDF.
+            </div>
+        </div>
+        
+        <!-- RIGHT SIDE: Live PDF Preview -->
+        <div class="preview-panel">
+            <div class="pdf-viewer-wrapper">
+                <div class="preview-header">
+                    <span>📖 <span id="previewTitle">PDF Preview</span></span>
+                    <div class="page-nav">
+                        <button class="nav-btn" id="prevPageBtn" disabled>◀ Prev</button>
+                        <span class="page-indicator" id="pageNumIndicator">- / -</span>
+                        <button class="nav-btn" id="nextPageBtn" disabled>Next ▶</button>
+                    </div>
+                </div>
+                <div class="canvas-container" id="canvasContainer">
+                    <div class="empty-preview">
+                        🖼️ No PDF loaded<br>
+                        <span style="font-size:13px;">Upload a PDF file to see page thumbnails & navigate</span>
+                    </div>
+                    <canvas id="pdfCanvas" style="display: none;"></canvas>
+                </div>
+                <div style="padding: 12px 20px; background:#f9f9ff; font-size:12px; border-top:1px solid #eef2ff;" id="pdfStats">
+                    📄 No document loaded
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- JAVASCRIPT: The Logic connecting frontend to backend -->
-    <script>
-        async function processPDF() {
-            const fileInput = document.getElementById('pdfInput');
-            const orderInput = document.getElementById('orderInput');
-
-            // Validation: Check if user actually uploaded a file
-            if (fileInput.files.length === 0) {
-                alert("Please select a PDF file first.");
-                return;
+<script>
+    // ----------------------------- GLOBALS -----------------------------
+    let pdfDoc = null;          // PDF.js document instance
+    let currentPageNum = 1;
+    let totalPages = 0;
+    let currentFile = null;     // store the uploaded file for backend
+    let pdfRendered = false;
+    
+    const canvas = document.getElementById('pdfCanvas');
+    const ctx = canvas.getContext('2d');
+    const canvasContainer = document.getElementById('canvasContainer');
+    const emptyPreviewDiv = document.querySelector('.empty-preview');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const pageIndicator = document.getElementById('pageNumIndicator');
+    const pdfStatsDiv = document.getElementById('pdfStats');
+    const previewTitleSpan = document.getElementById('previewTitle');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    
+    // Set up PDF.js worker (required for better performance)
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    
+    // Helper: render a specific page of the loaded PDF
+    async function renderPage(pageNumber) {
+        if (!pdfDoc) return;
+        if (pageNumber < 1) pageNumber = 1;
+        if (pageNumber > totalPages) pageNumber = totalPages;
+        currentPageNum = pageNumber;
+        
+        try {
+            const page = await pdfDoc.getPage(pageNumber);
+            const viewport = page.getViewport({ scale: 1.2 });
+            // Adjust canvas dimensions based on viewport
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport,
+            };
+            await page.render(renderContext).promise;
+            
+            // Show canvas and hide empty placeholder
+            canvas.style.display = 'block';
+            if (emptyPreviewDiv) emptyPreviewDiv.style.display = 'none';
+            pageIndicator.innerText = `${currentPageNum} / ${totalPages}`;
+            
+            // Enable/disable navigation buttons
+            prevBtn.disabled = (currentPageNum <= 1);
+            nextBtn.disabled = (currentPageNum >= totalPages);
+        } catch (err) {
+            console.error("Render error:", err);
+            pdfStatsDiv.innerHTML = `⚠️ Error rendering page ${pageNumber}`;
+        }
+    }
+    
+    // load PDF from File object into PDF.js and store for preview + backend
+    async function loadPDFIntoPreview(file) {
+        if (!file || file.type !== 'application/pdf') {
+            resetPreviewUI();
+            alert("Please select a valid PDF file.");
+            return false;
+        }
+        
+        currentFile = file;
+        fileNameDisplay.innerText = `📄 ${file.name}`;
+        previewTitleSpan.innerText = `Preview: ${file.name.substring(0, 30)}${file.name.length>30?'...':''}`;
+        
+        // Show loading state
+        pdfStatsDiv.innerHTML = `⏳ Loading PDF ... please wait`;
+        canvas.style.display = 'none';
+        if (emptyPreviewDiv) emptyPreviewDiv.style.display = 'flex';
+        emptyPreviewDiv.innerHTML = '🔄 Loading document...';
+        
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+            pdfDoc = await loadingTask.promise;
+            totalPages = pdfDoc.numPages;
+            currentPageNum = 1;
+            
+            pdfStatsDiv.innerHTML = `✅ Loaded: ${totalPages} page(s) | Size: ${(file.size/1024).toFixed(1)} KB`;
+            // reset empty preview message
+            if (emptyPreviewDiv) {
+                emptyPreviewDiv.style.display = 'none';
             }
-
-            // Prepare data to send to Python
-            const formData = new FormData();
-            formData.append('pdf_file', fileInput.files[0]);
-            formData.append('page_order', orderInput.value);
-
-            try {
-                // FETCH: Send data to the Python Flask server
-                const response = await fetch('/organize', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    // Receive the organized PDF back from Python
-                    const blob = await response.blob();
-                    
-                    // Create a download link for the user
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'organized_document.pdf';
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                } else {
-                    alert("Error processing file. Check your page numbers.");
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert("Connection error.");
+            // render first page
+            await renderPage(1);
+            return true;
+        } catch (error) {
+            console.error("PDF loading error", error);
+            pdfStatsDiv.innerHTML = `❌ Failed to load PDF. Ensure valid file.`;
+            resetPreviewUI();
+            return false;
+        }
+    }
+    
+    function resetPreviewUI() {
+        if (emptyPreviewDiv) {
+            emptyPreviewDiv.style.display = 'flex';
+            emptyPreviewDiv.innerHTML = '🖼️ No PDF loaded<br><span style="font-size:13px;">Upload a PDF file to see page thumbnails & navigate</span>';
+        }
+        canvas.style.display = 'none';
+        pdfStatsDiv.innerHTML = '📄 No document loaded';
+        previewTitleSpan.innerText = 'PDF Preview';
+        fileNameDisplay.innerText = '';
+        pageIndicator.innerText = '- / -';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        pdfDoc = null;
+        totalPages = 0;
+        currentFile = null;
+    }
+    
+    // Navigation event listeners
+    prevBtn.addEventListener('click', () => {
+        if (pdfDoc && currentPageNum > 1) {
+            renderPage(currentPageNum - 1);
+        }
+    });
+    nextBtn.addEventListener('click', () => {
+        if (pdfDoc && currentPageNum < totalPages) {
+            renderPage(currentPageNum + 1);
+        }
+    });
+    
+    // Reset preview button
+    document.getElementById('resetPreviewBtn').addEventListener('click', () => {
+        resetPreviewUI();
+        // also clear file input visually (optional)
+        const fileInput = document.getElementById('pdfInput');
+        fileInput.value = '';
+        document.getElementById('orderInput').value = '';
+    });
+    
+    // Handle file input change
+    const fileInputElem = document.getElementById('pdfInput');
+    fileInputElem.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            await loadPDFIntoPreview(file);
+        } else {
+            resetPreviewUI();
+        }
+    });
+    
+    // Drag and drop enhancement for file area
+    const dropArea = document.getElementById('fileDropArea');
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.style.background = '#e2edff';
+        dropArea.style.borderColor = '#3b82f6';
+    });
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.style.background = '#f0f4fa';
+        dropArea.style.borderColor = '#b9cadf';
+    });
+    dropArea.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        dropArea.style.background = '#f0f4fa';
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type === 'application/pdf') {
+            fileInputElem.files = files;
+            await loadPDFIntoPreview(files[0]);
+        } else {
+            alert("Please drop a valid PDF file.");
+        }
+    });
+    
+    // ---------- Backend interaction: organize PDF & download ----------
+    async function processPDF() {
+        // Get file from current preview or input
+        let fileToSend = currentFile;
+        if (!fileToSend && fileInputElem.files.length > 0) {
+            fileToSend = fileInputElem.files[0];
+            // ensure we load into preview if not yet loaded but exists
+            if (!pdfDoc && fileToSend) {
+                await loadPDFIntoPreview(fileToSend);
+                fileToSend = currentFile;
             }
         }
-    </script>
+        
+        if (!fileToSend) {
+            alert("❌ Please upload a PDF file first.");
+            return;
+        }
+        
+        const orderValue = document.getElementById('orderInput').value.trim();
+        if (!orderValue) {
+            alert("⚠️ Please enter page order (e.g., 3,1,2).\nYou can also repeat pages like: 1,3,2,3");
+            return;
+        }
+        
+        // Basic validation: only digits and commas allowed, and numbers should be positive integers
+        const orderRegex = /^[\d,\s]+$/;
+        if (!orderRegex.test(orderValue.replace(/\s/g, ''))) {
+            alert("Invalid page order format. Use only numbers and commas (e.g., 2,4,1,3)");
+            return;
+        }
+        
+        // parse numbers and filter
+        let pagesArray = orderValue.split(',').map(item => parseInt(item.trim(), 10));
+        pagesArray = pagesArray.filter(num => !isNaN(num) && num > 0);
+        
+        if (pagesArray.length === 0) {
+            alert("No valid page numbers found. Use comma-separated positive integers.");
+            return;
+        }
+        
+        // If PDF is loaded, we can validate page existence
+        if (pdfDoc && totalPages > 0) {
+            const invalidPages = pagesArray.filter(p => p > totalPages);
+            if (invalidPages.length > 0) {
+                alert(`⚠️ Warning: The PDF has only ${totalPages} page(s). Pages ${invalidPages.join(',')} are out of range. Please fix order.`);
+                return;
+            }
+        } else if (!pdfDoc) {
+            // If preview not loaded but we have a file, we cannot validate range until server response but better to allow server to validate.
+            // we simply proceed but show optional note
+            console.log("Proceeding without preview validation, server will check.");
+        }
+        
+        // Prepare form data for backend
+        const formData = new FormData();
+        // Append the actual file (original)
+        formData.append('pdf_file', fileToSend);
+        formData.append('page_order', orderValue);
+        
+        // Show loading feedback on organize button
+        const orgBtn = document.getElementById('organizeBtn');
+        const originalText = orgBtn.innerHTML;
+        orgBtn.innerHTML = '<span class="loader"></span> Organizing...';
+        orgBtn.disabled = true;
+        
+        try {
+            // Note: This endpoint expects a Flask backend running at '/organize'.
+            // If you are running this HTML locally without backend, we show a fallback simulation? 
+            // Since the original spec had Python backend, we implement full fetch to backend.
+            // For demonstration: In case backend not reachable, we provide an explanatory error.
+            const response = await fetch('/organize', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'organized_document.pdf';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                alert("✅ PDF organized successfully! Download started.");
+            } else {
+                let errorMsg = "Server error while processing PDF.";
+                try {
+                    const errText = await response.text();
+                    if (errText) errorMsg = errText.slice(0, 200);
+                } catch(e) {}
+                alert(`❌ Error: ${errorMsg}\nCheck page numbers and PDF validity.`);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert("🚨 Connection error: Could not reach backend server.\n\nMake sure your Python Flask server is running (e.g., app.py) and the endpoint '/organize' is accessible.\n\nTip: If running locally, start server with: python app.py");
+        } finally {
+            orgBtn.innerHTML = originalText;
+            orgBtn.disabled = false;
+        }
+    }
+    
+    // attach organizer to button
+    document.getElementById('organizeBtn').addEventListener('click', processPDF);
+    
+    // Extra: If user selects file via file input and preview fails to load, provide retry logic.
+    // Helper: automatically sync order input hint with total pages when PDF loads
+    function updateOrderHint() {
+        if (pdfDoc && totalPages > 0) {
+            const orderField = document.getElementById('orderInput');
+            if (!orderField.value.trim()) {
+                // optional auto-generate default order: 1,2,3..., but not mandatory, just hint
+                const defaultOrder = Array.from({length: Math.min(totalPages, 10)}, (_, i) => i+1).join(',');
+                orderField.placeholder = `e.g., ${defaultOrder}${totalPages > 10 ? ',...' : ''}`;
+            }
+        }
+    }
+    
+    // override renderPage to update hint when doc loads
+    const originalRender = renderPage;
+    window.renderPage = renderPage;
+    
+    // monkey patch loadPDFIntoPreview to update hint after load
+    const originalLoad = loadPDFIntoPreview;
+    window.loadPDFIntoPreview = loadPDFIntoPreview;
+    
+    // enhance load function to call hint
+    const superLoad = async function(file) {
+        const result = await originalLoad(file);
+        if (pdfDoc && totalPages > 0) {
+            updateOrderHint();
+        }
+        return result;
+    };
+    
+    // replace function globally
+    window.loadPDFIntoPreview = superLoad;
+    loadPDFIntoPreview = superLoad;
+    
+    // Also handle if file input loads with existing binding
+    const fileHandler = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            await loadPDFIntoPreview(file);
+        } else {
+            resetPreviewUI();
+        }
+    };
+    fileInputElem.removeEventListener('change', fileHandler);
+    fileInputElem.addEventListener('change', fileHandler);
+    
+    // final reset order placeholder when pdf closed
+    function finalReset(){
+        resetPreviewUI();
+        const orderInp = document.getElementById('orderInput');
+        orderInp.placeholder = "e.g., 3,1,2,4";
+    }
+    document.getElementById('resetPreviewBtn').addEventListener('click', finalReset);
+    
+    // small note: page navigation also renders properly
+    console.log("PDF Organizer with on-screen preview ready");
+</script>
 </body>
 </html>
