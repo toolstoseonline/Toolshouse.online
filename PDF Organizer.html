@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Organizer</title>
+    
+    <!-- CSS: Styling the application -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+        input[type="file"] { margin: 20px 0; }
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #218838; }
+        .info { font-size: 12px; color: #666; margin-top: -10px; }
+    </style>
+</head>
+<body>
+
+    <!-- HTML: The Structure -->
+    <div class="container">
+        <h2>PDF Page Organizer</h2>
+        
+        <!-- File Input -->
+        <input type="file" id="pdfInput" accept=".pdf">
+        
+        <!-- Order Input -->
+        <p class="info">Enter page order (e.g., 3,1,2)</p>
+        <input type="text" id="orderInput" placeholder="e.g., 3,1,2">
+        
+        <!-- Action Button -->
+        <button onclick="processPDF()">Organize & Download</button>
+    </div>
+
+    <!-- JAVASCRIPT: The Logic connecting frontend to backend -->
+    <script>
+        async function processPDF() {
+            const fileInput = document.getElementById('pdfInput');
+            const orderInput = document.getElementById('orderInput');
+
+            // Validation: Check if user actually uploaded a file
+            if (fileInput.files.length === 0) {
+                alert("Please select a PDF file first.");
+                return;
+            }
+
+            // Prepare data to send to Python
+            const formData = new FormData();
+            formData.append('pdf_file', fileInput.files[0]);
+            formData.append('page_order', orderInput.value);
+
+            try {
+                // FETCH: Send data to the Python Flask server
+                const response = await fetch('/organize', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Receive the organized PDF back from Python
+                    const blob = await response.blob();
+                    
+                    // Create a download link for the user
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'organized_document.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    alert("Error processing file. Check your page numbers.");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert("Connection error.");
+            }
+        }
+    </script>
+</body>
+</html>
