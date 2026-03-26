@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tool Generator</title>
+<script>
+const tools =[
+    "Word to PDF", "PDF to Word", "PDF Merger", "PDF Splitter", "PDF Compressor",
+    "Image to PDF", "PDF to Image", "Excel to PDF", "PPT to PDF", "PDF Unlock",
+    "Image Enhancer", "Background Remover", "Image Compressor", "Resize Image",
+    "Crop Image", "Convert JPG to PNG", "Convert PNG to JPG", "Image to Text",
+    "Video Converter", "Video Compressor", "Video Trimmer", "Video Rotator",
+    "Video Reverser", "Add Subtitle", "Change Speed", "Extract Audio",
+    "Meme Generator", "QR Code Generator", "Barcode Generator", "Password Generator",
+    "Text Repeater", "Word Counter", "Case Converter", "Reverse Text",
+    "Remove Duplicate Lines", "JSON Formatter", "HTML Minifier", "CSS Minifier",
+    "JavaScript Minifier", "Base64 Encode", "Base64 Decode", "URL Encoder",
+    "URL Decoder", "Color Picker", "Gradient Generator", "UUID Generator",
+    "IP Lookup", "Meta Tag Generator", "SEO Analyzer", "Keyword Density Checker",
+]
+
+tools.forEach(tool => {
+    document.write(`
+    <a href="${tool}.html" target="_blank">${tool}</a><br>
+    `);
+});
+</script>
+</head>
+<body>
+<h1>All Tools</h1>
+</body>
+</html>
