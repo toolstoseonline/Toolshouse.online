@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML to PDF Converter - Working Version</title>
+    <title>HTML to PDF Converter Online Free</title>
+<meta name="description" content="Convert HTML to PDF online free. Save webpages as high-quality PDF files instantly. Fast and secure with no signup required.">
+<meta name="keywords" content="html to pdf, webpage to pdf converter, convert html online">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -21,246 +24,256 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        h1 {
+        .header {
             text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
+            color: white;
             margin-bottom: 30px;
-            font-size: 1.1em;
         }
 
-        .main-content {
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .converter-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        @media (max-width: 768px) {
-            .main-content {
+        @media (max-width: 968px) {
+            .converter-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        .editor-section, .preview-section {
-            background: #f8f9ff;
-            border-radius: 15px;
-            padding: 20px;
+        .panel {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
         }
 
-        .section-title {
-            font-size: 1.3em;
+        .panel-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
             font-weight: 600;
-            margin-bottom: 15px;
-            color: #333;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .toolbar {
+        .panel-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .panel-actions {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
         }
 
-        .tool-btn {
-            padding: 8px 15px;
-            background: white;
-            border: 1px solid #ddd;
+        .btn {
+            padding: 8px 16px;
+            border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 13px;
+            font-weight: 600;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .tool-btn:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+        .btn-secondary {
+            background: #e9ecef;
+            color: #495057;
         }
 
-        .html-editor {
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .panel-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #htmlInput {
             width: 100%;
-            height: 400px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
+            height: 100%;
+            border: none;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
             font-size: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            resize: vertical;
-            background: white;
-        }
-
-        .html-editor:focus {
+            line-height: 1.6;
+            resize: none;
             outline: none;
-            border-color: #667eea;
+            background: #fafafa;
+            color: #212529;
         }
 
         .preview-frame {
             width: 100%;
-            height: 400px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            height: 100%;
+            border: none;
             background: white;
-            overflow: auto;
-            padding: 10px;
         }
 
-        .pdf-settings {
-            margin-top: 20px;
-            padding: 15px;
+        .controls {
             background: white;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 25px;
+            margin-bottom: 20px;
         }
 
-        .settings-grid {
+        .controls-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+            gap: 20px;
         }
 
-        .setting-item {
+        .control-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
-        .setting-item label {
+        .control-label {
             font-weight: 600;
-            color: #555;
-            font-size: 0.9em;
+            color: #495057;
+            font-size: 14px;
         }
 
-        .setting-item select, 
-        .setting-item input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 0.9em;
-        }
-
-        .action-buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
+        .control-input {
+            padding: 10px;
+            border: 2px solid #e9ecef;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.3s;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 14px 32px;
+            font-size: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
-        .btn-secondary {
-            background: #48bb78;
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
         }
 
-        .btn-secondary:hover {
-            background: #38a169;
-        }
-
-        .btn-danger {
-            background: #f56565;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #e53e3e;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .templates {
+        .action-bar {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            justify-content: center;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
+        .template-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
         .template-btn {
-            padding: 5px 12px;
-            background: #e0e7ff;
-            border: none;
-            border-radius: 5px;
+            padding: 6px 12px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 13px;
             transition: all 0.3s;
         }
 
-        .template-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .stats {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e8f0fe;
-            border-radius: 8px;
-            font-size: 0.85em;
-            color: #666;
-            text-align: center;
+        .template-btn:hover, .template-btn.active {
+            border-color: #667eea;
+            background: #f8f9ff;
+            color: #667eea;
         }
 
         .loading {
+            display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .loading-content {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 30px 50px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 1000;
             text-align: center;
         }
 
+        .loading.active {
+            display: block;
+        }
+
         .spinner {
+            width: 50px;
+            height: 50px;
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
         }
 
         @keyframes spin {
@@ -268,829 +281,550 @@
             100% { transform: rotate(360deg); }
         }
 
-        .notification {
+        .overlay {
+            display: none;
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: white;
+            padding: 16px 24px;
             border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
             z-index: 1001;
-            animation: slideIn 0.3s ease;
-            font-weight: 500;
         }
 
-        .notification-success {
-            background: #48bb78;
-            color: white;
-        }
-
-        .notification-error {
-            background: #f56565;
-            color: white;
-        }
-
-        .notification-info {
-            background: #4299e1;
-            color: white;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
+    <div class="overlay" id="overlay"></div>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <h3>Generating PDF...</h3>
+        <p>Please wait a moment</p>
+    </div>
+    <div class="toast" id="toast">Action completed successfully!</div>
+
     <div class="container">
-        <h1>📄 HTML to PDF Converter</h1>
-        <p class="subtitle">Convert HTML code to professional PDF documents</p>
-
-        <div class="main-content">
-            <!-- Left Panel - HTML Editor -->
-            <div class="editor-section">
-                <div class="section-title">✏️ HTML Editor</div>
-                
-                <div class="templates">
-                    <span style="font-size: 0.85em; color: #666;">Quick Templates:</span>
-                    <button class="template-btn" data-template="basic">📄 Basic</button>
-                    <button class="template-btn" data-template="invoice">💰 Invoice</button>
-                    <button class="template-btn" data-template="resume">📝 Resume</button>
-                    <button class="template-btn" data-template="report">📊 Report</button>
-                </div>
-
-                <textarea id="htmlEditor" class="html-editor" placeholder="Enter your HTML code here..."></textarea>
-                
-                <div class="stats" id="editorStats">
-                    Characters: 0 | Lines: 0 | Words: 0
-                </div>
-                
-                <div class="toolbar" style="margin-top: 10px;">
-                    <button id="clearEditorBtn" class="tool-btn">🗑️ Clear Editor</button>
-                    <button id="resetDefaultBtn" class="tool-btn">🔄 Reset Default</button>
-                </div>
-            </div>
-
-            <!-- Right Panel - Preview & Settings -->
-            <div class="preview-section">
-                <div class="section-title">👁️ Live Preview</div>
-                
-                <div class="toolbar">
-                    <button id="refreshPreviewBtn" class="tool-btn">🔄 Refresh Preview</button>
-                </div>
-
-                <div class="preview-frame" id="previewFrame">
-                    <div id="previewContent" style="padding: 20px; font-family: Arial;">
-                        <p>Loading preview...</p>
-                    </div>
-                </div>
-
-                <!-- PDF Settings -->
-                <div class="pdf-settings">
-                    <div class="section-title" style="font-size: 1.1em; margin-bottom: 10px;">⚙️ PDF Settings</div>
-                    <div class="settings-grid">
-                        <div class="setting-item">
-                            <label>📄 Paper Size:</label>
-                            <select id="pageSize">
-                                <option value="a4">A4</option>
-                                <option value="letter">Letter</option>
-                                <option value="legal">Legal</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label>📐 Orientation:</label>
-                            <select id="orientation">
-                                <option value="portrait">Portrait</option>
-                                <option value="landscape">Landscape</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label>📏 Margin (mm):</label>
-                            <select id="margin">
-                                <option value="10">Small (10mm)</option>
-                                <option value="15" selected>Normal (15mm)</option>
-                                <option value="20">Large (20mm)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button id="convertBtn" class="btn btn-primary">🔄 Convert to PDF</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="loading" class="loading" style="display: none;">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Converting HTML to PDF...</p>
-            <p style="font-size: 0.85em; margin-top: 10px;">Please wait...</p>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        class HTMLToPDFConverter {
-            constructor() {
-                this.initializeElements();
-                this.attachEventListeners();
-                this.setDefaultHTML();
-                this.updatePreview();
-            }
-
-            initializeElements() {
-                this.htmlEditor = document.getElementById('htmlEditor');
-                this.previewContent = document.getElementById('previewContent');
-                this.convertBtn = document.getElementById('convertBtn');
-                this.refreshPreviewBtn = document.getElementById('refreshPreviewBtn');
-                this.clearEditorBtn = document.getElementById('clearEditorBtn');
-                this.resetDefaultBtn = document.getElementById('resetDefaultBtn');
-                this.editorStats = document.getElementById('editorStats');
-                
-                this.pageSize = document.getElementById('pageSize');
-                this.orientation = document.getElementById('orientation');
-                this.margin = document.getElementById('margin');
-                
-                this.loading = document.getElementById('loading');
-            }
-
-            attachEventListeners() {
-                this.convertBtn.addEventListener('click', () => this.convertToPDF());
-                this.refreshPreviewBtn.addEventListener('click', () => this.updatePreview());
-                this.clearEditorBtn.addEventListener('click', () => this.clearEditor());
-                this.resetDefaultBtn.addEventListener('click', () => this.setDefaultHTML());
-                this.htmlEditor.addEventListener('input', () => {
-                    this.updateStats();
-                    this.updatePreview();
-                });
-                
-                // Template buttons
-                document.querySelectorAll('.template-btn').forEach(btn => {
-                    btn.addEventListener('click', () => this.loadTemplate(btn.dataset.template));
-                });
-            }
-
-            setDefaultHTML() {
-                const defaultHTML = `<!DOCTYPE html>
-<html>
-<head>
-<style>
-    body {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        padding: 40px;
-        max-width: 800px;
-        margin: 0 auto;
-        line-height: 1.6;
-        color: #333;
-    }
-    h1 {
-        color: #667eea;
-        border-bottom: 3px solid #667eea;
-        padding-bottom: 10px;
-    }
-    .card {
-        background: #f8f9ff;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 20px 0;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-    }
-    th {
-        background: #667eea;
-        color: white;
-    }
-    .feature-list {
-        list-style: none;
-        padding: 0;
-    }
-    .feature-list li {
-        padding: 8px 0;
-        border-bottom: 1px solid #eee;
-    }
-</style>
-</head>
-<body>
-    <h1>HTML to PDF Converter</h1>
-    <p>This is a working HTML to PDF converter. You can edit the HTML code on the left and see the live preview here.</p>
-    
-    <div class="card">
-        <h3>✨ Features:</h3>
-        <ul class="feature-list">
-            <li>✓ Live HTML editing with instant preview</li>
-            <li>✓ Multiple templates (Basic, Invoice, Resume, Report)</li>
-            <li>✓ Custom PDF settings (size, orientation, margins)</li>
-            <li>✓ Real-time statistics (characters, lines, words)</li>
-            <li>✓ Professional PDF output</li>
-        </ul>
-    </div>
-    
-    <h3>Sample Data Table:</h3>
-    <table>
-        <tr>
-            <th>Feature</th>
-            <th>Status</th>
-            <th>Version</th>
-        </tr>
-        <tr>
-            <td>HTML Editor</td>
-            <td>✅ Working</td>
-            <td>1.0</td>
-        </tr>
-        <tr>
-            <td>Live Preview</td>
-            <td>✅ Working</td>
-            <td>1.0</td>
-        </tr>
-        <tr>
-            <td>PDF Export</td>
-            <td>✅ Working</td>
-            <td>1.0</td>
-        </tr>
-    </table>
-    
-    <p><strong>Note:</strong> You can customize the PDF size, orientation, and margins from the settings panel on the right.</p>
-    <p style="color: #667eea; font-style: italic;">Edit the HTML code on the left to see changes in real-time!</p>
-</body>
-</html>`;
-                
-                this.htmlEditor.value = defaultHTML;
-                this.updateStats();
-                this.showNotification('Default template loaded!', 'success');
-            }
-
-            loadTemplate(type) {
-                let templateHTML = '';
-                
-                switch(type) {
-                    case 'basic':
-                        templateHTML = this.getBasicTemplate();
-                        break;
-                    case 'invoice':
-                        templateHTML = this.getInvoiceTemplate();
-                        break;
-                    case 'resume':
-                        templateHTML = this.getResumeTemplate();
-                        break;
-                    case 'report':
-                        templateHTML = this.getReportTemplate();
-                        break;
-                }
-                
-                this.htmlEditor.value = templateHTML;
-                this.updateStats();
-                this.updatePreview();
-                this.showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} template loaded!`, 'success');
-            }
-
-            getBasicTemplate() {
-                return `<!DOCTYPE html>
-<html>
-<head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        padding: 40px;
-        max-width: 800px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
-    h1 { color: #667eea; }
-    .content { margin: 20px 0; }
-</style>
-</head>
-<body>
-    <h1>Basic HTML Document</h1>
-    <div class="content">
-        <p>This is a basic HTML template. You can modify the content and styles as needed.</p>
-        <p>Features:</p>
-        <ul>
-            <li>Clean layout</li>
-            <li>Responsive design</li>
-            <li>Easy to customize</li>
-        </ul>
-    </div>
-</body>
-</html>`;
-            }
-
-            getInvoiceTemplate() {
-                return `<!DOCTYPE html>
-<html>
-<head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        padding: 40px;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-    .invoice-box {
-        border: 1px solid #eee;
-        padding: 30px;
-    }
-    .header {
-        text-align: center;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #667eea;
-        padding-bottom: 20px;
-    }
-    .company {
-        font-size: 28px;
-        font-weight: bold;
-        color: #667eea;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-    }
-    th {
-        background: #667eea;
-        color: white;
-    }
-    .total {
-        text-align: right;
-        margin-top: 20px;
-        font-size: 18px;
-        font-weight: bold;
-    }
-</style>
-</head>
-<body>
-    <div class="invoice-box">
         <div class="header">
-            <div class="company">ACME Corporation</div>
-            <div>123 Business Street, New York, NY 10001</div>
-            <div>Email: info@acme.com | Phone: (555) 123-4567</div>
+            <h1>HTML to PDF Converter</h1>
+            <p>Professional client-side PDF generation with live preview</p>
         </div>
-        
-        <h2>INVOICE</h2>
-        <p><strong>Invoice #:</strong> INV-2024-001<br>
-        <strong>Date:</strong> March 25, 2024<br>
-        <strong>Due Date:</strong> April 25, 2024</p>
-        
-        <h3>Bill To:</h3>
-        <p>John Doe<br>456 Client Street<br>New York, NY 10002</p>
-        
-        <table>
+
+        <div class="controls">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label class="control-label">Page Size</label>
+                    <select class="control-input" id="pageSize">
+                        <option value="a4">A4</option>
+                        <option value="letter">Letter</option>
+                        <option value="legal">Legal</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Orientation</label>
+                    <select class="control-input" id="orientation">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Margins (mm)</label>
+                    <input type="number" class="control-input" id="margins" value="10" min="0" max="50">
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Scale (%)</label>
+                    <input type="number" class="control-input" id="scale" value="100" min="50" max="200">
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <label class="control-label">Quick Templates:</label>
+                <div class="template-selector">
+                    <button class="template-btn active" onclick="loadTemplate('blank')">Blank</button>
+                    <button class="template-btn" onclick="loadTemplate('resume')">Resume</button>
+                    <button class="template-btn" onclick="loadTemplate('invoice')">Invoice</button>
+                    <button class="template-btn" onclick="loadTemplate('report')">Report</button>
+                    <button class="template-btn" onclick="loadTemplate('certificate')">Certificate</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="converter-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <div class="panel-icon">&lt;/&gt;</div>
+                        HTML Source
+                    </div>
+                    <div class="panel-actions">
+                        <div class="file-input-wrapper">
+                            <button class="btn btn-secondary">📁 Load File</button>
+                            <input type="file" id="fileInput" accept=".html,.htm,.txt">
+                        </div>
+                        <button class="btn btn-secondary" onclick="clearEditor()">Clear</button>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <textarea id="htmlInput" placeholder="Enter your HTML code here..."><!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+        h1 { color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        .content { line-height: 1.6; color: #555; }
+    </style>
+</head>
+<body>
+    <h1>Sample Document</h1>
+    <div class="content">
+        <p>This is a sample HTML document. Edit this code to create your own PDF.</p>
+        <p>You can use any HTML tags, CSS styles, and even images (base64 encoded).</p>
+    </div>
+</body>
+</html></textarea>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <div class="panel-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">👁</div>
+                        Live Preview
+                    </div>
+                    <div class="panel-actions">
+                        <button class="btn btn-secondary" onclick="refreshPreview()">Refresh</button>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <iframe id="previewFrame" class="preview-frame"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="generatePDF()">
+                <span>📄</span> Download PDF
+            </button>
+            <button class="btn btn-success" onclick="printDocument()">
+                <span>🖨</span> Print
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const htmlInput = document.getElementById('htmlInput');
+        const previewFrame = document.getElementById('previewFrame');
+        const fileInput = document.getElementById('fileInput');
+        const loading = document.getElementById('loading');
+        const overlay = document.getElementById('overlay');
+        const toast = document.getElementById('toast');
+
+        // Templates
+        const templates = {
+            blank: `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+    </style>
+</head>
+<body>
+    <h1>Blank Document</h1>
+    <p>Start typing your content here...</p>
+</body>
+</html>`,
+            
+            resume: `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; color: #333; }
+        .header { text-align: center; border-bottom: 3px solid #2c3e50; padding-bottom: 20px; margin-bottom: 30px; }
+        .name { font-size: 36px; font-weight: bold; color: #2c3e50; margin: 0; }
+        .contact { color: #7f8c8d; margin-top: 10px; }
+        .section { margin-bottom: 25px; }
+        .section-title { font-size: 20px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; margin-bottom: 15px; }
+        .item { margin-bottom: 15px; }
+        .item-title { font-weight: bold; color: #34495e; }
+        .item-subtitle { color: #7f8c8d; font-size: 14px; }
+        .skills { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill { background: #ecf0f1; padding: 5px 15px; border-radius: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="name">John Doe</h1>
+        <div class="contact">john.doe@email.com | (555) 123-4567 | New York, NY</div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Professional Summary</div>
+        <p>Experienced professional with expertise in web development and design. Proven track record of delivering high-quality projects.</p>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Experience</div>
+        <div class="item">
+            <div class="item-title">Senior Developer</div>
+            <div class="item-subtitle">Tech Company | 2020 - Present</div>
+            <p>Led development of web applications using modern technologies.</p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skills">
+            <span class="skill">HTML/CSS</span>
+            <span class="skill">JavaScript</span>
+            <span class="skill">React</span>
+            <span class="skill">Node.js</span>
+        </div>
+    </div>
+</body>
+</html>`,
+            
+            invoice: `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        .company { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .invoice-title { font-size: 32px; color: #e74c3c; margin: 0; }
+        .details { margin-bottom: 30px; }
+        .details-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #34495e; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #ecf0f1; }
+        .total { text-align: right; margin-top: 20px; font-size: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="invoice-header">
+        <div>
+            <div class="company">Your Company Name</div>
+            <div>123 Business Street</div>
+            <div>City, State 12345</div>
+        </div>
+        <div style="text-align: right;">
+            <h1 class="invoice-title">INVOICE</h1>
+            <div>Invoice #: 001</div>
+            <div>Date: ${new Date().toLocaleDateString()}</div>
+        </div>
+    </div>
+    
+    <div class="details">
+        <div><strong>Bill To:</strong></div>
+        <div>Client Name</div>
+        <div>Client Address</div>
+    </div>
+    
+    <table>
+        <thead>
             <tr>
-                <th>Item</th>
                 <th>Description</th>
                 <th>Quantity</th>
                 <th>Price</th>
                 <th>Total</th>
             </tr>
+        </thead>
+        <tbody>
             <tr>
-                <td>WEB-001</td>
-                <td>Web Development Service</td>
-                <td>40 hours</td>
-                <td>$50.00</td>
-                <td>$2,000.00</td>
+                <td>Web Design Services</td>
+                <td>1</td>
+                <td>$1,000.00</td>
+                <td>$1,000.00</td>
             </tr>
             <tr>
-                <td>HOST-001</td>
-                <td>Hosting (Annual)</td>
-                <td>1 year</td>
-                <td>$120.00</td>
-                <td>$120.00</td>
+                <td>Development Hours</td>
+                <td>10</td>
+                <td>$100.00</td>
+                <td>$1,000.00</td>
             </tr>
-            <tr>
-                <td>DOM-001</td>
-                <td>Domain Registration</td>
-                <td>1 year</td>
-                <td>$15.00</td>
-                <td>$15.00</td>
-            </tr>
-        </table>
-        
-        <div class="total">
-            <p>Subtotal: $2,135.00</p>
-            <p>Tax (10%): $213.50</p>
-            <p><strong>Total Amount: $2,348.50</strong></p>
-        </div>
-        
-        <p style="margin-top: 30px;">Thank you for your business!</p>
-    </div>
-</body>
-</html>`;
-            }
-
-            getResumeTemplate() {
-                return `<!DOCTYPE html>
-<html>
-<head>
-<style>
-    body {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        padding: 40px;
-        max-width: 800px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
-    .header {
-        text-align: center;
-        margin-bottom: 30px;
-        border-bottom: 3px solid #667eea;
-        padding-bottom: 20px;
-    }
-    .name {
-        font-size: 36px;
-        font-weight: bold;
-        color: #667eea;
-        margin-bottom: 5px;
-    }
-    .title {
-        font-size: 18px;
-        color: #666;
-    }
-    .contact {
-        margin-top: 10px;
-        color: #666;
-    }
-    .section {
-        margin: 25px 0;
-    }
-    .section-title {
-        font-size: 20px;
-        font-weight: bold;
-        color: #667eea;
-        border-bottom: 2px solid #667eea;
-        padding-bottom: 5px;
-        margin-bottom: 15px;
-    }
-    .job, .education {
-        margin-bottom: 20px;
-    }
-    .job-title, .degree {
-        font-weight: bold;
-        font-size: 16px;
-    }
-    .company, .school {
-        color: #667eea;
-        margin: 5px 0;
-    }
-    .date {
-        color: #999;
-        font-size: 12px;
-    }
-    ul {
-        margin: 5px 0 0 20px;
-    }
-</style>
-</head>
-<body>
-    <div class="header">
-        <div class="name">Sarah Johnson</div>
-        <div class="title">Senior Full Stack Developer</div>
-        <div class="contact">
-            📧 sarah.johnson@email.com | 📱 (555) 123-4567 | 🌐 github.com/sarahjohnson
-        </div>
-    </div>
-    
-    <div class="section">
-        <div class="section-title">Professional Summary</div>
-        <p>Experienced Full Stack Developer with 6+ years of experience in building scalable web applications. Expertise in JavaScript, React, Node.js, and cloud technologies. Passionate about creating efficient solutions and mentoring junior developers.</p>
-    </div>
-    
-    <div class="section">
-        <div class="section-title">Work Experience</div>
-        
-        <div class="job">
-            <div class="job-title">Senior Full Stack Developer</div>
-            <div class="company">Tech Innovations Inc. | San Francisco, CA</div>
-            <div class="date">January 2021 - Present</div>
-            <ul>
-                <li>Led development of 5+ major web applications serving 100k+ users</li>
-                <li>Improved application performance by 40% through code optimization</li>
-                <li>Mentored 3 junior developers and conducted code reviews</li>
-                <li>Implemented CI/CD pipeline reducing deployment time by 60%</li>
-            </ul>
-        </div>
-        
-        <div class="job">
-            <div class="job-title">Web Developer</div>
-            <div class="company">Digital Creative Agency | New York, NY</div>
-            <div class="date">June 2018 - December 2020</div>
-            <ul>
-                <li>Developed responsive websites for 20+ clients across various industries</li>
-                <li>Collaborated with designers to implement pixel-perfect UI components</li>
-                <li>Optimized websites for SEO achieving top 3 rankings for key clients</li>
-            </ul>
-        </div>
-    </div>
-    
-    <div class="section">
-        <div class="section-title">Education</div>
-        <div class="education">
-            <div class="degree">Master of Science in Computer Science</div>
-            <div class="school">Stanford University</div>
-            <div class="date">2016 - 2018</div>
-        </div>
-        <div class="education">
-            <div class="degree">Bachelor of Science in Software Engineering</div>
-            <div class="school">University of California, Berkeley</div>
-            <div class="date">2012 - 2016</div>
-        </div>
-    </div>
-    
-    <div class="section">
-        <div class="section-title">Technical Skills</div>
-        <ul>
-            <li><strong>Languages:</strong> JavaScript, TypeScript, Python, Java, HTML5, CSS3</li>
-            <li><strong>Frontend:</strong> React, Vue.js, Angular, Next.js, Tailwind CSS</li>
-            <li><strong>Backend:</strong> Node.js, Express, Django, Spring Boot</li>
-            <li><strong>Databases:</strong> MongoDB, PostgreSQL, MySQL, Redis</li>
-            <li><strong>Cloud:</strong> AWS, Azure, Google Cloud Platform</li>
-            <li><strong>Tools:</strong> Git, Docker, Kubernetes, Jenkins</li>
-        </ul>
-    </div>
-</body>
-</html>`;
-            }
-
-            getReportTemplate() {
-                return `<!DOCTYPE html>
-<html>
-<head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        padding: 40px;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    h1 {
-        color: #667eea;
-        text-align: center;
-        border-bottom: 3px solid #667eea;
-        padding-bottom: 10px;
-    }
-    .report-header {
-        text-align: center;
-        margin-bottom: 30px;
-        color: #666;
-    }
-    .metrics {
-        display: flex;
-        justify-content: space-around;
-        margin: 30px 0;
-        flex-wrap: wrap;
-    }
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        min-width: 150px;
-        margin: 10px;
-    }
-    .metric-value {
-        font-size: 32px;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-    .metric-label {
-        font-size: 14px;
-        opacity: 0.9;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-    }
-    th {
-        background: #667eea;
-        color: white;
-    }
-    tr:nth-child(even) {
-        background: #f8f9ff;
-    }
-    .conclusion {
-        background: #f8f9ff;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 30px;
-    }
-    footer {
-        text-align: center;
-        margin-top: 50px;
-        color: #999;
-        font-size: 12px;
-    }
-</style>
-</head>
-<body>
-    <h1>Q1 2024 Performance Report</h1>
-    <div class="report-header">
-        <p>Prepared on: March 25, 2024 | Reporting Period: Jan 1 - Mar 31, 2024</p>
-        <p>Prepared by: Analytics Department</p>
-    </div>
-    
-    <div class="metrics">
-        <div class="metric-card">
-            <div class="metric-value">+45%</div>
-            <div class="metric-label">Revenue Growth</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value">12,500</div>
-            <div class="metric-label">Active Users</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value">98.5%</div>
-            <div class="metric-label">System Uptime</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-value">4.8/5</div>
-            <div class="metric-label">Customer Satisfaction</div>
-        </div>
-    </div>
-    
-    <h3>Quarterly Performance Metrics</h3>
-    <table>
-        <tr>
-            <th>Metric</th>
-            <th>Q1 2023</th>
-            <th>Q1 2024</th>
-            <th>Growth</th>
-        </tr>
-        <tr>
-            <td>Revenue</td>
-            <td>$1.2M</td>
-            <td>$1.74M</td>
-            <td style="color: green;">+45%</td>
-        </tr>
-        <tr>
-            <td>New Customers</td>
-            <td>1,200</td>
-            <td>1,800</td>
-            <td style="color: green;">+50%</td>
-        </tr>
-        <tr>
-            <td>Support Tickets</td>
-            <td>450</td>
-            <td>320</td>
-            <td style="color: green;">-29%</td>
-        </tr>
-        <tr>
-            <td>Response Time</td>
-            <td>2.5s</td>
-            <td>1.2s</td>
-            <td style="color: green;">-52%</td>
-        </tr>
+        </tbody>
     </table>
     
-    <h3>Key Achievements</h3>
-    <ul>
-        <li>Successfully launched mobile app with 5,000+ downloads</li>
-        <li>Implemented AI-powered customer support reducing response time by 50%</li>
-        <li>Expanded to 3 new international markets</li>
-        <li>Received industry award for "Best Innovation in Tech"</li>
-    </ul>
-    
-    <div class="conclusion">
-        <h3>Conclusion & Recommendations</h3>
-        <p>The company has shown exceptional growth in Q1 2024, surpassing all key performance indicators. Based on the current trajectory, we project continued growth in Q2 with focus on:</p>
-        <ul>
-            <li>Expanding into Asian markets</li>
-            <li>Launching new product features based on user feedback</li>
-            <li>Increasing marketing budget by 30%</li>
-            <li>Hiring 5 new developers to accelerate development</li>
-        </ul>
+    <div class="total">Total: $2,000.00</div>
+</body>
+</html>`,
+            
+            report: `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; line-height: 1.6; color: #333; }
+        .cover { text-align: center; padding: 100px 0; border-bottom: 3px solid #3498db; margin-bottom: 40px; }
+        .report-title { font-size: 42px; color: #2c3e50; margin-bottom: 20px; }
+        .meta { color: #7f8c8d; font-size: 16px; }
+        h2 { color: #2c3e50; border-left: 4px solid #3498db; padding-left: 15px; margin-top: 30px; }
+        .highlight { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .metric { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; }
+        .metric-value { font-size: 32px; font-weight: bold; color: #3498db; }
+        .metric-label { color: #7f8c8d; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="cover">
+        <h1 class="report-title">Quarterly Business Report</h1>
+        <div class="meta">Prepared by: John Doe<br>Date: ${new Date().toLocaleDateString()}</div>
     </div>
     
-    <footer>
-        <p>Confidential - For Internal Use Only</p>
-        <p>© 2024 Company Name. All rights reserved.</p>
-    </footer>
+    <h2>Executive Summary</h2>
+    <p>This report provides an overview of business performance for the current quarter, highlighting key metrics and strategic initiatives.</p>
+    
+    <div class="highlight">
+        <strong>Key Insight:</strong> Revenue increased by 25% compared to the previous quarter, exceeding targets by 15%.
+    </div>
+    
+    <h2>Performance Metrics</h2>
+    <div class="data-grid">
+        <div class="metric">
+            <div class="metric-value">$2.4M</div>
+            <div class="metric-label">Revenue</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">+18%</div>
+            <div class="metric-label">Growth</div>
+        </div>
+    </div>
+    
+    <h2>Recommendations</h2>
+    <ul>
+        <li>Increase marketing spend in Q3</li>
+        <li>Expand product line offerings</li>
+        <li>Improve customer retention programs</li>
+    </ul>
 </body>
-</html>`;
-            }
+</html>`,
+            
+            certificate: `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap');
+        body { 
+            font-family: 'Lato', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .certificate {
+            background: white;
+            padding: 60px;
+            border: 15px solid #d4af37;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 800px;
+            position: relative;
+        }
+        .certificate::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px solid #d4af37;
+        }
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+        }
+        .recipient {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: #2c3e50;
+            margin: 30px 0;
+            border-bottom: 2px solid #d4af37;
+            display: inline-block;
+            padding: 0 20px 10px;
+        }
+        .description {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.8;
+            margin: 30px 0;
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding: 0 40px;
+        }
+        .signature {
+            text-align: center;
+        }
+        .sign-line {
+            border-top: 1px solid #333;
+            width: 150px;
+            margin-bottom: 10px;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <div class="title">Certificate</div>
+        <div class="subtitle">of Achievement</div>
+        <div class="description">This is to certify that</div>
+        <div class="recipient">John Doe</div>
+        <div class="description">
+            has successfully completed the requirements and demonstrated<br>
+            exceptional performance in the field of excellence.
+        </div>
+        <div class="footer">
+            <div class="signature">
+                <div class="sign-line">Date</div>
+                <div>${new Date().toLocaleDateString()}</div>
+            </div>
+            <div class="signature">
+                <div class="sign-line">Signature</div>
+                <div>Director</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`
+        };
 
-            updatePreview() {
-                try {
-                    const htmlContent = this.htmlEditor.value;
-                    this.previewContent.innerHTML = htmlContent;
-                } catch (error) {
-                    console.error('Preview error:', error);
-                    this.previewContent.innerHTML = '<p style="color: red;">Error rendering HTML. Please check your code.</p>';
-                }
-            }
+        // Initialize preview
+        function updatePreview() {
+            const content = htmlInput.value;
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            previewFrame.src = url;
+        }
 
-            updateStats() {
-                const content = this.htmlEditor.value;
-                const chars = content.length;
-                const lines = content.split('\n').length;
-                const words = content.trim() ? content.trim().split(/\s+/).length : 0;
-                this.editorStats.textContent = `Characters: ${chars} | Lines: ${lines} | Words: ${words}`;
-            }
+        function refreshPreview() {
+            updatePreview();
+            showToast('Preview refreshed');
+        }
 
-            clearEditor() {
-                this.htmlEditor.value = '';
-                this.updateStats();
-                this.updatePreview();
-                this.showNotification('Editor cleared!', 'info');
-            }
-
-            async convertToPDF() {
-                this.loading.style.display = 'flex';
-                this.convertBtn.disabled = true;
-                
-                try {
-                    // Get the HTML content
-                    const htmlContent = this.htmlEditor.value;
-                    
-                    // Create a temporary container for PDF generation
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = htmlContent;
-                    tempDiv.style.padding = '20px';
-                    tempDiv.style.background = 'white';
-                    document.body.appendChild(tempDiv);
-                    
-                    // Get settings
-                    const opt = {
-                        margin: parseInt(this.margin.value),
-                        filename: `document_${new Date().toISOString().slice(0,19)}.pdf`,
-                        image: { type: 'jpeg', quality: 0.98 },
-                        html2canvas: { scale: 2, useCORS: true, logging: false },
-                        jsPDF: { 
-                            unit: 'mm', 
-                            format: this.pageSize.value, 
-                            orientation: this.orientation.value 
-                        }
-                    };
-                    
-                    // Generate PDF
-                    await html2pdf().set(opt).from(tempDiv).save();
-                    
-                    // Clean up
-                    document.body.removeChild(tempDiv);
-                    
-                    this.showNotification('PDF created and downloaded successfully!', 'success');
-                } catch (error) {
-                    console.error('Conversion error:', error);
-                    this.showNotification('Error converting to PDF. Please check your HTML code.', 'error');
-                } finally {
-                    this.loading.style.display = 'none';
-                    this.convertBtn.disabled = false;
-                }
-            }
-
-            showNotification(message, type) {
-                const notification = document.createElement('div');
-                notification.className = `notification notification-${type}`;
-                notification.textContent = message;
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease';
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
+        function clearEditor() {
+            if(confirm('Are you sure you want to clear the editor?')) {
+                htmlInput.value = '';
+                updatePreview();
             }
         }
 
-        // Initialize the converter
-        document.addEventListener('DOMContentLoaded', () => {
-            new HTMLToPDFConverter();
+        function loadTemplate(name) {
+            htmlInput.value = templates[name];
+            updatePreview();
+            
+            // Update active state
+            document.querySelectorAll('.template-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            showToast(`${name.charAt(0).toUpperCase() + name.slice(1)} template loaded`);
+        }
+
+        function generatePDF() {
+            const element = document.createElement('div');
+            element.innerHTML = htmlInput.value;
+            
+            const opt = {
+                margin: parseInt(document.getElementById('margins').value),
+                filename: `document_${new Date().getTime()}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: parseInt(document.getElementById('scale').value) / 100,
+                    useCORS: true,
+                    logging: false
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: document.getElementById('pageSize').value,
+                    orientation: document.getElementById('orientation').value
+                }
+            };
+
+            loading.classList.add('active');
+            overlay.classList.add('active');
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                loading.classList.remove('active');
+                overlay.classList.remove('active');
+                showToast('PDF downloaded successfully!');
+            }).catch(err => {
+                loading.classList.remove('active');
+                overlay.classList.remove('active');
+                showToast('Error generating PDF: ' + err.message);
+            });
+        }
+
+        function printDocument() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(htmlInput.value);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // File input handler
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    htmlInput.value = e.target.result;
+                    updatePreview();
+                    showToast('File loaded successfully');
+                };
+                reader.readAsText(file);
+            }
         });
+
+        // Auto-update preview on input (debounced)
+        let timeout;
+        htmlInput.addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(updatePreview, 1000);
+        });
+
+        // Initial load
+        updatePreview();
     </script>
 </body>
 </html>
