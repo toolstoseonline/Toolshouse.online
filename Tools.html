@@ -1,392 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools House - All Free Online Tools</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
+<title>All Tools - Tools House</title>
+<meta name="description" content="Explore all free online tools like PDF converters, image tools, video tools, SEO tools and more at Tools House.">
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f5f5;
+}
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
+header {
+    background: #111;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
+h1 {
+    margin: 0;
+}
 
-        .search-box {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
 
-        .search-box input {
-            width: 100%;
-            max-width: 400px;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
+.category {
+    margin-bottom: 30px;
+}
 
-        .tools-list {
-            list-style: none;
-        }
+.category h2 {
+    background: #222;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+}
 
-        .tool-item {
-            padding: 12px;
-            margin-bottom: 8px;
-            background: #f9f9f9;
-            border-left: 4px solid #4CAF50;
-            border-radius: 4px;
-            transition: 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
 
-        .tool-item:hover {
-            background: #f0f0f0;
-            transform: translateX(5px);
-        }
+.tool-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    transition: 0.3s;
+    border: 1px solid #ddd;
+}
 
-        .tool-item a {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
-        .tool-item a:hover {
-            color: #45a049;
-        }
+.tool-card a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
 
-        .tool-arrow {
-            color: #999;
-            font-size: 12px;
-        }
-
-        .total-tools {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            color: #666;
-            font-size: 14px;
-        }
-    </style>
+footer {
+    text-align: center;
+    padding: 15px;
+    background: #111;
+    color: #fff;
+}
+</style>
 </head>
+
 <body>
 
+<header>
+    <h1>All Tools - Tools House</h1>
+</header>
+
 <div class="container">
-    <h1>🛠️ Tools House</h1>
-    <p class="subtitle">Free Online Tools - No Signup Required</p>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search tools...">
+    <!-- PDF Tools -->
+    <div class="category">
+        <h2>📄 PDF Tools</h2>
+        <div class="tools">
+            <div class="tool-card"><a href="/pdf-to-word.html">PDF to Word</a></div>
+            <div class="tool-card"><a href="/word-to-pdf.html">Word to PDF</a></div>
+            <div class="tool-card"><a href="/pdf-to-jpg.html">PDF to JPG</a></div>
+            <div class="tool-card"><a href="/jpg-to-pdf.html">JPG to PDF</a></div>
+            <div class="tool-card"><a href="/pdf-merger.html">PDF Merger</a></div>
+            <div class="tool-card"><a href="/pdf-splitter.html">PDF Splitter</a></div>
+        </div>
     </div>
 
-    <ul class="tools-list" id="toolsList">
-        <li class="tool-item">
-            <a href="File Compressor.html">
-                📦 File Compressor
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Image Converter.html">
-                🖼️ Image Converter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="PDF to Image.html">
-                📄 PDF to Image
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Image to PDF.html">
-                📄 Image to PDF
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="PDF Merger.html">
-                📋 PDF Merger
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="PDF Splitter.html">
-                ✂️ PDF Splitter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="PDF Compressor.html">
-                🗜️ PDF Compressor
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Text to PDF.html">
-                📝 Text to PDF
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Word Counter.html">
-                📊 Word Counter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Text Case Converter.html">
-                🔤 Text Case Converter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Password Generator.html">
-                🔐 Password Generator
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="QR Code Generator.html">
-                📱 QR Code Generator
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Base64 Encoder.html">
-                🔒 Base64 Encoder
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="URL Shortener.html">
-                🔗 URL Shortener
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="JSON Formatter.html">
-                {} JSON Formatter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="HTML Encoder.html">
-                < > HTML Encoder
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="CSS Minifier.html">
-                💅 CSS Minifier
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="JavaScript Minifier.html">
-                ⚙️ JavaScript Minifier
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Hash Generator.html">
-                🔐 Hash Generator
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Meta Tag Generator.html">
-                🏷️ Meta Tag Generator
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Keyword Density.html">
-                📈 Keyword Density Checker
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Backlink Checker.html">
-                🔗 Backlink Checker
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Page Speed Checker.html">
-                ⚡ Page Speed Checker
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Color Picker.html">
-                🎨 Color Picker
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Unit Converter.html">
-                📏 Unit Converter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Currency Converter.html">
-                💰 Currency Converter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Email Validator.html">
-                ✉️ Email Validator
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Grammar Checker.html">
-                ✏️ Grammar Checker
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Text Summarizer.html">
-                📄 Text Summarizer
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Plagiarism Checker.html">
-                🔍 Plagiarism Checker
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Markdown to HTML.html">
-                📝 Markdown to HTML
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Regex Tester.html">
-                🧪 Regex Tester
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="Timezone Converter.html">
-                🌍 Timezone Converter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="UUID Generator.html">
-                🔑 UUID Generator
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="GUID Generator.html">
-                🔑 GUID Generator
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="URL Decoder.html">
-                🔓 URL Decoder
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="URL Encoder.html">
-                🔒 URL Encoder
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="CSV to JSON.html">
-                ↔️ CSV to JSON
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="JSON to CSV.html">
-                ↔️ JSON to CSV
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-        <li class="tool-item">
-            <a href="XML Formatter.html">
-                < > XML Formatter
-                <span class="tool-arrow">→</span>
-            </a>
-        </li>
-    </ul>
-
-    <div class="total-tools">
-        ✅ Total Tools: <strong id="toolCount">40</strong> | 💰 All Free | 🔒 No Signup Required
+    <!-- Image Tools -->
+    <div class="category">
+        <h2>🖼️ Image Tools</h2>
+        <div class="tools">
+            <div class="tool-card"><a href="/image-compressor.html">Image Compressor</a></div>
+            <div class="tool-card"><a href="/image-resizer.html">Image Resizer</a></div>
+            <div class="tool-card"><a href="/image-to-jpg.html">Image to JPG</a></div>
+            <div class="tool-card"><a href="/image-to-png.html">Image to PNG</a></div>
+            <div class="tool-card"><a href="/image-enhancer.html">Image Enhancer</a></div>
+        </div>
     </div>
+
+    <!-- Video Tools -->
+    <div class="category">
+        <h2>🎥 Video Tools</h2>
+        <div class="tools">
+            <div class="tool-card"><a href="/video-converter.html">Video Converter</a></div>
+            <div class="tool-card"><a href="/video-compressor.html">Video Compressor</a></div>
+            <div class="tool-card"><a href="/video-trimmer.html">Video Trimmer</a></div>
+            <div class="tool-card"><a href="/video-merger.html">Video Merger</a></div>
+            <div class="tool-card"><a href="/video-reverser.html">Video Reverser</a></div>
+        </div>
+    </div>
+
+    <!-- SEO Tools -->
+    <div class="category">
+        <h2>🌐 SEO Tools</h2>
+        <div class="tools">
+            <div class="tool-card"><a href="/meta-tag-generator.html">Meta Tag Generator</a></div>
+            <div class="tool-card"><a href="/sitemap-generator.html">Sitemap Generator</a></div>
+            <div class="tool-card"><a href="/robots-generator.html">Robots.txt Generator</a></div>
+            <div class="tool-card"><a href="/seo-analyzer.html">SEO Analyzer</a></div>
+        </div>
+    </div>
+
 </div>
 
-<script>
-    const searchInput = document.getElementById('searchInput');
-    const toolsList = document.getElementById('toolsList');
-    const allItems = toolsList.querySelectorAll('.tool-item');
-
-    searchInput.addEventListener('keyup', function() {
-        const searchTerm = this.value.toLowerCase();
-
-        allItems.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            if (text.includes(searchTerm)) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-
-        // Update count
-        const visibleItems = toolsList.querySelectorAll('.tool-item:not([style*="display: none"])').length;
-        document.getElementById('toolCount').textContent = visibleItems;
-    });
-
-    // Initial count
-    document.getElementById('toolCount').textContent = allItems.length;
-</script>
+<footer>
+    <p>© 2026 Tools House - All Rights Reserved</p>
+</footer>
 
 </body>
 </html>
