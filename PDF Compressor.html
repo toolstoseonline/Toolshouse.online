@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
 <!-- pdf-lib -->
-<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
 <style>
 *{
@@ -167,8 +167,8 @@ canvas{
 </div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+// Ensure PDF.js worker is properly configured
+pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
@@ -179,129 +179,331 @@ const qualitySlider = document.getElementById("qualitySlider");
 const qualityValue = document.getElementById("qualityValue");
 
 let selectedFile = null;
+let isCompressing = false;
 
 qualitySlider.addEventListener("input", (e) => {
     qualityValue.textContent = e.target.value + "%";
 });
 
-dropArea.addEventListener("click",()=>fileInput.click());
+dropArea.addEventListener("click", () => fileInput.click());
 
-dropArea.addEventListener("dragover",(e)=>e.preventDefault());
-
-dropArea.addEventListener("drop",(e)=>{
+dropArea.addEventListener("dragover", (e) => {
     e.preventDefault();
-    handleFile(e.dataTransfer.files[0]);
+    dropArea.style.background = "#f3f0ff";
 });
 
-fileInput.addEventListener("change",(e)=>{
-    handleFile(e.target.files[0]);
+dropArea.addEventListener("dragleave", (e) => {
+    dropArea.style.background = "";
 });
 
-function handleFile(file){
-    if(!file || file.type !== "application/pdf"){
+dropArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropArea.style.background = "";
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === "application/pdf") {
+        handleFile(file);
+    } else {
+        alert("Please upload a valid PDF file.");
+    }
+});
+
+fileInput.addEventListener("change", (e) => {
+    if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+    }
+});
+
+function handleFile(file) {
+    if (!file || file.type !== "application/pdf") {
         alert("Please upload a valid PDF file.");
         return;
     }
     selectedFile = file;
-    preview.innerHTML="";
+    preview.innerHTML = "";
+    // Show file info
+    const fileInfo = document.createElement("div");
+    fileInfo.style.marginTop = "10px";
+    fileInfo.style.fontSize = "14px";
+    fileInfo.style.color = "#666";
+    fileInfo.innerHTML = `📄 ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+    preview.appendChild(fileInfo);
+    // Preview first page
     previewPDF(file);
 }
 
-async function previewPDF(file){
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-
-    for(let i=1;i<=Math.min(pdf.numPages,3);i++){
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({scale:0.5});
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        preview.appendChild(canvas);
-
-        await page.render({
-            canvasContext:context,
-            viewport:viewport,
-            renderInteractiveForms: false
-        }).promise;
-    }
-}
-
-compressBtn.addEventListener("click",async ()=>{
-    if(!selectedFile){
-        alert("Upload a PDF first.");
-        return;
-    }
-
-    loader.style.display="block";
-    compressBtn.disabled = true;
-
+async function previewPDF(file) {
     try {
-        const arrayBuffer = await selectedFile.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-        const { PDFDocument } = PDFLib;
-        const newPdf = await PDFDocument.create();
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, useSystemFonts: true }).promise;
         
-        const quality = qualitySlider.value / 100;
-
-        for(let i=1;i<=pdf.numPages;i++){
+        // Clear previous canvas previews
+        const existingCanvas = preview.querySelectorAll("canvas");
+        existingCanvas.forEach(canvas => canvas.remove());
+        
+        // Show up to 3 pages preview
+        const pagesToShow = Math.min(pdf.numPages, 3);
+        for (let i = 1; i <= pagesToShow; i++) {
             const page = await pdf.getPage(i);
-            
-            // Use higher scale for better quality
-            const scale = 1.5; // Increase this for better quality (at cost of file size)
-            const viewport = page.getViewport({scale: scale});
-            
+            const viewport = page.getViewport({ scale: 0.4 });
             const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d", { 
-                alpha: false,
-                willReadFrequently: true 
-            });
-            
-            canvas.width = viewport.width;
+            const context = canvas.getContext("2d");
             canvas.height = viewport.height;
-
-            // Better rendering settings
+            canvas.width = viewport.width;
+            canvas.style.maxWidth = "100%";
+            canvas.style.height = "auto";
+            preview.appendChild(canvas);
+            
             await page.render({
                 canvasContext: context,
                 viewport: viewport,
                 renderInteractiveForms: false,
                 background: "white"
             }).promise;
+        }
+        
+        if (pdf.numPages > 3) {
+            const moreInfo = document.createElement("div");
+            moreInfo.style.fontSize = "12px";
+            moreInfo.style.color = "#888";
+            moreInfo.style.marginTop = "5px";
+            moreInfo.textContent = `+ ${pdf.numPages - 3} more pages`;
+            preview.appendChild(moreInfo);
+        }
+    } catch (error) {
+        console.error("Preview error:", error);
+        const errorMsg = document.createElement("div");
+        errorMsg.style.color = "red";
+        errorMsg.style.fontSize = "12px";
+        errorMsg.style.marginTop = "10px";
+        errorMsg.textContent = "Preview not available for this PDF, but compression will work.";
+        preview.appendChild(errorMsg);
+    }
+}
 
-            // Use higher quality for JPEG
-            const imgData = canvas.toDataURL("image/jpeg", quality);
-            const jpgImage = await newPdf.embedJpg(imgData);
+compressBtn.addEventListener("click", async () => {
+    if (isCompressing) {
+        alert("Compression already in progress. Please wait.");
+        return;
+    }
+    
+    if (!selectedFile) {
+        alert("Please upload a PDF file first.");
+        return;
+    }
+
+    // Check file size limit (50MB max to avoid memory issues)
+    if (selectedFile.size > 50 * 1024 * 1024) {
+        alert("File is too large (max 50MB). Please upload a smaller PDF.");
+        return;
+    }
+
+    isCompressing = true;
+    loader.style.display = "block";
+    compressBtn.disabled = true;
+    compressBtn.textContent = "Compressing...";
+
+    try {
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer, useSystemFonts: true }).promise;
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        
+        // Create new PDF document
+        const newPdfDoc = await PDFDocument.create();
+        
+        const quality = qualitySlider.value / 100;
+        const totalPages = pdfDoc.numPages;
+        
+        // Determine optimal scale based on quality and original content
+        // Higher quality setting uses higher scale for better fidelity
+        let baseScale = 1.2;
+        if (quality > 0.8) baseScale = 1.8;
+        else if (quality > 0.5) baseScale = 1.5;
+        else baseScale = 1.0;
+        
+        // Process each page
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+            // Show progress in console (optional)
+            if (pageNum % 5 === 0 || pageNum === totalPages) {
+                console.log(`Processing page ${pageNum} of ${totalPages}...`);
+            }
             
-            const pageNew = newPdf.addPage([viewport.width / scale, viewport.height / scale]);
-            pageNew.drawImage(jpgImage, {
+            const page = await pdfDoc.getPage(pageNum);
+            const originalViewport = page.getViewport({ scale: 1.0 });
+            const originalWidth = originalViewport.width;
+            const originalHeight = originalViewport.height;
+            
+            // Adjust scale based on page dimensions to prevent memory overflow
+            let scale = baseScale;
+            if (originalWidth > 2500 || originalHeight > 3500) {
+                scale = Math.min(baseScale, 0.8);
+            } else if (originalWidth > 1500 || originalHeight > 2000) {
+                scale = Math.min(baseScale, 1.0);
+            }
+            
+            const viewport = page.getViewport({ scale: scale });
+            
+            // Create canvas with optimized settings
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d", { 
+                alpha: false,
+                willReadFrequently: true 
+            });
+            
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
+            
+            // Render page to canvas with white background for better JPEG compression
+            try {
+                await page.render({
+                    canvasContext: context,
+                    viewport: viewport,
+                    renderInteractiveForms: false,
+                    background: "white",
+                    intent: "display"
+                }).promise;
+            } catch (renderErr) {
+                console.warn(`Render error on page ${pageNum}, trying fallback:`, renderErr);
+                // Fallback: fill with white and try simple render
+                context.fillStyle = "white";
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                await page.render({
+                    canvasContext: context,
+                    viewport: viewport,
+                    renderInteractiveForms: false,
+                    background: "white"
+                }).promise;
+            }
+            
+            // Convert canvas to JPEG with specified quality
+            // Use JPEG format for better compression
+            const imgData = canvas.toDataURL("image/jpeg", quality);
+            
+            // Handle data URL properly
+            let jpgImage;
+            try {
+                jpgImage = await newPdfDoc.embedJpg(imgData);
+            } catch (embedErr) {
+                console.error("JPG embed error:", embedErr);
+                // Fallback: use PNG if JPEG fails
+                const pngData = canvas.toDataURL("image/png");
+                jpgImage = await newPdfDoc.embedPng(pngData);
+            }
+            
+            // Calculate target dimensions - maintain aspect ratio with original page size
+            const targetWidth = originalWidth;
+            const targetHeight = originalHeight;
+            
+            // Add new page to the compressed PDF
+            const newPage = newPdfDoc.addPage([targetWidth, targetHeight]);
+            
+            // Draw the image to fill the entire page
+            newPage.drawImage(jpgImage, {
                 x: 0,
                 y: 0,
-                width: viewport.width / scale,
-                height: viewport.height / scale
+                width: targetWidth,
+                height: targetHeight,
+                opacity: 1
             });
         }
-
-        const pdfBytes = await newPdf.save();
-        const blob = new Blob([pdfBytes],{type:"application/pdf"});
+        
+        // Save the compressed PDF
+        const pdfBytes = await newPdfDoc.save();
+        
+        // Create download link
+        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const downloadUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "compressed_" + selectedFile.name;
+        link.href = downloadUrl;
+        
+        // Generate filename: compressed_originalname.pdf
+        let originalName = selectedFile.name;
+        if (!originalName.toLowerCase().endsWith(".pdf")) {
+            originalName += ".pdf";
+        }
+        link.download = "compressed_" + originalName;
+        document.body.appendChild(link);
         link.click();
-
-        // Show original and compressed sizes
-        const originalSize = (selectedFile.size / 1024).toFixed(2);
-        const compressedSize = (pdfBytes.length / 1024).toFixed(2);
-        alert(`Original: ${originalSize} KB\nCompressed: ${compressedSize} KB\nReduction: ${((1 - pdfBytes.length/selectedFile.size)*100).toFixed(1)}%`);
-
-    } catch (error) {
-        console.error(error);
-        alert("Error compressing PDF: " + error.message);
-    } finally {
-        loader.style.display="none";
+        document.body.removeChild(link);
+        
+        // Clean up object URL after a delay
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
+        
+        // Calculate and display size comparison
+        const originalSizeKB = (selectedFile.size / 1024).toFixed(2);
+        const compressedSizeKB = (pdfBytes.length / 1024).toFixed(2);
+        const reductionPercent = ((1 - pdfBytes.length / selectedFile.size) * 100).toFixed(1);
+        
+        let message = `✅ Compression Complete!\n\n📄 Original: ${originalSizeKB} KB\n📦 Compressed: ${compressedSizeKB} KB\n📉 Reduction: ${reductionPercent}%\n\n`;
+        
+        if (reductionPercent < 0) {
+            message += `⚠️ The compressed file is slightly larger. Try lowering the quality slider for better compression.`;
+        } else if (reductionPercent > 50) {
+            message += `🎉 Excellent compression! File size reduced significantly.`;
+        } else if (reductionPercent > 20) {
+            message += `✓ Good compression achieved.`;
+        } else {
+            message += `ℹ️ Moderate compression. Try lowering quality for smaller file size.`;
+        }
+        
+        alert(message);
+        
+        // Reset button
         compressBtn.disabled = false;
+        compressBtn.textContent = "Compress PDF";
+        loader.style.display = "none";
+        isCompressing = false;
+        
+    } catch (error) {
+        console.error("Compression error details:", error);
+        
+        let errorMessage = "Error compressing PDF: ";
+        if (error.message) {
+            errorMessage += error.message;
+        } else {
+            errorMessage += "Unknown error occurred.";
+        }
+        
+        // Provide helpful error messages for common issues
+        if (error.message && error.message.includes("Out of memory")) {
+            errorMessage = "PDF is too large to compress in browser. Try a smaller file or lower resolution.";
+        } else if (error.message && error.message.includes("Invalid PDF")) {
+            errorMessage = "The PDF file appears to be corrupted or encrypted. Please try a different file.";
+        } else if (error.message && error.message.includes("password")) {
+            errorMessage = "This PDF is password protected. Please unlock it first.";
+        }
+        
+        alert(errorMessage + "\n\nTip: Try using a lower quality setting for better compression.");
+        
+        compressBtn.disabled = false;
+        compressBtn.textContent = "Compress PDF";
+        loader.style.display = "none";
+        isCompressing = false;
     }
 });
+
+// Add additional validation for file input to handle edge cases
+fileInput.addEventListener("click", (e) => {
+    e.stopPropagation();
+});
+
+// Clean up preview when new file is selected
+window.addEventListener("beforeunload", () => {
+    if (selectedFile) {
+        // Cleanup any large objects
+        selectedFile = null;
+    }
+});
+
+// Add keyboard accessibility
+compressBtn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        compressBtn.click();
+    }
+});
+
+// Display tool info on load
+console.log("PDF Compressor ready - Tools House Online");
 </script>
 <script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
 </body>
