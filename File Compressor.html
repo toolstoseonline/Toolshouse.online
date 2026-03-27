@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free File Compressor Online – ZIP RAR Compress – Tools House Online</title>
-<meta name="description" content="Compress files online free. Create ZIP/RAR archives to reduce file size. Fast compression for mobile & PC. No signup required at all.">
+<title>Free File Compressor Online – ZIP Compress – Tools House Online</title>
+<meta name="description" content="Compress files online free. Create ZIP archives to reduce file size. Fast compression for mobile & PC. No signup required.">
 <link rel="canonical" href="https://www.toolshouse.online/File Compressor.html">
- 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 <style>
 *{
 margin:0;
@@ -36,6 +37,7 @@ text-align:center;
 
 h2{
 margin-bottom:20px;
+color:#333;
 }
 
 .drop-area{
@@ -44,10 +46,18 @@ padding:25px;
 border-radius:15px;
 cursor:pointer;
 transition:0.3s;
+outline:none;
 }
 
-.drop-area:hover{
+.drop-area:hover,
+.drop-area:focus{
 background:#f3f0ff;
+border-color:#667eea;
+}
+
+.drop-area.dragover{
+background:#f3f0ff;
+border-color:#667eea;
 }
 
 .file-list{
@@ -56,24 +66,61 @@ max-height:150px;
 overflow:auto;
 text-align:left;
 font-size:14px;
+background:#f9f9f9;
+padding:10px;
+border-radius:8px;
 }
 
 .file-item{
-padding:5px 0;
+padding:8px;
 border-bottom:1px solid #eee;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.file-item:last-child{
+border-bottom:none;
+}
+
+.file-size{
+color:#999;
+font-size:12px;
+margin-left:10px;
+}
+
+.remove-btn{
+background:#ff6b6b;
+color:white;
+border:none;
+padding:4px 8px;
+border-radius:4px;
+cursor:pointer;
+font-size:12px;
+}
+
+.remove-btn:hover{
+background:#ff5252;
+}
+
+.format-container,
+.button-container{
+margin-top:15px;
 }
 
 select,button{
-margin-top:15px;
 padding:12px;
 width:100%;
 border:none;
 border-radius:12px;
 font-size:16px;
+margin-top:10px;
 }
 
 select{
 border:1px solid #ccc;
+background:white;
+cursor:pointer;
 }
 
 button{
@@ -83,9 +130,23 @@ cursor:pointer;
 transition:0.3s;
 }
 
-button:hover{
+button:hover:not(:disabled){
 transform:translateY(-2px);
 box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+button:disabled{
+background:#ccc;
+cursor:not-allowed;
+}
+
+.clear-btn{
+background:#ff9800;
+margin-top:10px;
+}
+
+.clear-btn:hover{
+background:#f57c00;
 }
 
 .loader{
@@ -107,41 +168,85 @@ margin:auto;
 100%{transform:rotate(360deg);}
 }
 
+.message{
+margin-top:15px;
+padding:12px;
+border-radius:8px;
+display:none;
+}
+
+.message.success{
+background:#d4edda;
+color:#155724;
+border:1px solid #c3e6cb;
+display:block;
+}
+
+.message.error{
+background:#f8d7da;
+color:#721c24;
+border:1px solid #f5c6cb;
+display:block;
+}
+
+.message.info{
+background:#d1ecf1;
+color:#0c5460;
+border:1px solid #bee5eb;
+display:block;
+}
+
+.file-stats{
+margin-top:10px;
+font-size:13px;
+color:#666;
+}
+
 @media(max-width:500px){
 .card{padding:20px;}
+select,button{font-size:14px;}
 }
 </style>
 <meta name="robots" content="index, follow">
-<meta property="og:title" content="Free File Compressor Online – ZIP RAR Compress – Tools House Online">
-<meta property="og:description" content="Compress files online for free. Create ZIP archives easily. Fast, secure file compressor tool. No software needed.">
+<meta property="og:title" content="Free File Compressor Online – ZIP Compress – Tools House Online">
+<meta property="og:description" content="Compress files online for free. Create ZIP archives easily. Fast, secure file compressor tool.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.toolshouse.online/File Compressor.html">
 <meta property="og:image" content="https://www.toolshouse.online/logo.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free File Compressor Online – ZIP RAR Compress – Tools House Online">
-<meta name="twitter:description" content="Compress files online for free. Create ZIP archives easily. Fast, secure file compressor tool. No software needed.">
+<meta name="twitter:title" content="Free File Compressor Online – ZIP Compress – Tools House Online">
+<meta name="twitter:description" content="Compress files online for free. Create ZIP archives easily. Fast, secure file compressor tool.">
 </head>
 
 <body>
 
 <div class="card">
-<h2>File Compressor - ZIP Tool</h2>
+<h2>📦 File Compressor - ZIP Tool</h2>
 
-<div class="drop-area" id="dropArea">
+<div class="drop-area" id="dropArea" tabindex="0" role="button" aria-label="Drop area for uploading files">
 Drag & Drop Files Here<br>or Click to Upload
-<input type="file" id="fileInput" hidden multiple>
+<input type="file" id="fileInput" hidden multiple accept="*">
 </div>
 
-<div class="file-list" id="fileList"></div>
+<div class="file-list" id="fileList" style="display:none;"></div>
 
-<select id="formatSelect">
-<option value="zip">ZIP Format</option>
-<option value="rar">RAR (Not Supported in Browser)</option>
+<div class="file-stats" id="fileStats" style="display:none;"></div>
+
+<div class="format-container">
+<select id="formatSelect" aria-label="Select compression format">
+<option value="zip">ZIP Format (Recommended)</option>
 </select>
+<p style="font-size:12px;color:#999;margin-top:5px;">RAR format not supported in browser</p>
+</div>
 
-<button id="compressBtn">Convert File</button>
+<div class="button-container">
+<button id="compressBtn" disabled>Compress Files</button>
+<button class="clear-btn" id="clearBtn" style="display:none;">Clear Files</button>
+</div>
 
-<div class="loader"><div></div></div>
+<div class="message" id="message"></div>
+
+<div class="loader" id="loader"><div></div></div>
 
 </div>
 
@@ -149,148 +254,186 @@ Drag & Drop Files Here<br>or Click to Upload
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const fileList = document.getElementById("fileList");
+const fileStats = document.getElementById("fileStats");
 const compressBtn = document.getElementById("compressBtn");
+const clearBtn = document.getElementById("clearBtn");
 const formatSelect = document.getElementById("formatSelect");
-const loader = document.querySelector(".loader");
+const loader = document.getElementById("loader");
+const message = document.getElementById("message");
 
 let selectedFiles = [];
 
-dropArea.addEventListener("click",()=>fileInput.click());
+const MAX_FILES = 100;
+const MAX_TOTAL_SIZE = 500 * 1024 * 1024; // 500MB
 
-dropArea.addEventListener("dragover",(e)=>e.preventDefault());
+function showMessage(text, type = "info"){
+message.textContent = text;
+message.className = "message " + type;
+setTimeout(() => {
+message.style.display = "none";
+}, 5000);
+}
 
-dropArea.addEventListener("drop",(e)=>{
+function formatFileSize(bytes){
+if(bytes === 0) return "0 Bytes";
+const k = 1024;
+const sizes = ["Bytes", "KB", "MB", "GB"];
+const i = Math.floor(Math.log(bytes) / Math.log(k));
+return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+}
+
+dropArea.addEventListener("click", () => fileInput.click());
+
+dropArea.addEventListener("dragover", (e) => {
 e.preventDefault();
+dropArea.classList.add("dragover");
+});
+
+dropArea.addEventListener("dragleave", () => {
+dropArea.classList.remove("dragover");
+});
+
+dropArea.addEventListener("drop", (e) => {
+e.preventDefault();
+dropArea.classList.remove("dragover");
 handleFiles(e.dataTransfer.files);
 });
 
-fileInput.addEventListener("change",(e)=>{
+dropArea.addEventListener("keydown", (e) => {
+if(e.key === "Enter" || e.key === " "){
+e.preventDefault();
+fileInput.click();
+}
+});
+
+fileInput.addEventListener("change", (e) => {
 handleFiles(e.target.files);
 });
 
 function handleFiles(files){
+if(files.length === 0){
+showMessage("No files selected", "error");
+return;
+}
+
+if(files.length > MAX_FILES){
+showMessage(`Maximum ${MAX_FILES} files allowed`, "error");
+return;
+}
+
+let totalSize = 0;
 selectedFiles = Array.from(files);
-fileList.innerHTML="";
-if(selectedFiles.length===0){
-alert("No files selected");
+
+for(let file of selectedFiles){
+totalSize += file.size;
+}
+
+if(totalSize > MAX_TOTAL_SIZE){
+showMessage(`Total file size exceeds 500MB limit`, "error");
+selectedFiles = [];
 return;
 }
-selectedFiles.forEach(file=>{
-const div=document.createElement("div");
-div.className="file-item";
-div.textContent=file.name+" ("+(file.size/1024).toFixed(1)+" KB)";
+
+fileList.innerHTML = "";
+fileList.style.display = "block";
+
+let totalSizeFormatted = 0;
+
+selectedFiles.forEach((file, index) => {
+const div = document.createElement("div");
+div.className = "file-item";
+
+const fileInfo = document.createElement("span");
+fileInfo.textContent = file.name;
+
+const fileSize = document.createElement("span");
+fileSize.className = "file-size";
+fileSize.textContent = formatFileSize(file.size);
+
+const removeBtn = document.createElement("button");
+removeBtn.className = "remove-btn";
+removeBtn.textContent = "Remove";
+removeBtn.onclick = (e) => {
+e.preventDefault();
+selectedFiles.splice(index, 1);
+handleFiles(selectedFiles);
+};
+
+div.appendChild(fileInfo);
+div.appendChild(fileSize);
+div.appendChild(removeBtn);
 fileList.appendChild(div);
+
+totalSizeFormatted += file.size;
 });
+
+// Update stats
+fileStats.innerHTML = `<strong>${selectedFiles.length} file(s)</strong> • Total: ${formatFileSize(totalSizeFormatted)}`;
+fileStats.style.display = "block";
+
+compressBtn.disabled = false;
+clearBtn.style.display = "block";
+
+showMessage(`${selectedFiles.length} file(s) selected`, "success");
 }
 
-compressBtn.addEventListener("click",async()=>{
-if(selectedFiles.length===0){
-alert("Upload files first");
+compressBtn.addEventListener("click", async() => {
+if(selectedFiles.length === 0){
+showMessage("Upload files first", "error");
 return;
 }
 
-if(formatSelect.value==="rar"){
-alert("RAR format not supported in browser.\nPlease select ZIP.");
-return;
-}
-
-loader.style.display="block";
+compressBtn.disabled = true;
+loader.style.display = "block";
 
 try{
-const zipBlob = await createZip(selectedFiles);
-downloadFile(zipBlob,"compressed.zip");
-}catch(e){
-alert("Compression failed");
-console.error(e);
+showMessage("Compressing files...", "info");
+const zipBlob = await createZipWithJSZip(selectedFiles);
+downloadFile(zipBlob, "compressed.zip");
+showMessage("✓ Files compressed and downloaded successfully!", "success");
+}catch(error){
+console.error(error);
+showMessage(`Compression failed: ${error.message}`, "error");
+}finally{
+loader.style.display = "none";
+compressBtn.disabled = selectedFiles.length === 0;
 }
-
-loader.style.display="none";
 });
 
-function downloadFile(blob,filename){
-const link=document.createElement("a");
-link.href=URL.createObjectURL(blob);
-link.download=filename;
+clearBtn.addEventListener("click", () => {
+selectedFiles = [];
+fileList.innerHTML = "";
+fileList.style.display = "none";
+fileStats.style.display = "none";
+compressBtn.disabled = true;
+clearBtn.style.display = "none";
+fileInput.value = "";
+showMessage("Files cleared", "info");
+});
+
+function downloadFile(blob, filename){
+const link = document.createElement("a");
+link.href = URL.createObjectURL(blob);
+link.download = filename;
+document.body.appendChild(link);
 link.click();
+document.body.removeChild(link);
+URL.revokeObjectURL(link.href);
 }
 
-async function createZip(files){
-const fileEntries=[];
+async function createZipWithJSZip(files){
+if(!window.JSZip){
+throw new Error("JSZip library not loaded");
+}
+
+const zip = new JSZip();
+
 for(const file of files){
-const buffer=await file.arrayBuffer();
-fileEntries.push({name:file.name,data:new Uint8Array(buffer)});
-}
-return buildZip(fileEntries);
+const buffer = await file.arrayBuffer();
+zip.file(file.name, buffer);
 }
 
-function buildZip(files){
-const encoder=new TextEncoder();
-let zipParts=[];
-let centralDirectory=[];
-let offset=0;
-
-files.forEach(file=>{
-const fileNameBytes=encoder.encode(file.name);
-const localHeader=new Uint8Array(30+fileNameBytes.length);
-const view=new DataView(localHeader.buffer);
-
-view.setUint32(0,0x04034b50,true);
-view.setUint16(4,20,true);
-view.setUint16(6,0,true);
-view.setUint16(8,0,true);
-view.setUint16(10,0,true);
-view.setUint16(12,0,true);
-view.setUint32(14,0,true);
-view.setUint32(18,file.data.length,true);
-view.setUint32(22,file.data.length,true);
-view.setUint16(26,fileNameBytes.length,true);
-view.setUint16(28,0,true);
-
-localHeader.set(fileNameBytes,30);
-
-zipParts.push(localHeader);
-zipParts.push(file.data);
-
-const centralHeader=new Uint8Array(46+fileNameBytes.length);
-const centralView=new DataView(centralHeader.buffer);
-
-centralView.setUint32(0,0x02014b50,true);
-centralView.setUint16(4,20,true);
-centralView.setUint16(6,20,true);
-centralView.setUint16(8,0,true);
-centralView.setUint16(10,0,true);
-centralView.setUint16(12,0,true);
-centralView.setUint16(14,0,true);
-centralView.setUint32(16,0,true);
-centralView.setUint32(20,file.data.length,true);
-centralView.setUint32(24,file.data.length,true);
-centralView.setUint16(28,fileNameBytes.length,true);
-centralView.setUint16(30,0,true);
-centralView.setUint16(32,0,true);
-centralView.setUint16(34,0,true);
-centralView.setUint16(36,0,true);
-centralView.setUint32(38,0,true);
-centralView.setUint32(42,offset,true);
-
-centralHeader.set(fileNameBytes,46);
-
-centralDirectory.push(centralHeader);
-
-offset+=localHeader.length+file.data.length;
-});
-
-const centralSize=centralDirectory.reduce((a,b)=>a+b.length,0);
-const endRecord=new Uint8Array(22);
-const endView=new DataView(endRecord.buffer);
-
-endView.setUint32(0,0x06054b50,true);
-endView.setUint16(8,files.length,true);
-endView.setUint16(10,files.length,true);
-endView.setUint32(12,centralSize,true);
-endView.setUint32(16,offset,true);
-endView.setUint16(20,0,true);
-
-return new Blob([...zipParts,...centralDirectory,endRecord],{type:"application/zip"});
+return await zip.generateAsync({type: "blob", compression: "DEFLATE"});
 }
 </script>
 </body>
