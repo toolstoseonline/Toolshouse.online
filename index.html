@@ -240,8 +240,13 @@
         .stat-num span { color: var(--accent); }
         .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
-        /* ===== SEARCH ===== */
+        /* ===== SEARCH WITH AUTOCOMPLETE ===== */
         .search-wrap { max-width: 640px; margin: 40px auto 10px; position: relative; }
+        
+        .search-container {
+            position: relative;
+        }
+        
         .search-wrap input {
             width: 100%;
             background: var(--surface);
@@ -254,8 +259,12 @@
             outline: none;
             transition: var(--transition);
         }
-        .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1); }
+        .search-wrap input:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
         .search-wrap input::placeholder { color: var(--text-muted); }
+        
         .search-wrap button {
             position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
             background: linear-gradient(135deg, var(--accent), #0099bb);
@@ -264,6 +273,106 @@
             transition: var(--transition);
         }
         .search-wrap button:hover { transform: translateY(-50%) scale(1.05); }
+
+        /* Autocomplete Suggestions */
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 50px 50px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+            list-style: none;
+        }
+
+        .autocomplete-list.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover {
+            background: var(--surface2);
+            color: var(--accent);
+        }
+
+        .autocomplete-item i {
+            color: var(--accent);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .autocomplete-item span {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .autocomplete-item .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .no-suggestions {
+            padding: 20px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .suggestion-category {
+            padding: 10px 24px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--surface2);
+        }
+
+        /* GitHub Link */
+        .github-link {
+            position: fixed;
+            bottom: 28px;
+            left: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 99;
+            text-decoration: none;
+        }
+
+        .github-link:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
 
         /* Recently Viewed */
         .recent-box {
@@ -428,6 +537,7 @@
             .stats-bar { gap: 28px; }
             .footer-top { grid-template-columns: 1fr 1fr; }
             .footer-bottom { flex-direction: column; text-align: center; }
+            .github-link { left: 16px; }
         }
         @media (max-width: 480px) {
             .tools-grid { grid-template-columns: 1fr; }
@@ -481,11 +591,14 @@
         </div>
     </section>
 
-    <!-- SEARCH -->
+    <!-- SEARCH WITH AUTOCOMPLETE -->
     <div class="search-wrap" role="search">
-        <label for="toolSearch" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search tools</label>
-        <input type="search" id="toolSearch" placeholder="Search tools… e.g. PDF Merger, Image Resizer" onkeyup="filterTools()" aria-label="Search tools">
-        <button onclick="filterTools()" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
+        <div class="search-container">
+            <label for="toolSearch" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search tools</label>
+            <input type="search" id="toolSearch" placeholder="Search tools… e.g. PDF Merger, Image Resizer" onkeyup="handleSearch()" aria-label="Search tools" autocomplete="off">
+            <button onclick="filterTools()" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
+            <ul class="autocomplete-list" id="autocompleteList" role="listbox"></ul>
+        </div>
     </div>
     <div class="no-results" id="noResults"><i class="fas fa-search-minus"></i>No tools found. Try a different search.</div>
 
@@ -574,7 +687,7 @@
                     <div class="tool-card-icon purple" aria-hidden="true"><i class="fas fa-edit"></i></div>
                     <h3>Edit PDF Converter Online</h3>
                     <p>Edit PDFs online easily—modify text, images, and pages instantly with no signup required.</p>
-                    <span class="tool-link-label">Open Tool <i class="fas fa-arrow-right" aria-hidden=E"true"></i></span>
+                    <span class="tool-link-label">Open Tool <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
                 </a>
                 <a href="pdf-to-jpg.html" class="tool-card" data-name="PDF TO JPG" aria-label="PDF Converter">
                     <div class="tool-card-icon purple" aria-hidden="true"><i class="fas fa-file-image"></i></div>
@@ -945,14 +1058,143 @@
                 <a href="privacy-policy.html">Privacy Policy</a>
                 <a href="terms-of-use.html">Terms of Use</a>
                 <a href="contact.html">Contact</a>
+                <a href="https://github.com/toolshouse" target="_blank" rel="noopener noreferrer">GitHub</a>
             </div>
         </div>
     </div>
 </footer>
 
+<!-- GitHub Button -->
+<a href="https://github.com/toolshouse" target="_blank" rel="noopener noreferrer" class="github-link" title="Visit our GitHub" aria-label="GitHub Repository">
+    <i class="fab fa-github" aria-hidden="true"></i>
+</a>
+
 <button class="scroll-top" id="scrollTop" aria-label="Scroll to top"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
 
 <script>
+    // All tools data for autocomplete
+    const allTools = [
+        // Document Tools
+        { name: 'Word to PDF Converter', url: 'word-to-pdf-converter.html', category: 'Documents', icon: 'fas fa-file-word' },
+        { name: 'PDF Reader', url: 'pdf-reader.html', category: 'Documents', icon: 'fas fa-file-pdf' },
+        { name: 'PDF Merger', url: 'pdf-merger.html', category: 'Documents', icon: 'fas fa-object-group' },
+        { name: 'PDF Splitter', url: 'pdf-splitter.html', category: 'Documents', icon: 'fas fa-cut' },
+        { name: 'PDF Compressor', url: 'file-compressor.html', category: 'Documents', icon: 'fas fa-compress-alt' },
+        { name: 'File Compressor', url: 'file-compressor.html', category: 'Documents', icon: 'fas fa-file-archive' },
+        { name: 'File Splitter', url: 'file-splitter.html', category: 'Documents', icon: 'fas fa-columns' },
+        { name: 'File Converter', url: 'file-converter.html', category: 'Documents', icon: 'fas fa-exchange-alt' },
+        { name: 'PDF to PowerPoint', url: 'pdf-to-powerpoint.html', category: 'Documents', icon: 'fas fa-file-powerpoint' },
+        { name: 'PowerPoint to PDF', url: 'powerpoint-to-pdf.html', category: 'Documents', icon: 'fas fa-file-powerpoint' },
+        { name: 'Edit PDF', url: 'edit-pdf.html', category: 'Documents', icon: 'fas fa-edit' },
+        { name: 'PDF to JPG', url: 'pdf-to-jpg.html', category: 'Documents', icon: 'fas fa-file-image' },
+        { name: 'JPG to PDF', url: 'jpg-to-pdf.html', category: 'Documents', icon: 'fas fa-file-pdf' },
+        { name: 'Sign PDF', url: 'pdf-signer.html', category: 'Documents', icon: 'fas fa-signature' },
+        { name: 'HTML to PDF', url: 'html-to-pdf.html', category: 'Documents', icon: 'fas fa-code' },
+        { name: 'Unlock PDF', url: 'unlock-Pdf.html', category: 'Documents', icon: 'fas fa-lock-open' },
+        { name: 'Organize PDF', url: 'pdf-organizer.html', category: 'Documents', icon: 'fas fa-layer-group' },
+        { name: 'PDF Converter', url: 'pdf-converter.html', category: 'Documents', icon: 'fas fa-file-pdf' },
+        { name: 'Repair PDF', url: 'pdf-repair.html', category: 'Documents', icon: 'fas fa-wrench' },
+        { name: 'Page Numbering', url: 'pdf-page.html', category: 'Documents', icon: 'fas fa-hash' },
+        { name: 'Redact PDF', url: 'pdf-redact.html', category: 'Documents', icon: 'fas fa-eraser' },
+        { name: 'OCR PDF', url: 'ocr-pdf.html', category: 'Documents', icon: 'fas fa-text' },
+        // Image Tools
+        { name: 'Image Converter', url: 'image-converter.html', category: 'Images', icon: 'fas fa-eraser' },
+        { name: 'Collage Maker', url: 'collage-maker.html', category: 'Images', icon: 'fas fa-images' },
+        { name: 'Image Resizer', url: 'image-resizer.html', category: 'Images', icon: 'fas fa-expand-arrows-alt' },
+        { name: 'Photo Filters', url: 'filter-&-effects.html', category: 'Images', icon: 'fas fa-magic' },
+        { name: 'Photo Retouch', url: 'photo-retouch.html', category: 'Images', icon: 'fas fa-brush' },
+        { name: 'Excel to PDF', url: 'excel-to-pdf.html', category: 'Images', icon: 'fas fa-file-excel' },
+        { name: 'Image Enhancer', url: 'image-enhancer.html', category: 'Images', icon: 'fas fa-sun' },
+        { name: 'Meme Generator', url: 'meme-generator.html', category: 'Images', icon: 'fas fa-smile' },
+        // Video Tools
+        { name: 'Video Trimmer', url: 'video-trimmer.html', category: 'Videos', icon: 'fas fa-cut' },
+        { name: 'Video Speed Controller', url: 'speed-controller.html', category: 'Videos', icon: 'fas fa-tachometer-alt' },
+        { name: 'Subtitle Adder', url: 'subtitle-adder.html', category: 'Videos', icon: 'fas fa-closed-captioning' },
+        { name: 'Video Compressor', url: 'video-compressor.html', category: 'Videos', icon: 'fas fa-compress' },
+        { name: 'Video Reverser', url: 'video-reverser.html', category: 'Videos', icon: 'fas fa-backward' },
+        { name: 'Video Rotator', url: 'video-rotator.html', category: 'Videos', icon: 'fas fa-redo-alt' },
+        // Audio Tools
+        { name: 'Audio Cutter', url: 'audio-cutter.html', category: 'Audio', icon: 'fas fa-cut' },
+        { name: 'Audio Merger', url: 'audio-merger.html', category: 'Audio', icon: 'fas fa-code-branch' },
+        { name: 'MP3 Converter', url: 'mp3-converter.html', category: 'Audio', icon: 'fas fa-music' },
+        { name: 'Voice Recorder', url: 'voice-recorder.html', category: 'Audio', icon: 'fas fa-microphone' },
+        // Calculators
+        { name: 'GST Calculator', url: 'gst-calculator.html', category: 'Calculators', icon: 'fas fa-calculator' },
+        { name: 'Currency Converter', url: 'currency-converter.html', category: 'Calculators', icon: 'fas fa-coins' },
+        { name: 'Loan Calculator', url: 'loan-calculator.html', category: 'Calculators', icon: 'fas fa-hand-holding-usd' },
+        { name: 'Age Calculator', url: 'age-calculator.html', category: 'Calculators', icon: 'fas fa-birthday-cake' },
+        { name: 'Compound Interest', url: 'compound-interest.html', category: 'Calculators', icon: 'fas fa-chart-line' },
+        // AI & Dev Tools
+        { name: 'AI Voiceover', url: 'ai-voiceover.html', category: 'AI', icon: 'fas fa-headphones' },
+        { name: 'Password Generator', url: 'password-generator.html', category: 'AI', icon: 'fas fa-key' },
+        { name: 'QR Code Generator', url: 'qr-generator.html', category: 'AI', icon: 'fas fa-qrcode' }
+    ];
+
+    // Search autocomplete function
+    function handleSearch() {
+        const input = document.getElementById('toolSearch');
+        const list = document.getElementById('autocompleteList');
+        const query = input.value.toLowerCase().trim();
+
+        if (query.length === 0) {
+            list.classList.remove('show');
+            return;
+        }
+
+        // Filter matching tools
+        const matches = allTools.filter(tool => 
+            tool.name.toLowerCase().includes(query) ||
+            tool.category.toLowerCase().includes(query)
+        ).slice(0, 8); // Limit to 8 suggestions
+
+        if (matches.length === 0) {
+            list.classList.remove('show');
+            return;
+        }
+
+        // Group by category
+        const grouped = {};
+        matches.forEach(tool => {
+            if (!grouped[tool.category]) {
+                grouped[tool.category] = [];
+            }
+            grouped[tool.category].push(tool);
+        });
+
+        // Build HTML
+        let html = '';
+        Object.keys(grouped).forEach(category => {
+            html += `<li class="suggestion-category">${category}</li>`;
+            grouped[category].forEach(tool => {
+                const highlighted = tool.name.replace(
+                    new RegExp(`(${query})`, 'gi'),
+                    '<span class="highlight">$1</span>'
+                );
+                html += `
+                    <li class="autocomplete-item" onclick="selectTool('${tool.url}')">
+                        <i class="${tool.icon}"></i>
+                        <span>${highlighted}</span>
+                    </li>
+                `;
+            });
+        });
+
+        list.innerHTML = html;
+        list.classList.add('show');
+    }
+
+    // Click on autocomplete item
+    function selectTool(url) {
+        window.location.href = url;
+    }
+
+    // Close autocomplete on document click
+    document.addEventListener('click', (e) => {
+        if (e.target.id !== 'toolSearch') {
+            document.getElementById('autocompleteList').classList.remove('show');
+        }
+    });
+
     // Hamburger Menu
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mobileNav = document.getElementById('mobileNav');
@@ -970,7 +1212,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Tool Search
+    // Tool Search Filter
     function filterTools() {
         const q = document.getElementById('toolSearch').value.toLowerCase().trim();
         let visibleCount = 0;
