@@ -5,7 +5,7 @@
  * 
  * INSTRUCTIONS:
  * 1. Upload this file to your website root directory
- * 2. Access it in browser: https://www.toolshouse.online/auto_update_meta_descriptions.php
+ * 2. Access it in browser: https://www.toolshouse.online/auto-update-meta-descriptions.php
  * 3. Click the button to automatically update all HTML files
  * 4. After completion, delete this file for security
  */
