@@ -7,12 +7,6 @@
 
 **ToolsHouse.online** is a collection of 100+ completely free online tools. No signup, no uploads – everything runs in your browser.
 
-[![Website](https://img.shields.io/badge/Website-toolshouse.online-blue)](https://www.toolshouse.online)
-[![Tools](https://img.shields.io/badge/Tools-100%2B-green)]()
-[![License](https://img.shields.io/badge/License-MIT-yellow)]()
-
-**ToolsHouse.online** is a collection of 100+ completely free online tools. No signup, no uploads – everything runs in your browser.
-
 ## ✨ Features
 - 🔒 **100% Privacy** – Files never leave your browser
 - 🚀 **No Signup Required** – Use instantly
