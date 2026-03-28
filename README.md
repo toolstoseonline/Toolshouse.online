@@ -1,6 +1,13 @@
 # 🛠️ ToolsHouse.online – 100+ Free Online Tools
 
 [![Website](https://img.shields.io/badge/🌐-toolshouse.online-blue)](https://www.toolshouse.online)
+[![GitHub](https://img.shields.io/badge/🐙-GitHub%20Repo-green)](https://github.com/toolstoseonline/Toolshouse.online)
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Tools](https://img.shields.io/badge/Tools-100%2B-brightgreen)]()
+
+**ToolsHouse.online** is a collection of 100+ completely free online tools. No signup, no uploads – everything runs in your browser.
+
+[![Website](https://img.shields.io/badge/🌐-toolshouse.online-blue)](https://www.toolshouse.online)
 [![GitHub Pages](https://img.shields.io/badge/🚀-Deployed%20on%20GitHub%20Pages-success)](https://toolstoseonline.github.io/Toolshouse.online/)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Tools](https://img.shields.io/badge/Tools-100%2B-brightgreen)]()
