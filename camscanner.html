@@ -1,941 +1,478 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CamScanner Pro</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Manrope:wght@400;500;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #00d4ff;
-            --primary-dark: #0099cc;
-            --secondary: #7b2ff7;
-            --bg-dark: #0a0e27;
-            --bg-medium: #151b35;
-            --bg-light: #1f2840;
-            --text: #ffffff;
-            --text-muted: #8892b2;
-            --success: #00ff88;
-            --warning: #ffaa00;
-            --danger: #ff4444;
-        }
-
-        body {
-            font-family: 'Manrope', sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1429 50%, var(--bg-dark) 100%);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Animated background grid */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: 0;
-            animation: gridMove 20s linear infinite;
-        }
-
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 30px 0;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 10px;
-            animation: glowPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3)); }
-            50% { filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.6)); }
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
-
-        @media (min-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 2fr 1fr;
-            }
-        }
-
-        .card {
-            background: var(--bg-medium);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            animation: shimmer 3s linear infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .card:hover {
-            border-color: rgba(0, 212, 255, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.2);
-        }
-
-        .card-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4/3;
-            background: var(--bg-dark);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
-        }
-
-        #video, #canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .overlay-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 10;
-            background: rgba(10, 14, 39, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid var(--primary);
-            backdrop-filter: blur(10px);
-        }
-
-        .overlay-message svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        .btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--bg-dark);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-family: 'Manrope', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn:disabled {
-            background: var(--bg-light);
-            color: var(--text-muted);
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .btn-secondary {
-            background: var(--bg-light);
-            color: var(--text);
-            border: 1px solid var(--primary);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #00cc70);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #cc0000);
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .controls .btn {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .mode-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: var(--bg-dark);
-            padding: 5px;
-            border-radius: 10px;
-        }
-
-        .mode-btn {
-            flex: 1;
-            padding: 12px;
-            background: transparent;
-            color: var(--text-muted);
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .mode-btn.active {
-            background: var(--primary);
-            color: var(--bg-dark);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-        }
-
-        .crop-controls {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: var(--bg-dark);
-            border-radius: 10px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-        }
-
-        .crop-controls.active {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .crop-handle {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
-            border: 3px solid var(--bg-dark);
-            border-radius: 50%;
-            cursor: move;
-            z-index: 100;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
-            transition: transform 0.2s ease;
-        }
-
-        .crop-handle:hover {
-            transform: scale(1.3);
-            box-shadow: 0 0 25px rgba(0, 212, 255, 1);
-        }
-
-        .preview-container {
-            margin-top: 20px;
-            display: none;
-        }
-
-        .preview-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .preview-image {
-            width: 100%;
-            border-radius: 10px;
-            border: 2px solid var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .export-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-box {
-            background: var(--bg-dark);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-top: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .instructions {
-            background: var(--bg-dark);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .instructions h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .instructions ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .instructions li {
-            padding: 8px 0;
-            padding-left: 25px;
-            position: relative;
-            color: var(--text-muted);
-        }
-
-        .instructions li::before {
-            content: '▹';
-            position: absolute;
-            left: 0;
-            color: var(--primary);
-            font-size: 1.2rem;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--bg-light);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-            }
-            
-            .controls .btn {
-                min-width: 100%;
-            }
-
-            .export-options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--bg-medium);
-            color: var(--text);
-            padding: 20px 30px;
-            border-radius: 10px;
-            border: 1px solid var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: none;
-            animation: toastSlide 0.3s ease;
-        }
-
-        @keyframes toastSlide {
-            from { transform: translateX(400px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .toast.show {
-            display: block;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>CamScanner Pro</h1>
-            <p class="subtitle">Professional Document Scanner</p>
-        </header>
-
-        <div class="main-grid">
-            <!-- Camera Section -->
-            <div class="card">
-                <h2 class="card-title">📷 Scanner</h2>
-                
-                <div class="mode-selector">
-                    <button class="mode-btn active" data-mode="auto">Auto Detect</button>
-                    <button class="mode-btn" data-mode="manual">Manual Crop</button>
-                </div>
-
-                <div class="video-container">
-                    <video id="video" autoplay playsinline></video>
-                    <canvas id="canvas"></canvas>
-                    <div id="overlay" class="overlay-message">
-                        <svg fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                        <p>Click "Start Camera" to begin scanning</p>
-                    </div>
-                </div>
-
-                <div class="controls">
-                    <button id="startCamera" class="btn">Start Camera</button>
-                    <button id="captureBtn" class="btn btn-success" disabled>Capture</button>
-                    <button id="stopCamera" class="btn btn-danger" disabled>Stop</button>
-                </div>
-
-                <div id="cropControls" class="crop-controls">
-                    <h3 style="color: var(--primary); margin-bottom: 15px;">Adjust Crop Area</h3>
-                    <div class="controls">
-                        <button id="resetCrop" class="btn btn-secondary">Reset</button>
-                        <button id="applyCrop" class="btn btn-success">Apply Crop</button>
-                    </div>
-                </div>
-
-                <div class="stats">
-                    <div class="stat-box">
-                        <div class="stat-value" id="scanCount">0</div>
-                        <div class="stat-label">Scans</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value" id="resolution">0x0</div>
-                        <div class="stat-label">Resolution</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Preview & Export Section -->
-            <div class="card">
-                <h2 class="card-title">💾 Export</h2>
-                
-                <div class="instructions">
-                    <h3>Instructions</h3>
-                    <ul>
-                        <li>Click "Start Camera" to enable camera</li>
-                        <li>Position document in frame</li>
-                        <li>Auto mode detects edges automatically</li>
-                        <li>Click "Capture" to scan</li>
-                        <li>Adjust crop if needed</li>
-                        <li>Export to PDF, JPG, or PNG</li>
-                    </ul>
-                </div>
-
-                <div id="preview" class="preview-container">
-                    <img id="previewImage" class="preview-image" alt="Preview">
-                    
-                    <div class="export-options">
-                        <button id="exportPDF" class="btn">📄 PDF</button>
-                        <button id="exportJPG" class="btn">🖼️ JPG</button>
-                        <button id="exportPNG" class="btn">🎨 PNG</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CamScanner Pro</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Outfit',sans-serif}
+.app-root{height:100%;width:100%;overflow-y:auto;overflow-x:hidden}
+.crop-handle{width:28px;height:28px;background:#00e676;border:3px solid #fff;border-radius:50%;position:absolute;cursor:grab;z-index:20;touch-action:none;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.crop-handle:active{cursor:grabbing;transform:scale(1.2)}
+.crop-overlay{position:absolute;inset:0;z-index:10;pointer-events:none}
+.crop-line{stroke:#00e676;stroke-width:2;fill:none;filter:drop-shadow(0 0 3px rgba(0,230,118,.6))}
+.scan-line{position:absolute;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#00e676,transparent);animation:scanMove 2s ease-in-out infinite;z-index:5;pointer-events:none}
+@keyframes scanMove{0%{top:10%}50%{top:85%}100%{top:10%}}
+.pulse-ring{animation:pulse 1.5s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+.btn-capture{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.4);position:relative;cursor:pointer;transition:transform .15s}
+.btn-capture:active{transform:scale(.9)}
+.btn-capture::after{content:'';position:absolute;inset:6px;border-radius:50%;background:#fff;transition:background .15s}
+.btn-capture:active::after{background:#ddd}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:999px;color:#fff;font-size:14px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+.filter-btn{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.filter-btn.active{border-color:#00e676;color:#00e676}
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="bg-gray-950 text-white">
+  <div class="app-root" id="appRoot"><!-- SCREEN 1: HOME -->
+   <div id="screenHome" class="h-full w-full flex flex-col items-center justify-center relative" style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#0a0a0a 100%)">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(0,230,118,.06),transparent 50%),radial-gradient(circle at 70% 80%,rgba(0,150,255,.05),transparent 50%)"></div>
+    <div class="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
+     <div class="relative">
+      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20"><i data-lucide="scan" style="width:40px;height:40px;color:#fff"></i>
+      </div>
+     </div>
+     <h1 id="mainTitle" class="text-3xl font-bold tracking-tight">CamScanner Pro</h1>
+     <p class="text-gray-400 text-sm max-w-xs">Scan documents, detect pages automatically, crop &amp; export as PDF, JPG or PNG</p><button onclick="startCamera()" class="mt-4 px-8 py-3.5 rounded-2xl font-semibold text-base flex items-center gap-2 transition-all hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#00e676,#00bfa5);color:#0a0a0a"> <i data-lucide="camera" style="width:20px;height:20px"></i> Start Scanning </button> <button onclick="pickFile()" class="px-6 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 border border-gray-700 text-gray-300 hover:border-gray-500 transition-all"> <i data-lucide="image" style="width:18px;height:18px"></i> Import from Gallery </button> <input type="file" id="filePicker" accept="image/*" class="hidden" onchange="handleFilePick(event)">
     </div>
+   </div><!-- SCREEN 2: CAMERA -->
+   <div id="screenCamera" class="h-full w-full flex flex-col hidden" style="background:#000">
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="stopCamera();showScreen('Home')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CAMERA</span> <button onclick="toggleFlash()" id="flashBtn" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="zap-off" style="width:20px;height:20px"></i></button>
+    </div>
+    <div class="flex-1 relative overflow-hidden flex items-center justify-center">
+     <video id="camVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+     <div id="scanLineEl" class="scan-line hidden"></div>
+     <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
+    </div>
+    <div class="flex items-center justify-around py-5 bg-black/80 backdrop-blur-sm relative z-10"><button onclick="toggleAutoDetect()" id="autoDetectBtn" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="maximize" style="width:22px;height:22px;color:#00e676"></i> <span class="text-xs text-gray-300" id="autoLabel">Auto</span> </button>
+     <div class="relative">
+      <div class="absolute inset-0 rounded-full bg-emerald-400/30 pulse-ring"></div><button class="btn-capture" onclick="capturePhoto()"></button>
+     </div><button onclick="switchCameraFacing()" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="refresh-cw" style="width:22px;height:22px"></i> <span class="text-xs text-gray-300">Flip</span> </button>
+    </div>
+   </div><!-- SCREEN 3: CROP -->
+   <div id="screenCrop" class="h-full w-full flex flex-col hidden" style="background:#111">
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="showScreen('Camera');startCamera()" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CROP &amp; ADJUST</span> <button onclick="applyCrop()" class="px-4 py-1.5 rounded-xl text-sm font-semibold" style="background:#00e676;color:#0a0a0a">Done</button>
+    </div>
+    <div class="flex gap-3 px-4 py-2 overflow-x-auto"><button onclick="autoCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="cpu" style="width:14px;height:14px"></i>Auto Crop</button> <button onclick="resetCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i>Reset</button>
+    </div>
+    <div class="flex-1 relative overflow-hidden flex items-center justify-center p-4" id="cropArea">
+     <canvas id="cropCanvas" class="max-w-full max-h-full" style="touch-action:none"></canvas>
+     <div id="cropHandles"></div>
+     <svg id="cropSvg" class="crop-overlay" style="position:absolute;inset:0;width:100%;height:100%"></svg>
+    </div>
+   </div><!-- SCREEN 4: EDIT / EXPORT -->
+   <div id="screenEdit" class="h-full w-full flex flex-col hidden" style="background:#111">
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="showScreen('Crop')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">PREVIEW &amp; EXPORT</span>
+     <div class="w-10"></div>
+    </div>
+    <div class="flex gap-2 px-4 py-2 overflow-x-auto"><button onclick="applyFilter('none')" class="filter-btn bg-white/5 text-gray-300 active" data-filter="none">Original</button> <button onclick="applyFilter('grayscale')" class="filter-btn bg-white/5 text-gray-300" data-filter="grayscale">B&amp;W</button> <button onclick="applyFilter('contrast')" class="filter-btn bg-white/5 text-gray-300" data-filter="contrast">High Contrast</button> <button onclick="applyFilter('bright')" class="filter-btn bg-white/5 text-gray-300" data-filter="bright">Brighten</button> <button onclick="applyFilter('sepia')" class="filter-btn bg-white/5 text-gray-300" data-filter="sepia">Sepia</button>
+    </div>
+    <div class="flex-1 flex items-center justify-center p-4 overflow-hidden">
+     <canvas id="editCanvas" class="max-w-full max-h-full rounded-lg shadow-2xl"></canvas>
+    </div>
+    <div class="grid grid-cols-3 gap-3 px-4 py-4"><button onclick="exportAs('pdf')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#e53935,#d32f2f);color:#fff"> <i data-lucide="file-text" style="width:22px;height:22px"></i>PDF </button> <button onclick="exportAs('jpg')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#fb8c00,#f57c00);color:#fff"> <i data-lucide="image" style="width:22px;height:22px"></i>JPG </button> <button onclick="exportAs('png')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#00b0ff,#0091ea);color:#fff"> <i data-lucide="download" style="width:22px;height:22px"></i>PNG </button>
+    </div>
+   </div>
+   <div id="toast" class="toast" style="background:#00e676;color:#0a0a0a"></div>
+  </div>
+  <script>
+// === STATE ===
+let stream = null, facing = 'environment', flashOn = false, autoDetect = true;
+let capturedImg = null, croppedImg = null, currentFilter = 'none';
+let cropPoints = []; // [{x,y},...] relative to canvas display
+let dragIdx = -1;
+let cropCanvasImg = null;
 
-    <div id="toast" class="toast"></div>
+// === CONFIG ===
+const defaultConfig = {
+  app_title: 'CamScanner Pro',
+  background_color: '#0a0a0a',
+  surface_color: '#1a1a2e',
+  text_color: '#ffffff',
+  primary_action: '#00e676',
+  secondary_action: '#6b7280'
+};
 
-    <script>
-        // Global variables
-        let video, canvas, ctx, stream;
-        let capturedImage = null;
-        let cropMode = 'auto';
-        let scanCount = 0;
-        let cropHandles = [];
-        let currentHandle = null;
-        let cropArea = { x: 50, y: 50, width: 300, height: 400 };
+function applyConfig(c) {
+  const t = c.app_title || defaultConfig.app_title;
+  const el = document.getElementById('mainTitle');
+  if (el) el.textContent = t;
+  document.title = t;
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            video = document.getElementById('video');
-            canvas = document.getElementById('canvas');
-            ctx = canvas.getContext('2d');
-            
-            setupEventListeners();
-            updateStats();
-        });
+  document.body.style.color = c.text_color || defaultConfig.text_color;
+}
 
-        function setupEventListeners() {
-            document.getElementById('startCamera').addEventListener('click', startCamera);
-            document.getElementById('stopCamera').addEventListener('click', stopCamera);
-            document.getElementById('captureBtn').addEventListener('click', captureImage);
-            document.getElementById('resetCrop').addEventListener('click', resetCrop);
-            document.getElementById('applyCrop').addEventListener('click', applyCrop);
-            document.getElementById('exportPDF').addEventListener('click', () => exportImage('pdf'));
-            document.getElementById('exportJPG').addEventListener('click', () => exportImage('jpg'));
-            document.getElementById('exportPNG').addEventListener('click', () => exportImage('png'));
-            
-            // Mode selector
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    cropMode = e.target.dataset.mode;
-                    showToast(`Mode: ${cropMode === 'auto' ? 'Auto Detect' : 'Manual Crop'}`);
-                });
-            });
-        }
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => applyConfig(config),
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.background_color || defaultConfig.background_color, set: v => { config.background_color = v; window.elementSdk.setConfig({background_color:v})} },
+        { get: () => config.surface_color || defaultConfig.surface_color, set: v => { config.surface_color = v; window.elementSdk.setConfig({surface_color:v})} },
+        { get: () => config.text_color || defaultConfig.text_color, set: v => { config.text_color = v; window.elementSdk.setConfig({text_color:v})} },
+        { get: () => config.primary_action || defaultConfig.primary_action, set: v => { config.primary_action = v; window.elementSdk.setConfig({primary_action:v})} },
+        { get: () => config.secondary_action || defaultConfig.secondary_action, set: v => { config.secondary_action = v; window.elementSdk.setConfig({secondary_action:v})} },
+      ],
+      borderables: [],
+      fontEditable: undefined,
+      fontSizeable: undefined
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['app_title', config.app_title || defaultConfig.app_title]
+    ])
+  });
+}
 
-        async function startCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { 
-                        facingMode: 'environment',
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 }
-                    }
-                });
-                
-                video.srcObject = stream;
-                video.style.display = 'block';
-                document.getElementById('overlay').style.display = 'none';
-                
-                video.addEventListener('loadedmetadata', () => {
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    updateStats();
-                });
-                
-                document.getElementById('startCamera').disabled = true;
-                document.getElementById('captureBtn').disabled = false;
-                document.getElementById('stopCamera').disabled = false;
-                
-                if (cropMode === 'auto') {
-                    startEdgeDetection();
-                }
-                
-                showToast('Camera started successfully!');
-            } catch (error) {
-                console.error('Camera error:', error);
-                showToast('Error: Could not access camera');
-            }
-        }
+// === SCREENS ===
+function showScreen(name) {
+  ['Home','Camera','Crop','Edit'].forEach(s => {
+    document.getElementById('screen'+s).classList.toggle('hidden', s !== name);
+  });
+  lucide.createIcons();
+}
 
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                video.srcObject = null;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                document.getElementById('startCamera').disabled = false;
-                document.getElementById('captureBtn').disabled = true;
-                document.getElementById('stopCamera').disabled = true;
-                document.getElementById('overlay').style.display = 'flex';
-                
-                showToast('Camera stopped');
-            }
-        }
+// === CAMERA ===
+async function startCamera() {
+  showScreen('Camera');
+  try {
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: facing, width:{ideal:1920}, height:{ideal:1080} },
+      audio: false
+    });
+    document.getElementById('camVideo').srcObject = stream;
+    document.getElementById('scanLineEl').classList.toggle('hidden', !autoDetect);
+  } catch(e) {
+    showToast('Camera access denied');
+    showScreen('Home');
+  }
+}
 
-        function startEdgeDetection() {
-            function detect() {
-                if (!stream || cropMode !== 'auto') return;
-                
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                
-                // Simple edge detection visualization
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const edges = detectEdges(imageData);
-                
-                // Draw detected edges
-                ctx.strokeStyle = '#00ff88';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(
-                    edges.x, 
-                    edges.y, 
-                    edges.width, 
-                    edges.height
-                );
-                
-                requestAnimationFrame(detect);
-            }
-            detect();
-        }
+function stopCamera() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  document.getElementById('camVideo').srcObject = null;
+}
 
-        function detectEdges(imageData) {
-            // Simple edge detection based on contrast
-            const { width, height } = imageData;
-            const margin = Math.min(width, height) * 0.1;
-            
-            return {
-                x: margin,
-                y: margin,
-                width: width - (margin * 2),
-                height: height - (margin * 2)
-            };
-        }
+function switchCameraFacing() {
+  facing = facing === 'environment' ? 'user' : 'environment';
+  startCamera();
+}
 
-        function captureImage() {
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            if (cropMode === 'manual') {
-                setupManualCrop();
-            } else {
-                // Auto crop and save
-                const edges = detectEdges(ctx.getImageData(0, 0, canvas.width, canvas.height));
-                capturedImage = cropCanvas(edges);
-                showPreview();
-            }
-            
-            scanCount++;
-            updateStats();
-            showToast('Document captured!');
-        }
+function toggleFlash() {
+  if (!stream) return;
+  const track = stream.getVideoTracks()[0];
+  if (track.getCapabilities && track.getCapabilities().torch) {
+    flashOn = !flashOn;
+    track.applyConstraints({advanced:[{torch:flashOn}]});
+    document.getElementById('flashBtn').innerHTML = flashOn
+      ? '<i data-lucide="zap" style="width:20px;height:20px;color:#00e676"></i>'
+      : '<i data-lucide="zap-off" style="width:20px;height:20px"></i>';
+    lucide.createIcons();
+  } else {
+    showToast('Flash not available');
+  }
+}
 
-        function setupManualCrop() {
-            document.getElementById('cropControls').classList.add('active');
-            
-            // Create crop handles
-            const positions = [
-                { x: 0.2, y: 0.2 }, // top-left
-                { x: 0.8, y: 0.2 }, // top-right
-                { x: 0.8, y: 0.8 }, // bottom-right
-                { x: 0.2, y: 0.8 }  // bottom-left
-            ];
-            
-            cropHandles.forEach(handle => handle.remove());
-            cropHandles = [];
-            
-            positions.forEach((pos, i) => {
-                const handle = document.createElement('div');
-                handle.className = 'crop-handle';
-                handle.style.left = (pos.x * canvas.width) + 'px';
-                handle.style.top = (pos.y * canvas.height) + 'px';
-                handle.dataset.index = i;
-                
-                handle.addEventListener('mousedown', startDrag);
-                handle.addEventListener('touchstart', startDrag);
-                
-                canvas.parentElement.appendChild(handle);
-                cropHandles.push(handle);
-            });
-            
-            drawCropArea();
-        }
+function toggleAutoDetect() {
+  autoDetect = !autoDetect;
+  document.getElementById('autoLabel').textContent = autoDetect ? 'Auto' : 'Manual';
+  document.getElementById('scanLineEl').classList.toggle('hidden', !autoDetect);
+}
 
-        function startDrag(e) {
-            e.preventDefault();
-            currentHandle = e.target;
-            
-            const moveHandler = (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const x = ((e.clientX || e.touches[0].clientX) - rect.left) * (canvas.width / rect.width);
-                const y = ((e.clientY || e.touches[0].clientY) - rect.top) * (canvas.height / rect.height);
-                
-                currentHandle.style.left = Math.max(0, Math.min(canvas.width, x)) + 'px';
-                currentHandle.style.top = Math.max(0, Math.min(canvas.height, y)) + 'px';
-                
-                drawCropArea();
-            };
-            
-            const upHandler = () => {
-                document.removeEventListener('mousemove', moveHandler);
-                document.removeEventListener('touchmove', moveHandler);
-                document.removeEventListener('mouseup', upHandler);
-                document.removeEventListener('touchend', upHandler);
-                currentHandle = null;
-            };
-            
-            document.addEventListener('mousemove', moveHandler);
-            document.addEventListener('touchmove', moveHandler);
-            document.addEventListener('mouseup', upHandler);
-            document.addEventListener('touchend', upHandler);
-        }
+// === CAPTURE ===
+function capturePhoto() {
+  const video = document.getElementById('camVideo');
+  const c = document.createElement('canvas');
+  c.width = video.videoWidth || 1280;
+  c.height = video.videoHeight || 720;
+  c.getContext('2d').drawImage(video, 0, 0, c.width, c.height);
+  capturedImg = new Image();
+  capturedImg.onload = () => { stopCamera(); initCropScreen(); };
+  capturedImg.src = c.toDataURL('image/jpeg', 0.95);
+}
 
-        function drawCropArea() {
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            const points = cropHandles.map(handle => ({
-                x: parseFloat(handle.style.left),
-                y: parseFloat(handle.style.top)
-            }));
-            
-            // Draw crop overlay
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw crop area
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            points.forEach(point => ctx.lineTo(point.x, point.y));
-            ctx.closePath();
-            ctx.fill();
-            ctx.globalCompositeOperation = 'source-over';
-            
-            // Draw border
-            ctx.strokeStyle = '#00ff88';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            points.forEach(point => ctx.lineTo(point.x, point.y));
-            ctx.closePath();
-            ctx.stroke();
-        }
+function pickFile() { document.getElementById('filePicker').click(); }
+function handleFilePick(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    capturedImg = new Image();
+    capturedImg.onload = () => initCropScreen();
+    capturedImg.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
 
-        function resetCrop() {
-            setupManualCrop();
-            showToast('Crop area reset');
-        }
+// === CROP ===
+function initCropScreen() {
+  showScreen('Crop');
+  const canvas = document.getElementById('cropCanvas');
+  const area = document.getElementById('cropArea');
+  const aw = area.clientWidth - 32, ah = area.clientHeight - 16;
+  const scale = Math.min(aw / capturedImg.width, ah / capturedImg.height, 1);
+  canvas.width = capturedImg.width * scale;
+  canvas.height = capturedImg.height * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(capturedImg, 0, 0, canvas.width, canvas.height);
+  cropCanvasImg = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        function applyCrop() {
-            const points = cropHandles.map(handle => ({
-                x: parseFloat(handle.style.left),
-                y: parseFloat(handle.style.top)
-            }));
-            
-            // Find bounding box
-            const xs = points.map(p => p.x);
-            const ys = points.map(p => p.y);
-            const minX = Math.min(...xs);
-            const minY = Math.min(...ys);
-            const maxX = Math.max(...xs);
-            const maxY = Math.max(...ys);
-            
-            cropArea = {
-                x: minX,
-                y: minY,
-                width: maxX - minX,
-                height: maxY - minY
-            };
-            
-            capturedImage = cropCanvas(cropArea);
-            document.getElementById('cropControls').classList.remove('active');
-            cropHandles.forEach(handle => handle.remove());
-            cropHandles = [];
-            
-            showPreview();
-            showToast('Crop applied successfully!');
-        }
+  // Default crop: 8% inset
+  const m = 0.08;
+  cropPoints = [
+    {x: canvas.width*m, y: canvas.height*m},
+    {x: canvas.width*(1-m), y: canvas.height*m},
+    {x: canvas.width*(1-m), y: canvas.height*(1-m)},
+    {x: canvas.width*m, y: canvas.height*(1-m)}
+  ];
 
-        function cropCanvas(area) {
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = area.width;
-            tempCanvas.height = area.height;
-            const tempCtx = tempCanvas.getContext('2d');
-            
-            tempCtx.drawImage(
-                canvas,
-                area.x, area.y, area.width, area.height,
-                0, 0, area.width, area.height
-            );
-            
-            return tempCanvas.toDataURL('image/png');
-        }
+  if (autoDetect) autoCrop();
+  drawCropUI();
+  setupCropDrag();
+}
 
-        function showPreview() {
-            document.getElementById('preview').classList.add('active');
-            document.getElementById('previewImage').src = capturedImage;
-        }
+function autoCrop() {
+  // Simple edge detection: find content bounds
+  const canvas = document.getElementById('cropCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.putImageData(cropCanvasImg, 0, 0);
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  const w = canvas.width, h = canvas.height;
+  let minX = w, minY = h, maxX = 0, maxY = 0;
+  const threshold = 30;
 
-        function exportImage(format) {
-            if (!capturedImage) {
-                showToast('No image to export!');
-                return;
-            }
-            
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            
-            if (format === 'pdf') {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-                
-                const img = new Image();
-                img.src = capturedImage;
-                img.onload = () => {
-                    const width = pdf.internal.pageSize.getWidth();
-                    const height = (img.height * width) / img.width;
-                    pdf.addImage(capturedImage, 'PNG', 0, 0, width, height);
-                    pdf.save(`CamScan_${timestamp}.pdf`);
-                    showToast('PDF exported successfully!');
-                };
-            } else {
-                const link = document.createElement('a');
-                link.download = `CamScan_${timestamp}.${format}`;
-                
-                if (format === 'jpg') {
-                    // Convert PNG to JPG
-                    const img = new Image();
-                    img.src = capturedImage;
-                    img.onload = () => {
-                        const tempCanvas = document.createElement('canvas');
-                        tempCanvas.width = img.width;
-                        tempCanvas.height = img.height;
-                        const tempCtx = tempCanvas.getContext('2d');
-                        tempCtx.fillStyle = '#FFFFFF';
-                        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-                        tempCtx.drawImage(img, 0, 0);
-                        link.href = tempCanvas.toDataURL('image/jpeg', 0.95);
-                        link.click();
-                        showToast('JPG exported successfully!');
-                    };
-                } else {
-                    link.href = capturedImage;
-                    link.click();
-                    showToast('PNG exported successfully!');
-                }
-            }
-        }
+  for (let y = 0; y < h; y += 4) {
+    for (let x = 0; x < w; x += 4) {
+      const i = (y * w + x) * 4;
+      const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
+      if (brightness < 240) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
 
-        function updateStats() {
-            document.getElementById('scanCount').textContent = scanCount;
-            document.getElementById('resolution').textContent = 
-                `${canvas.width}x${canvas.height}`;
-        }
+  const pad = 6;
+  minX = Math.max(0, minX - pad);
+  minY = Math.max(0, minY - pad);
+  maxX = Math.min(w, maxX + pad);
+  maxY = Math.min(h, maxY + pad);
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-    </script>
-</body>
+  if (maxX - minX > 20 && maxY - minY > 20) {
+    cropPoints = [
+      {x: minX, y: minY}, {x: maxX, y: minY},
+      {x: maxX, y: maxY}, {x: minX, y: maxY}
+    ];
+  }
+  drawCropUI();
+  showToast('Auto crop applied');
+}
+
+function resetCrop() {
+  const canvas = document.getElementById('cropCanvas');
+  const m = 0.08;
+  cropPoints = [
+    {x: canvas.width*m, y: canvas.height*m},
+    {x: canvas.width*(1-m), y: canvas.height*m},
+    {x: canvas.width*(1-m), y: canvas.height*(1-m)},
+    {x: canvas.width*m, y: canvas.height*(1-m)}
+  ];
+  drawCropUI();
+}
+
+function drawCropUI() {
+  const canvas = document.getElementById('cropCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const area = document.getElementById('cropArea');
+  const areaRect = area.getBoundingClientRect();
+  const ox = rect.left - areaRect.left, oy = rect.top - areaRect.top;
+
+  // Redraw image
+  const ctx = canvas.getContext('2d');
+  ctx.putImageData(cropCanvasImg, 0, 0);
+  // Dim outside
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Clear inside crop
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cropPoints[0].x, cropPoints[0].y);
+  for (let i = 1; i < 4; i++) ctx.lineTo(cropPoints[i].x, cropPoints[i].y);
+  ctx.closePath();
+  ctx.clip();
+  ctx.putImageData(cropCanvasImg, 0, 0);
+  ctx.restore();
+
+  // SVG lines
+  const svg = document.getElementById('cropSvg');
+  const pts = cropPoints.map(p => `${ox+p.x},${oy+p.y}`);
+  svg.innerHTML = `<polygon points="${pts.join(' ')}" class="crop-line"/>`;
+
+  // Handles
+  const hc = document.getElementById('cropHandles');
+  hc.innerHTML = '';
+  cropPoints.forEach((p, i) => {
+    const h = document.createElement('div');
+    h.className = 'crop-handle';
+    h.style.left = (ox + p.x - 14) + 'px';
+    h.style.top = (oy + p.y - 14) + 'px';
+    h.dataset.idx = i;
+    hc.appendChild(h);
+  });
+}
+
+function setupCropDrag() {
+  const area = document.getElementById('cropArea');
+  const canvas = document.getElementById('cropCanvas');
+
+  function getPos(e) {
+    const t = e.touches ? e.touches[0] : e;
+    const rect = canvas.getBoundingClientRect();
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  }
+
+  function onStart(e) {
+    const t = e.target;
+    if (t.classList.contains('crop-handle')) {
+      dragIdx = parseInt(t.dataset.idx);
+      e.preventDefault();
+    }
+  }
+  function onMove(e) {
+    if (dragIdx < 0) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    cropPoints[dragIdx] = {
+      x: Math.max(0, Math.min(canvas.width, pos.x)),
+      y: Math.max(0, Math.min(canvas.height, pos.y))
+    };
+    drawCropUI();
+  }
+  function onEnd() { dragIdx = -1; }
+
+  area.addEventListener('mousedown', onStart);
+  area.addEventListener('mousemove', onMove);
+  area.addEventListener('mouseup', onEnd);
+  area.addEventListener('touchstart', onStart, {passive:false});
+  area.addEventListener('touchmove', onMove, {passive:false});
+  area.addEventListener('touchend', onEnd);
+}
+
+function applyCrop() {
+  // Extract cropped region
+  const sx = Math.min(...cropPoints.map(p=>p.x)), sy = Math.min(...cropPoints.map(p=>p.y));
+  const ex = Math.max(...cropPoints.map(p=>p.x)), ey = Math.max(...cropPoints.map(p=>p.y));
+  const canvas = document.getElementById('cropCanvas');
+  const scaleX = capturedImg.width / canvas.width;
+  const scaleY = capturedImg.height / canvas.height;
+
+  const cw = (ex-sx)*scaleX, ch = (ey-sy)*scaleY;
+  const tc = document.createElement('canvas');
+  tc.width = cw; tc.height = ch;
+  tc.getContext('2d').drawImage(capturedImg, sx*scaleX, sy*scaleY, cw, ch, 0, 0, cw, ch);
+
+  croppedImg = new Image();
+  croppedImg.onload = () => { currentFilter = 'none'; showEditScreen(); };
+  croppedImg.src = tc.toDataURL('image/jpeg', 0.95);
+}
+
+// === EDIT ===
+function showEditScreen() {
+  showScreen('Edit');
+  renderEdit();
+}
+
+function renderEdit() {
+  const canvas = document.getElementById('editCanvas');
+  const area = canvas.parentElement;
+  const aw = area.clientWidth - 32, ah = area.clientHeight - 32;
+  const scale = Math.min(aw / croppedImg.width, ah / croppedImg.height, 1);
+  canvas.width = croppedImg.width * scale;
+  canvas.height = croppedImg.height * scale;
+  const ctx = canvas.getContext('2d');
+
+  ctx.filter = getFilterCSS(currentFilter);
+  ctx.drawImage(croppedImg, 0, 0, canvas.width, canvas.height);
+  ctx.filter = 'none';
+}
+
+function getFilterCSS(f) {
+  switch(f) {
+    case 'grayscale': return 'grayscale(100%) contrast(1.1)';
+    case 'contrast': return 'contrast(1.6) brightness(1.05)';
+    case 'bright': return 'brightness(1.3)';
+    case 'sepia': return 'sepia(0.8) contrast(1.1)';
+    default: return 'none';
+  }
+}
+
+function applyFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  renderEdit();
+}
+
+// === EXPORT ===
+function getExportCanvas() {
+  const c = document.createElement('canvas');
+  c.width = croppedImg.width; c.height = croppedImg.height;
+  const ctx = c.getContext('2d');
+  ctx.filter = getFilterCSS(currentFilter);
+  ctx.drawImage(croppedImg, 0, 0);
+  ctx.filter = 'none';
+  return c;
+}
+
+function exportAs(type) {
+  const c = getExportCanvas();
+  if (type === 'pdf') {
+    const { jsPDF } = window.jspdf;
+    const orient = c.width > c.height ? 'l' : 'p';
+    const pdf = new jsPDF(orient, 'px', [c.width, c.height]);
+    pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, c.width, c.height);
+    pdf.save('scan.pdf');
+    showToast('PDF saved!');
+  } else if (type === 'jpg') {
+    downloadURI(c.toDataURL('image/jpeg', 0.92), 'scan.jpg');
+    showToast('JPG saved!');
+  } else {
+    downloadURI(c.toDataURL('image/png'), 'scan.png');
+    showToast('PNG saved!');
+  }
+}
+
+function downloadURI(uri, name) {
+  const a = document.createElement('a');
+  a.href = uri; a.download = name;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+}
+
+// === TOAST ===
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// Init
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3f98d9948d90a1',t:'MTc3NDc5NDg4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
