@@ -3,9 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Photo Filters & Effects Online – Tools House Online</title>
-<meta name="description" content="Apply photo filters online free. Instagram-like effects & filters instantly. No signup required. Fast, fun & works on mobile & PC today.">
-<link rel="canonical" href="https://www.toolshouse.online/filter-&-effects.html">
+  <title>Photo Filters &amp; Effects</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
@@ -53,76 +51,75 @@
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full overflow-auto" style="background:#0f0f13; color:#e4e4e7;">
-  <div id="app" class="h-full w-full flex flex-col">
-   <!-- Header -->
-   <header class="flex items-center justify-between px-5 py-3 border-b" style="border-color:#2a2a35; background:#16161d;">
-    <div class="flex items-center gap-3">
-     <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#6366f1,#a855f7);">
-      <i data-lucide="aperture" style="width:20px;height:20px;color:#fff;"></i>
+  <div id="app" class="h-full w-full flex flex-col"><!-- Header -->
+   <header class="flex items-center justify-between px-3 sm:px-5 py-2 sm:py-3 border-b flex-wrap gap-2" style="border-color:#2a2a35; background:#16161d;">
+    <div class="flex items-center gap-2 sm:gap-3">
+     <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#6366f1,#a855f7);"><i data-lucide="aperture" style="width:18px;height:18px;color:#fff;"></i>
      </div>
-     <div>
-      <h1 id="app-title" class="text-lg font-semibold leading-tight" style="color:#f4f4f5;">Photo Filters &amp; Effects</h1>
-      <p id="app-subtitle" class="text-xs" style="color:#71717a;">Transform your photos instantly</p>
+     <div class="min-w-0">
+      <h1 id="app-title" class="text-sm sm:text-lg font-semibold leading-tight truncate" style="color:#f4f4f5;">Photo Filters &amp; Effects</h1>
+      <p id="app-subtitle" class="text-xs hidden sm:block" style="color:#71717a;">Transform your photos instantly</p>
      </div>
     </div>
-    <div class="flex gap-2">
-     <button id="btn-undo" onclick="undo()" class="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30" disabled title="Undo"> <i data-lucide="undo-2" style="width:18px;height:18px;color:#a1a1aa;"></i> </button> <button id="btn-reset" onclick="resetAll()" class="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30" disabled title="Reset"> <i data-lucide="rotate-ccw" style="width:18px;height:18px;color:#a1a1aa;"></i> </button> <button id="btn-download" onclick="openDownloadModal()" class="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2 disabled:opacity-30 hover:opacity-90" style="background:#6366f1;" disabled> <i data-lucide="download" style="width:16px;height:16px;"></i> Export </button>
+    <div class="flex gap-1 sm:gap-2 flex-shrink-0"><button id="btn-undo" onclick="undo()" class="p-1.5 sm:p-2 rounded-lg hover:bg-white/10 disabled:opacity-30" disabled title="Undo"> <i data-lucide="undo-2" style="width:16px;height:16px;color:#a1a1aa;"></i> </button> <button id="btn-reset" onclick="resetAll()" class="p-1.5 sm:p-2 rounded-lg hover:bg-white/10 disabled:opacity-30" disabled title="Reset"> <i data-lucide="rotate-ccw" style="width:16px;height:16px;color:#a1a1aa;"></i> </button> <button id="btn-download" onclick="openDownloadModal()" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium text-white flex items-center gap-1 sm:gap-2 disabled:opacity-30 hover:opacity-90 flex-shrink-0" style="background:#6366f1;" disabled> <i data-lucide="download" style="width:14px;height:14px;"></i> <span class="hidden sm:inline">Export</span> </button>
     </div>
    </header>
-   <div class="flex flex-1 overflow-hidden">
-    <!-- Canvas Area -->
-    <div class="flex-1 flex items-center justify-center p-4 overflow-auto">
-     <!-- Upload Zone -->
-     <div id="upload-zone" class="drop-zone flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed p-10 text-center cursor-pointer" style="border-color:#3f3f50; max-width:500px; width:100%;" onclick="document.getElementById('file-input').click()">
-      <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#1e1e2a;">
-       <i data-lucide="image-plus" style="width:32px;height:32px;color:#6366f1;"></i>
+   <div id="main-content" class="flex flex-1 overflow-hidden flex-col lg:flex-row"><!-- Canvas Area -->
+    <div class="flex-1 flex items-center justify-center p-3 sm:p-4 overflow-auto lg:min-h-0"><!-- Upload Zone -->
+     <div id="upload-zone" class="drop-zone flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed p-6 sm:p-10 text-center cursor-pointer" style="border-color:#3f3f50; max-width:500px; width:100%;" onclick="document.getElementById('file-input').click()">
+      <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center" style="background:#1e1e2a;"><i data-lucide="image-plus" style="width:28px;height:28px;color:#6366f1;"></i>
       </div>
       <div>
-       <p class="font-medium text-base" style="color:#e4e4e7;">Drop your photo here</p>
-       <p class="text-sm mt-1" style="color:#71717a;">or click to browse · PNG, JPG, WebP</p>
+       <p class="font-medium text-sm sm:text-base" style="color:#e4e4e7;">Drop your photo here</p>
+       <p class="text-xs sm:text-sm mt-1" style="color:#71717a;">or click to browse · PNG, JPG, WebP</p>
       </div><input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFile(event)">
      </div><!-- Canvas Preview -->
-     <div id="canvas-wrap" class="hidden relative">
+     <div id="canvas-wrap" class="hidden relative w-full h-full flex items-center justify-center">
       <div class="canvas-checkerboard rounded-xl overflow-hidden shadow-2xl" style="max-width:100%; max-height:100%;">
        <canvas id="canvas"></canvas>
-      </div><button onclick="document.getElementById('file-input').click()" class="absolute top-3 left-3 p-2 rounded-lg backdrop-blur-sm" style="background:rgba(0,0,0,0.5);" title="Change photo"> <i data-lucide="replace" style="width:16px;height:16px;color:#fff;"></i> </button>
+      </div><button onclick="document.getElementById('file-input').click()" class="absolute top-2 left-2 sm:top-3 sm:left-3 p-2 rounded-lg backdrop-blur-sm" style="background:rgba(0,0,0,0.5);" title="Change photo"> <i data-lucide="replace" style="width:16px;height:16px;color:#fff;"></i> </button>
      </div>
     </div><!-- Sidebar Controls -->
-    <aside id="sidebar" class="hidden w-72 overflow-y-auto border-l flex-shrink-0" style="border-color:#2a2a35; background:#16161d;">
-     <!-- Tabs -->
-     <div class="flex border-b" style="border-color:#2a2a35;">
-      <button class="tab-btn flex-1 py-3 text-xs font-medium text-center active" data-tab="filters" onclick="switchTab('filters')" style="color:#a855f7; border-bottom:2px solid #a855f7;"> <i data-lucide="palette" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> Filters </button> <button class="tab-btn flex-1 py-3 text-xs font-medium text-center" data-tab="adjust" onclick="switchTab('adjust')" style="color:#71717a; border-bottom:2px solid transparent;"> <i data-lucide="sliders-horizontal" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> Adjust </button> <button class="tab-btn flex-1 py-3 text-xs font-medium text-center" data-tab="effects" onclick="switchTab('effects')" style="color:#71717a; border-bottom:2px solid transparent;"> <i data-lucide="sparkles" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> Effects </button>
+    <aside id="sidebar" class="hidden w-full lg:w-72 overflow-y-auto border-t lg:border-t-0 lg:border-l flex-shrink-0 max-h-80 lg:max-h-none" style="border-color:#2a2a35; background:#16161d;"><!-- Tabs -->
+     <div class="flex border-b overflow-x-auto" style="border-color:#2a2a35;"><button class="tab-btn flex-1 py-2 sm:py-3 text-xs font-medium text-center active whitespace-nowrap" data-tab="filters" onclick="switchTab('filters')" style="color:#a855f7; border-bottom:2px solid #a855f7;"> <i data-lucide="palette" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> <span class="hidden sm:inline">Filters</span> </button> <button class="tab-btn flex-1 py-2 sm:py-3 text-xs font-medium text-center whitespace-nowrap" data-tab="adjust" onclick="switchTab('adjust')" style="color:#71717a; border-bottom:2px solid transparent;"> <i data-lucide="sliders-horizontal" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> <span class="hidden sm:inline">Adjust</span> </button> <button class="tab-btn flex-1 py-2 sm:py-3 text-xs font-medium text-center whitespace-nowrap" data-tab="effects" onclick="switchTab('effects')" style="color:#71717a; border-bottom:2px solid transparent;"> <i data-lucide="sparkles" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> <span class="hidden sm:inline">Effects</span> </button>
      </div><!-- Filters Tab -->
-     <div id="tab-filters" class="p-4 space-y-2">
-      <div id="filter-grid" class="grid grid-cols-2 gap-2"></div>
+     <div id="tab-filters" class="p-3 sm:p-4 space-y-2">
+      <div id="filter-grid" class="grid grid-cols-3 sm:grid-cols-2 gap-2"></div>
      </div><!-- Adjust Tab -->
-     <div id="tab-adjust" class="p-4 space-y-4 hidden"></div><!-- Effects Tab -->
-     <div id="tab-effects" class="p-4 space-y-2 hidden">
-      <div id="effects-grid" class="grid grid-cols-2 gap-2"></div>
+     <div id="tab-adjust" class="p-3 sm:p-4 space-y-3 sm:space-y-4 hidden"></div><!-- Effects Tab -->
+     <div id="tab-effects" class="p-3 sm:p-4 space-y-2 hidden">
+      <div id="effects-grid" class="grid grid-cols-3 sm:grid-cols-2 gap-2"></div>
      </div>
     </aside>
    </div>
   </div><!-- Toast container -->
   <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2"></div>
-  <div id="download-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-   <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 w-full max-w-sm border" style="border-color:#3f3f50;">
+  <div id="download-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+   <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 w-full max-w-sm border" style="border-color:#3f3f50;">
     <div class="flex items-center justify-between mb-4">
-     <h2 class="text-lg font-semibold" style="color:#f4f4f5;">Export Photo</h2><button onclick="closeDownloadModal()" class="p-1 hover:bg-white/10 rounded-lg"><i data-lucide="x" style="width:20px;height:20px;color:#a1a1aa;"></i></button>
+     <h2 class="text-base sm:text-lg font-semibold" style="color:#f4f4f5;">Export Photo</h2><button onclick="closeDownloadModal()" class="p-1 hover:bg-white/10 rounded-lg"><i data-lucide="x" style="width:18px;height:18px;color:#a1a1aa;"></i></button>
     </div>
-    <div class="space-y-4">
-     <div><label class="text-sm font-medium block mb-2" style="color:#d4d4d8;">File Format</label>
-      <div class="grid grid-cols-3 gap-2"><button onclick="setDownloadFormat('png')" data-format="png" class="py-2 px-3 rounded-lg text-sm font-medium transition-all active" style="background:#6366f1; color:#fff;">PNG</button> <button onclick="setDownloadFormat('jpg')" data-format="jpg" class="py-2 px-3 rounded-lg text-sm font-medium transition-all" style="background:#2a2a35; color:#a1a1aa;">JPG</button> <button onclick="setDownloadFormat('webp')" data-format="webp" class="py-2 px-3 rounded-lg text-sm font-medium transition-all" style="background:#2a2a35; color:#a1a1aa;">WebP</button>
+    <div class="space-y-3 sm:space-y-4">
+     <div>
+      <label class="text-xs sm:text-sm font-medium block mb-2" style="color:#d4d4d8;">File Format</label>
+      <div class="grid grid-cols-3 gap-2">
+       <button onclick="setDownloadFormat('png')" data-format="png" class="py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all active" style="background:#6366f1; color:#fff;">PNG</button> <button onclick="setDownloadFormat('jpg')" data-format="jpg" class="py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all" style="background:#2a2a35; color:#a1a1aa;">JPG</button> <button onclick="setDownloadFormat('webp')" data-format="webp" class="py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all" style="background:#2a2a35; color:#a1a1aa;">WebP</button>
       </div>
      </div>
-     <div><label class="text-sm font-medium block mb-2" style="color:#d4d4d8;">Quality (JPG/WebP)</label>
-      <div class="flex items-center gap-3"><input type="range" id="quality-slider" min="50" max="100" value="90" class="flex-1" style="background:#2a2a35; accent-color:#6366f1;"> <span id="quality-value" class="text-sm font-medium w-12" style="color:#a1a1aa;">90%</span>
+     <div>
+      <label class="text-xs sm:text-sm font-medium block mb-2" style="color:#d4d4d8;">Quality (JPG/WebP)</label>
+      <div class="flex items-center gap-2 sm:gap-3">
+       <input type="range" id="quality-slider" min="50" max="100" value="90" class="flex-1" style="background:#2a2a35; accent-color:#6366f1;"> <span id="quality-value" class="text-xs sm:text-sm font-medium w-10 sm:w-12 text-right" style="color:#a1a1aa;">90%</span>
       </div>
      </div>
-     <div><label class="text-sm font-medium block mb-2" style="color:#d4d4d8;">Resolution</label>
-      <div class="grid grid-cols-2 gap-2"><button onclick="setDownloadResolution('original')" data-resolution="original" class="py-2 px-3 rounded-lg text-sm font-medium transition-all active" style="background:#6366f1; color:#fff;">Original</button> <button onclick="setDownloadResolution('high')" data-resolution="high" class="py-2 px-3 rounded-lg text-sm font-medium transition-all" style="background:#2a2a35; color:#a1a1aa;">High (2x)</button>
+     <div>
+      <label class="text-xs sm:text-sm font-medium block mb-2" style="color:#d4d4d8;">Resolution</label>
+      <div class="grid grid-cols-2 gap-2">
+       <button onclick="setDownloadResolution('original')" data-resolution="original" class="py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all active" style="background:#6366f1; color:#fff;">Original</button> <button onclick="setDownloadResolution('high')" data-resolution="high" class="py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all" style="background:#2a2a35; color:#a1a1aa;">High (2x)</button>
       </div>
      </div>
-     <div class="flex gap-2 pt-4 border-t" style="border-color:#2a2a35;"><button onclick="closeDownloadModal()" class="flex-1 py-2 px-4 rounded-lg text-sm font-medium" style="background:#2a2a35; color:#a1a1aa;">Cancel</button> <button onclick="downloadImageWithSettings()" class="flex-1 py-2 px-4 rounded-lg text-sm font-medium text-white" style="background:#6366f1;"><i data-lucide="download" style="width:16px;height:16px;display:inline;vertical-align:-2px;margin-right:6px;"></i>Download</button>
+     <div class="flex gap-2 pt-3 sm:pt-4 border-t" style="border-color:#2a2a35;">
+      <button onclick="closeDownloadModal()" class="flex-1 py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium" style="background:#2a2a35; color:#a1a1aa;">Cancel</button> <button onclick="downloadImageWithSettings()" class="flex-1 py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg text-xs sm:text-sm font-medium text-white" style="background:#6366f1;"><i data-lucide="download" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:4px;"></i><span class="hidden sm:inline">Download</span><span class="sm:hidden">Export</span></button>
      </div>
     </div>
    </div>
@@ -672,5 +669,5 @@ window.elementSdk.init({
 
 lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e441c1de0e79081',t:'MTc3NDg0MjIwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e47d0f440939081',t:'MTc3NDg4MTA2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
