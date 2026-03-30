@@ -1,665 +1,436 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Free Subtitle Adder Online – Add SRT Subtitles to Video – Tools House Online</title>
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Free  Subtitles to Video – Tools House Online</title>
 <meta name="description" content="Add subtitles to video online free. Upload SRT files instantly. No signup needed. Fast, accurate sync & works on mobile & desktop now.">
-<link rel="canonical" href="https://www.toolshouse.online/subtitle-adder.html">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Free Subtitle Adder Online – Add SRT Subtitles to Video – Tools House Online">
-<meta property="og:description" content="Add subtitles to videos online for free. Upload your video and SRT file to add subtitles instantly. Fast and easy. No signup required.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.toolshouse.online/Subtitle Adder.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Subtitle Adder Online – Add SRT Subtitles to Video – Tools House Online">
-<meta name="twitter:description" content="Add subtitles to videos online for free. Upload your video and SRT file to add subtitles instantly. Fast and easy. No signup required.">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://www.toolshouse.online/subtitle-adder.html"
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+    html, body { height: 100%; margin: 0; }
 
-
-
-<style>
-*{ box-sizing: border-box; }
-body{
-    margin:0;
-    font-family:'Segoe UI',Arial,sans-serif;
-    background: linear-gradient(145deg,#1e2b4f,#2d1b3c);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    padding:15px;
-}
-.card{
-    background:rgba(255,255,255,0.95);
-    backdrop-filter:blur(4px);
-    width:100%;
-    max-width:850px;
-    padding:30px 25px;
-    border-radius:32px;
-    box-shadow:0 30px 50px rgba(0,0,0,0.45);
-    border:1px solid rgba(255,255,255,0.3);
-}
-h2{
-    text-align:center;
-    margin:0 0 25px 0;
-    font-weight:600;
-    font-size:2rem;
-    color:#1f1a36;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-}
-h2 span{
-    background:#fbbf24;
-    font-size:1.1rem;
-    padding:4px 14px;
-    border-radius:60px;
-    color:#1e1b4b;
-}
-.file-grid{
-    display:flex;
-    flex-wrap:wrap;
-    gap:22px;
-    margin-bottom:25px;
-}
-.file-card{
-    flex:1 1 250px;
-    background:#f8faff;
-    border-radius:28px;
-    padding:25px 18px 20px;
-    box-shadow:inset 0 2px 8px rgba(0,0,0,0.02), 0 8px 18px rgba(99,102,241,0.1);
-    border:1px solid #e4e8f5;
-    transition:0.25s;
-}
-.file-card:hover{
-    border-color:#818cf8;
-    background:#ffffff;
-}
-.file-header{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:1.4rem;
-    font-weight:600;
-    margin-bottom:20px;
-    color:#312e81;
-}
-.file-header .badge{
-    font-size:0.85rem;
-    background:#cbd5e1;
-    color:#1e293b;
-    padding:2px 12px;
-    border-radius:30px;
-    margin-left:auto;
-}
-.upload-btn{
-    background:#eef2ff;
-    border:2px dashed #a5b4fc;
-    border-radius:50px;
-    padding:14px 10px;
-    text-align:center;
-    font-weight:500;
-    color:#4338ca;
-    cursor:pointer;
-    margin:15px 0 12px;
-    transition:0.15s;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-}
-.upload-btn:hover{
-    background:#dbeafe;
-    border-color:#6366f1;
-}
-.file-name-box{
-    background:#ffffff;
-    border-radius:40px;
-    padding:12px 18px;
-    font-size:0.95rem;
-    word-break:break-word;
-    border:1px solid #cfd9f0;
-    color:#1f2937;
-    box-shadow:inset 0 1px 3px rgba(0,0,0,0.02);
-    max-height:70px;
-    overflow-y:auto;
-}
-.file-name-box i{
-    color:#6b7280;
-    font-style:normal;
-}
-.small-hint{
-    color:#4b5563;
-    font-size:0.8rem;
-    margin-top:10px;
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-video, canvas{
-    width:100%;
-    border-radius:28px;
-    background:#0f0f1a;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
-    margin-top:5px;
-    border:2px solid #b1c3ff;
-}
-.controls{
-    margin-top:28px;
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:center;
-    gap:15px;
-}
-button{
-    padding:14px 28px;
-    border:none;
-    border-radius:50px;
-    font-weight:600;
-    font-size:1rem;
-    cursor:pointer;
-    transition:0.15s;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    box-shadow:0 8px 14px rgba(0,0,0,0.1);
-}
-.convert-btn{
-    background:#4f46e5;
-    color:white;
-    flex:1 1 auto;
-    min-width:180px;
-}
-.convert-btn:hover{
-    background:#4338ca;
-    transform:scale(1.02);
-    box-shadow:0 12px 18px #4f46e580;
-}
-.download-btn{
-    background:#059669;
-    color:white;
-    flex:1 1 auto;
-    min-width:160px;
-}
-.download-btn:hover:not(:disabled){
-    background:#047857;
-    transform:scale(1.02);
-}
-.download-btn:disabled{
-    background:#9ca3af;
-    cursor:not-allowed;
-    opacity:0.6;
-    box-shadow:none;
-}
-select{
-    padding:12px 22px;
-    border-radius:60px;
-    border:1px solid #b9c4f0;
-    background:white;
-    font-size:0.95rem;
-    font-weight:500;
-    color:#1f2937;
-    cursor:pointer;
-}
-.loading{
-    display:none;
-    text-align:center;
-    margin:25px 0 10px;
-}
-.spinner{
-    border:5px solid #e4e8f5;
-    border-top:5px solid #4f46e5;
-    border-radius:50%;
-    width:48px;
-    height:48px;
-    animation:spin 1s linear infinite;
-    margin:0 auto 12px;
-}
-@keyframes spin{
-    0%{transform:rotate(0deg)}
-    100%{transform:rotate(360deg)}
-}
-.error{
-    background:#fee2e2;
-    color:#b91c1c;
-    padding:14px 20px;
-    border-radius:50px;
-    margin:20px 0 5px;
-    font-weight:500;
-    border:1px solid #fecaca;
-    text-align:center;
-}
-.reset-btn{
-    background:transparent;
-    border:1px solid #9aa5b8;
-    box-shadow:none;
-    padding:8px 20px;
-    color:#2d3748;
-    font-size:0.9rem;
-}
-.reset-btn:hover{
-    background:#e2e8f0;
-    border-color:#64748b;
-}
-</style>
-</head>
-<body>
-<div class="card">
-<h2>📽️ SUBTITLE BURNER <span>separate files</span></h2>
-
-<!-- separate file cards: video (left) and srt (right) -->
-<div class="file-grid">
-    <!-- VIDEO CARD -->
-    <div class="file-card">
-        <div class="file-header">
-            <span>🎬</span> Video file
-            <span class="badge">MP4, MOV, WebM</span>
-        </div>
-        <!-- big clickable upload button -->
-        <div class="upload-btn" id="videoUploadBtn">
-            ⬆️ Click or drag to select video
-        </div>
-        <!-- file name display (live) -->
-        <div class="file-name-box" id="videoFileName">
-            <i>No video selected</i>
-        </div>
-        <div class="small-hint">
-            <span>📌</span> max 200MB (no limit, but browser)
-        </div>
-        <!-- hidden input -->
-        <input type="file" id="videoFileInput" accept="video/*" hidden>
-    </div>
-
-    <!-- SUBTITLE CARD -->
-    <div class="file-card">
-        <div class="file-header">
-            <span>📜</span> Subtitle file
-            <span class="badge">.srt only</span>
-        </div>
-        <div class="upload-btn" id="srtUploadBtn">
-            ⬆️ Click or drag to select SRT
-        </div>
-        <div class="file-name-box" id="srtFileName">
-            <i>No subtitles loaded</i>
-        </div>
-        <div class="small-hint">
-            <span>🔤</span> Text encoding: UTF-8
-        </div>
-        <input type="file" id="srtFileInput" accept=".srt,.txt" hidden>
-    </div>
-</div>
-
-<!-- separate reset buttons -->
-<div style="display:flex; gap:10px; justify-content:flex-end; margin-bottom:15px;">
-    <button class="reset-btn" id="clearVideoBtn">🗑️ Clear video</button>
-    <button class="reset-btn" id="clearSrtBtn">🗑️ Clear subtitles</button>
-</div>
-
-<!-- video preview element -->
-<video id="videoPreview" controls></video>
-<canvas id="canvas" style="display:none;"></canvas>
-
-<!-- format and action buttons -->
-<div class="controls">
-    <select id="formatSelector">
-        <option value="video/webm">WebM (VP8) - high compatibility</option>
-        <option value="video/webm;codecs=vp9">WebM (VP9) - better compression</option>
-    </select>
-    <button class="convert-btn" id="convertBtn">✨ BURN SUBTITLES</button>
-    <button class="download-btn" id="downloadBtn" disabled>💾 Download video</button>
-</div>
-
-<!-- loading indicator & error -->
-<div class="loading" id="loadingIndicator">
-    <div class="spinner"></div>
-    <strong>Encoding subtitles…</strong> (wait until video ends)
-</div>
-<div class="error" id="errorMsg"></div>
-
-<script>
-(function() {
-    // ----- DOM elements -----
-    const videoPreview = document.getElementById('videoPreview');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const convertBtn = document.getElementById('convertBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const formatSelector = document.getElementById('formatSelector');
-    const loading = document.getElementById('loadingIndicator');
-    const errorMsgDiv = document.getElementById('errorMsg');
-
-    // video elements
-    const videoFileInput = document.getElementById('videoFileInput');
-    const videoUploadBtn = document.getElementById('videoUploadBtn');
-    const videoFileNameDiv = document.getElementById('videoFileName');
-    const clearVideoBtn = document.getElementById('clearVideoBtn');
-
-    // srt elements
-    const srtFileInput = document.getElementById('srtFileInput');
-    const srtUploadBtn = document.getElementById('srtUploadBtn');
-    const srtFileNameDiv = document.getElementById('srtFileName');
-    const clearSrtBtn = document.getElementById('clearSrtBtn');
-
-    // state
-    let subtitles = [];               // parsed subtitles
-    let recordedBlob = null;
-    let currentVideoBlobUrl = null;
-    let animationFrame = null;         // to track animation frame
-
-    // ----- helper: clear error -----
-    function setError(text) {
-        errorMsgDiv.textContent = text;
+    .app-wrapper {
+      height: 100%;
+      width: 100%;
+      overflow: auto;
     }
 
-    // ----- video file handling (click & drag) -----
-    function handleVideoFile(file) {
-        if (!file || !file.type.startsWith('video/')) {
-            setError('Please select a valid video file (MP4, WebM, MOV).');
-            return;
-        }
-        // revoke previous url
-        if (currentVideoBlobUrl) {
-            URL.revokeObjectURL(currentVideoBlobUrl);
-        }
-        currentVideoBlobUrl = URL.createObjectURL(file);
-        videoPreview.src = currentVideoBlobUrl;
-        videoPreview.load(); // ensure it loads
-        videoFileNameDiv.innerHTML = `<span style="color:#1e40af;">✅</span> ${file.name}`;
-        setError(''); // clear any previous error
-        recordedBlob = null;
-        downloadBtn.disabled = true;
+    .subtitle-overlay {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      text-align: center;
+      max-width: 90%;
+      transition: all 0.2s ease;
     }
 
-    videoUploadBtn.addEventListener('click', () => videoFileInput.click());
-    videoFileInput.addEventListener('change', (e) => {
-        if (e.target.files.length) handleVideoFile(e.target.files[0]);
-    });
+    .timeline-track {
+      position: relative;
+      height: 48px;
+      border-radius: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      cursor: pointer;
+    }
 
-    // drag & drop for video card
-    videoUploadBtn.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    });
-    
-    videoUploadBtn.addEventListener('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const files = e.dataTransfer.files;
-        if (files.length) {
-            const videoFile = Array.from(files).find(f => f.type.startsWith('video/'));
-            if (videoFile) {
-                handleVideoFile(videoFile);
-                // sync file input (can't set .files directly, but we can reset it)
-                videoFileInput.value = '';
-            } else {
-                setError('No video file in dropped items.');
-            }
-        }
-    });
+    .subtitle-block {
+      position: absolute;
+      height: 32px;
+      top: 8px;
+      border-radius: 6px;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 600;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      transition: opacity 0.15s;
+      user-select: none;
+    }
+    .subtitle-block:hover { opacity: 0.85; }
 
-    // ----- srt file handling -----
-    function handleSrtFile(file) {
-        if (!file || !file.name.toLowerCase().endsWith('.srt')) {
-            setError('Please select a valid .srt subtitle file.');
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            parseSRT(ev.target.result);
-            if (subtitles.length) {
-                srtFileNameDiv.innerHTML = `<span style="color:#1e40af;">✅</span> ${file.name} (${subtitles.length} subs)`;
-                setError('');
-            } else {
-                srtFileNameDiv.innerHTML = `<span style="color:#b91c1c;">⚠️</span> ${file.name} (no valid cues)`;
-                setError('SRT parsed but no valid subtitle blocks found.');
-            }
-            recordedBlob = null;
-            downloadBtn.disabled = true;
+    .time-input {
+      width: 80px;
+      text-align: center;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 999;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .video-container {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      width: 100%;
+    }
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .no-video-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 12px;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeSlideIn 0.5s ease forwards; }
+    .fade-in-d1 { animation-delay: 0.1s; opacity: 0; }
+    .fade-in-d2 { animation-delay: 0.2s; opacity: 0; }
+    .fade-in-d3 { animation-delay: 0.3s; opacity: 0; }
+
+    .btn-primary {
+      transition: all 0.15s ease;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .scrollbar-thin::-webkit-scrollbar { height: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-wrapper" id="appWrapper" style="background: #0f0f14;"><!-- Header -->
+   <header class="px-6 py-5 flex items-center justify-between border-b fade-in" style="border-color: #1e1e2a;">
+    <div class="flex items-center gap-3">
+     <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: #6c5ce7;"><i data-lucide="subtitles" style="width:20px;height:20px;color:#fff;"></i>
+     </div>
+     <div>
+      <h1 id="pageTitle" class="text-lg font-bold" style="color: #f0f0f5;">Subtitles to Video</h1>
+      <p id="tagline" class="text-xs" style="color: #6b6b80;">Add professional subtitles to any video</p>
+     </div>
+    </div><button onclick="exportSRT()" class="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold" style="background:#6c5ce7;color:#fff;"> <i data-lucide="download" style="width:16px;height:16px;"></i> Export SRT </button>
+   </header>
+   <main class="p-4 md:p-6 flex flex-col lg:flex-row gap-5"><!-- Left: Video Preview -->
+    <section class="flex-1 fade-in fade-in-d1">
+     <div class="video-container" id="videoContainer">
+      <div class="no-video-placeholder" id="noVideoPlaceholder">
+       <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:rgba(108,92,231,0.15);"><i data-lucide="upload" style="width:28px;height:28px;color:#6c5ce7;"></i>
+       </div>
+       <p class="font-semibold text-base" style="color:#f0f0f5;">Drop your video here</p>
+       <p class="text-xs" style="color:#6b6b80;">or click to browse</p><input type="file" accept="video/*" id="videoInput" class="absolute inset-0 opacity-0 cursor-pointer" aria-label="Upload video">
+      </div>
+      <video id="videoPlayer" class="hidden" controls></video>
+      <div class="subtitle-overlay" id="subtitleOverlay"></div>
+     </div><!-- Timeline -->
+     <div class="mt-4 p-3 rounded-xl fade-in fade-in-d2" style="background:#1a1a24;">
+      <div class="flex items-center justify-between mb-2"><span class="mono text-xs font-bold" style="color:#6c5ce7;">TIMELINE</span> <span class="mono text-xs" style="color:#6b6b80;" id="currentTimeLabel">00:00 / 00:00</span>
+      </div>
+      <div class="timeline-track scrollbar-thin" id="timeline" style="background:#12121a;" onclick="seekTimeline(event)">
+       <div id="timelinePlayhead" style="position:absolute;top:0;bottom:0;width:2px;background:#6c5ce7;z-index:10;pointer-events:none;left:0;"></div>
+      </div>
+     </div>
+    </section><!-- Right: Subtitle Editor -->
+    <aside class="w-full lg:w-[380px] flex flex-col gap-4 fade-in fade-in-d3"><!-- Add Subtitle -->
+     <div class="p-4 rounded-xl" style="background:#1a1a24;">
+      <div class="flex items-center justify-between mb-3"><span class="font-bold text-sm" style="color:#f0f0f5;">Subtitles</span> <button onclick="addSubtitle()" class="btn-primary flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold" style="background:#6c5ce7;color:#fff;"> <i data-lucide="plus" style="width:14px;height:14px;"></i> Add </button>
+      </div><!-- Subtitle List -->
+      <div id="subtitleList" class="flex flex-col gap-2 max-h-[340px] overflow-y-auto pr-1" style="scrollbar-width:thin;">
+       <div class="text-center py-8" style="color:#6b6b80;"><i data-lucide="message-square-plus" style="width:28px;height:28px;margin:0 auto 8px;display:block;color:#333;"></i>
+        <p class="text-xs">No subtitles yet. Click "Add" to start.</p>
+       </div>
+      </div>
+     </div><!-- Style Settings -->
+     <div class="p-4 rounded-xl" style="background:#1a1a24;"><span class="font-bold text-sm block mb-3" style="color:#f0f0f5;">Style</span>
+      <div class="grid grid-cols-2 gap-3"><label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">Font Size</span> <select id="subFontSize" onchange="renderPreview()" class="rounded-lg px-3 py-2 text-sm font-medium" style="background:#12121a;color:#f0f0f5;border:1px solid #2a2a3a;"> <option value="16">Small</option> <option value="22" selected>Medium</option> <option value="30">Large</option> <option value="40">X-Large</option> </select> </label> <label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">Text Color</span> <input type="color" id="subColor" value="#ffffff" onchange="renderPreview()" class="w-full h-[38px] rounded-lg cursor-pointer" style="background:#12121a;border:1px solid #2a2a3a;"> </label> <label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">BG Color</span> <input type="color" id="subBgColor" value="#000000" onchange="renderPreview()" class="w-full h-[38px] rounded-lg cursor-pointer" style="background:#12121a;border:1px solid #2a2a3a;"> </label> <label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">BG Opacity</span> <input type="range" id="subBgOpacity" min="0" max="100" value="70" oninput="renderPreview()" class="mt-2"> </label>
+      </div>
+     </div>
+    </aside>
+   </main>
+   <div class="toast-msg" id="toastMsg"></div>
+  </div>
+  <script>
+    // State
+    let subtitles = [];
+    let subIdCounter = 0;
+    let videoDuration = 0;
+
+    const defaultConfig = {
+      page_title: 'Subtitles to Video',
+      tagline: 'Add professional subtitles to any video',
+      background_color: '#0f0f14',
+      surface_color: '#1a1a24',
+      text_color: '#f0f0f5',
+      accent_color: '#6c5ce7',
+      muted_color: '#6b6b80',
+      font_family: 'DM Sans',
+      font_size: 16
+    };
+
+    // Element SDK init
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => {
+        const c = key => config[key] || defaultConfig[key];
+        document.getElementById('pageTitle').textContent = c('page_title');
+        document.getElementById('tagline').textContent = c('tagline');
+      },
+      mapToCapabilities: (config) => {
+        const mut = (key) => ({
+          get: () => config[key] || defaultConfig[key],
+          set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
+        });
+        return {
+          recolorables: [mut('background_color'), mut('surface_color'), mut('text_color'), mut('accent_color'), mut('muted_color')],
+          borderables: [],
+          fontEditable: mut('font_family'),
+          fontSizeable: mut('font_size')
         };
-        reader.onerror = () => {
-            setError('Error reading subtitle file.');
-        };
-        reader.readAsText(file, 'UTF-8');
+      },
+      mapToEditPanelValues: (config) => new Map([
+        ['page_title', config.page_title || defaultConfig.page_title],
+        ['tagline', config.tagline || defaultConfig.tagline]
+      ])
+    });
+
+    // Video loading
+    const videoInput = document.getElementById('videoInput');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const noVideoPlaceholder = document.getElementById('noVideoPlaceholder');
+
+    videoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      videoPlayer.src = url;
+      videoPlayer.classList.remove('hidden');
+      noVideoPlaceholder.classList.add('hidden');
+      videoPlayer.onloadedmetadata = () => {
+        videoDuration = videoPlayer.duration;
+        renderTimeline();
+      };
+      showToast('Video loaded!');
+    });
+
+    // Time update
+    videoPlayer.addEventListener('timeupdate', () => {
+      renderPreview();
+      updatePlayhead();
+      updateTimeLabel();
+    });
+
+    function updateTimeLabel() {
+      const cur = formatTimeSRT(videoPlayer.currentTime || 0).substring(0,8);
+      const dur = formatTimeSRT(videoDuration || 0).substring(0,8);
+      document.getElementById('currentTimeLabel').textContent = `${cur} / ${dur}`;
     }
 
-    srtUploadBtn.addEventListener('click', () => srtFileInput.click());
-    srtFileInput.addEventListener('change', (e) => {
-        if (e.target.files.length) handleSrtFile(e.target.files[0]);
-    });
-
-    // drag & drop for srt card
-    srtUploadBtn.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    });
-    
-    srtUploadBtn.addEventListener('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const files = e.dataTransfer.files;
-        if (files.length) {
-            const srtFile = Array.from(files).find(f => f.name.endsWith('.srt'));
-            if (srtFile) {
-                handleSrtFile(srtFile);
-                srtFileInput.value = '';
-            } else {
-                setError('Dropped item is not an .srt file.');
-            }
-        }
-    });
-
-    // ----- clear buttons -----
-    clearVideoBtn.addEventListener('click', () => {
-        if (currentVideoBlobUrl) {
-            URL.revokeObjectURL(currentVideoBlobUrl);
-            currentVideoBlobUrl = null;
-        }
-        videoPreview.src = '';
-        videoFileInput.value = '';
-        videoFileNameDiv.innerHTML = '<i>No video selected</i>';
-        recordedBlob = null;
-        downloadBtn.disabled = true;
-        setError('');
-    });
-
-    clearSrtBtn.addEventListener('click', () => {
-        srtFileInput.value = '';
-        srtFileNameDiv.innerHTML = '<i>No subtitles loaded</i>';
-        subtitles = [];
-        recordedBlob = null;
-        downloadBtn.disabled = true;
-        setError('');
-    });
-
-    // ----- SRT parser (robust) -----
-    function parseSRT(data) {
-        subtitles = [];
-        const blocks = data.split(/\r?\n\r?\n/);
-        for (let block of blocks) {
-            const lines = block.split(/\r?\n/).filter(l => l.trim() !== '');
-            if (lines.length < 2) continue;
-            // identify timecode line (contains -->)
-            let timeIdx = -1;
-            for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes('-->')) {
-                    timeIdx = i;
-                    break;
-                }
-            }
-            if (timeIdx === -1) continue;
-            const timeLine = lines[timeIdx];
-            const textLines = lines.slice(timeIdx + 1).join(' ').trim();
-            if (!textLines) continue;
-
-            const parts = timeLine.split('-->');
-            if (parts.length < 2) continue;
-            const startStr = parts[0].trim().replace(/,/g, '.');
-            const endStr = parts[1].trim().replace(/,/g, '.');
-            const start = convertTime(startStr);
-            const end = convertTime(endStr);
-            if (isNaN(start) || isNaN(end)) continue;
-
-            subtitles.push({ start, end, text: textLines });
-        }
+    function updatePlayhead() {
+      if (!videoDuration) return;
+      const pct = (videoPlayer.currentTime / videoDuration) * 100;
+      document.getElementById('timelinePlayhead').style.left = pct + '%';
     }
 
-    function convertTime(t) {
-        const parts = t.split(':');
-        if (parts.length === 3) {
-            const secParts = parts[2].split('.');
-            const sec = parseInt(secParts[0], 10);
-            const ms = secParts[1] ? parseInt(secParts[1].padEnd(3, '0').slice(0,3), 10) : 0;
-            return parseInt(parts[0],10)*3600 + parseInt(parts[1],10)*60 + sec + ms/1000;
-        }
-        return NaN;
+    function seekTimeline(e) {
+      if (!videoDuration) return;
+      const rect = document.getElementById('timeline').getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      videoPlayer.currentTime = pct * videoDuration;
     }
 
-    // ----- convert (burn subtitles) -----
-    convertBtn.addEventListener('click', async () => {
-        // validations
-        if (!videoPreview.src || videoPreview.readyState < 2) {
-            setError('Video not loaded or metadata missing. Please load a video and wait.');
-            return;
-        }
-        if (subtitles.length === 0) {
-            setError('No subtitles loaded. Upload a valid .srt file.');
-            return;
-        }
+    // Subtitle CRUD
+    function addSubtitle() {
+      const startTime = videoPlayer.currentTime || 0;
+      const sub = {
+        id: ++subIdCounter,
+        text: 'New subtitle',
+        start: startTime,
+        end: Math.min(startTime + 3, videoDuration || 999)
+      };
+      subtitles.push(sub);
+      renderSubtitleList();
+      renderTimeline();
+      showToast('Subtitle added');
+    }
 
-        // Cancel any previous recording animation
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-            animationFrame = null;
-        }
+    function updateSub(id, field, value) {
+      const sub = subtitles.find(s => s.id === id);
+      if (!sub) return;
+      if (field === 'start' || field === 'end') {
+        sub[field] = parseTimeInput(value);
+      } else {
+        sub[field] = value;
+      }
+      renderTimeline();
+      renderPreview();
+    }
 
-        // canvas size from video
-        canvas.width = videoPreview.videoWidth;
-        canvas.height = videoPreview.videoHeight;
-        if (canvas.width === 0 || canvas.height === 0) {
-            setError('Video resolution not available (try playing video once).');
-            return;
-        }
+    function deleteSub(id) {
+      subtitles = subtitles.filter(s => s.id !== id);
+      renderSubtitleList();
+      renderTimeline();
+      renderPreview();
+    }
 
-        loading.style.display = 'block';
-        downloadBtn.disabled = true;
-        setError('');
+    function renderSubtitleList() {
+      const list = document.getElementById('subtitleList');
+      if (!subtitles.length) {
+        list.innerHTML = `<div class="text-center py-8" style="color:#6b6b80;">
+          <i data-lucide="message-square-plus" style="width:28px;height:28px;margin:0 auto 8px;display:block;color:#333;"></i>
+          <p class="text-xs">No subtitles yet. Click "Add" to start.</p>
+        </div>`;
+        lucide.createIcons();
+        return;
+      }
+      list.innerHTML = subtitles.map(s => `
+        <div class="p-3 rounded-lg" style="background:#12121a;">
+          <div class="flex items-center justify-between mb-2">
+            <span class="mono text-xs font-bold" style="color:#6c5ce7;">#${s.id}</span>
+            <button onclick="deleteSub(${s.id})" class="p-1 rounded hover:bg-red-500/20 transition" style="color:#ff6b6b;">
+              <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+            </button>
+          </div>
+          <label class="sr-only" for="subtext${s.id}">Subtitle text</label>
+          <textarea id="subtext${s.id}" rows="2" class="w-full rounded-lg px-3 py-2 text-sm mb-2 resize-none" style="background:#1a1a24;color:#f0f0f5;border:1px solid #2a2a3a;"
+            oninput="updateSub(${s.id},'text',this.value)">${s.text}</textarea>
+          <div class="flex gap-2">
+            <label class="flex-1 flex flex-col gap-1">
+              <span class="text-xs" style="color:#6b6b80;">Start</span>
+              <input type="text" value="${formatShort(s.start)}" class="time-input rounded-lg px-2 py-1 text-xs mono" style="background:#1a1a24;color:#f0f0f5;border:1px solid #2a2a3a;"
+                onchange="updateSub(${s.id},'start',this.value)" aria-label="Start time">
+            </label>
+            <label class="flex-1 flex flex-col gap-1">
+              <span class="text-xs" style="color:#6b6b80;">End</span>
+              <input type="text" value="${formatShort(s.end)}" class="time-input rounded-lg px-2 py-1 text-xs mono" style="background:#1a1a24;color:#f0f0f5;border:1px solid #2a2a3a;"
+                onchange="updateSub(${s.id},'end',this.value)" aria-label="End time">
+            </label>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
 
-        // select mime
-        let mime = formatSelector.value;
-        if (!MediaRecorder.isTypeSupported(mime)) {
-            if (MediaRecorder.isTypeSupported('video/webm')) {
-                mime = 'video/webm';
-            } else {
-                setError('WebM recording not supported in this browser.');
-                loading.style.display = 'none';
-                return;
-            }
-        }
+    function renderTimeline() {
+      const tl = document.getElementById('timeline');
+      const blocks = tl.querySelectorAll('.subtitle-block');
+      blocks.forEach(b => b.remove());
+      if (!videoDuration) return;
+      subtitles.forEach(s => {
+        const left = (s.start / videoDuration) * 100;
+        const width = ((s.end - s.start) / videoDuration) * 100;
+        const el = document.createElement('div');
+        el.className = 'subtitle-block';
+        el.style.left = left + '%';
+        el.style.width = Math.max(width, 1) + '%';
+        el.style.background = '#6c5ce7';
+        el.style.color = '#fff';
+        el.textContent = s.text;
+        tl.appendChild(el);
+      });
+    }
 
-        const stream = canvas.captureStream(30); // 30 fps
-        let recorder;
-        try {
-            recorder = new MediaRecorder(stream, { mimeType: mime });
-        } catch (err) {
-            setError('MediaRecorder error: ' + err.message);
-            loading.style.display = 'none';
-            return;
-        }
+    function renderPreview() {
+      const overlay = document.getElementById('subtitleOverlay');
+      const t = videoPlayer.currentTime || 0;
+      const active = subtitles.find(s => t >= s.start && t <= s.end);
+      if (!active) { overlay.textContent = ''; return; }
+      const fontSize = document.getElementById('subFontSize').value;
+      const color = document.getElementById('subColor').value;
+      const bgColor = document.getElementById('subBgColor').value;
+      const opacity = document.getElementById('subBgOpacity').value / 100;
+      const r = parseInt(bgColor.slice(1,3),16);
+      const g = parseInt(bgColor.slice(3,5),16);
+      const b = parseInt(bgColor.slice(5,7),16);
+      overlay.textContent = active.text;
+      overlay.style.fontSize = fontSize + 'px';
+      overlay.style.color = color;
+      overlay.style.background = `rgba(${r},${g},${b},${opacity})`;
+      overlay.style.padding = '4px 16px';
+      overlay.style.borderRadius = '6px';
+      overlay.style.fontWeight = '600';
+    }
 
-        const chunks = [];
-        recorder.ondataavailable = (e) => {
-            if (e.data.size > 0) {
-                chunks.push(e.data);
-            }
-        };
-        
-        recorder.onstop = () => {
-            recordedBlob = new Blob(chunks, { type: mime });
-            downloadBtn.disabled = false;
-            loading.style.display = 'none';
-            if (animationFrame) {
-                cancelAnimationFrame(animationFrame);
-                animationFrame = null;
-            }
-        };
+    // Time helpers
+    function formatTimeSRT(sec) {
+      const h = Math.floor(sec/3600);
+      const m = Math.floor((sec%3600)/60);
+      const s = Math.floor(sec%60);
+      const ms = Math.round((sec%1)*1000);
+      return `${pad(h)}:${pad(m)}:${pad(s)},${String(ms).padStart(3,'0')}`;
+    }
+    function formatShort(sec) {
+      const m = Math.floor(sec/60);
+      const s = (sec%60).toFixed(1);
+      return `${pad(m)}:${parseFloat(s)<10?'0':''}${parseFloat(s).toFixed(1)}`;
+    }
+    function pad(n) { return String(n).padStart(2,'0'); }
+    function parseTimeInput(val) {
+      const parts = val.split(':');
+      if (parts.length === 2) return parseFloat(parts[0])*60 + parseFloat(parts[1]);
+      if (parts.length === 3) return parseFloat(parts[0])*3600 + parseFloat(parts[1])*60 + parseFloat(parts[2]);
+      return parseFloat(val) || 0;
+    }
 
-        recorder.start();
-        
-        // Make sure video plays
-        try {
-            await videoPreview.play();
-        } catch (err) {
-            setError('Could not play video: ' + err.message);
-            recorder.stop();
-            return;
-        }
+    // Export SRT
+    function exportSRT() {
+      if (!subtitles.length) { showToast('No subtitles to export'); return; }
+      let srt = '';
+      subtitles.forEach((s, i) => {
+        srt += `${i+1}\n${formatTimeSRT(s.start)} --> ${formatTimeSRT(s.end)}\n${s.text}\n\n`;
+      });
+      const blob = new Blob([srt], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'subtitles.srt';
+      a.click();
+      showToast('SRT file downloaded!');
+    }
 
-        function drawFrame() {
-            if (videoPreview.paused || videoPreview.ended) {
-                if (recorder && recorder.state !== 'inactive') {
-                    recorder.stop();
-                }
-                return;
-            }
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
-            const current = videoPreview.currentTime;
+    // Toast
+    function showToast(msg) {
+      const el = document.getElementById('toastMsg');
+      el.textContent = msg;
+      el.style.background = '#6c5ce7';
+      el.style.color = '#fff';
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2200);
+    }
 
-            ctx.font = 'bold 36px "Segoe UI", Arial, sans-serif';
-            ctx.fillStyle = 'white';
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 4;
-            ctx.textAlign = 'center';
-            ctx.shadowColor = 'black';
-            ctx.shadowBlur = 8;
-
-            subtitles.forEach(sub => {
-                if (current >= sub.start && current <= sub.end) {
-                    ctx.strokeText(sub.text, canvas.width/2, canvas.height - 50);
-                    ctx.fillText(sub.text, canvas.width/2, canvas.height - 50);
-                }
-            });
-            ctx.shadowBlur = 0; // reset
-            animationFrame = requestAnimationFrame(drawFrame);
-        }
-        drawFrame();
-    });
-
-    // download
-    downloadBtn.addEventListener('click', () => {
-        if (recordedBlob) {
-            const url = URL.createObjectURL(recordedBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'subtitled_video.webm';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-    });
-
-    // Clean up on video end
-    videoPreview.addEventListener('ended', () => {
-        // The drawFrame function will handle stopping the recorder
-    });
-
-    // Clean up on page unload
-    window.addEventListener('beforeunload', () => {
-        if (currentVideoBlobUrl) {
-            URL.revokeObjectURL(currentVideoBlobUrl);
-        }
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-    });
-
-    // initially no file
-})();
-</script>
-    <script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
-</body>
+    lucide.createIcons();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e44239f905b9081',t:'MTc3NDg0MjUxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
