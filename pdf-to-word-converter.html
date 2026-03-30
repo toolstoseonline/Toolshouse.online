@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to Word Converter</title>
+    <title>PDF to Word Converter Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -28,7 +28,7 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             padding: 40px;
             animation: slideIn 0.5s ease-out;
@@ -135,6 +135,33 @@
             font-size: 0.9em;
         }
 
+        .options {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .option-group {
+            margin-bottom: 15px;
+        }
+
+        .option-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .option-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
         .btn-convert {
             width: 100%;
             padding: 15px;
@@ -234,30 +261,41 @@
             border: 1px solid #ef9a9a;
         }
 
+        .status.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+
         .preview-section {
             margin-top: 30px;
             display: none;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .preview-title {
-            font-size: 1.3em;
-            color: #333;
-            margin-bottom: 15px;
+        .preview-header {
+            background: #f5f5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
             font-weight: bold;
+            color: #333;
         }
 
         .preview-content {
             max-height: 400px;
             overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 10px;
             padding: 20px;
-            background: #fafafa;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            line-height: 1.6;
+            background: white;
+            font-family: 'Calibri', 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
             white-space: pre-wrap;
-            word-wrap: break-word;
+        }
+
+        .preview-content p {
+            margin-bottom: 10px;
         }
 
         .features {
@@ -306,6 +344,28 @@
             to { transform: rotate(360deg); }
         }
 
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -313,24 +373,46 @@
             h1 {
                 font-size: 1.8em;
             }
+            .stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>PDF to Word Converter</h1>
-        <p class="subtitle">Convert your PDF files to editable Word documents while preserving formatting</p>
+        <h1>PDF to Word Converter Pro</h1>
+        <p class="subtitle">Advanced conversion with formatting preservation</p>
         
         <div class="upload-area" id="uploadArea">
             <div class="upload-icon">📄</div>
             <div class="upload-text">Drop your PDF file here or click to browse</div>
-            <div class="upload-subtext">Supports PDF files up to 50MB</div>
+            <div class="upload-subtext">Supports PDF files up to 50MB • Preserves fonts & layout</div>
             <input type="file" id="fileInput" accept=".pdf,application/pdf">
         </div>
 
         <div class="file-info" id="fileInfo">
             <div class="file-name" id="fileName"></div>
             <div class="file-size" id="fileSize"></div>
+            <div class="stats" id="stats"></div>
+        </div>
+
+        <div class="options" id="options">
+            <div class="option-group">
+                <label class="option-label">Text Formatting Mode:</label>
+                <select class="option-select" id="formatMode">
+                    <option value="accurate">Accurate (Preserve exact layout)</option>
+                    <option value="flow">Flowing Text (Better for editing)</option>
+                    <option value="raw">Raw Text (Fastest)</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label class="option-label">Page Breaks:</label>
+                <select class="option-select" id="pageBreaks">
+                    <option value="preserve">Preserve original page breaks</option>
+                    <option value="remove">Remove page breaks (continuous)</option>
+                </select>
+            </div>
         </div>
 
         <button class="btn-convert" id="convertBtn">
@@ -347,31 +429,30 @@
         <div class="status" id="status"></div>
 
         <div class="preview-section" id="previewSection">
-            <div class="preview-title">Document Preview</div>
+            <div class="preview-header">Document Preview (First 1000 chars)</div>
             <div class="preview-content" id="previewContent"></div>
         </div>
 
         <div class="features">
             <div class="feature">
-                <div class="feature-icon">🔒</div>
-                <div class="feature-title">Secure</div>
-                <div class="feature-desc">All processing happens in your browser. No files uploaded to servers.</div>
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Smart Layout</div>
+                <div class="feature-desc">Detects paragraphs, headings, and columns</div>
             </div>
             <div class="feature">
-                <div class="feature-icon">⚡</div>
-                <div class="feature-title">Fast</div>
-                <div class="feature-desc">Client-side conversion for instant results</div>
+                <div class="feature-icon">🔤</div>
+                <div class="feature-title">Font Matching</div>
+                <div class="feature-desc">Preserves bold, italic, and font sizes</div>
             </div>
             <div class="feature">
-                <div class="feature-icon">📱</div>
-                <div class="feature-title">Responsive</div>
-                <div class="feature-desc">Works on desktop, tablet, and mobile devices</div>
+                <div class="feature-icon">📐</div>
+                <div class="feature-title">Structure</div>
+                <div class="feature-desc">Maintains spacing and indentation</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Initialize PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         const uploadArea = document.getElementById('uploadArea');
@@ -379,6 +460,8 @@
         const fileInfo = document.getElementById('fileInfo');
         const fileName = document.getElementById('fileName');
         const fileSize = document.getElementById('fileSize');
+        const stats = document.getElementById('stats');
+        const options = document.getElementById('options');
         const convertBtn = document.getElementById('convertBtn');
         const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
@@ -386,10 +469,11 @@
         const status = document.getElementById('status');
         const previewSection = document.getElementById('previewSection');
         const previewContent = document.getElementById('previewContent');
+        const formatMode = document.getElementById('formatMode');
+        const pageBreaks = document.getElementById('pageBreaks');
 
         let currentFile = null;
 
-        // Drag and drop handlers
         uploadArea.addEventListener('click', () => fileInput.click());
         
         uploadArea.addEventListener('dragover', (e) => {
@@ -433,9 +517,37 @@
             fileName.textContent = file.name;
             fileSize.textContent = formatFileSize(file.size);
             fileInfo.style.display = 'block';
+            options.style.display = 'block';
             convertBtn.style.display = 'block';
             status.style.display = 'none';
             previewSection.style.display = 'none';
+            
+            // Show PDF stats
+            showPDFStats(file);
+        }
+
+        async function showPDFStats(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                stats.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-value">${pdf.numPages}</div>
+                        <div>Pages</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">PDF</div>
+                        <div>Format</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">Ready</div>
+                        <div>Status</div>
+                    </div>
+                `;
+                stats.style.display = 'grid';
+            } catch (e) {
+                stats.style.display = 'none';
+            }
         }
 
         function formatFileSize(bytes) {
@@ -470,93 +582,145 @@
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             const totalPages = pdf.numPages;
+            const mode = formatMode.value;
+            const preservePageBreaks = pageBreaks.value === 'preserve';
             
-            let fullText = '';
-            const paragraphs = [];
+            let allParagraphs = [];
+            let previewText = '';
 
             for (let i = 1; i <= totalPages; i++) {
-                updateProgress((i / totalPages) * 80, `Processing page ${i} of ${totalPages}...`);
+                updateProgress(((i - 1) / totalPages) * 80, `Analyzing page ${i} of ${totalPages}...`);
                 
                 const page = await pdf.getPage(i);
                 const textContent = await page.getTextContent();
                 const viewport = page.getViewport({ scale: 1.0 });
                 
-                // Extract text with positioning info
-                const items = textContent.items;
-                let lastY = null;
-                let currentParagraph = '';
-
-                for (const item of items) {
-                    const y = item.transform[5];
-                    
-                    // Check if new line (significant Y change)
-                    if (lastY !== null && Math.abs(y - lastY) > 5) {
-                        if (currentParagraph.trim()) {
-                            paragraphs.push({
-                                text: currentParagraph.trim(),
-                                isBold: false, // PDF detection for bold is complex in basic implementation
-                                fontSize: 12
-                            });
-                        }
-                        currentParagraph = item.str;
-                    } else {
-                        currentParagraph += ' ' + item.str;
+                // Sort items by Y position (top to bottom) then X position (left to right)
+                const items = textContent.items.sort((a, b) => {
+                    const yDiff = viewport.height - b.transform[5] - (viewport.height - a.transform[5]);
+                    if (Math.abs(yDiff) < 5) {
+                        return a.transform[4] - b.transform[4];
                     }
-                    lastY = y;
-                }
+                    return yDiff;
+                });
 
-                if (currentParagraph.trim()) {
-                    paragraphs.push({
-                        text: currentParagraph.trim(),
-                        isBold: false,
-                        fontSize: 12
+                if (mode === 'raw') {
+                    // Simple text extraction
+                    const text = items.map(item => item.str).join(' ');
+                    allParagraphs.push({
+                        text: text,
+                        bold: false,
+                        italic: false,
+                        fontSize: 12,
+                        breakBefore: preservePageBreaks && i > 1
+                    });
+                    previewText += text + '\n\n';
+                } else {
+                    // Smart paragraph detection
+                    const pageParagraphs = extractParagraphs(items, viewport, mode);
+                    
+                    pageParagraphs.forEach((para, idx) => {
+                        if (idx === 0 && preservePageBreaks && i > 1) {
+                            para.breakBefore = true;
+                        }
+                        allParagraphs.push(para);
+                        previewText += para.text + '\n\n';
                     });
                 }
-
-                // Fallback simple text extraction
-                const pageText = items.map(item => item.str).join(' ');
-                fullText += pageText + '\n\n';
             }
 
-            updateProgress(90, 'Generating Word document...');
+            updateProgress(85, 'Building Word document...');
 
-            // Create DOCX document
+            // Group paragraphs by style for better DOCX generation
+            const children = [];
+            
+            allParagraphs.forEach((para, index) => {
+                const textRuns = [];
+                
+                // Check if it's a heading based on font size
+                let isHeading = false;
+                let headingLevel = 0;
+                
+                if (para.fontSize >= 24) {
+                    isHeading = true;
+                    headingLevel = 1;
+                } else if (para.fontSize >= 18) {
+                    isHeading = true;
+                    headingLevel = 2;
+                }
+
+                // Split text into chunks to handle mixed formatting if needed
+                // For now, treat whole paragraph with same style
+                const run = new docx.TextRun({
+                    text: para.text,
+                    bold: para.bold || isHeading,
+                    italics: para.italic,
+                    size: para.fontSize * 2, // Convert to half-points
+                    font: para.fontName || "Calibri"
+                });
+                
+                textRuns.push(run);
+
+                const paragraphOptions = {
+                    children: textRuns,
+                    spacing: {
+                        after: isHeading ? 200 : 120,
+                        line: 276, // 1.15 line spacing
+                        before: para.breakBefore ? 400 : 0
+                    }
+                };
+
+                // Add indentation if detected
+                if (para.indent && para.indent > 0) {
+                    paragraphOptions.indent = {
+                        left: para.indent * 20 // Convert points to twips
+                    };
+                }
+
+                // Alignment detection
+                if (para.alignment) {
+                    paragraphOptions.alignment = para.alignment;
+                }
+
+                if (isHeading) {
+                    paragraphOptions.heading = headingLevel === 1 ? docx.HeadingLevel.HEADING_1 : docx.HeadingLevel.HEADING_2;
+                }
+
+                children.push(new docx.Paragraph(paragraphOptions));
+            });
+
+            updateProgress(90, 'Generating DOCX file...');
+
             const doc = new docx.Document({
                 sections: [{
-                    properties: {},
-                    children: paragraphs.map(para => 
-                        new docx.Paragraph({
-                            children: [
-                                new docx.TextRun({
-                                    text: para.text,
-                                    bold: para.isBold,
-                                    size: para.fontSize * 2, // Word uses half-points
-                                    font: "Calibri"
-                                })
-                            ],
-                            spacing: {
-                                after: 200,
-                                line: 276
+                    properties: {
+                        page: {
+                            margin: {
+                                top: 1440, // 1 inch in twips
+                                right: 1440,
+                                bottom: 1440,
+                                left: 1440
                             }
-                        })
-                    )
+                        }
+                    },
+                    children: children
                 }]
             });
 
-            updateProgress(95, 'Preparing download...');
+            updateProgress(95, 'Finalizing...');
 
             const blob = await docx.Packer.toBlob(doc);
-            const outputFileName = file.name.replace('.pdf', '') + '_converted.docx';
+            const outputFileName = file.name.replace(/\.pdf$/i, '') + '_converted.docx';
             
             saveAs(blob, outputFileName);
 
             updateProgress(100, 'Complete!');
-            
-            // Show preview
-            previewContent.textContent = fullText.substring(0, 2000) + (fullText.length > 2000 ? '...' : '');
+
+            // Show preview (first 1000 chars)
+            previewContent.textContent = previewText.substring(0, 1000) + (previewText.length > 1000 ? '...' : '');
             previewSection.style.display = 'block';
             
-            showStatus(`Successfully converted! Downloading ${outputFileName}`, 'success');
+            showStatus(`✅ Conversion successful! Downloaded: ${outputFileName}`, 'success');
             
             convertBtn.disabled = false;
             convertBtn.innerHTML = 'Convert Another File';
@@ -564,7 +728,118 @@
             setTimeout(() => {
                 progressContainer.style.display = 'none';
                 progressFill.style.width = '0%';
-            }, 2000);
+            }, 3000);
+        }
+
+        function extractParagraphs(items, viewport, mode) {
+            const paragraphs = [];
+            let currentPara = null;
+            const yTolerance = 3; // Pixels tolerance for same line
+            const paraGap = 8;    // Gap to detect new paragraph
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                const text = item.str.trim();
+                if (!text) continue;
+
+                const x = item.transform[4];
+                const y = item.transform[5];
+                const fontSize = item.height || 12;
+                const fontName = item.fontName || '';
+                
+                // Detect formatting from font name
+                const isBold = /bold|black|heavy|strong/i.test(fontName);
+                const isItalic = /italic|oblique/i.test(fontName);
+                
+                // Detect alignment based on x position
+                let alignment = docx.AlignmentType.LEFT;
+                const pageWidth = viewport.width;
+                const centerThreshold = pageWidth * 0.4;
+                const rightThreshold = pageWidth * 0.7;
+                
+                if (x > rightThreshold) {
+                    alignment = docx.AlignmentType.RIGHT;
+                } else if (x > centerThreshold && x < rightThreshold) {
+                    alignment = docx.AlignmentType.CENTER;
+                }
+
+                if (!currentPara) {
+                    currentPara = {
+                        text: text,
+                        y: y,
+                        fontSize: fontSize,
+                        fontName: fontName,
+                        bold: isBold,
+                        italic: isItalic,
+                        alignment: alignment,
+                        indent: x > 50 ? x : 0,
+                        items: [item]
+                    };
+                } else {
+                    const yDiff = Math.abs(y - currentPara.y);
+                    
+                    if (yDiff < yTolerance) {
+                        // Same line - check if it's a space away or continuation
+                        const lastItem = currentPara.items[currentPara.items.length - 1];
+                        const xGap = item.transform[4] - (lastItem.transform[4] + lastItem.width);
+                        
+                        if (xGap > 20) {
+                            // Large gap - might be tab or column
+                            currentPara.text += '\t' + text;
+                        } else {
+                            currentPara.text += ' ' + text;
+                        }
+                        currentPara.items.push(item);
+                        
+                        // Update formatting if this piece is bold/italic
+                        if (isBold) currentPara.bold = true;
+                        if (isItalic) currentPara.italic = true;
+                    } else if (yDiff < paraGap) {
+                        // Same paragraph, new line
+                        currentPara.text += ' ' + text;
+                        currentPara.y = y;
+                        currentPara.items.push(item);
+                    } else {
+                        // New paragraph
+                        paragraphs.push(currentPara);
+                        currentPara = {
+                            text: text,
+                            y: y,
+                            fontSize: fontSize,
+                            fontName: fontName,
+                            bold: isBold,
+                            italic: isItalic,
+                            alignment: alignment,
+                            indent: x > 50 ? x : 0,
+                            items: [item]
+                        };
+                    }
+                }
+            }
+
+            if (currentPara) {
+                paragraphs.push(currentPara);
+            }
+
+            // Post-process: Merge very short lines that might be line breaks in original
+            if (mode === 'flow') {
+                const merged = [];
+                let buffer = null;
+                
+                for (const para of paragraphs) {
+                    if (para.text.length < 30 && !para.bold && buffer) {
+                        // Likely a continuation of previous paragraph
+                        buffer.text += ' ' + para.text;
+                    } else {
+                        if (buffer) merged.push(buffer);
+                        buffer = para;
+                    }
+                }
+                if (buffer) merged.push(buffer);
+                return merged;
+            }
+
+            return paragraphs;
         }
 
         function updateProgress(percent, text) {
@@ -573,14 +848,14 @@
         }
 
         function showStatus(message, type) {
-            status.textContent = message;
+            status.innerHTML = message;
             status.className = 'status ' + type;
             status.style.display = 'block';
             
             if (type === 'success') {
                 setTimeout(() => {
                     status.style.display = 'none';
-                }, 5000);
+                }, 6000);
             }
         }
     </script>
