@@ -1,438 +1,233 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Free Online Voice Recorder – Record Audio in Browser – Tools House Online</title>
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Free Online Voice Recorder – Record Audio in Browser – Tools House Online</title>
 <meta name="description" content="Record voice online free. Capture audio memos & notes instantly. No signup required. Fast, clear recording on mobile & PC in browser.">
 <link rel="canonical" href="https://www.toolshouse.online/voice-recorder.html">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Free Online Voice Recorder – Record Audio in Browser – Tools House Online">
-<meta property="og:description" content="Record voice and audio online for free. No software needed. Works on mobile and PC. Perfect for memos and voice notes.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.toolshouse.online/Voice Recorder.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Online Voice Recorder – Record Audio in Browser – Tools House Online">
-<meta name="twitter:description" content="Record voice and audio online for free. No software needed. Works on mobile and PC. Perfect for memos and voice notes.">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
 
-
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: radial-gradient(circle at 10% 30%, #ffe8b5, #fbb9d0 70%, #c1a2fe);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  margin: 0;
-  /* mobile pop feel */
-  touch-action: manipulation;
-}
-
-/* main card – juicy, pop, floating */
-.container {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  color: #1d1f36;
-  padding: 2rem 1.5rem;
-  border-radius: 48px;
-  max-width: 480px;
-  width: 100%;
-  box-shadow: 
-    0 30px 50px -15px rgba(0, 0, 0, 0.4),
-    0 0 0 3px rgba(255, 255, 255, 0.7) inset,
-    0 0 0 6px rgba(255, 215, 245, 0.3) inset;
-  transition: transform 0.15s ease, box-shadow 0.25s;
-  border: 1px solid rgba(255,255,240,0.9);
-}
-
-.container:active {
-  transform: scale(0.99);
-  box-shadow: 
-    0 20px 35px -10px rgba(0, 0, 0, 0.4),
-    0 0 0 3px rgba(255, 255, 255, 0.8) inset;
-}
-
-/* page title: Voice Recorder big pop style */
-h1 {
-  font-size: 2.7rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  text-align: center;
-  margin-bottom: 0.2rem;
-  background: linear-gradient(145deg, #ff357a, #ffb87c);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 4px 12px rgba(255, 150, 200, 0.6);
-  filter: drop-shadow(0 8px 6px #ffe0f0);
-  word-break: break-word;
-  line-height: 1.1;
-}
-
-h1 span {
-  font-size: 1.2rem;
-  background: #ffffffd6;
-  color: #b23e72;
-  padding: 0.2rem 1.2rem 0.3rem;
-  border-radius: 60px;
-  margin-left: 0.5rem;
-  font-weight: 600;
-  display: inline-block;
-  box-shadow: 0 2px 0 #fec7d7, 0 8px 14px -10px black;
-  backdrop-filter: blur(4px);
-  vertical-align: middle;
-  border: 1px solid white;
-}
-
-/* timer - super juicy */
-.timer-wrapper {
-  background: #fdeef9;
-  border-radius: 80px;
-  padding: 6px;
-  margin: 24px 0 12px;
-  box-shadow: 
-    0 8px 0 #b28bbd,
-    0 16px 28px -12px #bf7c9e,
-    inset 0 -3px 4px #ffeef8;
-}
-
-.timer-display {
-  background: #190b28;
-  border-radius: 70px;
-  padding: 0.6rem 0.8rem;
-  font-family: 'Orbitron', 'Courier New', monospace;
-  font-size: 3.2rem;
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: 6px;
-  color: #f6ffb3;
-  text-shadow: 0 0 12px #fcfca2, 0 0 30px #ffa2d6;
-  border: 2px solid #fdcce6;
-  line-height: 1.2;
-  box-shadow: inset 0 -2px 6px #26001c, 0 4px 0 #b4418b;
-}
-
-.timer-label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #762c5e;
-  background: rgba(255, 236, 252, 0.8);
-  padding: 0.3rem 1rem;
-  border-radius: 40px;
-  display: inline-block;
-  margin-top: 4px;
-  letter-spacing: 1.5px;
-  border: 1px solid white;
-}
-
-/* BUTTONS — big, tappable, pop colors */
-.button-group {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin: 28px 0 18px;
-}
-
-button {
-  padding: 16px 20px;
-  border: none;
-  border-radius: 44px;
-  font-weight: 700;
-  font-size: 1.4rem;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.1s cubic-bezier(0.2, 1.6, 0.5, 1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  box-shadow: 0 7px 0 rgba(0, 0, 0, 0.2), 0 12px 20px -12px black;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  flex: 1 1 auto;
-  min-width: 140px;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-button:active {
-  transform: translateY(5px);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 8px 16px -8px black;
-}
-
-button:disabled {
-  opacity: 0.5;
-  filter: grayscale(0.4);
-  transform: translateY(0);
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
-  pointer-events: none;
-}
-
-.record {
-  background: #ff5e7c;
-  background: linear-gradient(145deg, #ff728c, #f33b6b);
-  color: white;
-  text-shadow: 0 2px 0 #a01b44;
-}
-
-.stop {
-  background: #41d39f;
-  background: linear-gradient(145deg, #60e3b5, #26b583);
-  color: #022c1c;
-  text-shadow: 0 1px 0 #b9ffe6;
-}
-
-.download {
-  background: #7c85ff;
-  background: linear-gradient(145deg, #9ca7ff, #6a6ef0);
-  color: white;
-  text-shadow: 0 2px 0 #2e2885;
-}
-
-/* audio player card */
-.audio-player {
-  background: rgba(255, 226, 247, 0.9);
-  border-radius: 60px;
-  padding: 10px 12px;
-  margin: 18px 0 16px;
-  box-shadow: 
-    0 6px 0 #cc98b9,
-    inset 0 2px 12px white;
-  border: 2px solid white;
-}
-
-audio {
-  width: 100%;
-  height: 60px;
-  border-radius: 50px;
-  outline: none;
-  background: #ffebf5;
-}
-
-/* status pill - extra pop */
-.status-pill {
-  background: #180d27;
-  padding: 12px 20px;
-  border-radius: 60px;
-  display: inline-block;
-  margin: 8px auto 4px;
-  border: 2px solid #ffccf0;
-  box-shadow: 0 5px 0 #b886b0, 0 14px 25px -12px black;
-}
-
-#status {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: #fee5a2;
-  text-shadow: 0 2px 0 #93456b;
-  background: transparent;
-  letter-spacing: 0.4px;
-}
-
-.subtle-note {
-  color: #59375a;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-top: 12px;
-  background: rgba(255, 240, 252, 0.7);
-  padding: 8px 15px;
-  border-radius: 80px;
-  backdrop-filter: blur(4px);
-  border: 1px solid white;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* everything centered */
-.container, .timer-label, .status-pill, .subtle-note {
-  text-align: center;
-}
-
-/* mobile fine-tune */
-@media (max-width: 400px) {
-  h1 { font-size: 2.2rem; }
-  .timer-display { font-size: 2.5rem; letter-spacing: 3px; }
-  button { font-size: 1.2rem; padding: 14px 14px; min-width: 120px; }
-  .container { padding: 1.5rem 1rem; }
-}
-</style>
-</head>
-<body>
-
-<div class="container">
-  <!-- page title changed to "Voice Recorder" with pop vibe -->
-  <h1>Voice Recorder <span>🎤 pop</span></h1>
-
-  <!-- timer block with extra pop shadows -->
-  <div class="timer-wrapper">
-    <div class="timer-display" id="timerDisplay">00:00.0</div>
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    @keyframes waveform {
+      0%, 100% { height: 8px; }
+      50% { height: var(--h); }
+    }
+    .pulse-ring { animation: pulse-ring 1.2s ease-out infinite; }
+    .wave-bar {
+      animation: waveform 0.6s ease-in-out infinite;
+      animation-delay: var(--d);
+    }
+    .recording .wave-bar { animation-play-state: running; }
+    .paused .wave-bar, .idle .wave-bar { animation-play-state: paused; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto flex flex-col items-center justify-center" style="background: linear-gradient(145deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);">
+   <!-- Main Card -->
+   <div class="w-full max-w-md mx-auto px-4">
+    <div class="rounded-3xl p-8 text-center" style="background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08);">
+     <h1 id="title" class="text-2xl font-bold mb-1" style="color: #e0e0ff;">Voice Recorder</h1>
+     <p class="text-sm mb-8" style="color: #6b6b8a;">Tap to record, tap again to stop</p><!-- Timer -->
+     <div id="timer" class="text-5xl font-mono font-semibold tracking-wider mb-6" style="color: #c0c0ff;">
+      00:00
+     </div><!-- Waveform -->
+     <div id="waveform" class="idle flex items-center justify-center gap-1 h-16 mb-8">
+      <script>
+          document.write(Array.from({length:24}, (_,i) =>
+            `<div class="wave-bar rounded-full w-1.5" style="--h:${12+Math.random()*36}px;--d:${i*0.05}s;height:8px;background:linear-gradient(to top,#6c63ff,#b794f6);"></div>`
+          ).join(''));
+        </script>
+     </div><!-- Controls -->
+     <div class="flex items-center justify-center gap-5">
+      <!-- Record / Stop --> <button id="btnRecord" onclick="toggleRecord()" class="relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #6c63ff, #4834d4);">
+       <div id="pulseRing" class="absolute inset-0 rounded-full hidden" style="background: #6c63ff;"></div>
+       <div id="iconRecord" class="relative z-10">
+        <i data-lucide="mic" style="width:32px;height:32px;color:#fff;"></i>
+       </div></button> <!-- Pause (hidden until recording) --> <button id="btnPause" onclick="togglePause()" class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 hidden" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);"> <i data-lucide="pause" style="width:22px;height:22px;color:#c0c0ff;"></i> </button>
+     </div><!-- Status -->
+     <p id="status" class="mt-5 text-xs font-medium tracking-widest uppercase" style="color: #6c63ff;">Ready</p>
+    </div><!-- Recordings List -->
+    <div id="recordingsList" class="mt-6 space-y-3"></div>
+   </div><!-- Toast -->
+   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-xl text-sm font-medium opacity-0 transition-opacity duration-300 pointer-events-none" style="background:#6c63ff;color:#fff;"></div>
   </div>
-  <div class="timer-label">⏱️ recording time</div>
+  <script>
+  let mediaRecorder, chunks=[], stream, timerInterval, seconds=0, isRecording=false, isPaused=false, recordings=[];
+  const wf=document.getElementById('waveform'), status=document.getElementById('status'),
+        timer=document.getElementById('timer'), btnStart=document.getElementById('btnStart'),
+        btnStop=document.getElementById('btnStop'), btnPause=document.getElementById('btnPause'),
+        btnResume=document.getElementById('btnResume'), pulseRing=document.getElementById('pulseRing'),
+        list=document.getElementById('recordingsList');
 
-  <!-- large tappable buttons for mobile -->
-  <div class="button-group">
-    <button class="record" onclick="startRecording()">🔴 Record</button>
-    <button class="stop" onclick="stopRecording()" disabled>⏹️ Stop</button>
-    <button class="download" onclick="downloadAudio()" disabled>📥 Download</button>
-  </div>
+  function fmt(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 
-  <!-- audio player with mobile-friendly style -->
-  <div class="audio-player">
-    <audio id="audioPlayback" controls></audio>
-  </div>
+  function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',2200); }
 
-  <!-- status with pop design -->
-  <div class="status-pill">
-    <span id="status">✨ ready to record</span>
-  </div>
-  <div class="subtle-note">
-    <span>👆 tap Record – timer starts</span>
-  </div>
-</div>
-
-<script>
-let mediaRecorder;
-let audioChunks = [];
-let audioBlob;
-
-// Timer variables
-let timerInterval = null;
-let startTime = 0;
-let elapsedSeconds = 0;
-let isRecording = false;
-
-const timerElement = document.getElementById('timerDisplay');
-const recordBtn = document.querySelector(".record");
-const stopBtn = document.querySelector(".stop");
-const downloadBtn = document.querySelector(".download");
-const statusDiv = document.getElementById("status");
-const audioPlayback = document.getElementById("audioPlayback");
-
-function formatTime(totalSeconds) {
-    let mins = Math.floor(totalSeconds / 60);
-    let secs = Math.floor(totalSeconds % 60);
-    let tenth = Math.floor((totalSeconds - Math.floor(totalSeconds)) * 10);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${tenth}`;
-}
-
-function updateTimerDisplay() {
-    if (isRecording) {
-        let now = Date.now();
-        let diff = (now - startTime) / 1000;
-        let displayTime = elapsedSeconds + diff;
-        timerElement.textContent = formatTime(displayTime);
+  function updateUI(){
+    if(isRecording){
+      status.textContent=isPaused?'Paused':'Recording';
+      pulseRing.classList.remove('hidden');
+      if(!isPaused) pulseRing.classList.add('pulse-ring');
+      else pulseRing.classList.remove('pulse-ring');
+      btnStart.classList.add('hidden');
+      btnStop.classList.remove('hidden');
+      btnPause.classList.toggle('hidden', isPaused);
+      btnResume.classList.toggle('hidden', !isPaused);
+      wf.className=wf.className.replace(/idle|paused/g,'').trim()+' recording';
     } else {
-        timerElement.textContent = formatTime(elapsedSeconds);
+      status.textContent='Ready';
+      pulseRing.classList.add('hidden');
+      pulseRing.classList.remove('pulse-ring');
+      btnStart.classList.remove('hidden');
+      btnStop.classList.add('hidden');
+      btnPause.classList.add('hidden');
+      btnResume.classList.add('hidden');
+      wf.className=wf.className.replace(/recording|paused/g,'').trim()+' idle';
     }
-}
+    lucide.createIcons();
+  }
 
-function startTimer() {
-    if (timerInterval) clearInterval(timerInterval);
-    startTime = Date.now();
-    isRecording = true;
-    updateTimerDisplay();
-    timerInterval = setInterval(updateTimerDisplay, 100);
-}
-
-function stopTimer() {
-    if (isRecording) {
-        let now = Date.now();
-        let diff = (now - startTime) / 1000;
-        elapsedSeconds = elapsedSeconds + diff;
-        isRecording = false;
-    }
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-    }
-    updateTimerDisplay();
-}
-
-function resetTimer() {
-    stopTimer();
-    elapsedSeconds = 0;
-    isRecording = false;
-    updateTimerDisplay();
-}
-
-async function startRecording(){
+  async function startRecording(){
     try{
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-
-        resetTimer();          // fresh recording
-
-        mediaRecorder.start();
-        startTimer();
-
-        mediaRecorder.ondataavailable = event => {
-            audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            stopTimer();         // freeze timer
-
-            audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-            const audioURL = URL.createObjectURL(audioBlob);
-            audioPlayback.src = audioURL;
-            downloadBtn.disabled = false;
-
-            // stop microphone tracks
-            stream.getTracks().forEach(track => track.stop());
-        };
-
-        // update UI
-        recordBtn.disabled = true;
-        stopBtn.disabled = false;
-        downloadBtn.disabled = true;   
-        statusDiv.innerText = "🔴 recording now...";
+      stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    } catch(e){
+      showToast('Microphone access denied');
+      return;
     }
-    catch(error){
-        alert("🎤 Please allow microphone access to record.");
-    }
-}
+    chunks=[]; seconds=0; timer.textContent='00:00'; isPaused=false; isRecording=true;
+    mediaRecorder=new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=e=>{ if(e.data.size>0) chunks.push(e.data); };
+    mediaRecorder.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(chunks,{type:'audio/webm'});
+      addRecording(blob);
+      isRecording=false;
+      isPaused=false;
+      updateUI();
+    };
+    mediaRecorder.start();
+    updateUI();
+    timerInterval=setInterval(()=>{
+      if(!isPaused){
+        seconds++;
+        timer.textContent=fmt(seconds);
+      }
+    },1000);
+  }
 
-function stopRecording(){
-    if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-        stopTimer(); 
-        recordBtn.disabled = false;
-        stopBtn.disabled = true;
-        statusDiv.innerText = "⏸ stopped";
-    }
-}
+  function stopRecording(){
+    if(!mediaRecorder||mediaRecorder.state==='inactive') return;
+    clearInterval(timerInterval);
+    mediaRecorder.stop();
+  }
 
-function downloadAudio(){
-    if (audioBlob) {
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(audioBlob);
-        a.download = "voice-recording.webm";
-        a.click();
-    } else {
-        alert("No recording yet. Tap Record first.");
-    }
-}
+  function pauseRecording(){
+    if(!mediaRecorder||mediaRecorder.state==='inactive'||isPaused) return;
+    mediaRecorder.pause();
+    isPaused=true;
+    updateUI();
+    showToast('Recording paused');
+  }
 
-// clean up timer on page hide
-window.addEventListener('beforeunload', function() {
-    if (timerInterval) clearInterval(timerInterval);
-});
+  function resumeRecording(){
+    if(!mediaRecorder||mediaRecorder.state==='inactive'||!isPaused) return;
+    mediaRecorder.resume();
+    isPaused=false;
+    updateUI();
+    showToast('Recording resumed');
+  }
+
+  function addRecording(blob){
+    const url=URL.createObjectURL(blob), id=Date.now(), dur=fmt(seconds);
+    recordings.unshift({id,url,dur,name:'Recording '+(recordings.length+1)});
+    renderList();
+    showToast('✓ Recording saved!');
+  }
+
+  function renderList(){
+    list.innerHTML=recordings.map(r=>`
+      <div class="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.01]" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+        <button onclick="playRec('${r.id}')" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80" style="background:rgba(108,99,255,0.2);">
+          <i data-lucide="play" style="width:18px;height:18px;color:#b794f6;"></i>
+        </button>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold truncate" style="color:#e0e0ff;">${r.name}</p>
+          <p class="text-xs" style="color:#6b6b8a;">${r.dur}</p>
+        </div>
+        <button onclick="downloadRec('${r.id}')" class="w-9 h-9 rounded-full flex items-center justify-center hover:opacity-80" style="background:rgba(108,99,255,0.1);">
+          <i data-lucide="download" style="width:16px;height:16px;color:#b794f6;"></i>
+        </button>
+        <button onclick="deleteRec('${r.id}')" class="w-9 h-9 rounded-full flex items-center justify-center hover:opacity-80" style="background:rgba(255,71,87,0.1);">
+          <i data-lucide="trash-2" style="width:16px;height:16px;color:#ff4757;"></i>
+        </button>
+      </div>
+    `).join('');
+    lucide.createIcons();
+  }
+
+  function playRec(id){
+    const r=recordings.find(x=>x.id==id);
+    if(r) new Audio(r.url).play();
+  }
+
+  function downloadRec(id){
+    const r=recordings.find(x=>x.id==id);
+    if(r){
+      const a=document.createElement('a');
+      a.href=r.url;
+      a.download=r.name+'.webm';
+      a.click();
+      showToast('⬇ Downloading '+r.name);
+    }
+  }
+
+  function deleteRec(id){
+    recordings=recordings.filter(x=>x.id!=id);
+    renderList();
+    showToast('🗑 Recording deleted');
+  }
+
+  // Element SDK
+  const defaultConfig = { app_title:'Voice Recorder', background_color:'#0f0f1a', accent_color:'#6c63ff', text_color:'#e0e0ff', surface_color:'rgba(255,255,255,0.04)', secondary_action_color:'#6b6b8a', font_family:'DM Sans', font_size:16 };
+
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async(config)=>{
+      const t=config.app_title||defaultConfig.app_title;
+      document.getElementById('title').textContent=t;
+      const font=config.font_family||defaultConfig.font_family;
+      document.querySelectorAll('*').forEach(el=>{ if(el.style) el.style.fontFamily=font+', sans-serif'; });
+      const base=config.font_size||defaultConfig.font_size;
+      document.getElementById('title').style.fontSize=base*1.5+'px';
+      document.getElementById('timer').style.fontSize=base*3+'px';
+    },
+    mapToCapabilities:(config)=>({
+      recolorables:[
+        {get:()=>config.background_color||defaultConfig.background_color, set:v=>{config.background_color=v;window.elementSdk.setConfig({background_color:v});}},
+        {get:()=>config.surface_color||defaultConfig.surface_color, set:v=>{config.surface_color=v;window.elementSdk.setConfig({surface_color:v});}},
+        {get:()=>config.text_color||defaultConfig.text_color, set:v=>{config.text_color=v;window.elementSdk.setConfig({text_color:v});}},
+        {get:()=>config.accent_color||defaultConfig.accent_color, set:v=>{config.accent_color=v;window.elementSdk.setConfig({accent_color:v});}},
+        {get:()=>config.secondary_action_color||defaultConfig.secondary_action_color, set:v=>{config.secondary_action_color=v;window.elementSdk.setConfig({secondary_action_color:v});}}
+      ],
+      borderables:[],
+      fontEditable:{get:()=>config.font_family||defaultConfig.font_family, set:v=>{config.font_family=v;window.elementSdk.setConfig({font_family:v});}},
+      fontSizeable:{get:()=>config.font_size||defaultConfig.font_size, set:v=>{config.font_size=v;window.elementSdk.setConfig({font_size:v});}}
+    }),
+    mapToEditPanelValues:(config)=>new Map([['app_title',config.app_title||defaultConfig.app_title]])
+  });
+
+  lucide.createIcons();
 </script>
-<script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
-</body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e44101663d29081',t:'MTc3NDg0MTcxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
