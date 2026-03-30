@@ -249,23 +249,117 @@
     }
     
     @media (max-width: 768px) {
+      .app-wrapper {
+        height: 100%;
+      }
+      
+      .header {
+        padding: 0.75rem 1rem;
+      }
+      
       .main-content {
         flex-direction: column;
-        padding: 1rem;
+        padding: 0.75rem;
+        gap: 0.5rem;
       }
       
       .sidebar {
         width: 100%;
+        max-height: 150px;
+        display: none;
+      }
+      
+      .sidebar.mobile-visible {
+        display: flex;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 50;
+        border-radius: 0;
         max-height: 200px;
       }
       
       .toolbar {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 0.75rem;
       }
       
       .toolbar-group {
         width: 100%;
+        flex-wrap: wrap;
+      }
+      
+      .btn {
+        flex: 1;
+        min-width: 80px;
+        padding: 0.625rem 0.75rem;
+        font-size: 0.8125rem;
+      }
+      
+      .page-info {
+        min-width: 100px;
+      }
+      
+      .pdf-container {
+        padding: 0.5rem;
+      }
+      
+      .drop-zone {
+        padding: 2rem 1.5rem;
+      }
+      
+      .drop-icon {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .drop-text {
+        font-size: 0.9375rem;
+      }
+      
+      .drop-hint {
+        font-size: 0.8125rem;
+      }
+      
+      .viewer-section {
+        border-radius: 8px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+      }
+      
+      #fileNameDisplay {
+        max-width: 100%;
+        width: 100%;
+      }
+      
+      .toolbar {
+        padding: 0.75rem;
+      }
+      
+      .toolbar-group {
+        gap: 0.25rem;
+      }
+      
+      .btn {
+        padding: 0.5rem 0.625rem;
+        font-size: 0.75rem;
+      }
+      
+      .page-info {
+        font-size: 0.8125rem;
+      }
+      
+      input[type="range"] {
+        width: 80px;
       }
     }
   </style>
@@ -276,8 +370,10 @@
  <body class="h-full">
   <div class="app-wrapper"><!-- Header -->
    <header class="header">
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
-     <div style="width: 36px; height: 36px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><i data-lucide="file-text" style="width: 20px; height: 20px; color: white;"></i>
+    <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+     <button class="btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" style="display: none; background: #e2e8f0; width: 36px; padding: 0.5rem;" title="Menu"> <i data-lucide="menu" style="width: 18px; height: 18px;"></i> </button>
+     <div style="width: 36px; height: 36px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+      <i data-lucide="file-text" style="width: 20px; height: 20px; color: white;"></i>
      </div>
      <h1 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">PDF Reader</h1>
     </div>
@@ -312,7 +408,7 @@
          Drop PDF here or click to upload
         </div>
         <div class="drop-hint">
-         Supported: PDF files up to 50MB
+         Supported: PDF files (unlimited size)
         </div>
        </div>
       </div>
@@ -328,9 +424,41 @@
     let currentPage = 1;
     let zoom = 100;
     let recentPdfs = [];
+    let isMobileMenuOpen = false;
+
+    function toggleMobileMenu() {
+      const sidebar = document.querySelector('.sidebar');
+      isMobileMenuOpen = !isMobileMenuOpen;
+      
+      if (isMobileMenuOpen) {
+        sidebar.classList.add('mobile-visible');
+      } else {
+        sidebar.classList.remove('mobile-visible');
+      }
+    }
+
+    function closeMobileMenu() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.remove('mobile-visible');
+      isMobileMenuOpen = false;
+    }
+
+    function updateMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      if (window.innerWidth <= 768) {
+        mobileMenuBtn.style.display = 'flex';
+      } else {
+        mobileMenuBtn.style.display = 'none';
+        closeMobileMenu();
+      }
+    }
+
+    window.addEventListener('resize', updateMobileMenu);
+    window.addEventListener('load', updateMobileMenu);
 
     async function loadPdf(file) {
       try {
+        closeMobileMenu();
         const fileReader = new FileReader();
         fileReader.onload = async (e) => {
           try {
@@ -453,7 +581,7 @@
       }
       
       list.innerHTML = recentPdfs.map((pdf, i) => `
-        <div class="sidebar-item" title="${pdf}">${pdf}</div>
+        <div class="sidebar-item" title="${pdf}" onclick="closeMobileMenu()">${pdf}</div>
       `).join('');
     }
 
@@ -493,11 +621,20 @@
     }
 
     function showError(message) {
-      alert(message);
+      const errorDiv = document.createElement('div');
+      errorDiv.style.cssText = 'position: fixed; bottom: 1rem; right: 1rem; background: #dc2626; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; max-width: 90%; animation: slideUp 0.3s ease;';
+      errorDiv.textContent = message;
+      document.body.appendChild(errorDiv);
+      
+      setTimeout(() => {
+        errorDiv.style.animation = 'slideDown 0.3s ease';
+        setTimeout(() => errorDiv.remove(), 300);
+      }, 3000);
     }
 
-    // Initialize icons
+    // Initialize
     lucide.createIcons();
+    updateMobileMenu();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e483182e1df9081',t:'MTc3NDg4NTAyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e48664e73b490a4',t:'MTc3NDg4NzE4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
