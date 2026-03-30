@@ -3,433 +3,501 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Free PDF Reader Online – Read PDF in Browser – Tools House Online</title>
-<meta name="description" content="Read PDF files online free. Open PDFs in browser on mobile & PC. No download required. Fast, secure & works on all devices instantly.">
-<link rel="canonical" href="https://www.toolshouse.online/pdf-reader.html">
+  <title>PDF Reader</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
     * { font-family: 'DM Sans', sans-serif; }
-    html, body { height: 100%; margin: 0; }
-    .app-wrap { height: 100%; overflow: auto; }
-    .pdf-canvas { max-width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.18); border-radius: 8px; }
-    .drop-zone { border: 2.5px dashed #6366f1; transition: all 0.25s; }
-    .drop-zone.dragover { background: #eef2ff; border-color: #4f46e5; transform: scale(1.01); }
-    .ctrl-btn { transition: all 0.15s; }
-    .ctrl-btn:hover { background: #4f46e5; color: #fff; }
-    .ctrl-btn:active { transform: scale(0.94); }
-    .toast { animation: slideUp 0.3s ease; }
-    @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-    input[type="range"] { accent-color: #6366f1; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 8px; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    
+    .app-wrapper {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #f8fafc;
+    }
+    
+    .header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+    
+    .sidebar {
+      width: 280px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    
+    .sidebar-header {
+      padding: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #475569;
+    }
+    
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem;
+    }
+    
+    .sidebar-item {
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: #475569;
+      background: #f8fafc;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .sidebar-item:hover {
+      background: #e2e8f0;
+    }
+    
+    .viewer-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      flex-wrap: wrap;
+    }
+    
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      background: #e2e8f0;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn:hover {
+      background: #cbd5e1;
+    }
+    
+    .btn:active {
+      transform: scale(0.95);
+    }
+    
+    .btn-primary {
+      background: #4f46e5;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #4338ca;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .page-info {
+      font-size: 0.875rem;
+      color: #64748b;
+      min-width: 120px;
+      text-align: center;
+    }
+    
+    .pdf-container {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: #f1f5f9;
+    }
+    
+    .pdf-canvas {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+    
+    .drop-zone {
+      border: 3px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      transition: all 0.25s;
+      cursor: pointer;
+      background: #f8fafc;
+    }
+    
+    .drop-zone.dragover {
+      border-color: #4f46e5;
+      background: #eef2ff;
+    }
+    
+    .drop-zone-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .drop-icon {
+      width: 48px;
+      height: 48px;
+      color: #cbd5e1;
+    }
+    
+    .drop-zone.dragover .drop-icon {
+      color: #4f46e5;
+    }
+    
+    .drop-text {
+      font-size: 1rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+    
+    .drop-hint {
+      font-size: 0.875rem;
+      color: #94a3b8;
+    }
+    
+    #pdfInput {
+      display: none;
+    }
+    
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 1rem;
+      color: #94a3b8;
+    }
+    
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      color: #cbd5e1;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      
+      .sidebar {
+        width: 100%;
+        max-height: 200px;
+      }
+      
+      .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .toolbar-group {
+        width: 100%;
+      }
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full bg-slate-50">
-  <div class="app-wrap flex flex-col" id="appWrap"><!-- Header -->
-   <header class="flex items-center justify-between px-4 md:px-6 py-3 bg-white border-b border-slate-200 shrink-0">
-    <div class="flex items-center gap-2.5"><button class="md:hidden w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="toggleSidebar()" id="sidebarToggle" title="Menu"> <i data-lucide="menu" style="width:18px;height:18px;"></i> </button>
-     <div class="w-9 h-9 rounded-lg bg-indigo-500 flex items-center justify-center"><i data-lucide="file-text" style="width:20px;height:20px;color:#fff;"></i>
+ <body class="h-full">
+  <div class="app-wrapper"><!-- Header -->
+   <header class="header">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+     <div style="width: 36px; height: 36px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><i data-lucide="file-text" style="width: 20px; height: 20px; color: white;"></i>
      </div>
-     <h1 id="appTitle" class="text-lg md:text-xl font-bold text-slate-800">PDF Reader</h1>
+     <h1 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">PDF Reader</h1>
     </div>
-    <div class="flex items-center gap-2">
-     <div id="fileInfo" class="hidden text-xs md:text-sm text-slate-500 truncate max-w-[140px] md:max-w-xs"></div>
-    </div>
-   </header><!-- Main Content Wrapper -->
-   <div class="flex flex-1 overflow-hidden"><!-- Left Sidebar -->
-    <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 shrink-0 overflow-hidden">
-     <div class="p-4 border-b border-slate-100">
-      <h2 class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i data-lucide="history" style="width:16px;height:16px;color:#64748b;"></i> Recently Opened</h2>
+    <div id="fileNameDisplay" style="font-size: 0.875rem; color: #64748b; text-align: right; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
+   </header><!-- Main Content -->
+   <div class="main-content"><!-- Sidebar -->
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      Recent PDFs
      </div>
-     <div id="sidebarList" class="flex-1 overflow-y-auto">
-      <div class="p-4 text-center text-xs text-slate-400">
+     <div class="sidebar-content" id="recentList">
+      <div style="text-align: center; color: #94a3b8; font-size: 0.875rem; padding: 2rem 0;">
        No PDFs opened yet
       </div>
      </div>
-    </aside><!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden"><!-- Header -->
-     <header class="flex items-center justify-between px-4 md:px-6 py-3 bg-white border-b border-slate-200 shrink-0">
-      <div class="flex items-center gap-2.5"><button class="md:hidden w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="toggleSidebar()" id="sidebarToggle" title="Menu"> <i data-lucide="menu" style="width:18px;height:18px;"></i> </button>
-       <div class="w-9 h-9 rounded-lg bg-indigo-500 flex items-center justify-center"><i data-lucide="file-text" style="width:20px;height:20px;color:#fff;"></i>
-       </div>
-       <h1 id="appTitle" class="text-lg md:text-xl font-bold text-slate-800">PDF Reader</h1>
+    </aside><!-- Viewer -->
+    <div class="viewer-section"><!-- Toolbar -->
+     <div class="toolbar">
+      <div class="toolbar-group"><button class="btn btn-primary" onclick="document.getElementById('pdfInput').click()"> <i data-lucide="upload" style="width: 16px; height: 16px;"></i> Upload PDF </button>
       </div>
-      <div class="flex items-center gap-2">
-       <button class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-sm font-medium" onclick="toggleLibrary()" id="libraryBtn" title="View Library"> <i data-lucide="library" style="width:16px;height:16px;"></i> <span class="hidden md:inline">Library</span> </button>
-       <div id="fileInfo" class="hidden text-xs md:text-sm text-slate-500 truncate max-w-[140px] md:max-w-xs"></div>
+      <div class="toolbar-group" id="controlsGroup" style="display: none;"><button class="btn" onclick="previousPage()" id="prevBtn" title="Previous page"> <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i> </button>
+       <div class="page-info"><span id="currentPage">0</span> / <span id="totalPages">0</span>
+       </div><button class="btn" onclick="nextPage()" id="nextBtn" title="Next page"> <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i> </button>
       </div>
-     </header><!-- Upload Screen -->
-     <div id="uploadScreen" class="flex-1 flex items-center justify-center p-4">
-      <div class="drop-zone rounded-2xl p-8 md:p-14 flex flex-col items-center text-center cursor-pointer w-full max-w-lg" id="dropZone" onclick="document.getElementById('fileInput').click()">
-       <div class="w-20 h-20 rounded-full bg-indigo-50 flex items-center justify-center mb-5"><i data-lucide="upload-cloud" style="width:40px;height:40px;color:#6366f1;"></i>
-       </div>
-       <p class="text-xl font-semibold text-slate-700 mb-2">Drop your PDF here</p>
-       <p class="text-slate-400 text-sm mb-5">or click to browse files</p><span class="inline-flex items-center gap-2 bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:bg-indigo-600 transition"> <i data-lucide="folder-open" style="width:16px;height:16px;"></i> Choose PDF </span> <input type="file" id="fileInput" accept="application/pdf" class="hidden">
+      <div class="toolbar-group" id="zoomGroup" style="display: none;"><button class="btn" onclick="zoomOut()" title="Zoom out"> <i data-lucide="minus" style="width: 16px; height: 16px;"></i> </button> <input type="range" id="zoomSlider" min="50" max="200" value="100" style="width: 100px; cursor: pointer;" oninput="setZoom(this.value)"> <span style="font-size: 0.875rem; color: #64748b; min-width: 40px; text-align: right;"><span id="zoomLevel">100</span>%</span> <button class="btn" onclick="zoomIn()" title="Zoom in"> <i data-lucide="plus" style="width: 16px; height: 16px;"></i> </button>
       </div>
-     </div><!-- Reader Screen -->
-     <div id="readerScreen" class="hidden flex-1 flex flex-col overflow-hidden"><!-- Toolbar -->
-      <div class="flex items-center justify-between gap-2 px-3 md:px-5 py-2 bg-white border-b border-slate-100 shrink-0 flex-wrap">
-       <div class="flex items-center gap-1.5"><button class="ctrl-btn w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="prevPage()" title="Previous"> <i data-lucide="chevron-left" style="width:18px;height:18px;"></i> </button> <span class="text-sm font-medium text-slate-600 min-w-[80px] text-center"> <span id="currentPage">1</span> / <span id="totalPages">1</span> </span> <button class="ctrl-btn w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="nextPage()" title="Next"> <i data-lucide="chevron-right" style="width:18px;height:18px;"></i> </button>
-       </div>
-       <div class="flex items-center gap-1.5"><button class="ctrl-btn w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="changeZoom(-0.2)" title="Zoom Out"> <i data-lucide="zoom-out" style="width:16px;height:16px;"></i> </button> <span id="zoomLevel" class="text-xs font-medium text-slate-500 w-12 text-center">100%</span> <button class="ctrl-btn w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="changeZoom(0.2)" title="Zoom In"> <i data-lucide="zoom-in" style="width:16px;height:16px;"></i> </button> <button class="ctrl-btn w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="fitWidth()" title="Fit Width"> <i data-lucide="maximize-2" style="width:16px;height:16px;"></i> </button>
-       </div>
-       <div class="flex items-center gap-1.5"><button class="ctrl-btn w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="toggleAllPages()" id="viewToggle" title="View All"> <i data-lucide="layers" style="width:16px;height:16px;"></i> </button> <button class="ctrl-btn w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600" onclick="closePdf()" title="Close"> <i data-lucide="x" style="width:16px;height:16px;"></i> </button>
-       </div>
-      </div><!-- Page Slider -->
-      <div class="px-4 py-1.5 bg-white border-b border-slate-50 shrink-0" id="sliderBar"><input type="range" id="pageSlider" min="1" max="1" value="1" class="w-full h-1.5 cursor-pointer" oninput="goToPage(parseInt(this.value))">
-      </div><!-- Canvas Area -->
-      <div id="canvasContainer" class="flex-1 overflow-auto flex justify-center p-4 md:p-6 bg-slate-100">
-       <div id="singleView">
-        <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
-       </div>
-       <div id="allPagesView" class="hidden flex flex-col items-center gap-6 w-full">
-       </div>
-      </div>
-     </div><!-- Library Modal -->
-     <div id="libraryModal" class="hidden fixed inset-0 bg-black/40 z-40 flex items-center justify-center p-4">
-      <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col">
-       <div class="flex items-center justify-between p-5 border-b border-slate-100">
-        <h2 class="text-lg font-semibold text-slate-800">PDF Library</h2><button class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center" onclick="closeLibrary()"> <i data-lucide="x" style="width:18px;height:18px;color:#64748b;"></i> </button>
-       </div>
-       <div id="emptyState" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-3"><i data-lucide="inbox" style="width:32px;height:32px;color:#94a3b8;"></i>
+     </div><!-- PDF Display -->
+     <div class="pdf-container" id="pdfContainer" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+      <div class="drop-zone" id="dropZone">
+       <div class="drop-zone-content"><i data-lucide="cloud-upload" class="drop-icon"></i>
+        <div class="drop-text">
+         Drop PDF here or click to upload
         </div>
-        <p class="text-slate-500 text-sm">No PDFs loaded yet</p>
-       </div>
-       <div id="pdfList" class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-3 p-5">
-       </div>
-      </div>
-     </div><!-- Mobile Mini Library Bar -->
-     <div id="mobileMiniBar" class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2 px-2 max-h-20 overflow-x-auto z-20 shadow-lg">
-      <div class="flex items-center gap-2">
-       <h4 class="text-xs font-semibold text-slate-600 shrink-0 whitespace-nowrap">PDFs:</h4>
-       <div id="mobileMiniLibrary" class="flex gap-2 overflow-x-auto pb-1">
-        <div class="text-xs text-slate-400 py-2">
-         None loaded
+        <div class="drop-hint">
+         Supported: PDF files up to 50MB
         </div>
        </div>
       </div>
-     </div><!-- Mobile Sidebar Overlay -->
-     <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/40 z-30 md:hidden" onclick="closeSidebar()"></div>
-    </div><!-- Right Sidebar - All PDFs Mini Section -->
-    <aside id="rightSidebar" class="hidden lg:flex flex-col w-64 bg-white border-l border-slate-200 shrink-0 overflow-hidden">
-     <div class="p-4 border-b border-slate-100">
-      <h2 class="text-sm font-semibold text-slate-700 flex items-center gap-2"><i data-lucide="library" style="width:16px;height:16px;color:#64748b;"></i> All PDFs</h2>
      </div>
-     <div id="rightSidebarLibrary" class="flex-1 overflow-y-auto">
-      <div class="p-4 text-center text-xs text-slate-400">
-       No PDFs loaded yet
-      </div>
-     </div>
-    </aside>
+    </div>
    </div>
-   <script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </div><input type="file" id="pdfInput" accept=".pdf" onchange="handleFileSelect(event)">
+  <script>
+    // PDF.js setup
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  let pdfDoc = null, pageNum = 1, scale = 1.0, rendering = false, allPagesMode = false, pdfLibrary = [], recentPdfs = [];
+    let pdfDoc = null;
+    let currentPage = 1;
+    let zoom = 100;
+    let recentPdfs = [];
 
-  const defaultConfig = {
-    app_title: 'PDF Reader',
-    primary_color: '#6366f1',
-    surface_color: '#ffffff',
-    text_color: '#1e293b',
-    accent_color: '#4f46e5',
-    bg_color: '#f1f5f9',
-    font_family: 'DM Sans'
-  };
-
-  function applyConfig(config) {
-    const c = { ...defaultConfig, ...config };
-    document.getElementById('appTitle').textContent = c.app_title;
-    document.body.style.fontFamily = `${c.font_family}, sans-serif`;
-  }
-
-  window.elementSdk.init({
-    defaultConfig,
-    onConfigChange: async (config) => applyConfig(config),
-    mapToCapabilities: (config) => {
-      const c = (key) => ({
-        get: () => config[key] || defaultConfig[key],
-        set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
-      });
-      return {
-        recolorables: [c('bg_color'), c('surface_color'), c('text_color'), c('primary_color'), c('accent_color')],
-        borderables: [],
-        fontEditable: c('font_family'),
-        fontSizeable: undefined
-      };
-    },
-    mapToEditPanelValues: (config) => new Map([
-      ['app_title', config.app_title || defaultConfig.app_title]
-    ])
-  });
-
-  // Drag & drop
-  const dropZone = document.getElementById('dropZone');
-  ['dragenter','dragover'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('dragover'); }));
-  ['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('dragover'); }));
-  dropZone.addEventListener('drop', ev => { if (ev.dataTransfer.files[0]) loadFile(ev.dataTransfer.files[0]); });
-  document.getElementById('fileInput').addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
-
-  function showToast(msg) {
-    const t = document.createElement('div');
-    t.className = 'toast fixed bottom-4 left-4 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm z-50';
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2500);
-  }
-
-  async function loadFile(file) {
-    if (file.type !== 'application/pdf') { showToast('Please select a PDF file'); return; }
-    const data = await file.arrayBuffer();
-    try {
-      pdfDoc = await pdfjsLib.getDocument({ data }).promise;
-      const pdfEntry = { name: file.name, data, doc: pdfDoc, loaded: new Date().toLocaleTimeString() };
-      pdfLibrary.push(pdfEntry);
-      addToRecent({ name: file.name, index: pdfLibrary.length - 1, pages: pdfDoc.numPages });
-      pageNum = 1; allPagesMode = false;
-      document.getElementById('totalPages').textContent = pdfDoc.numPages;
-      document.getElementById('pageSlider').max = pdfDoc.numPages;
-      document.getElementById('fileInfo').textContent = file.name;
-      document.getElementById('fileInfo').classList.remove('hidden');
-      document.getElementById('uploadScreen').classList.add('hidden');
-      document.getElementById('readerScreen').classList.remove('hidden');
-      document.getElementById('allPagesView').classList.add('hidden');
-      document.getElementById('singleView').classList.remove('hidden');
-      updateLibraryUI();
-      fitWidth();
-    } catch { showToast('Could not read this PDF'); }
-  }
-
-  function addToRecent(pdf) {
-    recentPdfs = recentPdfs.filter(p => p.name !== pdf.name);
-    recentPdfs.unshift({ ...pdf, timestamp: new Date() });
-    if (recentPdfs.length > 8) recentPdfs.pop();
-    updateSidebarUI();
-  }
-
-  function formatDateTime(date) {
-    const now = new Date();
-    const diff = now - date;
-    const mins = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-    
-    if (mins < 1) return 'Just now';
-    if (mins < 60) return `${mins}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    if (days < 7) return `${days}d ago`;
-    
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  }
-
-  function updateSidebarUI() {
-    const list = document.getElementById('sidebarList');
-    if (recentPdfs.length === 0) {
-      list.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">No PDFs opened yet</div>';
-      return;
+    async function loadPdf(file) {
+      try {
+        const fileReader = new FileReader();
+        fileReader.onload = async (e) => {
+          try {
+            const typedarray = new Uint8Array(e.target.result);
+            pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
+            
+            // Update UI
+            document.getElementById('totalPages').textContent = pdfDoc.numPages;
+            document.getElementById('controlsGroup').style.display = 'flex';
+            document.getElementById('zoomGroup').style.display = 'flex';
+            document.getElementById('dropZone').style.display = 'none';
+            
+            // Add to recent PDFs
+            addToRecent(file.name);
+            
+            // Display file name
+            document.getElementById('fileNameDisplay').textContent = file.name;
+            
+            // Render first page
+            currentPage = 1;
+            await renderPage(currentPage);
+          } catch (error) {
+            showError('Failed to load PDF: ' + error.message);
+          }
+        };
+        fileReader.readAsArrayBuffer(file);
+      } catch (error) {
+        showError('Error reading file: ' + error.message);
+      }
     }
-    list.innerHTML = recentPdfs.map((pdf, idx) => `
-      <button onclick="openPdfFromLibrary(${pdf.index})" class="w-full text-left px-4 py-3 border-b border-slate-50 hover:bg-indigo-50 transition flex items-start gap-2 group">
-        <i data-lucide="file-pdf" style="width:14px;height:14px;color:#6366f1;margin-top:2px;" class="shrink-0"></i>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-medium text-slate-700 truncate group-hover:text-indigo-600">${pdf.name}</p>
-          <p class="text-xs text-slate-400 mt-0.5">${pdf.pages} pages • ${formatDateTime(pdf.timestamp)}</p>
-        </div>
-      </button>
-    `).join('');
+
+    async function renderPage(num) {
+      if (!pdfDoc) return;
+      
+      try {
+        const page = await pdfDoc.getPage(num);
+        const scale = zoom / 100;
+        const viewport = page.getViewport({ scale });
+        
+        const canvas = document.getElementById('pdfCanvas') || document.createElement('canvas');
+        canvas.id = 'pdfCanvas';
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        const context = canvas.getContext('2d');
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+        
+        const container = document.getElementById('pdfContainer');
+        if (!document.getElementById('pdfCanvas')) {
+          container.innerHTML = '';
+          container.appendChild(canvas);
+        }
+        
+        document.getElementById('currentPage').textContent = num;
+        updateNavigationButtons();
+      } catch (error) {
+        showError('Failed to render page: ' + error.message);
+      }
+    }
+
+    function updateNavigationButtons() {
+      document.getElementById('prevBtn').disabled = currentPage <= 1;
+      document.getElementById('nextBtn').disabled = currentPage >= pdfDoc.numPages;
+    }
+
+    async function nextPage() {
+      if (currentPage < pdfDoc.numPages) {
+        currentPage++;
+        await renderPage(currentPage);
+      }
+    }
+
+    async function previousPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        await renderPage(currentPage);
+      }
+    }
+
+    function zoomIn() {
+      zoom = Math.min(zoom + 10, 200);
+      document.getElementById('zoomSlider').value = zoom;
+      updateZoom();
+    }
+
+    function zoomOut() {
+      zoom = Math.max(zoom - 10, 50);
+      document.getElementById('zoomSlider').value = zoom;
+      updateZoom();
+    }
+
+    function setZoom(value) {
+      zoom = parseInt(value);
+      updateZoom();
+    }
+
+    async function updateZoom() {
+      document.getElementById('zoomLevel').textContent = zoom;
+      if (pdfDoc) {
+        await renderPage(currentPage);
+      }
+    }
+
+    function addToRecent(fileName) {
+      if (!recentPdfs.includes(fileName)) {
+        recentPdfs.unshift(fileName);
+        if (recentPdfs.length > 5) recentPdfs.pop();
+      }
+      updateRecentList();
+    }
+
+    function updateRecentList() {
+      const list = document.getElementById('recentList');
+      if (recentPdfs.length === 0) {
+        list.innerHTML = '<div style="text-align: center; color: #94a3b8; font-size: 0.875rem; padding: 2rem 0;">No PDFs opened yet</div>';
+        return;
+      }
+      
+      list.innerHTML = recentPdfs.map((pdf, i) => `
+        <div class="sidebar-item" title="${pdf}">${pdf}</div>
+      `).join('');
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        loadPdf(file);
+      } else {
+        showError('Please select a valid PDF file');
+      }
+      event.target.value = '';
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+      document.getElementById('dropZone').classList.add('dragover');
+    }
+
+    function handleDragLeave(event) {
+      event.preventDefault();
+      document.getElementById('dropZone').classList.remove('dragover');
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      document.getElementById('dropZone').classList.remove('dragover');
+      
+      const files = event.dataTransfer.files;
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type === 'application/pdf') {
+          loadPdf(file);
+        } else {
+          showError('Please drop a PDF file');
+        }
+      }
+    }
+
+    function showError(message) {
+      alert(message);
+    }
+
+    // Initialize icons
     lucide.createIcons();
-    updateMiniLibrary();
-  }
-
-  function updateMiniLibrary() {
-    const miniMobile = document.getElementById('mobileMiniLibrary');
-    const rightSidebarLib = document.getElementById('rightSidebarLibrary');
-    
-    if (pdfLibrary.length === 0) {
-      miniMobile.innerHTML = '<div class="text-xs text-slate-400 py-2">None loaded</div>';
-      rightSidebarLib.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">No PDFs loaded yet</div>';
-      return;
-    }
-    
-    const mobileThumbsHTML = pdfLibrary.map((pdf, idx) => `
-      <button onclick="openPdfFromLibrary(${idx})" class="h-14 min-w-12 rounded border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 transition flex items-center justify-center group" title="${pdf.name}">
-        <i data-lucide="file-pdf" style="width:18px;height:18px;color:#6366f1;" class="group-hover:scale-110 transition"></i>
-      </button>
-    `).join('');
-    
-    miniMobile.innerHTML = mobileThumbsHTML;
-    
-    const rightSidebarHTML = pdfLibrary.map((pdf, idx) => `
-      <button onclick="openPdfFromLibrary(${idx})" class="w-full text-left px-3 py-2 border-b border-slate-50 hover:bg-indigo-50 transition flex items-start gap-2 group">
-        <i data-lucide="file-pdf" style="width:14px;height:14px;color:#6366f1;margin-top:3px;" class="shrink-0"></i>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-medium text-slate-700 truncate group-hover:text-indigo-600">${pdf.name}</p>
-          <p class="text-xs text-slate-400 mt-0.5">${pdf.doc.numPages} pages</p>
-        </div>
-      </button>
-    `).join('');
-    
-    rightSidebarLib.innerHTML = rightSidebarHTML;
-    lucide.createIcons();
-  }
-
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('hidden');
-    document.getElementById('sidebarOverlay').classList.toggle('hidden');
-  }
-
-  function closeSidebar() {
-    document.getElementById('sidebar').classList.add('hidden');
-    document.getElementById('sidebarOverlay').classList.add('hidden');
-  }
-
-  async function renderPage(num) {
-    if (!pdfDoc || rendering) return;
-    rendering = true;
-    const page = await pdfDoc.getPage(num);
-    const canvas = document.getElementById('pdfCanvas');
-    const ctx = canvas.getContext('2d');
-    const vp = page.getViewport({ scale });
-    canvas.width = vp.width; canvas.height = vp.height;
-    await page.render({ canvasContext: ctx, viewport: vp }).promise;
-    document.getElementById('currentPage').textContent = num;
-    document.getElementById('pageSlider').value = num;
-    document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
-    rendering = false;
-  }
-
-  function prevPage() { if (pageNum > 1) { pageNum--; renderPage(pageNum); } }
-  function nextPage() { if (pdfDoc && pageNum < pdfDoc.numPages) { pageNum++; renderPage(pageNum); } }
-  function goToPage(n) { if (pdfDoc && n >= 1 && n <= pdfDoc.numPages) { pageNum = n; renderPage(pageNum); } }
-
-  function changeZoom(delta) {
-    scale = Math.min(3, Math.max(0.3, scale + delta));
-    if (allPagesMode) renderAllPages(); else renderPage(pageNum);
-  }
-
-  function fitWidth() {
-    if (!pdfDoc) return;
-    pdfDoc.getPage(pageNum).then(page => {
-      const container = document.getElementById('canvasContainer');
-      const w = container.clientWidth - 48;
-      const vp = page.getViewport({ scale: 1 });
-      scale = w / vp.width;
-      if (allPagesMode) renderAllPages(); else renderPage(pageNum);
-    });
-  }
-
-  async function renderAllPages() {
-    const container = document.getElementById('allPagesView');
-    container.innerHTML = '';
-    for (let i = 1; i <= pdfDoc.numPages; i++) {
-      const page = await pdfDoc.getPage(i);
-      const vp = page.getViewport({ scale });
-      const canvas = document.createElement('canvas');
-      canvas.width = vp.width; canvas.height = vp.height;
-      canvas.className = 'pdf-canvas';
-      container.appendChild(canvas);
-      const label = document.createElement('p');
-      label.textContent = `Page ${i}`;
-      label.className = 'text-xs text-slate-400 mb-2 -mt-2';
-      container.appendChild(label);
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-    }
-    document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
-  }
-
-  function toggleAllPages() {
-    allPagesMode = !allPagesMode;
-    document.getElementById('singleView').classList.toggle('hidden', allPagesMode);
-    document.getElementById('allPagesView').classList.toggle('hidden', !allPagesMode);
-    document.getElementById('sliderBar').classList.toggle('hidden', allPagesMode);
-    if (allPagesMode) renderAllPages(); else renderPage(pageNum);
-  }
-
-  function closePdf() {
-    pdfDoc = null; pageNum = 1; scale = 1;
-    document.getElementById('readerScreen').classList.add('hidden');
-    document.getElementById('uploadScreen').classList.remove('hidden');
-    document.getElementById('fileInfo').classList.add('hidden');
-    document.getElementById('allPagesView').innerHTML = '';
-    document.getElementById('fileInput').value = '';
-  }
-
-  function toggleLibrary() {
-    document.getElementById('libraryModal').classList.remove('hidden');
-  }
-
-  function closeLibrary() {
-    document.getElementById('libraryModal').classList.add('hidden');
-  }
-
-  function updateLibraryUI() {
-    const list = document.getElementById('pdfList');
-    const empty = document.getElementById('emptyState');
-    
-    if (pdfLibrary.length === 0) {
-      list.innerHTML = '';
-      empty.classList.remove('hidden');
-      return;
-    }
-    
-    empty.classList.add('hidden');
-    list.innerHTML = pdfLibrary.map((pdf, idx) => `
-      <div class="p-4 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition cursor-pointer" onclick="openPdfFromLibrary(${idx})">
-        <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
-            <i data-lucide="file-pdf" style="width:20px;height:20px;color:#6366f1;"></i>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-slate-700 truncate text-sm">${pdf.name}</p>
-            <p class="text-xs text-slate-400 mt-1">${pdf.doc.numPages} pages • ${pdf.loaded}</p>
-          </div>
-          <button class="w-6 h-6 rounded hover:bg-slate-200 flex items-center justify-center ml-2" onclick="event.stopPropagation(); deletePdfFromLibrary(${idx})" title="Delete">
-            <i data-lucide="trash-2" style="width:14px;height:14px;color:#64748b;"></i>
-          </button>
-        </div>
-      </div>
-    `).join('');
-    lucide.createIcons();
-    updateMiniLibrary();
-  }
-
-  function openPdfFromLibrary(idx) {
-    const pdf = pdfLibrary[idx];
-    pdfDoc = pdf.doc;
-    pageNum = 1;
-    document.getElementById('totalPages').textContent = pdfDoc.numPages;
-    document.getElementById('pageSlider').max = pdfDoc.numPages;
-    document.getElementById('fileInfo').textContent = pdf.name;
-    document.getElementById('uploadScreen').classList.add('hidden');
-    document.getElementById('readerScreen').classList.remove('hidden');
-    closeLibrary();
-    renderPage(1);
-  }
-
-  function deletePdfFromLibrary(idx) {
-    pdfLibrary.splice(idx, 1);
-    updateLibraryUI();
-    showToast('PDF removed from library');
-  }
-
-  // Keyboard navigation
-  document.addEventListener('keydown', e => {
-    if (!pdfDoc) return;
-    if (e.key === 'ArrowLeft') prevPage();
-    else if (e.key === 'ArrowRight') nextPage();
-    else if (e.key === '+' || e.key === '=') changeZoom(0.2);
-    else if (e.key === '-') changeZoom(-0.2);
-  });
-
-  lucide.createIcons();
-</script>
-  </div>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e43ce1ba73c9081',t:'MTc3NDgzOTAwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e483182e1df9081',t:'MTc3NDg4NTAyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
