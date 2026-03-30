@@ -1,560 +1,524 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Free Collage Maker Online – Create Photo Collage – Tools House Online</title>
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Free Collage Maker Online – Create Photo Collage – Tools House Online</title>
 <meta name="description" content="Create photo collages online free. Combine multiple photos into one image. No signup required. Fast, beautiful layouts on any device.">
 <link rel="canonical" href="https://www.toolshouse.online/collage-maker.html">
- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    * { box-sizing: border-box; }
 
-        body {
-            background: linear-gradient(145deg, #c7b9b0, #aec9e6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 16px;
-        }
+    .collage-grid {
+      display: grid;
+      gap: 6px;
+      width: 100%;
+      height: 100%;
+    }
 
-        .container {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(3px);
-            width: 100%;
-            max-width: 950px;
-            padding: 30px 25px;
-            border-radius: 32px;
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
+    .layout-2x2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .layout-3col { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .layout-hero { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
+    .layout-hero .cell:first-child { grid-row: 1 / -1; }
+    .layout-mosaic { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .layout-mosaic .cell:first-child { grid-column: 1 / 3; grid-row: 1 / 3; }
+    .layout-strip { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr; }
+    .layout-tall { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .layout-tall .cell:first-child { grid-row: 1 / 3; }
+    .layout-tall .cell:nth-child(4) { grid-row: 2 / 4; }
 
-        h1 {
-            font-weight: 600;
-            font-size: 2.1rem;
-            letter-spacing: -0.5px;
-            color: #3e2f28;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+    .cell {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+    .cell:hover { transform: scale(1.01); z-index: 2; }
+    .cell img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .cell .placeholder-content {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; opacity: 0.5;
+      pointer-events: none;
+    }
 
-        .sub {
-            color: #4f423b;
-            margin-bottom: 28px;
-            font-weight: 300;
-            font-size: 1.1rem;
-            border-bottom: 1px dashed #b7957c;
-            padding-bottom: 12px;
-        }
+    .cell .remove-btn {
+      position: absolute; top: 6px; right: 6px;
+      width: 28px; height: 28px;
+      border-radius: 50%; border: none;
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 5;
+      transition: transform 0.15s;
+    }
+    .cell:hover .remove-btn { display: flex; }
+    .cell .remove-btn:hover { transform: scale(1.15); }
 
-        .flex-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            align-items: flex-end;
-            margin-bottom: 20px;
-        }
+    .cell .filter-badge {
+      position: absolute; bottom: 6px; left: 6px;
+      font-size: 10px; padding: 2px 8px;
+      border-radius: 999px; pointer-events: none;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
 
-        .control-group {
-            background: #f6f2ef;
-            padding: 16px 18px;
-            border-radius: 24px;
-            flex: 1 1 240px;
-            box-shadow: inset 0 1px 4px rgba(0,0,0,0.04);
-        }
+    .toolbar-btn {
+      padding: 8px 14px; border-radius: 10px;
+      border: 2px solid transparent;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+    }
 
-        .control-group label {
-            display: block;
-            font-weight: 500;
-            color: #5b3f33;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 10px;
-        }
+    .layout-thumb {
+      width: 48px; height: 36px;
+      border-radius: 6px; cursor: pointer;
+      border: 2px solid transparent;
+      display: grid; gap: 2px; padding: 3px;
+      transition: all 0.15s;
+    }
+    .layout-thumb.active { transform: scale(1.1); }
+    .layout-thumb div { border-radius: 2px; }
 
-        input, select {
-            background: white;
-            border: 1px solid #d6c5bc;
-            border-radius: 40px;
-            padding: 12px 18px;
-            width: 100%;
-            outline: none;
-            font-size: 0.95rem;
-            transition: 0.2s;
-        }
+    .filter-btn {
+      padding: 5px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 500;
+      cursor: pointer; border: 1.5px solid;
+      transition: all 0.15s;
+    }
 
-        input:focus, select:focus {
-            border-color: #a76f55;
-            box-shadow: 0 0 0 3px rgba(167, 111, 85, 0.2);
-        }
+    .toast-msg {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      padding: 10px 24px; border-radius: 12px;
+      font-size: 14px; font-weight: 500;
+      z-index: 100; opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; }
 
-        .url-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 12px;
-        }
+    .canvas-img { image-rendering: auto; }
 
-        .url-row input {
-            flex: 1;
-        }
-
-        .url-row button {
-            margin: 0;
-            white-space: nowrap;
-            background: #aa7b64;
-            padding: 12px 20px;
-            border-radius: 40px;
-            font-weight: 400;
-        }
-
-        .url-row button:hover {
-            background: #7b5642;
-        }
-
-        .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin: 25px 0 20px;
-        }
-
-        button {
-            background: #7f5a48;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-weight: 500;
-            font-size: 1rem;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 6px 14px rgba(98, 67, 51, 0.25);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        button:hover {
-            background: #5f4032;
-            transform: scale(1.02);
-            box-shadow: 0 10px 18px rgba(70, 40, 25, 0.3);
-        }
-
-        button.download-btn {
-            background: #3f6a70;
-        }
-        button.download-btn:hover {
-            background: #295257;
-        }
-
-        .canvas-wrapper {
-            background: #eae2db;
-            padding: 16px;
-            border-radius: 36px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            max-height: 560px;
-            border-radius: 24px;
-            background: #f5efe9;
-            box-shadow: inset 0 2px 6px rgba(92, 62, 42, 0.1);
-            margin: 0 auto;
-            /* critical: maintain aspect ratio but do not stretch blurry */
-            image-rendering: crisp-edges;  /* fallback */
-            image-rendering: -webkit-optimize-contrast; /* webkit sharp */
-            image-rendering: pixelated; /* for pixel art but also helps */
-        }
-
-        .badge {
-            font-size: 0.8rem;
-            background: #dbccc3;
-            color: #2e241f;
-            padding: 6px 14px;
-            border-radius: 60px;
-            display: inline-block;
-            margin: 16px 0 0;
-        }
-        .badge i {
-            font-style: normal;
-            font-weight: 600;
-        }
-        /* hint: extra sharpness note */
-        .sharp-tip {
-            font-size: 0.8rem;
-            color: #3f3a37;
-            background: #e8d9cf;
-            padding: 4px 12px;
-            border-radius: 60px;
-            display: inline-block;
-            margin-top: 8px;
-        }
-    </style>
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Free Photo Collage Maker Online – Tools House Online">
-<meta property="og:description" content="Create beautiful photo collages online for free. Combine multiple photos into one collage easily. No signup needed.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.toolshouse.online/Collage Maker.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Photo Collage Maker Online – Tools House Online">
-<meta name="twitter:description" content="Create beautiful photo collages online for free. Combine multiple photos into one collage easily. No signup needed.">
-</head>
-<body>
-    <div class="container">
-        <h1>🖼️ Collage Maker <span style="font-weight:300; font-size:1.3rem;">+ crisp pics</span></h1>
-        <div class="sub">⬇️ upload or paste any image url — now razor‑sharp</div>
-
-        <!-- UPLOAD & URL SECTION -->
-        <div class="flex-panel">
-            <div class="control-group">
-                <label>📁 upload images (multiple)</label>
-                <input type="file" id="images" multiple accept="image/*">
-            </div>
-
-            <div class="control-group">
-                <label>🔗 add any image via URL</label>
-                <div class="url-row">
-                    <input type="text" id="imageUrl" placeholder="https://...jpg or .png" value="">
-                    <button id="addUrlBtn">➕ add</button>
-                    <p style="color:#22c55e; font-weight:bold; margin-top:15px;">
-                    🔒 Your files are automatically deleted after processing.
-                     </p>
-                </div>
-                <span style="font-size:0.75rem; opacity:0.7; display:block; margin-top:6px;">images appear in order: uploaded + urls</span>
-            </div>
-        </div>
-
-        <!-- LAYOUT & ACTIONS -->
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; margin: 0 0 10px;">
-            <div style="min-width:180px;">
-                <select id="layout" style="border-radius: 60px; background:#fff;">
-                    <option value="2">2 x 2 grid (4 pics)</option>
-                    <option value="3" selected>3 x 3 grid (9 pics)</option>
-                    <option value="4">4 x 4 grid (16 pics)</option>
-                    <option value="1">✨ single large (1 pic)</option>
-                    <option value="5">2 rows x 3 cols (6)</option>
-                </select>
-            </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button id="createBtn">🎨 CREATE COLLAGE</button>
-                <button id="downloadBtn" class="download-btn">💾 DOWNLOAD</button>
-            </div>
-        </div>
-
-        <!-- CANVAS -->
-        <div class="canvas-wrapper">
-            <canvas id="canvas"></canvas>
-        </div>
-        <div class="badge">⚡ high‑definition drawing · no more blur · images keep clarity</div>
-        <div class="sharp-tip">✨ images now rendered at full canvas resolution — no distortion</div>
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.5s ease both; }
+    .fade-up-d1 { animation-delay: 0.1s; }
+    .fade-up-d2 { animation-delay: 0.2s; }
+    .fade-up-d3 { animation-delay: 0.3s; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full flex flex-col overflow-auto" style="background:#0f0f12; color:#e8e4df; font-family:'DM Sans',sans-serif;"><!-- Header -->
+   <header class="px-5 py-4 flex items-center justify-between flex-shrink-0 fade-up" style="border-bottom:1px solid #1e1e24;">
+    <div>
+     <h1 id="main-title" class="text-xl font-bold tracking-tight" style="font-family:'Syne',sans-serif; color:#f4a261;">Collage Maker</h1>
+     <p id="subtitle" class="text-xs mt-0.5" style="color:#6b6872;">Design beautiful collages</p>
     </div>
+    <div class="flex gap-2"><button id="btn-clear" class="toolbar-btn" style="background:#1a1a22; color:#e8e4df;" title="Clear all"> <i data-lucide="trash-2" style="width:15px;height:15px;"></i> Clear </button> <button id="btn-download" class="toolbar-btn" style="background:#f4a261; color:#0f0f12;" title="Download collage"> <i data-lucide="download" style="width:15px;height:15px;"></i> Export </button>
+    </div>
+   </header><!-- Toolbar -->
+   <div class="px-5 py-3 flex flex-wrap items-center gap-4 flex-shrink-0 fade-up fade-up-d1" style="border-bottom:1px solid #1e1e24;"><!-- Layouts -->
+    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">Layout</span>
+     <div class="flex gap-2" id="layout-picker"></div>
+    </div>
+    <div style="width:1px;height:24px;background:#1e1e24;"></div><!-- Gap slider -->
+    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">Gap</span> <input type="range" id="gap-slider" min="0" max="20" value="6" style="width:80px;accent-color:#f4a261;">
+    </div>
+    <div style="width:1px;height:24px;background:#1e1e24;"></div><!-- Border radius -->
+    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">Radius</span> <input type="range" id="radius-slider" min="0" max="30" value="8" style="width:80px;accent-color:#f4a261;">
+    </div>
+    <div style="width:1px;height:24px;background:#1e1e24;"></div><!-- BG Color -->
+    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">BG</span> <input type="color" id="bg-color" value="#0f0f12" style="width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;background:transparent;">
+    </div>
+   </div><!-- Filters -->
+   <div class="px-5 py-2 flex items-center gap-2 flex-shrink-0 overflow-x-auto fade-up fade-up-d2" id="filter-bar"><span class="text-xs font-semibold uppercase tracking-wider flex-shrink-0" style="color:#6b6872;">Filter</span>
+   </div><!-- Collage Canvas -->
+   <div class="flex-1 p-5 fade-up fade-up-d3" style="min-height:0;">
+    <div id="collage-area" class="collage-grid layout-2x2 w-full h-full" style="border-radius:12px;overflow:hidden;"></div>
+   </div><!-- Hidden file input --> <input type="file" id="file-input" accept="image/*" style="display:none;"> <!-- Toast -->
+   <div id="toast" class="toast-msg" style="background:#f4a261;color:#0f0f12;"></div>
+  </div>
+  <script>
+const layouts = [
+  { id:'2x2', label:'2×2', cls:'layout-2x2', cells:4, grid:'1fr 1fr / 1fr 1fr' },
+  { id:'3col', label:'3 Col', cls:'layout-3col', cells:6, grid:'1fr 1fr 1fr / 1fr 1fr' },
+  { id:'hero', label:'Hero', cls:'layout-hero', cells:3, grid:'2fr 1fr / 1fr 1fr' },
+  { id:'mosaic', label:'Mosaic', cls:'layout-mosaic', cells:5, grid:'1fr 1fr 1fr / 1fr 1fr 1fr' },
+  { id:'strip', label:'Strip', cls:'layout-strip', cells:4, grid:'1fr 1fr 1fr 1fr / 1fr' },
+  { id:'tall', label:'Tall', cls:'layout-tall', cells:6, grid:'1fr 1fr / 1fr 1fr 1fr' },
+];
 
-    <script>
-        (function() {
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            const fileInput = document.getElementById('images');
-            const urlInput = document.getElementById('imageUrl');
-            const addUrlBtn = document.getElementById('addUrlBtn');
-            const layoutSelect = document.getElementById('layout');
-            const createBtn = document.getElementById('createBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
+const filters = [
+  { id:'none', label:'None', css:'' },
+  { id:'grayscale', label:'B&W', css:'grayscale(100%)' },
+  { id:'sepia', label:'Sepia', css:'sepia(80%)' },
+  { id:'contrast', label:'Contrast', css:'contrast(130%)' },
+  { id:'bright', label:'Bright', css:'brightness(120%)' },
+  { id:'saturate', label:'Vivid', css:'saturate(160%)' },
+  { id:'warm', label:'Warm', css:'sepia(30%) saturate(140%)' },
+  { id:'cool', label:'hue-rotate', css:'hue-rotate(30deg) saturate(110%)' },
+];
 
-            // ---------- image store (File objects + URL strings) ----------
-            let extraImageUrls = [];       // stores valid url strings
+let currentLayout = layouts[0];
+let currentFilter = filters[0];
+let cellImages = {};
+let activeCellIdx = null;
 
-            // Helper to load image from either File or url string
-            function loadImageFromSource(src) {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.crossOrigin = 'anonymous';   // attempt to avoid CORS if server allows
-                    img.onload = () => {
-                        // Revoke object URL if it's a File to free memory (but after using)
-                        resolve(img);
-                    };
-                    img.onerror = (err) => {
-                        console.warn('Image failed to load:', src);
-                        reject(err);
-                    };
-                    if (src instanceof File) {
-                        img.src = URL.createObjectURL(src);
-                    } else if (typeof src === 'string') {
-                        img.src = src;
-                    } else {
-                        reject('invalid source');
-                    }
-                });
-            }
+const defaultConfig = {
+  page_title: 'Collage Maker',
+  subtitle_text: 'Design beautiful collages',
+  background_color: '#0f0f12',
+  surface_color: '#1a1a22',
+  text_color: '#e8e4df',
+  primary_action_color: '#f4a261',
+  secondary_action_color: '#6b6872',
+  font_family: 'Syne',
+  font_size: 16
+};
 
-            // Add URL from input field
-            addUrlBtn.addEventListener('click', () => {
-                const url = urlInput.value.trim();
-                if (!url) {
-                    alert('📛 please paste an image URL');
-                    return;
-                }
-                // simple validation (if it looks like an image, optional)
-                if (!url.match(/\.(jpeg|jpg|gif|png|webp|bmp)(\?.*)?$/i) && !url.includes('images.unsplash') && !url.includes('cloudinary')) {
-                    // still allow, but warn
-                    if (!confirm('URL doesn\'t end with common image extension. Still try to add?')) {
-                        return;
-                    }
-                }
-                extraImageUrls.push(url);
-                urlInput.value = '';  // clear for next
-                alert(`✅ URL added. Total ${extraImageUrls.length} url image(s) ready.`);
-            });
+function applyConfig(config) {
+  const c = { ...defaultConfig, ...config };
+  const app = document.getElementById('app');
+  app.style.background = c.background_color;
+  app.style.color = c.text_color;
 
-            // Helper to get all sources: first uploaded files, then extra urls
-            function getAllImageSources() {
-                const files = fileInput.files ? Array.from(fileInput.files) : [];
-                return [...files, ...extraImageUrls];
-            }
+  const title = document.getElementById('main-title');
+  title.textContent = c.page_title;
+  title.style.color = c.primary_action_color;
+  title.style.fontFamily = `${c.font_family}, Syne, sans-serif`;
+  title.style.fontSize = `${c.font_size * 1.3}px`;
 
-            // Improve drawing: ensure images drawn at optimal resolution, no half-pixel blur
-            // Use nearest-neighbor scaling only if needed, but we want crisp edges: we'll draw using integer cell sizes
-            // The key is to avoid floating mismatch: all sizes are integers, we round offsets.
-            function drawImageSharp(ctx, img, cellX, cellY, cellW, cellH) {
-                // cell dimensions are always integer because canvas size is integer and cols/rows divide? but might have subpixel if not divisible.
-                // To avoid subpixel blur, we round cell boundaries.
-                const ix = Math.floor(cellX);
-                const iy = Math.floor(cellY);
-                const iw = Math.floor(cellW);
-                const ih = Math.floor(cellH);
+  const sub = document.getElementById('subtitle');
+  sub.textContent = c.subtitle_text;
+  sub.style.color = c.secondary_action_color;
+  sub.style.fontFamily = `${c.font_family}, DM Sans, sans-serif`;
+  sub.style.fontSize = `${c.font_size * 0.75}px`;
 
-                // if image is smaller than cell, we upscale cleanly but we still use drawImage with imageSmoothingEnabled = false for pixelated?
-                // we want photos to be smooth but not blurred due to subpixel. The main issue earlier was probably fractional offsets.
-                // We'll set imageSmoothingEnabled = true for natural photos (but keep high quality). 
-                // But we want to avoid canvas auto-blur due to fractional drawing: we use integer coordinates.
-                ctx.imageSmoothingEnabled = true;      // smooth photos (better than pixelated)
-                ctx.imageSmoothingQuality = 'high';    // use high-quality down/upscaling
+  document.getElementById('btn-download').style.background = c.primary_action_color;
+  document.getElementById('btn-clear').style.background = c.surface_color;
+  document.getElementById('btn-clear').style.color = c.text_color;
 
-                // Now compute source/dest ratio to fill cell completely (cover)
-                const imgAspect = img.width / img.height;
-                const cellAspect = iw / ih;
+  document.querySelectorAll('.layout-thumb').forEach(el => {
+    if (!el.classList.contains('active')) {
+      el.style.borderColor = c.surface_color;
+      el.style.background = c.surface_color;
+    } else {
+      el.style.borderColor = c.primary_action_color;
+    }
+  });
 
-                let drawW, drawH, offsetX = 0, offsetY = 0;
+  document.querySelectorAll('.cell').forEach(cell => {
+    cell.style.background = c.surface_color;
+    const ph = cell.querySelector('.placeholder-content');
+    if (ph) ph.style.color = c.secondary_action_color;
+    const rb = cell.querySelector('.remove-btn');
+    if (rb) { rb.style.background = c.primary_action_color; rb.style.color = c.background_color; }
+    const fb = cell.querySelector('.filter-badge');
+    if (fb) { fb.style.background = c.primary_action_color; fb.style.color = c.background_color; }
+  });
 
-                if (imgAspect > cellAspect) {
-                    // image wider: fit height
-                    drawH = ih;
-                    drawW = img.width * (ih / img.height);
-                    offsetX = (iw - drawW) / 2;
-                } else {
-                    // image taller: fit width
-                    drawW = iw;
-                    drawH = img.height * (iw / img.width);
-                    offsetY = (ih - drawH) / 2;
-                }
+  document.querySelectorAll('[style*="border-bottom"]').forEach(el => {
+    el.style.borderBottomColor = c.surface_color;
+  });
+}
 
-                // Round offsets to avoid blur (subpixel rendering)
-                offsetX = Math.round(offsetX);
-                offsetY = Math.round(offsetY);
-                drawW = Math.round(drawW);
-                drawH = Math.round(drawH);
+// Init Element SDK
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => applyConfig(config),
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: v => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: v => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: v => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: v => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: v => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+    ],
+    borderables: [],
+    fontEditable: {
+      get: () => config.font_family || defaultConfig.font_family,
+      set: v => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+    },
+    fontSizeable: {
+      get: () => config.font_size || defaultConfig.font_size,
+      set: v => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+    }
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['page_title', config.page_title || defaultConfig.page_title],
+    ['subtitle_text', config.subtitle_text || defaultConfig.subtitle_text],
+  ])
+});
 
-                // Clip to cell to avoid spill (but we already clipped earlier with ctx.rect)
-                ctx.save();
-                ctx.beginPath();
-                ctx.rect(ix, iy, iw, ih);
-                ctx.clip();
+// Build layout picker
+const layoutPicker = document.getElementById('layout-picker');
+layouts.forEach(l => {
+  const thumb = document.createElement('div');
+  thumb.className = 'layout-thumb' + (l.id === currentLayout.id ? ' active' : '');
+  thumb.title = l.label;
+  thumb.dataset.layout = l.id;
+  thumb.style.background = '#1a1a22';
+  thumb.style.borderColor = l.id === currentLayout.id ? '#f4a261' : '#1a1a22';
 
-                // Draw with integer dimensions
-                ctx.drawImage(img, ix + offsetX, iy + offsetY, drawW, drawH);
-                ctx.restore();
+  // Mini preview grid
+  const cols = l.grid.split('/')[0].trim().split(' ').length;
+  const rows = (l.grid.split('/')[1] || '1fr').trim().split(' ').length;
+  thumb.style.gridTemplateColumns = l.grid.split('/')[0].trim();
+  thumb.style.gridTemplateRows = (l.grid.split('/')[1] || '1fr').trim();
+  thumb.style.display = 'grid';
+  thumb.style.gap = '2px';
+  for (let i = 0; i < Math.min(l.cells, 8); i++) {
+    const d = document.createElement('div');
+    d.style.background = '#2a2a34';
+    d.style.borderRadius = '2px';
+    if (l.id === 'hero' && i === 0) d.style.gridRow = '1 / -1';
+    if (l.id === 'mosaic' && i === 0) { d.style.gridColumn = '1 / 3'; d.style.gridRow = '1 / 3'; }
+    if (l.id === 'tall' && i === 0) d.style.gridRow = '1 / 3';
+    if (l.id === 'tall' && i === 3) d.style.gridRow = '2 / 4';
+    thumb.appendChild(d);
+  }
+  thumb.addEventListener('click', () => selectLayout(l));
+  layoutPicker.appendChild(thumb);
+});
 
-                // optional border – also integer aligned
-                ctx.strokeStyle = '#fff4ec';
-                ctx.lineWidth = 2.5;
-                ctx.strokeRect(ix, iy, iw, ih);
-            }
+// Build filter bar
+const filterBar = document.getElementById('filter-bar');
+filters.forEach(f => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.textContent = f.label;
+  btn.dataset.filter = f.id;
+  btn.style.background = f.id === 'none' ? '#f4a261' : 'transparent';
+  btn.style.color = f.id === 'none' ? '#0f0f12' : '#6b6872';
+  btn.style.borderColor = f.id === 'none' ? '#f4a261' : '#2a2a34';
+  btn.addEventListener('click', () => selectFilter(f));
+  filterBar.appendChild(btn);
+});
 
-            // Main collage function (async) – IMPROVED CLARITY
-            async function createCollage() {
-                const sources = getAllImageSources();
-                if (sources.length === 0) {
-                    alert('🚫 No images. Upload files or add an image URL.');
-                    return;
-                }
+function selectLayout(l) {
+  currentLayout = l;
+  document.querySelectorAll('.layout-thumb').forEach(t => {
+    t.classList.toggle('active', t.dataset.layout === l.id);
+    t.style.borderColor = t.dataset.layout === l.id ? '#f4a261' : '#1a1a22';
+  });
+  buildCells();
+}
 
-                const layoutValue = layoutSelect.value;
-                let cols, rows;
+function selectFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    const active = b.dataset.filter === f.id;
+    b.style.background = active ? '#f4a261' : 'transparent';
+    b.style.color = active ? '#0f0f12' : '#6b6872';
+    b.style.borderColor = active ? '#f4a261' : '#2a2a34';
+  });
+  document.querySelectorAll('.cell img').forEach(img => {
+    img.style.filter = f.css;
+  });
+  document.querySelectorAll('.cell .filter-badge').forEach(b => {
+    b.textContent = f.id !== 'none' ? f.label : '';
+    b.style.display = f.id !== 'none' ? 'block' : 'none';
+  });
+}
 
-                if (layoutValue === '1') {
-                    cols = 1; rows = 1;
-                } else if (layoutValue === '5') {
-                    cols = 3; rows = 2;        // 2x3 = 6 cells
-                } else {
-                    const grid = parseInt(layoutValue, 10); // 2,3,4
-                    cols = grid;
-                    rows = grid;
-                }
+function buildCells() {
+  const area = document.getElementById('collage-area');
+  area.className = 'collage-grid ' + currentLayout.cls;
+  area.innerHTML = '';
+  const gap = document.getElementById('gap-slider').value;
+  const radius = document.getElementById('radius-slider').value;
+  area.style.gap = gap + 'px';
 
-                const totalCells = cols * rows;
-                const maxImages = Math.min(sources.length, totalCells);
-                if (maxImages === 0) {
-                    alert('No images to display');
-                    return;
-                }
+  for (let i = 0; i < currentLayout.cells; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.style.borderRadius = radius + 'px';
+    cell.style.background = '#1a1a22';
+    cell.dataset.idx = i;
 
-                // Set canvas size (larger for high detail) – but maintain even division for integer cell sizes
-                const baseSize = 1200; // increased resolution for sharper output
-                canvas.width = baseSize;
-                canvas.height = baseSize;
+    // Span rules
+    if (currentLayout.id === 'hero' && i === 0) cell.style.gridRow = '1 / -1';
+    if (currentLayout.id === 'mosaic' && i === 0) { cell.style.gridColumn = '1 / 3'; cell.style.gridRow = '1 / 3'; }
+    if (currentLayout.id === 'tall' && i === 0) cell.style.gridRow = '1 / 3';
+    if (currentLayout.id === 'tall' && i === 3) cell.style.gridRow = '2 / 4';
 
-                // Clear with soft background
-                ctx.clearRect(0, 0, baseSize, baseSize);
-                ctx.fillStyle = '#f0eae4';
-                ctx.fillRect(0, 0, baseSize, baseSize);
+    if (cellImages[i]) {
+      const img = document.createElement('img');
+      img.src = cellImages[i];
+      img.style.filter = currentFilter.css;
+      img.style.borderRadius = radius + 'px';
+      cell.appendChild(img);
 
-                // Ensure cell dimensions are integers (no fractions)
-                const cellW = Math.floor(baseSize / cols);
-                const cellH = Math.floor(baseSize / rows);
-                // Adjust total to avoid leftover – we will have a small margin if not divisible, but we'll center the grid?
-                // But to keep simple, we set exact division: 1200 is divisible by 1,2,3,4,6 -> perfect.
-                // 1200/3=400, /4=300, /6=200, /2=600, /1=1200 => all integer. Perfect!
+      const rb = document.createElement('button');
+      rb.className = 'remove-btn';
+      rb.style.background = '#f4a261';
+      rb.style.color = '#0f0f12';
+      rb.innerHTML = '<i data-lucide="x" style="width:14px;height:14px;"></i>';
+      rb.addEventListener('click', e => { e.stopPropagation(); delete cellImages[i]; buildCells(); });
+      cell.appendChild(rb);
 
-                let loadedCount = 0;
+      if (currentFilter.id !== 'none') {
+        const fb = document.createElement('div');
+        fb.className = 'filter-badge';
+        fb.style.background = '#f4a261';
+        fb.style.color = '#0f0f12';
+        fb.textContent = currentFilter.label;
+        cell.appendChild(fb);
+      }
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'placeholder-content';
+      ph.style.color = '#6b6872';
+      ph.innerHTML = `<i data-lucide="image-plus" style="width:28px;height:28px;"></i><span style="font-size:11px;">Click to add</span>`;
+      cell.appendChild(ph);
+    }
 
-                // Show temporary "loading" text on canvas
-                ctx.font = 'bold 22px Poppins, sans-serif';
-                ctx.fillStyle = '#ab8c7a';
-                ctx.fillText('⏳ building crisp collage...', 40, baseSize/2);
+    cell.addEventListener('click', () => { activeCellIdx = i; document.getElementById('file-input').click(); });
+    area.appendChild(cell);
+  }
+  lucide.createIcons();
+  applyConfig(window.elementSdk.config || defaultConfig);
+}
 
-                // Load images sequentially, keep failed as null
-                const loadPromises = [];
-                for (let i = 0; i < maxImages; i++) {
-                    const src = sources[i];
-                    loadPromises.push(loadImageFromSource(src).catch(() => null));
-                }
+document.getElementById('file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    cellImages[activeCellIdx] = ev.target.result;
+    buildCells();
+    showToast('Image added!');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
 
-                const images = await Promise.all(loadPromises);
+document.getElementById('gap-slider').addEventListener('input', e => {
+  document.getElementById('collage-area').style.gap = e.target.value + 'px';
+});
 
-                // Clear again before drawing final
-                ctx.clearRect(0, 0, baseSize, baseSize);
-                ctx.fillStyle = '#f0eae4';
-                ctx.fillRect(0, 0, baseSize, baseSize);
+document.getElementById('radius-slider').addEventListener('input', e => {
+  document.querySelectorAll('.cell').forEach(c => c.style.borderRadius = e.target.value + 'px');
+  document.querySelectorAll('.cell img').forEach(img => img.style.borderRadius = e.target.value + 'px');
+});
 
-                // Draw each successfully loaded image using the sharp method
-                for (let idx = 0; idx < images.length; idx++) {
-                    const img = images[idx];
-                    const col = idx % cols;
-                    const row = Math.floor(idx / cols);
-                    const x = col * cellW;
-                    const y = row * cellH;
+document.getElementById('bg-color').addEventListener('input', e => {
+  document.getElementById('collage-area').style.background = e.target.value;
+});
 
-                    if (!img) {
-                        // failed placeholder
-                        ctx.fillStyle = '#d6c1b5';
-                        ctx.fillRect(x, y, cellW, cellH);
-                        ctx.strokeStyle = '#b29582';
-                        ctx.lineWidth = 3;
-                        ctx.strokeRect(x, y, cellW, cellH);
-                        ctx.font = 'bold 16px Poppins, sans-serif';
-                        ctx.fillStyle = '#5f4b40';
-                        ctx.fillText('⚠️ failed', x + 10, y + 60);
-                        continue;
-                    }
+document.getElementById('btn-clear').addEventListener('click', () => {
+  cellImages = {};
+  buildCells();
+  showToast('Collage cleared');
+});
 
-                    // Use sharp drawing function
-                    drawImageSharp(ctx, img, x, y, cellW, cellH);
-                }
+document.getElementById('btn-download').addEventListener('click', () => {
+  const area = document.getElementById('collage-area');
+  const hasImages = Object.keys(cellImages).length > 0;
+  if (!hasImages) { showToast('Add some images first!'); return; }
 
-                // If fewer images than cells, fill rest with light pattern (sharp)
-                if (images.length < totalCells) {
-                    for (let i = images.length; i < totalCells; i++) {
-                        const col = i % cols;
-                        const row = Math.floor(i / cols);
-                        const x = col * cellW;
-                        const y = row * cellH;
-                        ctx.fillStyle = '#e7dbd2';
-                        ctx.fillRect(x, y, cellW, cellH);
-                        ctx.strokeStyle = '#bca99b';
-                        ctx.lineWidth = 2;
-                        ctx.strokeRect(x, y, cellW, cellH);
-                        ctx.font = 'italic 18px Poppins';
-                        ctx.fillStyle = '#8c7568';
-                        ctx.fillText('no pic', x + 20, y + 70);
-                    }
-                }
+  showToast('Exporting...');
+  const canvas = document.createElement('canvas');
+  const w = 1200, h = 900;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
 
-                // Revoke object URLs for File objects to avoid memory leaks
-                for (let src of sources) {
-                    if (src instanceof File) {
-                        // we can't revoke directly because we used createObjectURL inside loadImage, but we stored img.
-                        // better: after drawing, we don't have direct access. But we can store blob urls separately.
-                        // we'll handle inside loadImage revoke after resolve? But we need image to remain. We'll not revoke now.
-                        // But to keep it safe, we skip.
-                    }
-                }
-            }
+  const bgColor = document.getElementById('bg-color').value;
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(0, 0, w, h);
 
-            // download function
-            function downloadCollage() {
-                if (canvas.width === 0 || canvas.height === 0) {
-                    alert('Create a collage first');
-                    return;
-                }
-                const link = document.createElement('a');
-                link.download = `collage-${Date.now()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }
+  const gap = parseInt(document.getElementById('gap-slider').value);
+  const radius = parseInt(document.getElementById('radius-slider').value);
+  const cells = area.querySelectorAll('.cell');
+  const areaRect = area.getBoundingClientRect();
 
-            // event listeners
-            createBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                createCollage().catch(err => {
-                    console.error(err);
-                    alert('⚠️ Error building collage — check console or some images failed.');
-                });
-            });
+  let loaded = 0;
+  const total = Object.keys(cellImages).length;
+  if (total === 0) return;
 
-            downloadBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                downloadCollage();
-            });
+  cells.forEach(cell => {
+    const idx = parseInt(cell.dataset.idx);
+    if (!cellImages[idx]) return;
+    const img = new Image();
+    img.onload = () => {
+      const cr = cell.getBoundingClientRect();
+      const sx = (cr.left - areaRect.left) / areaRect.width * w;
+      const sy = (cr.top - areaRect.top) / areaRect.height * h;
+      const sw = cr.width / areaRect.width * w;
+      const sh = cr.height / areaRect.height * h;
 
-            urlInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addUrlBtn.click();
-                }
-            });
+      ctx.save();
+      roundRect(ctx, sx, sy, sw, sh, radius);
+      ctx.clip();
 
-            // initial canvas message with higher res
-            (function initialMessage() {
-                canvas.width = 1000;
-                canvas.height = 1000;
-                ctx.fillStyle = '#f3ede8';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = '300 26px Poppins, sans-serif';
-                ctx.fillStyle = '#a48d7e';
-                ctx.textAlign = 'center';
-                ctx.fillText('⬆️ upload images / paste URL', canvas.width/2, 400);
-                ctx.font = '20px Poppins';
-                ctx.fillText('then click CREATE COLLAGE (sharp & clear)', canvas.width/2, 500);
-                ctx.textAlign = 'left';
-            })();
-        })();
-    </script>
-</body>
+      // Cover fit
+      const imgRatio = img.width / img.height;
+      const cellRatio = sw / sh;
+      let dx, dy, dw, dh;
+      if (imgRatio > cellRatio) {
+        dh = sh; dw = sh * imgRatio;
+        dx = sx - (dw - sw) / 2; dy = sy;
+      } else {
+        dw = sw; dh = sw / imgRatio;
+        dx = sx; dy = sy - (dh - sh) / 2;
+      }
+
+      if (currentFilter.id !== 'none') ctx.filter = currentFilter.css;
+      ctx.drawImage(img, dx, dy, dw, dh);
+      ctx.restore();
+
+      loaded++;
+      if (loaded === total) {
+        const a = document.createElement('a');
+        a.download = 'collage.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        showToast('Downloaded!');
+      }
+    };
+    img.src = cellImages[idx];
+  });
+});
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+buildCells();
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e43fec844359081',t:'MTc3NDg0MTAwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
