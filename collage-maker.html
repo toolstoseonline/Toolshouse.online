@@ -3,9 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Free Collage Maker Online – Create Photo Collage – Tools House Online</title>
-<meta name="description" content="Create photo collages online free. Combine multiple photos into one image. No signup required. Fast, beautiful layouts on any device.">
-<link rel="canonical" href="https://www.toolshouse.online/collage-maker.html">
+  <title>Collage Maker</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
@@ -66,6 +64,140 @@
     .cell:hover .remove-btn { display: flex; }
     .cell .remove-btn:hover { transform: scale(1.15); }
 
+    .cell .zoom-controls {
+      position: absolute; bottom: 8px; right: 8px;
+      display: none; gap: 4px; z-index: 10;
+      flex-direction: column;
+    }
+    .cell:hover .zoom-controls { display: flex; }
+
+    .zoom-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%; border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px;
+      transition: transform 0.15s;
+    }
+    .zoom-btn:hover { transform: scale(1.1); }
+
+    .zoom-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95); display: none;
+      z-index: 1000; align-items: center; justify-content: center;
+      flex-direction: column; padding: 16px;
+    }
+    .zoom-modal.active { display: flex; }
+
+    .zoom-modal-content {
+      position: relative; width: 100%; height: 100%;
+      max-width: 90vh; max-height: 90vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .zoom-modal-img {
+      width: 100%; height: 100%;
+      object-fit: contain; cursor: grab;
+      transform-origin: center;
+    }
+    .zoom-modal-img:active { cursor: grabbing; }
+
+    .zoom-modal-controls {
+      position: absolute; top: 16px; right: 16px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .zoom-modal-btn {
+      width: 44px; height: 44px;
+      border-radius: 8px; border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .zoom-slider {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 6px; cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .zoom-info {
+      position: absolute; bottom: 16px; right: 16px;
+      font-size: 14px; font-weight: 500;
+    }
+
+    .crop-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95); display: none;
+      z-index: 1000; align-items: center; justify-content: center;
+      flex-direction: column; padding: 16px;
+    }
+    .crop-modal.active { display: flex; }
+
+    .crop-container {
+      position: relative; width: 100%; height: 100%;
+      max-width: 90vh; max-height: 90vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .crop-img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+
+    .crop-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); cursor: crosshair;
+    }
+
+    .crop-box {
+      position: absolute; border: 2px solid #fff;
+      background: rgba(255,255,255,0.1);
+      cursor: move; display: none;
+    }
+    .crop-box.active { display: block; }
+
+    .crop-handle {
+      position: absolute; width: 12px; height: 12px;
+      background: #fff; border: 1px solid #000;
+      cursor: pointer;
+    }
+    .crop-handle.nw { top: -6px; left: -6px; cursor: nwse-resize; }
+    .crop-handle.ne { top: -6px; right: -6px; cursor: nesw-resize; }
+    .crop-handle.sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
+    .crop-handle.se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+    .crop-controls {
+      position: absolute; top: 16px; right: 16px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .crop-btn {
+      width: 44px; height: 44px;
+      border-radius: 8px; border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; cursor: pointer;
+      background: #333; color: #fff;
+      transition: all 0.15s;
+    }
+    .crop-btn:hover { background: #555; }
+
+    .crop-presets {
+      position: absolute; bottom: 16px; left: 16px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    .crop-preset-btn {
+      padding: 6px 12px; border-radius: 6px;
+      background: #333; color: #fff; border: 1px solid #555;
+      font-size: 12px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .crop-preset-btn:hover { background: #555; }
+    .crop-preset-btn.active { background: #fff; color: #000; }
+
     .cell .filter-badge {
       position: absolute; bottom: 6px; left: 6px;
       font-size: 10px; padding: 2px 8px;
@@ -109,416 +241,543 @@
     }
     .toast-msg.show { opacity: 1; }
 
-    .canvas-img { image-rendering: auto; }
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .fade-up { animation: fadeUp 0.5s ease both; }
-    .fade-up-d1 { animation-delay: 0.1s; }
-    .fade-up-d2 { animation-delay: 0.2s; }
-    .fade-up-d3 { animation-delay: 0.3s; }
+    .fade-up { animation: fadeUp 0.3s ease-out; }
+
+    @media (max-width: 768px) {
+      .collage-grid { gap: 4px; }
+      .layout-3col { grid-template-columns: 1fr 1fr; }
+      .layout-hero { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+      .layout-hero .cell:first-child { grid-row: 1; }
+      .layout-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+      .layout-mosaic .cell:first-child { grid-column: 1; grid-row: 1; }
+      .layout-strip { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+      .layout-tall { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr 1fr 1fr; }
+      .layout-tall .cell:first-child { grid-row: 1; }
+      .layout-tall .cell:nth-child(4) { grid-row: 4; }
+      
+      .toolbar-btn { padding: 6px 12px; font-size: 12px; }
+      .layout-thumb { width: 40px; height: 30px; }
+      
+      .zoom-modal-controls { flex-direction: column; gap: 8px; }
+      .zoom-slider { width: 150px; }
+    }
+
+    @media (max-width: 480px) {
+      .toolbar-btn { padding: 5px 10px; font-size: 11px; }
+      .layout-thumb { width: 36px; height: 27px; }
+      .zoom-modal { padding: 12px; }
+      .zoom-modal-controls { top: 12px; right: 12px; gap: 6px; }
+      .zoom-modal-btn { width: 40px; height: 40px; font-size: 18px; }
+      .zoom-slider { width: 120px; bottom: 12px; }
+      .zoom-info { font-size: 11px; bottom: 12px; right: 12px; }
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full">
-  <div id="app" class="w-full h-full flex flex-col overflow-auto" style="background:#0f0f12; color:#e8e4df; font-family:'DM Sans',sans-serif;"><!-- Header -->
-   <header class="px-5 py-4 flex items-center justify-between flex-shrink-0 fade-up" style="border-bottom:1px solid #1e1e24;">
-    <div>
-     <h1 id="main-title" class="text-xl font-bold tracking-tight" style="font-family:'Syne',sans-serif; color:#f4a261;">Collage Maker</h1>
-     <p id="subtitle" class="text-xs mt-0.5" style="color:#6b6872;">Design beautiful collages</p>
+ <body class="h-full overflow-hidden">
+  <div class="h-full w-full flex flex-col" style="font-family: 'DM Sans', sans-serif;">
+   <!-- Header -->
+   <div class="px-4 py-3 border-b border-gray-200 bg-white">
+    <h1 style="font-family: 'Syne', serif; font-size: 24px; font-weight: 700;">Collage Maker</h1>
+   </div><!-- Main Content -->
+   <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Toolbar -->
+    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 overflow-x-auto">
+     <div class="flex gap-2 flex-wrap">
+      <button class="toolbar-btn" style="background: #000; color: #fff;" onclick="addPhoto()"> <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Photo </button>
+      <div style="width: 1px; background: #ddd; margin: 0 4px;"></div>
+      <div class="flex gap-1">
+       <div class="layout-thumb" onclick="changeLayout('2x2')" style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;">
+        <div style="background: #ddd;"></div>
+        <div style="background: #e5e5e5;"></div>
+        <div style="background: #e5e5e5;"></div>
+        <div style="background: #f0f0f0;"></div>
+       </div>
+       <div class="layout-thumb" onclick="changeLayout('3col')" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
+        <div style="background: #ddd;"></div>
+        <div style="background: #e5e5e5;"></div>
+        <div style="background: #e5e5e5;"></div>
+        <div style="background: #f0f0f0;"></div>
+        <div style="background: #f0f0f0;"></div>
+        <div style="background: #f0f0f0;"></div>
+       </div>
+       <div class="layout-thumb" onclick="changeLayout('hero')" style="grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr;">
+        <div style="background: #ddd; grid-row: 1 / -1;"></div>
+        <div style="background: #e5e5e5;"></div>
+        <div style="background: #e5e5e5;"></div>
+       </div>
+       <div class="layout-thumb" onclick="changeLayout('mosaic')" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr;">
+        <div style="background: #ddd; grid-column: 1 / 3; grid-row: 1 / 3;"></div>
+        <div style="background: #e5e5e5;"></div>
+        <div style="background: #e5e5e5;"></div>
+        <div style="background: #f0f0f0;"></div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Canvas -->
+    <div class="flex-1 overflow-hidden p-4 bg-white">
+     <div class="collage-grid layout-2x2" id="collageGrid">
+      <div class="cell" id="cell-0" style="background: #f5f5f5;" onclick="addPhotoTo(0)">
+       <div class="placeholder-content">
+        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
+       </div>
+      </div>
+      <div class="cell" id="cell-1" style="background: #f5f5f5;" onclick="addPhotoTo(1)">
+       <div class="placeholder-content">
+        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
+       </div>
+      </div>
+      <div class="cell" id="cell-2" style="background: #f5f5f5;" onclick="addPhotoTo(2)">
+       <div class="placeholder-content">
+        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
+       </div>
+      </div>
+      <div class="cell" id="cell-3" style="background: #f5f5f5;" onclick="addPhotoTo(3)">
+       <div class="placeholder-content">
+        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
+       </div>
+      </div>
+     </div>
     </div>
-    <div class="flex gap-2"><button id="btn-clear" class="toolbar-btn" style="background:#1a1a22; color:#e8e4df;" title="Clear all"> <i data-lucide="trash-2" style="width:15px;height:15px;"></i> Clear </button> <button id="btn-download" class="toolbar-btn" style="background:#f4a261; color:#0f0f12;" title="Download collage"> <i data-lucide="download" style="width:15px;height:15px;"></i> Export </button>
+   </div>
+  </div><!-- Hidden file input --> <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)"> <!-- Zoom Modal -->
+  <div class="zoom-modal" id="zoomModal">
+   <div class="zoom-modal-content">
+    <img class="zoom-modal-img" id="zoomImg" src="" alt="Zoomed image">
+    <div class="zoom-modal-controls">
+     <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="zoomOut()" title="Zoom out">−</button> <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="resetZoom()" title="Reset">⊡</button> <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="zoomIn()" title="Zoom in">+</button> <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="closeZoom()" title="Close"> <i data-lucide="x" style="width: 20px; height: 20px;"></i> </button>
+    </div><input type="range" class="zoom-slider" id="zoomSlider" min="100" max="300" value="100" oninput="updateZoom(this.value)">
+    <div class="zoom-info" id="zoomInfo">
+     100%
     </div>
-   </header><!-- Toolbar -->
-   <div class="px-5 py-3 flex flex-wrap items-center gap-4 flex-shrink-0 fade-up fade-up-d1" style="border-bottom:1px solid #1e1e24;"><!-- Layouts -->
-    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">Layout</span>
-     <div class="flex gap-2" id="layout-picker"></div>
+   </div>
+  </div><!-- Crop Modal -->
+  <div class="crop-modal" id="cropModal">
+   <div class="crop-container"><img class="crop-img" id="cropImg" src="" alt="Crop image">
+    <div class="crop-overlay" id="cropOverlay"></div>
+    <div class="crop-box" id="cropBox">
+     <div class="crop-handle nw"></div>
+     <div class="crop-handle ne"></div>
+     <div class="crop-handle sw"></div>
+     <div class="crop-handle se"></div>
     </div>
-    <div style="width:1px;height:24px;background:#1e1e24;"></div><!-- Gap slider -->
-    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">Gap</span> <input type="range" id="gap-slider" min="0" max="20" value="6" style="width:80px;accent-color:#f4a261;">
+    <div class="crop-controls"><button class="crop-btn" onclick="cropImageApply()" title="Apply crop"> <i data-lucide="check" style="width: 20px; height: 20px;"></i> </button> <button class="crop-btn" onclick="closeCrop()" title="Cancel"> <i data-lucide="x" style="width: 20px; height: 20px;"></i> </button>
     </div>
-    <div style="width:1px;height:24px;background:#1e1e24;"></div><!-- Border radius -->
-    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">Radius</span> <input type="range" id="radius-slider" min="0" max="30" value="8" style="width:80px;accent-color:#f4a261;">
+    <div class="crop-presets"><button class="crop-preset-btn active" onclick="setCropPreset(1, 1)">Square</button> <button class="crop-preset-btn" onclick="setCropPreset(16, 9)">16:9</button> <button class="crop-preset-btn" onclick="setCropPreset(4, 3)">4:3</button> <button class="crop-preset-btn" onclick="setCropPreset(3, 2)">3:2</button> <button class="crop-preset-btn" onclick="setCropPreset(9, 16)">9:16</button>
     </div>
-    <div style="width:1px;height:24px;background:#1e1e24;"></div><!-- BG Color -->
-    <div class="flex items-center gap-2"><span class="text-xs font-semibold uppercase tracking-wider" style="color:#6b6872;">BG</span> <input type="color" id="bg-color" value="#0f0f12" style="width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;background:transparent;">
-    </div>
-   </div><!-- Filters -->
-   <div class="px-5 py-2 flex items-center gap-2 flex-shrink-0 overflow-x-auto fade-up fade-up-d2" id="filter-bar"><span class="text-xs font-semibold uppercase tracking-wider flex-shrink-0" style="color:#6b6872;">Filter</span>
-   </div><!-- Collage Canvas -->
-   <div class="flex-1 p-5 fade-up fade-up-d3" style="min-height:0;">
-    <div id="collage-area" class="collage-grid layout-2x2 w-full h-full" style="border-radius:12px;overflow:hidden;"></div>
-   </div><!-- Hidden file input --> <input type="file" id="file-input" accept="image/*" style="display:none;"> <!-- Toast -->
-   <div id="toast" class="toast-msg" style="background:#f4a261;color:#0f0f12;"></div>
-  </div>
+   </div>
+  </div><!-- Toast -->
+  <div class="toast-msg" id="toast"></div>
   <script>
-const layouts = [
-  { id:'2x2', label:'2×2', cls:'layout-2x2', cells:4, grid:'1fr 1fr / 1fr 1fr' },
-  { id:'3col', label:'3 Col', cls:'layout-3col', cells:6, grid:'1fr 1fr 1fr / 1fr 1fr' },
-  { id:'hero', label:'Hero', cls:'layout-hero', cells:3, grid:'2fr 1fr / 1fr 1fr' },
-  { id:'mosaic', label:'Mosaic', cls:'layout-mosaic', cells:5, grid:'1fr 1fr 1fr / 1fr 1fr 1fr' },
-  { id:'strip', label:'Strip', cls:'layout-strip', cells:4, grid:'1fr 1fr 1fr 1fr / 1fr' },
-  { id:'tall', label:'Tall', cls:'layout-tall', cells:6, grid:'1fr 1fr / 1fr 1fr 1fr' },
-];
+    let currentLayout = '2x2';
+    let photos = {};
+    let currentZoom = 100;
+    let panX = 0, panY = 0;
+    let isPanning = false;
+    let panStartX, panStartY;
+    
+    let cropData = {};
+    let currentCropIndex = null;
+    let cropRatioX = 1, cropRatioY = 1;
+    let cropBox = null;
+    let isDraggingHandle = false;
+    let currentHandle = null;
 
-const filters = [
-  { id:'none', label:'None', css:'' },
-  { id:'grayscale', label:'B&W', css:'grayscale(100%)' },
-  { id:'sepia', label:'Sepia', css:'sepia(80%)' },
-  { id:'contrast', label:'Contrast', css:'contrast(130%)' },
-  { id:'bright', label:'Bright', css:'brightness(120%)' },
-  { id:'saturate', label:'Vivid', css:'saturate(160%)' },
-  { id:'warm', label:'Warm', css:'sepia(30%) saturate(140%)' },
-  { id:'cool', label:'hue-rotate', css:'hue-rotate(30deg) saturate(110%)' },
-];
+    lucide.createIcons();
 
-let currentLayout = layouts[0];
-let currentFilter = filters[0];
-let cellImages = {};
-let activeCellIdx = null;
-
-const defaultConfig = {
-  page_title: 'Collage Maker',
-  subtitle_text: 'Design beautiful collages',
-  background_color: '#0f0f12',
-  surface_color: '#1a1a22',
-  text_color: '#e8e4df',
-  primary_action_color: '#f4a261',
-  secondary_action_color: '#6b6872',
-  font_family: 'Syne',
-  font_size: 16
-};
-
-function applyConfig(config) {
-  const c = { ...defaultConfig, ...config };
-  const app = document.getElementById('app');
-  app.style.background = c.background_color;
-  app.style.color = c.text_color;
-
-  const title = document.getElementById('main-title');
-  title.textContent = c.page_title;
-  title.style.color = c.primary_action_color;
-  title.style.fontFamily = `${c.font_family}, Syne, sans-serif`;
-  title.style.fontSize = `${c.font_size * 1.3}px`;
-
-  const sub = document.getElementById('subtitle');
-  sub.textContent = c.subtitle_text;
-  sub.style.color = c.secondary_action_color;
-  sub.style.fontFamily = `${c.font_family}, DM Sans, sans-serif`;
-  sub.style.fontSize = `${c.font_size * 0.75}px`;
-
-  document.getElementById('btn-download').style.background = c.primary_action_color;
-  document.getElementById('btn-clear').style.background = c.surface_color;
-  document.getElementById('btn-clear').style.color = c.text_color;
-
-  document.querySelectorAll('.layout-thumb').forEach(el => {
-    if (!el.classList.contains('active')) {
-      el.style.borderColor = c.surface_color;
-      el.style.background = c.surface_color;
-    } else {
-      el.style.borderColor = c.primary_action_color;
-    }
-  });
-
-  document.querySelectorAll('.cell').forEach(cell => {
-    cell.style.background = c.surface_color;
-    const ph = cell.querySelector('.placeholder-content');
-    if (ph) ph.style.color = c.secondary_action_color;
-    const rb = cell.querySelector('.remove-btn');
-    if (rb) { rb.style.background = c.primary_action_color; rb.style.color = c.background_color; }
-    const fb = cell.querySelector('.filter-badge');
-    if (fb) { fb.style.background = c.primary_action_color; fb.style.color = c.background_color; }
-  });
-
-  document.querySelectorAll('[style*="border-bottom"]').forEach(el => {
-    el.style.borderBottomColor = c.surface_color;
-  });
-}
-
-// Init Element SDK
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => applyConfig(config),
-  mapToCapabilities: (config) => ({
-    recolorables: [
-      { get: () => config.background_color || defaultConfig.background_color, set: v => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-      { get: () => config.surface_color || defaultConfig.surface_color, set: v => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-      { get: () => config.text_color || defaultConfig.text_color, set: v => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: v => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: v => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
-    ],
-    borderables: [],
-    fontEditable: {
-      get: () => config.font_family || defaultConfig.font_family,
-      set: v => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-    },
-    fontSizeable: {
-      get: () => config.font_size || defaultConfig.font_size,
-      set: v => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-    }
-  }),
-  mapToEditPanelValues: (config) => new Map([
-    ['page_title', config.page_title || defaultConfig.page_title],
-    ['subtitle_text', config.subtitle_text || defaultConfig.subtitle_text],
-  ])
-});
-
-// Build layout picker
-const layoutPicker = document.getElementById('layout-picker');
-layouts.forEach(l => {
-  const thumb = document.createElement('div');
-  thumb.className = 'layout-thumb' + (l.id === currentLayout.id ? ' active' : '');
-  thumb.title = l.label;
-  thumb.dataset.layout = l.id;
-  thumb.style.background = '#1a1a22';
-  thumb.style.borderColor = l.id === currentLayout.id ? '#f4a261' : '#1a1a22';
-
-  // Mini preview grid
-  const cols = l.grid.split('/')[0].trim().split(' ').length;
-  const rows = (l.grid.split('/')[1] || '1fr').trim().split(' ').length;
-  thumb.style.gridTemplateColumns = l.grid.split('/')[0].trim();
-  thumb.style.gridTemplateRows = (l.grid.split('/')[1] || '1fr').trim();
-  thumb.style.display = 'grid';
-  thumb.style.gap = '2px';
-  for (let i = 0; i < Math.min(l.cells, 8); i++) {
-    const d = document.createElement('div');
-    d.style.background = '#2a2a34';
-    d.style.borderRadius = '2px';
-    if (l.id === 'hero' && i === 0) d.style.gridRow = '1 / -1';
-    if (l.id === 'mosaic' && i === 0) { d.style.gridColumn = '1 / 3'; d.style.gridRow = '1 / 3'; }
-    if (l.id === 'tall' && i === 0) d.style.gridRow = '1 / 3';
-    if (l.id === 'tall' && i === 3) d.style.gridRow = '2 / 4';
-    thumb.appendChild(d);
-  }
-  thumb.addEventListener('click', () => selectLayout(l));
-  layoutPicker.appendChild(thumb);
-});
-
-// Build filter bar
-const filterBar = document.getElementById('filter-bar');
-filters.forEach(f => {
-  const btn = document.createElement('button');
-  btn.className = 'filter-btn';
-  btn.textContent = f.label;
-  btn.dataset.filter = f.id;
-  btn.style.background = f.id === 'none' ? '#f4a261' : 'transparent';
-  btn.style.color = f.id === 'none' ? '#0f0f12' : '#6b6872';
-  btn.style.borderColor = f.id === 'none' ? '#f4a261' : '#2a2a34';
-  btn.addEventListener('click', () => selectFilter(f));
-  filterBar.appendChild(btn);
-});
-
-function selectLayout(l) {
-  currentLayout = l;
-  document.querySelectorAll('.layout-thumb').forEach(t => {
-    t.classList.toggle('active', t.dataset.layout === l.id);
-    t.style.borderColor = t.dataset.layout === l.id ? '#f4a261' : '#1a1a22';
-  });
-  buildCells();
-}
-
-function selectFilter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    const active = b.dataset.filter === f.id;
-    b.style.background = active ? '#f4a261' : 'transparent';
-    b.style.color = active ? '#0f0f12' : '#6b6872';
-    b.style.borderColor = active ? '#f4a261' : '#2a2a34';
-  });
-  document.querySelectorAll('.cell img').forEach(img => {
-    img.style.filter = f.css;
-  });
-  document.querySelectorAll('.cell .filter-badge').forEach(b => {
-    b.textContent = f.id !== 'none' ? f.label : '';
-    b.style.display = f.id !== 'none' ? 'block' : 'none';
-  });
-}
-
-function buildCells() {
-  const area = document.getElementById('collage-area');
-  area.className = 'collage-grid ' + currentLayout.cls;
-  area.innerHTML = '';
-  const gap = document.getElementById('gap-slider').value;
-  const radius = document.getElementById('radius-slider').value;
-  area.style.gap = gap + 'px';
-
-  for (let i = 0; i < currentLayout.cells; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.style.borderRadius = radius + 'px';
-    cell.style.background = '#1a1a22';
-    cell.dataset.idx = i;
-
-    // Span rules
-    if (currentLayout.id === 'hero' && i === 0) cell.style.gridRow = '1 / -1';
-    if (currentLayout.id === 'mosaic' && i === 0) { cell.style.gridColumn = '1 / 3'; cell.style.gridRow = '1 / 3'; }
-    if (currentLayout.id === 'tall' && i === 0) cell.style.gridRow = '1 / 3';
-    if (currentLayout.id === 'tall' && i === 3) cell.style.gridRow = '2 / 4';
-
-    if (cellImages[i]) {
-      const img = document.createElement('img');
-      img.src = cellImages[i];
-      img.style.filter = currentFilter.css;
-      img.style.borderRadius = radius + 'px';
-      cell.appendChild(img);
-
-      const rb = document.createElement('button');
-      rb.className = 'remove-btn';
-      rb.style.background = '#f4a261';
-      rb.style.color = '#0f0f12';
-      rb.innerHTML = '<i data-lucide="x" style="width:14px;height:14px;"></i>';
-      rb.addEventListener('click', e => { e.stopPropagation(); delete cellImages[i]; buildCells(); });
-      cell.appendChild(rb);
-
-      if (currentFilter.id !== 'none') {
-        const fb = document.createElement('div');
-        fb.className = 'filter-badge';
-        fb.style.background = '#f4a261';
-        fb.style.color = '#0f0f12';
-        fb.textContent = currentFilter.label;
-        cell.appendChild(fb);
-      }
-    } else {
-      const ph = document.createElement('div');
-      ph.className = 'placeholder-content';
-      ph.style.color = '#6b6872';
-      ph.innerHTML = `<i data-lucide="image-plus" style="width:28px;height:28px;"></i><span style="font-size:11px;">Click to add</span>`;
-      cell.appendChild(ph);
+    function addPhotoTo(index) {
+      window.currentCellIndex = index;
+      document.getElementById('fileInput').click();
     }
 
-    cell.addEventListener('click', () => { activeCellIdx = i; document.getElementById('file-input').click(); });
-    area.appendChild(cell);
-  }
-  lucide.createIcons();
-  applyConfig(window.elementSdk.config || defaultConfig);
-}
+    function addPhoto() {
+      document.getElementById('fileInput').click();
+    }
 
-document.getElementById('file-input').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    cellImages[activeCellIdx] = ev.target.result;
-    buildCells();
-    showToast('Image added!');
-  };
-  reader.readAsDataURL(file);
-  e.target.value = '';
-});
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
 
-document.getElementById('gap-slider').addEventListener('input', e => {
-  document.getElementById('collage-area').style.gap = e.target.value + 'px';
-});
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const cellIndex = window.currentCellIndex ?? 0;
+        const cell = document.getElementById(`cell-${cellIndex}`);
+        
+        if (cell) {
+          const existingImg = cell.querySelector('img');
+          if (existingImg) existingImg.remove();
+          const placeholders = cell.querySelectorAll('.placeholder-content');
+          placeholders.forEach(p => p.remove());
 
-document.getElementById('radius-slider').addEventListener('input', e => {
-  document.querySelectorAll('.cell').forEach(c => c.style.borderRadius = e.target.value + 'px');
-  document.querySelectorAll('.cell img').forEach(img => img.style.borderRadius = e.target.value + 'px');
-});
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          cell.appendChild(img);
+          photos[cellIndex] = e.target.result;
 
-document.getElementById('bg-color').addEventListener('input', e => {
-  document.getElementById('collage-area').style.background = e.target.value;
-});
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-btn';
+          removeBtn.style.background = '#000';
+          removeBtn.style.color = '#fff';
+          removeBtn.innerHTML = '<i data-lucide="x" style="width: 16px; height: 16px;"></i>';
+          removeBtn.onclick = (evt) => { evt.stopPropagation(); removePhoto(cellIndex); };
 
-document.getElementById('btn-clear').addEventListener('click', () => {
-  cellImages = {};
-  buildCells();
-  showToast('Collage cleared');
-});
+          const zoomControls = document.createElement('div');
+          zoomControls.className = 'zoom-controls';
+          zoomControls.innerHTML = `
+            <button class="zoom-btn" style="background: #000; color: #fff;" onclick="openZoom(event, ${cellIndex})" title="Zoom & pan">
+              <i data-lucide="maximize2" style="width: 16px; height: 16px;"></i>
+            </button>
+            <button class="zoom-btn" style="background: #000; color: #fff;" onclick="openCrop(event, ${cellIndex})" title="Crop">
+              <i data-lucide="crop" style="width: 16px; height: 16px;"></i>
+            </button>
+          `;
 
-document.getElementById('btn-download').addEventListener('click', () => {
-  const area = document.getElementById('collage-area');
-  const hasImages = Object.keys(cellImages).length > 0;
-  if (!hasImages) { showToast('Add some images first!'); return; }
+          cell.appendChild(removeBtn);
+          cell.appendChild(zoomControls);
+          lucide.createIcons();
+          showToast('Photo added!');
+        }
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
 
-  showToast('Exporting...');
-  const canvas = document.createElement('canvas');
-  const w = 1200, h = 900;
-  canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d');
-
-  const bgColor = document.getElementById('bg-color').value;
-  ctx.fillStyle = bgColor;
-  ctx.fillRect(0, 0, w, h);
-
-  const gap = parseInt(document.getElementById('gap-slider').value);
-  const radius = parseInt(document.getElementById('radius-slider').value);
-  const cells = area.querySelectorAll('.cell');
-  const areaRect = area.getBoundingClientRect();
-
-  let loaded = 0;
-  const total = Object.keys(cellImages).length;
-  if (total === 0) return;
-
-  cells.forEach(cell => {
-    const idx = parseInt(cell.dataset.idx);
-    if (!cellImages[idx]) return;
-    const img = new Image();
-    img.onload = () => {
-      const cr = cell.getBoundingClientRect();
-      const sx = (cr.left - areaRect.left) / areaRect.width * w;
-      const sy = (cr.top - areaRect.top) / areaRect.height * h;
-      const sw = cr.width / areaRect.width * w;
-      const sh = cr.height / areaRect.height * h;
-
-      ctx.save();
-      roundRect(ctx, sx, sy, sw, sh, radius);
-      ctx.clip();
-
-      // Cover fit
-      const imgRatio = img.width / img.height;
-      const cellRatio = sw / sh;
-      let dx, dy, dw, dh;
-      if (imgRatio > cellRatio) {
-        dh = sh; dw = sh * imgRatio;
-        dx = sx - (dw - sw) / 2; dy = sy;
-      } else {
-        dw = sw; dh = sw / imgRatio;
-        dx = sx; dy = sy - (dh - sh) / 2;
+    function removePhoto(index) {
+      const cell = document.getElementById(`cell-${index}`);
+      if (cell) {
+        cell.innerHTML = `
+          <div class="placeholder-content">
+            <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i>
+            <span style="font-size: 12px; color: #999;">Add photo</span>
+          </div>
+        `;
+        delete photos[index];
+        lucide.createIcons();
+        showToast('Photo removed');
       }
+    }
 
-      if (currentFilter.id !== 'none') ctx.filter = currentFilter.css;
-      ctx.drawImage(img, dx, dy, dw, dh);
-      ctx.restore();
+    function openZoom(event, index) {
+      event.stopPropagation();
+      const img = document.getElementById(`cell-${index}`).querySelector('img');
+      if (!img) return;
 
-      loaded++;
-      if (loaded === total) {
-        const a = document.createElement('a');
-        a.download = 'collage.png';
-        a.href = canvas.toDataURL('image/png');
-        a.click();
-        showToast('Downloaded!');
-      }
-    };
-    img.src = cellImages[idx];
-  });
-});
+      currentZoom = 100;
+      panX = 0;
+      panY = 0;
+      const zoomImg = document.getElementById('zoomImg');
+      zoomImg.src = img.src;
+      document.getElementById('zoomModal').classList.add('active');
+      document.getElementById('zoomSlider').value = 100;
+      document.getElementById('zoomInfo').textContent = '100%';
+      updateZoomDisplay();
+      setupPanning();
+    }
 
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
+    function closeZoom() {
+      document.getElementById('zoomModal').classList.remove('active');
+      isPanning = false;
+    }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
+    function zoomIn() {
+      currentZoom = Math.min(currentZoom + 25, 300);
+      document.getElementById('zoomSlider').value = currentZoom;
+      updateZoomDisplay();
+    }
 
-buildCells();
-lucide.createIcons();
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e43fec844359081',t:'MTc3NDg0MTAwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    function zoomOut() {
+      currentZoom = Math.max(currentZoom - 25, 100);
+      document.getElementById('zoomSlider').value = currentZoom;
+      updateZoomDisplay();
+    }
+
+    function resetZoom() {
+      currentZoom = 100;
+      panX = 0;
+      panY = 0;
+      document.getElementById('zoomSlider').value = 100;
+      updateZoomDisplay();
+    }
+
+    function updateZoom(value) {
+      currentZoom = parseInt(value);
+      updateZoomDisplay();
+    }
+
+    function updateZoomDisplay() {
+      const img = document.getElementById('zoomImg');
+      img.style.transform = `scale(${currentZoom / 100}) translate(${panX}px, ${panY}px)`;
+      document.getElementById('zoomInfo').textContent = currentZoom + '%';
+    }
+
+    function setupPanning() {
+      const img = document.getElementById('zoomImg');
+      img.addEventListener('mousedown', startPan);
+      img.addEventListener('touchstart', startPan);
+      document.addEventListener('mousemove', pan);
+      document.addEventListener('touchmove', pan);
+      document.addEventListener('mouseup', endPan);
+      document.addEventListener('touchend', endPan);
+    }
+
+    function startPan(e) {
+      if (currentZoom <= 100) return;
+      isPanning = true;
+      panStartX = e.clientX || e.touches[0].clientX;
+      panStartY = e.clientY || e.touches[0].clientY;
+    }
+
+    function pan(e) {
+      if (!isPanning || currentZoom <= 100) return;
+      const x = e.clientX || e.touches[0].clientX;
+      const y = e.clientY || e.touches[0].clientY;
+      panX += (x - panStartX) * 0.5;
+      panY += (y - panStartY) * 0.5;
+      panStartX = x;
+      panStartY = y;
+      updateZoomDisplay();
+    }
+
+    function endPan() {
+      isPanning = false;
+    }
+
+    function changeLayout(layout) {
+      currentLayout = layout;
+      const grid = document.getElementById('collageGrid');
+      grid.className = `collage-grid layout-${layout}`;
+      
+      const layoutThumbs = document.querySelectorAll('.layout-thumb');
+      layoutThumbs.forEach(thumb => thumb.classList.remove('active'));
+      event.target.closest('.layout-thumb').classList.add('active');
+      
+      showToast('Layout changed!');
+    }
+
+    function openCrop(event, index) {
+      event.stopPropagation();
+      const img = document.getElementById(`cell-${index}`).querySelector('img');
+      if (!img) return;
+
+      currentCropIndex = index;
+      const cropImg = document.getElementById('cropImg');
+      cropImg.src = img.src;
+      
+      cropData[index] = cropData[index] || { x: 0, y: 0, w: 200, h: 200 };
+      cropBox = {
+        x: 50,
+        y: 50,
+        w: 200,
+        h: 200
+      };
+      cropRatioX = 1;
+      cropRatioY = 1;
+
+      document.getElementById('cropModal').classList.add('active');
+      setupCropBox();
+      setupCropHandles();
+      lucide.createIcons();
+    }
+
+    function setupCropBox() {
+      const box = document.getElementById('cropBox');
+      box.classList.add('active');
+      box.style.left = cropBox.x + 'px';
+      box.style.top = cropBox.y + 'px';
+      box.style.width = cropBox.w + 'px';
+      box.style.height = cropBox.h + 'px';
+
+      box.addEventListener('mousedown', startMoveCrop);
+      box.addEventListener('touchstart', startMoveCrop);
+    }
+
+    function setupCropHandles() {
+      const handles = document.querySelectorAll('.crop-handle');
+      handles.forEach(handle => {
+        handle.addEventListener('mousedown', startResizeCrop);
+        handle.addEventListener('touchstart', startResizeCrop);
+      });
+    }
+
+    function startMoveCrop(e) {
+      if (e.target.classList.contains('crop-handle')) return;
+      const startX = e.clientX || e.touches[0].clientX;
+      const startY = e.clientY || e.touches[0].clientY;
+      const startBoxX = cropBox.x;
+      const startBoxY = cropBox.y;
+
+      const moveCrop = (e) => {
+        const x = e.clientX || e.touches[0].clientX;
+        const y = e.clientY || e.touches[0].clientY;
+        cropBox.x = startBoxX + (x - startX);
+        cropBox.y = startBoxY + (y - startY);
+        updateCropBox();
+      };
+
+      const stopMoveCrop = () => {
+        document.removeEventListener('mousemove', moveCrop);
+        document.removeEventListener('touchmove', moveCrop);
+        document.removeEventListener('mouseup', stopMoveCrop);
+        document.removeEventListener('touchend', stopMoveCrop);
+      };
+
+      document.addEventListener('mousemove', moveCrop);
+      document.addEventListener('touchmove', moveCrop);
+      document.addEventListener('mouseup', stopMoveCrop);
+      document.addEventListener('touchend', stopMoveCrop);
+    }
+
+    function startResizeCrop(e) {
+      const handle = e.target.closest('.crop-handle');
+      currentHandle = handle.className.split(' ')[1];
+      const startX = e.clientX || e.touches[0].clientX;
+      const startY = e.clientY || e.touches[0].clientY;
+      const startW = cropBox.w;
+      const startH = cropBox.h;
+      const startBoxX = cropBox.x;
+      const startBoxY = cropBox.y;
+
+      const resizeCrop = (e) => {
+        const x = e.clientX || e.touches[0].clientX;
+        const y = e.clientY || e.touches[0].clientY;
+        const deltaX = x - startX;
+        const deltaY = y - startY;
+
+        if (currentHandle.includes('se')) {
+          let newW = startW + deltaX;
+          let newH = startH + deltaY;
+          if (cropRatioX && cropRatioY) {
+            const ratio = cropRatioX / cropRatioY;
+            newH = newW / ratio;
+          }
+          cropBox.w = Math.max(50, newW);
+          cropBox.h = Math.max(50, newH);
+        } else if (currentHandle.includes('sw')) {
+          let newW = startW - deltaX;
+          let newH = startH + deltaY;
+          if (cropRatioX && cropRatioY) {
+            const ratio = cropRatioX / cropRatioY;
+            newH = newW / ratio;
+          }
+          cropBox.x = startBoxX + deltaX;
+          cropBox.w = Math.max(50, newW);
+          cropBox.h = Math.max(50, newH);
+        } else if (currentHandle.includes('ne')) {
+          let newW = startW + deltaX;
+          let newH = startH - deltaY;
+          if (cropRatioX && cropRatioY) {
+            const ratio = cropRatioX / cropRatioY;
+            newH = newW / ratio;
+          }
+          cropBox.y = startBoxY + deltaY;
+          cropBox.w = Math.max(50, newW);
+          cropBox.h = Math.max(50, newH);
+        } else if (currentHandle.includes('nw')) {
+          let newW = startW - deltaX;
+          let newH = startH - deltaY;
+          if (cropRatioX && cropRatioY) {
+            const ratio = cropRatioX / cropRatioY;
+            newH = newW / ratio;
+          }
+          cropBox.x = startBoxX + deltaX;
+          cropBox.y = startBoxY + deltaY;
+          cropBox.w = Math.max(50, newW);
+          cropBox.h = Math.max(50, newH);
+        }
+        updateCropBox();
+      };
+
+      const stopResizeCrop = () => {
+        document.removeEventListener('mousemove', resizeCrop);
+        document.removeEventListener('touchmove', resizeCrop);
+        document.removeEventListener('mouseup', stopResizeCrop);
+        document.removeEventListener('touchend', stopResizeCrop);
+      };
+
+      document.addEventListener('mousemove', resizeCrop);
+      document.addEventListener('touchmove', resizeCrop);
+      document.addEventListener('mouseup', stopResizeCrop);
+      document.addEventListener('touchend', stopResizeCrop);
+    }
+
+    function updateCropBox() {
+      const box = document.getElementById('cropBox');
+      box.style.left = cropBox.x + 'px';
+      box.style.top = cropBox.y + 'px';
+      box.style.width = cropBox.w + 'px';
+      box.style.height = cropBox.h + 'px';
+    }
+
+    function setCropPreset(ratioX, ratioY) {
+      cropRatioX = ratioX;
+      cropRatioY = ratioY;
+      const ratio = ratioX / ratioY;
+      const newH = cropBox.w / ratio;
+      cropBox.h = newH;
+      updateCropBox();
+
+      const presets = document.querySelectorAll('.crop-preset-btn');
+      presets.forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function cropImageApply() {
+      const img = document.getElementById('cropImg');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const imgElement = new Image();
+
+      imgElement.onload = () => {
+        const scale = imgElement.width / img.offsetWidth;
+        const cropX = Math.floor(cropBox.x * scale);
+        const cropY = Math.floor(cropBox.y * scale);
+        const cropW = Math.floor(cropBox.w * scale);
+        const cropH = Math.floor(cropBox.h * scale);
+
+        canvas.width = cropW;
+        canvas.height = cropH;
+        ctx.drawImage(imgElement, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+        const cellIndex = currentCropIndex;
+        const cell = document.getElementById(`cell-${cellIndex}`);
+        const oldImg = cell.querySelector('img');
+        if (oldImg) oldImg.remove();
+
+        const newImg = document.createElement('img');
+        newImg.src = canvas.toDataURL();
+        cell.insertBefore(newImg, cell.firstChild);
+        photos[cellIndex] = canvas.toDataURL();
+
+        closeCrop();
+        showToast('Photo cropped!');
+      };
+
+      imgElement.src = img.src;
+    }
+
+    function closeCrop() {
+      document.getElementById('cropModal').classList.remove('active');
+      const box = document.getElementById('cropBox');
+      box.classList.remove('active');
+      currentCropIndex = null;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show', 'fade-up');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    window.addEventListener('load', () => {
+      lucide.createIcons();
+      document.querySelector('.layout-thumb').classList.add('active');
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e480dbf25d69081',t:'MTc3NDg4MzU1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
