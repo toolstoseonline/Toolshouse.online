@@ -29,6 +29,66 @@
     .layout-tall { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
     .layout-tall .cell:first-child { grid-row: 1 / 3; }
     .layout-tall .cell:nth-child(4) { grid-row: 2 / 4; }
+    .layout-mosaic2 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .layout-mosaic2 .cell:nth-child(2) { grid-column: 2 / 4; grid-row: 1 / 3; }
+    .layout-focus { grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .layout-focus .cell:first-child { grid-row: 1 / -1; }
+    .layout-quad { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr 1fr; }
+    .layout-quad .cell:nth-child(1) { grid-column: 1 / 3; }
+    .layout-quad .cell:nth-child(4) { grid-column: 1 / 3; }
+    .layout-frame { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .layout-frame .cell:nth-child(2) { grid-row: 1 / 3; }
+    .layout-zigzag { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .layout-zigzag .cell:nth-child(1) { grid-column: 1 / 2; grid-row: 1 / 2; }
+    .layout-zigzag .cell:nth-child(2) { grid-column: 2 / 4; grid-row: 1 / 2; }
+    .layout-zigzag .cell:nth-child(3) { grid-column: 1 / 3; grid-row: 2 / 3; }
+    .layout-zigzag .cell:nth-child(4) { grid-column: 3 / 4; grid-row: 2 / 4; }
+    .layout-zigzag .cell:nth-child(5) { grid-column: 1 / 2; grid-row: 3 / 4; }
+    .layout-zigzag .cell:nth-child(6) { grid-column: 2 / 3; grid-row: 3 / 4; }
+    .layout-split { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .layout-split .cell:nth-child(1) { grid-column: 1 / 3; }
+    .layout-split .cell:nth-child(2) { grid-column: 3 / 5; }
+    .layout-split .cell:nth-child(3) { grid-column: 1 / 2; grid-row: 2; }
+    .layout-split .cell:nth-child(4) { grid-column: 2 / 3; grid-row: 2; }
+    .layout-split .cell:nth-child(5) { grid-column: 3 / 4; grid-row: 2; }
+    .layout-split .cell:nth-child(6) { grid-column: 4 / 5; grid-row: 2; }
+    .layout-corner { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .layout-corner .cell:first-child { grid-column: 1 / 3; grid-row: 1 / 3; }
+    .layout-corner .cell:nth-child(2) { grid-column: 3 / 4; grid-row: 1 / 2; }
+    .layout-corner .cell:nth-child(3) { grid-column: 3 / 4; grid-row: 2 / 3; }
+    .layout-corner .cell:nth-child(4) { grid-column: 1 / 2; grid-row: 3 / 4; }
+    .layout-corner .cell:nth-child(5) { grid-column: 2 / 3; grid-row: 3 / 4; }
+    .layout-corner .cell:nth-child(6) { grid-column: 3 / 4; grid-row: 3 / 4; }
+    .layout-stack { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto; }
+    .layout-stack .cell:nth-child(1) { grid-column: 1 / 4; }
+    .layout-stack .cell:nth-child(2) { grid-column: 1 / 4; }
+    .layout-stack .cell:nth-child(3) { grid-column: 1 / 4; }
+    .layout-wave { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .layout-wave .cell:nth-child(1) { grid-column: 1 / 2; }
+    .layout-wave .cell:nth-child(2) { grid-column: 2 / 4; grid-row: 1 / 2; }
+    .layout-wave .cell:nth-child(3) { grid-column: 1 / 3; grid-row: 2 / 3; }
+    .layout-wave .cell:nth-child(4) { grid-column: 3 / 4; grid-row: 2 / 3; }
+    .layout-wave .cell:nth-child(5) { grid-column: 2 / 4; grid-row: 3 / 4; }
+    .layout-wave .cell:nth-child(6) { grid-column: 1 / 2; grid-row: 3 / 4; }
+    .layout-spiral { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .layout-spiral .cell:nth-child(1) { grid-column: 1 / 4; grid-row: 1 / 2; }
+    .layout-spiral .cell:nth-child(2) { grid-column: 3 / 4; grid-row: 2 / 4; }
+    .layout-spiral .cell:nth-child(3) { grid-column: 1 / 3; grid-row: 3 / 4; }
+    .layout-spiral .cell:nth-child(4) { grid-column: 1 / 2; grid-row: 2 / 3; }
+    .layout-spiral .cell:nth-child(5) { grid-column: 2 / 3; grid-row: 2 / 3; }
+    .layout-spiral .cell:nth-child(6) { grid-column: 2 / 3; grid-row: 2 / 3; display: none; }
+
+    @media (max-width: 768px) {
+      .layout-3col { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .layout-hero { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .layout-hero .cell:first-child { grid-row: auto; grid-column: auto; }
+      .layout-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .layout-mosaic .cell:first-child { grid-column: auto; grid-row: auto; }
+      .layout-strip { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .layout-tall { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .layout-tall .cell:first-child { grid-row: auto; }
+      .layout-tall .cell:nth-child(4) { grid-row: auto; }
+    }
 
     .cell {
       position: relative;
@@ -38,8 +98,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 0;
+      min-height: 120px;
+      aspect-ratio: 1;
     }
+
+    @media (max-width: 768px) {
+      .cell { min-height: 100px; }
+    }
+
+    @media (max-width: 480px) {
+      .cell { min-height: 80px; }
+    }
+
     .cell:hover { transform: scale(1.01); z-index: 2; }
     .cell img {
       width: 100%; height: 100%;
@@ -62,141 +132,8 @@
       transition: transform 0.15s;
     }
     .cell:hover .remove-btn { display: flex; }
+    .cell:active .remove-btn { display: flex; }
     .cell .remove-btn:hover { transform: scale(1.15); }
-
-    .cell .zoom-controls {
-      position: absolute; bottom: 8px; right: 8px;
-      display: none; gap: 4px; z-index: 10;
-      flex-direction: column;
-    }
-    .cell:hover .zoom-controls { display: flex; }
-
-    .zoom-btn {
-      width: 32px; height: 32px;
-      border-radius: 50%; border: none;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 16px;
-      transition: transform 0.15s;
-    }
-    .zoom-btn:hover { transform: scale(1.1); }
-
-    .zoom-modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.95); display: none;
-      z-index: 1000; align-items: center; justify-content: center;
-      flex-direction: column; padding: 16px;
-    }
-    .zoom-modal.active { display: flex; }
-
-    .zoom-modal-content {
-      position: relative; width: 100%; height: 100%;
-      max-width: 90vh; max-height: 90vh;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .zoom-modal-img {
-      width: 100%; height: 100%;
-      object-fit: contain; cursor: grab;
-      transform-origin: center;
-    }
-    .zoom-modal-img:active { cursor: grabbing; }
-
-    .zoom-modal-controls {
-      position: absolute; top: 16px; right: 16px;
-      display: flex; gap: 10px; flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .zoom-modal-btn {
-      width: 44px; height: 44px;
-      border-radius: 8px; border: none;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .zoom-slider {
-      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-      width: 200px; height: 6px; cursor: pointer;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    .zoom-info {
-      position: absolute; bottom: 16px; right: 16px;
-      font-size: 14px; font-weight: 500;
-    }
-
-    .crop-modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.95); display: none;
-      z-index: 1000; align-items: center; justify-content: center;
-      flex-direction: column; padding: 16px;
-    }
-    .crop-modal.active { display: flex; }
-
-    .crop-container {
-      position: relative; width: 100%; height: 100%;
-      max-width: 90vh; max-height: 90vh;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .crop-img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-    }
-
-    .crop-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); cursor: crosshair;
-    }
-
-    .crop-box {
-      position: absolute; border: 2px solid #fff;
-      background: rgba(255,255,255,0.1);
-      cursor: move; display: none;
-    }
-    .crop-box.active { display: block; }
-
-    .crop-handle {
-      position: absolute; width: 12px; height: 12px;
-      background: #fff; border: 1px solid #000;
-      cursor: pointer;
-    }
-    .crop-handle.nw { top: -6px; left: -6px; cursor: nwse-resize; }
-    .crop-handle.ne { top: -6px; right: -6px; cursor: nesw-resize; }
-    .crop-handle.sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
-    .crop-handle.se { bottom: -6px; right: -6px; cursor: nwse-resize; }
-
-    .crop-controls {
-      position: absolute; top: 16px; right: 16px;
-      display: flex; gap: 10px; flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .crop-btn {
-      width: 44px; height: 44px;
-      border-radius: 8px; border: none;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; cursor: pointer;
-      background: #333; color: #fff;
-      transition: all 0.15s;
-    }
-    .crop-btn:hover { background: #555; }
-
-    .crop-presets {
-      position: absolute; bottom: 16px; left: 16px;
-      display: flex; gap: 8px; flex-wrap: wrap;
-    }
-
-    .crop-preset-btn {
-      padding: 6px 12px; border-radius: 6px;
-      background: #333; color: #fff; border: 1px solid #555;
-      font-size: 12px; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .crop-preset-btn:hover { background: #555; }
-    .crop-preset-btn.active { background: #fff; color: #000; }
 
     .cell .filter-badge {
       position: absolute; bottom: 6px; left: 6px;
@@ -214,6 +151,10 @@
       white-space: nowrap;
     }
 
+    @media (max-width: 480px) {
+      .toolbar-btn { padding: 6px 10px; font-size: 12px; }
+    }
+
     .layout-thumb {
       width: 48px; height: 36px;
       border-radius: 6px; cursor: pointer;
@@ -221,6 +162,11 @@
       display: grid; gap: 2px; padding: 3px;
       transition: all 0.15s;
     }
+
+    @media (max-width: 480px) {
+      .layout-thumb { width: 40px; height: 30px; }
+    }
+
     .layout-thumb.active { transform: scale(1.1); }
     .layout-thumb div { border-radius: 2px; }
 
@@ -231,6 +177,10 @@
       transition: all 0.15s;
     }
 
+    @media (max-width: 480px) {
+      .filter-btn { padding: 4px 10px; font-size: 11px; }
+    }
+
     .toast-msg {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
       padding: 10px 24px; border-radius: 12px;
@@ -238,8 +188,11 @@
       z-index: 100; opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
+      max-width: 90vw;
     }
     .toast-msg.show { opacity: 1; }
+
+    .canvas-img { image-rendering: auto; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
@@ -247,537 +200,518 @@
     }
     .fade-up { animation: fadeUp 0.3s ease-out; }
 
-    @media (max-width: 768px) {
-      .collage-grid { gap: 4px; }
-      .layout-3col { grid-template-columns: 1fr 1fr; }
-      .layout-hero { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
-      .layout-hero .cell:first-child { grid-row: 1; }
-      .layout-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-      .layout-mosaic .cell:first-child { grid-column: 1; grid-row: 1; }
-      .layout-strip { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
-      .layout-tall { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr 1fr 1fr; }
-      .layout-tall .cell:first-child { grid-row: 1; }
-      .layout-tall .cell:nth-child(4) { grid-row: 4; }
-      
-      .toolbar-btn { padding: 6px 12px; font-size: 12px; }
-      .layout-thumb { width: 40px; height: 30px; }
-      
-      .zoom-modal-controls { flex-direction: column; gap: 8px; }
-      .zoom-slider { width: 150px; }
+    .crop-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); z-index: 50;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
     }
 
-    @media (max-width: 480px) {
-      .toolbar-btn { padding: 5px 10px; font-size: 11px; }
-      .layout-thumb { width: 36px; height: 27px; }
-      .zoom-modal { padding: 12px; }
-      .zoom-modal-controls { top: 12px; right: 12px; gap: 6px; }
-      .zoom-modal-btn { width: 40px; height: 40px; font-size: 18px; }
-      .zoom-slider { width: 120px; bottom: 12px; }
-      .zoom-info { font-size: 11px; bottom: 12px; right: 12px; }
+    .crop-container {
+      background: white; border-radius: 12px;
+      max-width: 500px; width: 100%;
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+
+    .crop-preview {
+      position: relative; width: 100%; aspect-ratio: 1;
+      background: #f3f4f6; overflow: hidden;
+      cursor: grab;
+    }
+
+    .crop-preview.dragging { cursor: grabbing; }
+
+    .crop-preview img {
+      position: absolute; width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .crop-grid {
+      position: absolute; width: 100%; height: 100%;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(0,0,0,0.3) 33%, transparent 33%, transparent 66%, rgba(0,0,0,0.3) 66%),
+                  linear-gradient(0deg, rgba(0,0,0,0.3) 33%, transparent 33%, transparent 66%, rgba(0,0,0,0.3) 66%);
+      background-size: 33.33% 33.33%;
+    }
+
+    .crop-actions {
+      display: flex; gap: 8px; padding: 16px;
+      justify-content: flex-end;
+    }
+
+    .crop-actions button {
+      padding: 8px 16px; border-radius: 6px; border: none;
+      font-weight: 600; cursor: pointer; transition: all 0.15s;
+    }
+
+    .crop-actions .cancel { background: #e5e7eb; color: #374151; }
+    .crop-actions .cancel:hover { background: #d1d5db; }
+    .crop-actions .apply { background: #3b82f6; color: white; }
+    .crop-actions .apply:hover { background: #2563eb; }
+
+    .zoom-control {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px; background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+      font-size: 12px;
+    }
+
+    .zoom-slider {
+      flex: 1; height: 4px; -webkit-appearance: none; appearance: none;
+      background: #e5e7eb; border-radius: 2px; outline: none;
+      cursor: pointer;
+    }
+
+    .zoom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #3b82f6; cursor: pointer;
+    }
+
+    .zoom-slider::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #3b82f6; cursor: pointer; border: none;
+    }
+
+    .zoom-value {
+      min-width: 40px; text-align: right; font-weight: 600;
+      color: #374151;
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <style>body { box-sizing: border-box; }</style>
  </head>
- <body class="h-full overflow-hidden">
-  <div class="h-full w-full flex flex-col" style="font-family: 'DM Sans', sans-serif;">
-   <!-- Header -->
-   <div class="px-4 py-3 border-b border-gray-200 bg-white">
-    <h1 style="font-family: 'Syne', serif; font-size: 24px; font-weight: 700;">Collage Maker</h1>
-   </div><!-- Main Content -->
-   <div class="flex-1 flex flex-col overflow-hidden">
-    <!-- Toolbar -->
-    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 overflow-x-auto">
-     <div class="flex gap-2 flex-wrap">
-      <button class="toolbar-btn" style="background: #000; color: #fff;" onclick="addPhoto()"> <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Photo </button>
-      <div style="width: 1px; background: #ddd; margin: 0 4px;"></div>
-      <div class="flex gap-1">
-       <div class="layout-thumb" onclick="changeLayout('2x2')" style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div style="background: #ddd;"></div>
-        <div style="background: #e5e5e5;"></div>
-        <div style="background: #e5e5e5;"></div>
-        <div style="background: #f0f0f0;"></div>
-       </div>
-       <div class="layout-thumb" onclick="changeLayout('3col')" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div style="background: #ddd;"></div>
-        <div style="background: #e5e5e5;"></div>
-        <div style="background: #e5e5e5;"></div>
-        <div style="background: #f0f0f0;"></div>
-        <div style="background: #f0f0f0;"></div>
-        <div style="background: #f0f0f0;"></div>
-       </div>
-       <div class="layout-thumb" onclick="changeLayout('hero')" style="grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div style="background: #ddd; grid-row: 1 / -1;"></div>
-        <div style="background: #e5e5e5;"></div>
-        <div style="background: #e5e5e5;"></div>
-       </div>
-       <div class="layout-thumb" onclick="changeLayout('mosaic')" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr;">
-        <div style="background: #ddd; grid-column: 1 / 3; grid-row: 1 / 3;"></div>
-        <div style="background: #e5e5e5;"></div>
-        <div style="background: #e5e5e5;"></div>
-        <div style="background: #f0f0f0;"></div>
-       </div>
+ <body class="h-full bg-gray-50">
+  <div class="h-full flex flex-col"><!-- Header -->
+   <header class="bg-white border-b border-gray-200 px-4 py-4 md:px-6 md:py-5">
+    <h1 class="text-xl md:text-2xl font-bold" style="font-family: 'Syne', sans-serif;">Collage Maker</h1>
+    <p class="text-xs md:text-sm text-gray-600 mt-1">Create beautiful photo collages</p>
+   </header><!-- Main Content -->
+   <div class="flex-1 flex flex-col md:flex-row overflow-hidden gap-4 p-4 md:p-6"><!-- Canvas Area -->
+    <div class="flex-1 bg-white rounded-lg shadow-sm overflow-hidden flex flex-col min-h-0">
+     <div class="flex-1 overflow-auto p-4">
+      <div id="collageGrid" class="collage-grid layout-2x2" style="gap: 6px;"><!-- Cells will be generated here -->
       </div>
      </div>
-    </div><!-- Canvas -->
-    <div class="flex-1 overflow-hidden p-4 bg-white">
-     <div class="collage-grid layout-2x2" id="collageGrid">
-      <div class="cell" id="cell-0" style="background: #f5f5f5;" onclick="addPhotoTo(0)">
-       <div class="placeholder-content">
-        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
+    </div><!-- Controls Panel -->
+    <div class="w-full md:w-64 bg-white rounded-lg shadow-sm overflow-y-auto flex flex-col">
+     <div class="p-4 md:p-5 space-y-6 flex-1"><!-- Layouts Section -->
+      <div>
+       <h3 class="text-sm font-semibold mb-3" style="font-family: 'Syne', sans-serif;">Layouts</h3>
+       <div class="grid grid-cols-4 md:grid-cols-3 gap-2"><button onclick="changeLayout('2x2')" class="layout-thumb active" data-layout="2x2" style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #3b82f6;">
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('3col')" class="layout-thumb" data-layout="3col" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('hero')" class="layout-thumb" data-layout="hero" style="grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb; grid-row: 1 / -1;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('strip')" class="layout-thumb" data-layout="strip" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('mosaic2')" class="layout-thumb" data-layout="mosaic2" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb; grid-column: 2 / 4; grid-row: 1 / 3;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('focus')" class="layout-thumb" data-layout="focus" style="grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb; grid-row: 1 / -1;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('corner')" class="layout-thumb" data-layout="corner" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb; grid-column: 1 / 3; grid-row: 1 / 3;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('stack')" class="layout-thumb" data-layout="stack" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div>
+         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div>
+         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div></button> <button onclick="changeLayout('wave')" class="layout-thumb" data-layout="wave" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb; grid-column: 2 / 4;"></div>
+         <div style="background: #e5e7eb;"></div>
+         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('spiral')" class="layout-thumb" data-layout="spiral" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
+         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div>
+         <div style="background: #e5e7eb; grid-row: 2 / 4;"></div>
+         <div style="background: #e5e7eb;"></div></button>
        </div>
-      </div>
-      <div class="cell" id="cell-1" style="background: #f5f5f5;" onclick="addPhotoTo(1)">
-       <div class="placeholder-content">
-        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
+      </div><!-- Filters Section -->
+      <div>
+       <h3 class="text-sm font-semibold mb-3" style="font-family: 'Syne', sans-serif;">Quick Filters</h3>
+       <div class="space-y-2"><button onclick="applyFilter(null)" class="w-full filter-btn" style="border-color: #3b82f6; background: #eff6ff; color: #1e40af;">No Filter</button> <button onclick="applyFilter('grayscale')" class="w-full filter-btn" style="border-color: #9ca3af; color: #6b7280;">Grayscale</button> <button onclick="applyFilter('sepia')" class="w-full filter-btn" style="border-color: #9ca3af; color: #6b7280;">Sepia</button> <button onclick="applyFilter('brightness')" class="w-full filter-btn" style="border-color: #9ca3af; color: #6b7280;">Bright</button>
        </div>
-      </div>
-      <div class="cell" id="cell-2" style="background: #f5f5f5;" onclick="addPhotoTo(2)">
-       <div class="placeholder-content">
-        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
-       </div>
-      </div>
-      <div class="cell" id="cell-3" style="background: #f5f5f5;" onclick="addPhotoTo(3)">
-       <div class="placeholder-content">
-        <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i> <span style="font-size: 12px; color: #999;">Add photo</span>
-       </div>
-      </div>
+      </div><!-- Download Button --> <button onclick="downloadCollage()" class="w-full toolbar-btn" style="background: #3b82f6; color: white; border-color: #3b82f6;"> <i data-lucide="download" style="width: 16px; height: 16px;"></i> Download </button>
      </div>
     </div>
    </div>
-  </div><!-- Hidden file input --> <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)"> <!-- Zoom Modal -->
-  <div class="zoom-modal" id="zoomModal">
-   <div class="zoom-modal-content">
-    <img class="zoom-modal-img" id="zoomImg" src="" alt="Zoomed image">
-    <div class="zoom-modal-controls">
-     <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="zoomOut()" title="Zoom out">−</button> <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="resetZoom()" title="Reset">⊡</button> <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="zoomIn()" title="Zoom in">+</button> <button class="zoom-modal-btn" style="background: #333; color: #fff;" onclick="closeZoom()" title="Close"> <i data-lucide="x" style="width: 20px; height: 20px;"></i> </button>
-    </div><input type="range" class="zoom-slider" id="zoomSlider" min="100" max="300" value="100" oninput="updateZoom(this.value)">
-    <div class="zoom-info" id="zoomInfo">
-     100%
+  </div><!-- Hidden Canvas for Download -->
+  <canvas id="hiddenCanvas" style="display: none;"></canvas><!-- File Input --> <input id="fileInput" type="file" accept="image/*" style="display: none;"><!-- Toast Message -->
+  <div id="toast" class="toast-msg"></div><!-- Crop Modal -->
+  <div id="cropModal" style="display: none;" class="crop-modal">
+   <div class="crop-container">
+    <div class="zoom-control"><span style="font-weight: 500;">Auto</span> <input type="radio" name="cropMode" value="auto" checked onchange="cropMode='auto'"> <span style="font-weight: 500; margin-left: 12px;">Manual</span> <input type="radio" name="cropMode" value="manual" onchange="cropMode='manual'">
+    </div>
+    <div class="crop-preview" id="cropPreview"><img id="cropImage" src="" alt="Crop">
+     <div class="crop-grid"></div>
+    </div>
+    <div class="crop-actions"><button class="cancel" onclick="cancelCrop()">Cancel</button> <button class="apply" onclick="applyCrop()">Apply</button>
     </div>
    </div>
-  </div><!-- Crop Modal -->
-  <div class="crop-modal" id="cropModal">
-   <div class="crop-container"><img class="crop-img" id="cropImg" src="" alt="Crop image">
-    <div class="crop-overlay" id="cropOverlay"></div>
-    <div class="crop-box" id="cropBox">
-     <div class="crop-handle nw"></div>
-     <div class="crop-handle ne"></div>
-     <div class="crop-handle sw"></div>
-     <div class="crop-handle se"></div>
+  </div><!-- Zoom Modal -->
+  <div id="zoomModal" style="display: none;" class="crop-modal">
+   <div class="crop-container">
+    <div class="zoom-control"><i data-lucide="zoom-out" style="width: 16px; height: 16px; color: #6b7280;"></i> <input type="range" class="zoom-slider" id="zoomSlider" min="100" max="300" value="100" oninput="updateZoom(this.value)"> <span class="zoom-value" id="zoomValue">100%</span>
     </div>
-    <div class="crop-controls"><button class="crop-btn" onclick="cropImageApply()" title="Apply crop"> <i data-lucide="check" style="width: 20px; height: 20px;"></i> </button> <button class="crop-btn" onclick="closeCrop()" title="Cancel"> <i data-lucide="x" style="width: 20px; height: 20px;"></i> </button>
+    <div class="crop-preview" id="zoomPreview"><img id="zoomImage" src="" alt="Zoom">
     </div>
-    <div class="crop-presets"><button class="crop-preset-btn active" onclick="setCropPreset(1, 1)">Square</button> <button class="crop-preset-btn" onclick="setCropPreset(16, 9)">16:9</button> <button class="crop-preset-btn" onclick="setCropPreset(4, 3)">4:3</button> <button class="crop-preset-btn" onclick="setCropPreset(3, 2)">3:2</button> <button class="crop-preset-btn" onclick="setCropPreset(9, 16)">9:16</button>
+    <div class="crop-actions"><button class="cancel" onclick="cancelZoom()">Cancel</button> <button class="apply" onclick="applyZoom()">Apply</button>
     </div>
    </div>
-  </div><!-- Toast -->
-  <div class="toast-msg" id="toast"></div>
+  </div>
   <script>
     let currentLayout = '2x2';
-    let photos = {};
-    let currentZoom = 100;
-    let panX = 0, panY = 0;
-    let isPanning = false;
-    let panStartX, panStartY;
+    let cells = [];
+    let cropMode = 'auto';
+    let currentEditingIndex = -1;
+    let zoomLevel = 100;
     
-    let cropData = {};
-    let currentCropIndex = null;
-    let cropRatioX = 1, cropRatioY = 1;
-    let cropBox = null;
-    let isDraggingHandle = false;
-    let currentHandle = null;
+    const cellCount = { '2x2': 4, '3col': 6, 'hero': 5, 'mosaic': 6, 'strip': 4, 'tall': 6, 'mosaic2': 6, 'focus': 5, 'quad': 6, 'frame': 6, 'zigzag': 6, 'split': 6, 'corner': 6, 'stack': 6, 'wave': 6, 'spiral': 5 };
 
-    lucide.createIcons();
-
-    function addPhotoTo(index) {
-      window.currentCellIndex = index;
-      document.getElementById('fileInput').click();
+    function initCollage() {
+      createCells(cellCount[currentLayout]);
     }
 
-    function addPhoto() {
-      document.getElementById('fileInput').click();
-    }
+    function createCells(count) {
+      const grid = document.getElementById('collageGrid');
+      grid.innerHTML = '';
+      cells = [];
 
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const cellIndex = window.currentCellIndex ?? 0;
-        const cell = document.getElementById(`cell-${cellIndex}`);
-        
-        if (cell) {
-          const existingImg = cell.querySelector('img');
-          if (existingImg) existingImg.remove();
-          const placeholders = cell.querySelectorAll('.placeholder-content');
-          placeholders.forEach(p => p.remove());
-
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          cell.appendChild(img);
-          photos[cellIndex] = e.target.result;
-
-          const removeBtn = document.createElement('button');
-          removeBtn.className = 'remove-btn';
-          removeBtn.style.background = '#000';
-          removeBtn.style.color = '#fff';
-          removeBtn.innerHTML = '<i data-lucide="x" style="width: 16px; height: 16px;"></i>';
-          removeBtn.onclick = (evt) => { evt.stopPropagation(); removePhoto(cellIndex); };
-
-          const zoomControls = document.createElement('div');
-          zoomControls.className = 'zoom-controls';
-          zoomControls.innerHTML = `
-            <button class="zoom-btn" style="background: #000; color: #fff;" onclick="openZoom(event, ${cellIndex})" title="Zoom & pan">
-              <i data-lucide="maximize2" style="width: 16px; height: 16px;"></i>
-            </button>
-            <button class="zoom-btn" style="background: #000; color: #fff;" onclick="openCrop(event, ${cellIndex})" title="Crop">
-              <i data-lucide="crop" style="width: 16px; height: 16px;"></i>
-            </button>
-          `;
-
-          cell.appendChild(removeBtn);
-          cell.appendChild(zoomControls);
-          lucide.createIcons();
-          showToast('Photo added!');
-        }
-      };
-      reader.readAsDataURL(file);
-      event.target.value = '';
-    }
-
-    function removePhoto(index) {
-      const cell = document.getElementById(`cell-${index}`);
-      if (cell) {
+      for (let i = 0; i < count; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
         cell.innerHTML = `
-          <div class="placeholder-content">
-            <i data-lucide="image" style="width: 24px; height: 24px; color: #999;"></i>
-            <span style="font-size: 12px; color: #999;">Add photo</span>
+          <div style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;" class="placeholder-content">
+            <i data-lucide="image" style="width: 32px; height: 32px;"></i>
           </div>
+          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${i})">
+            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+          </button>
+          <span class="filter-badge"></span>
         `;
-        delete photos[index];
-        lucide.createIcons();
-        showToast('Photo removed');
+        cell.addEventListener('click', () => uploadImage(i));
+        grid.appendChild(cell);
+        cells.push({ element: cell, image: null, filter: null, originalSrc: null });
       }
-    }
 
-    function openZoom(event, index) {
-      event.stopPropagation();
-      const img = document.getElementById(`cell-${index}`).querySelector('img');
-      if (!img) return;
-
-      currentZoom = 100;
-      panX = 0;
-      panY = 0;
-      const zoomImg = document.getElementById('zoomImg');
-      zoomImg.src = img.src;
-      document.getElementById('zoomModal').classList.add('active');
-      document.getElementById('zoomSlider').value = 100;
-      document.getElementById('zoomInfo').textContent = '100%';
-      updateZoomDisplay();
-      setupPanning();
-    }
-
-    function closeZoom() {
-      document.getElementById('zoomModal').classList.remove('active');
-      isPanning = false;
-    }
-
-    function zoomIn() {
-      currentZoom = Math.min(currentZoom + 25, 300);
-      document.getElementById('zoomSlider').value = currentZoom;
-      updateZoomDisplay();
-    }
-
-    function zoomOut() {
-      currentZoom = Math.max(currentZoom - 25, 100);
-      document.getElementById('zoomSlider').value = currentZoom;
-      updateZoomDisplay();
-    }
-
-    function resetZoom() {
-      currentZoom = 100;
-      panX = 0;
-      panY = 0;
-      document.getElementById('zoomSlider').value = 100;
-      updateZoomDisplay();
-    }
-
-    function updateZoom(value) {
-      currentZoom = parseInt(value);
-      updateZoomDisplay();
-    }
-
-    function updateZoomDisplay() {
-      const img = document.getElementById('zoomImg');
-      img.style.transform = `scale(${currentZoom / 100}) translate(${panX}px, ${panY}px)`;
-      document.getElementById('zoomInfo').textContent = currentZoom + '%';
-    }
-
-    function setupPanning() {
-      const img = document.getElementById('zoomImg');
-      img.addEventListener('mousedown', startPan);
-      img.addEventListener('touchstart', startPan);
-      document.addEventListener('mousemove', pan);
-      document.addEventListener('touchmove', pan);
-      document.addEventListener('mouseup', endPan);
-      document.addEventListener('touchend', endPan);
-    }
-
-    function startPan(e) {
-      if (currentZoom <= 100) return;
-      isPanning = true;
-      panStartX = e.clientX || e.touches[0].clientX;
-      panStartY = e.clientY || e.touches[0].clientY;
-    }
-
-    function pan(e) {
-      if (!isPanning || currentZoom <= 100) return;
-      const x = e.clientX || e.touches[0].clientX;
-      const y = e.clientY || e.touches[0].clientY;
-      panX += (x - panStartX) * 0.5;
-      panY += (y - panStartY) * 0.5;
-      panStartX = x;
-      panStartY = y;
-      updateZoomDisplay();
-    }
-
-    function endPan() {
-      isPanning = false;
+      lucide.createIcons();
     }
 
     function changeLayout(layout) {
       currentLayout = layout;
+      document.querySelectorAll('.layout-thumb').forEach(t => {
+        t.classList.toggle('active', t.dataset.layout === layout);
+        t.style.borderColor = t.dataset.layout === layout ? '#3b82f6' : '#9ca3af';
+      });
+
       const grid = document.getElementById('collageGrid');
       grid.className = `collage-grid layout-${layout}`;
-      
-      const layoutThumbs = document.querySelectorAll('.layout-thumb');
-      layoutThumbs.forEach(thumb => thumb.classList.remove('active'));
-      event.target.closest('.layout-thumb').classList.add('active');
-      
-      showToast('Layout changed!');
+      createCells(cellCount[layout]);
     }
 
-    function openCrop(event, index) {
-      event.stopPropagation();
-      const img = document.getElementById(`cell-${index}`).querySelector('img');
-      if (!img) return;
+    function uploadImage(index) {
+      const fileInput = document.getElementById('fileInput');
+      fileInput.dataset.cellIndex = index;
+      fileInput.click();
+    }
 
-      currentCropIndex = index;
-      const cropImg = document.getElementById('cropImg');
-      cropImg.src = img.src;
-      
-      cropData[index] = cropData[index] || { x: 0, y: 0, w: 200, h: 200 };
-      cropBox = {
-        x: 50,
-        y: 50,
-        w: 200,
-        h: 200
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const index = parseInt(e.target.dataset.cellIndex);
+        const img = document.createElement('img');
+        img.src = event.target.result;
+        img.className = 'canvas-img';
+
+        const cell = cells[index];
+        cell.element.innerHTML = `
+          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${index})">
+            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+          </button>
+          <span class="filter-badge"></span>
+        `;
+        cell.element.appendChild(img);
+        cell.image = img;
+        cell.originalSrc = event.target.result;
+        applyStoredFilter(index);
+        lucide.createIcons();
       };
-      cropRatioX = 1;
-      cropRatioY = 1;
+      reader.readAsDataURL(file);
+    });
 
-      document.getElementById('cropModal').classList.add('active');
-      setupCropBox();
-      setupCropHandles();
+    function removeImage(index) {
+      const cell = cells[index];
+      const placeholder = document.createElement('div');
+      placeholder.style.cssText = 'position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;';
+      placeholder.className = 'placeholder-content';
+      placeholder.innerHTML = '<i data-lucide="image" style="width: 32px; height: 32px;"></i>';
+
+      cell.element.innerHTML = `
+        <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white; display: none;" onclick="removeImage(${index})">
+          <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+        </button>
+        <span class="filter-badge"></span>
+      `;
+      cell.element.appendChild(placeholder);
+      cell.image = null;
+      cell.filter = null;
+      cell.originalSrc = null;
       lucide.createIcons();
     }
 
-    function setupCropBox() {
-      const box = document.getElementById('cropBox');
-      box.classList.add('active');
-      box.style.left = cropBox.x + 'px';
-      box.style.top = cropBox.y + 'px';
-      box.style.width = cropBox.w + 'px';
-      box.style.height = cropBox.h + 'px';
-
-      box.addEventListener('mousedown', startMoveCrop);
-      box.addEventListener('touchstart', startMoveCrop);
-    }
-
-    function setupCropHandles() {
-      const handles = document.querySelectorAll('.crop-handle');
-      handles.forEach(handle => {
-        handle.addEventListener('mousedown', startResizeCrop);
-        handle.addEventListener('touchstart', startResizeCrop);
-      });
-    }
-
-    function startMoveCrop(e) {
-      if (e.target.classList.contains('crop-handle')) return;
-      const startX = e.clientX || e.touches[0].clientX;
-      const startY = e.clientY || e.touches[0].clientY;
-      const startBoxX = cropBox.x;
-      const startBoxY = cropBox.y;
-
-      const moveCrop = (e) => {
-        const x = e.clientX || e.touches[0].clientX;
-        const y = e.clientY || e.touches[0].clientY;
-        cropBox.x = startBoxX + (x - startX);
-        cropBox.y = startBoxY + (y - startY);
-        updateCropBox();
-      };
-
-      const stopMoveCrop = () => {
-        document.removeEventListener('mousemove', moveCrop);
-        document.removeEventListener('touchmove', moveCrop);
-        document.removeEventListener('mouseup', stopMoveCrop);
-        document.removeEventListener('touchend', stopMoveCrop);
-      };
-
-      document.addEventListener('mousemove', moveCrop);
-      document.addEventListener('touchmove', moveCrop);
-      document.addEventListener('mouseup', stopMoveCrop);
-      document.addEventListener('touchend', stopMoveCrop);
-    }
-
-    function startResizeCrop(e) {
-      const handle = e.target.closest('.crop-handle');
-      currentHandle = handle.className.split(' ')[1];
-      const startX = e.clientX || e.touches[0].clientX;
-      const startY = e.clientY || e.touches[0].clientY;
-      const startW = cropBox.w;
-      const startH = cropBox.h;
-      const startBoxX = cropBox.x;
-      const startBoxY = cropBox.y;
-
-      const resizeCrop = (e) => {
-        const x = e.clientX || e.touches[0].clientX;
-        const y = e.clientY || e.touches[0].clientY;
-        const deltaX = x - startX;
-        const deltaY = y - startY;
-
-        if (currentHandle.includes('se')) {
-          let newW = startW + deltaX;
-          let newH = startH + deltaY;
-          if (cropRatioX && cropRatioY) {
-            const ratio = cropRatioX / cropRatioY;
-            newH = newW / ratio;
-          }
-          cropBox.w = Math.max(50, newW);
-          cropBox.h = Math.max(50, newH);
-        } else if (currentHandle.includes('sw')) {
-          let newW = startW - deltaX;
-          let newH = startH + deltaY;
-          if (cropRatioX && cropRatioY) {
-            const ratio = cropRatioX / cropRatioY;
-            newH = newW / ratio;
-          }
-          cropBox.x = startBoxX + deltaX;
-          cropBox.w = Math.max(50, newW);
-          cropBox.h = Math.max(50, newH);
-        } else if (currentHandle.includes('ne')) {
-          let newW = startW + deltaX;
-          let newH = startH - deltaY;
-          if (cropRatioX && cropRatioY) {
-            const ratio = cropRatioX / cropRatioY;
-            newH = newW / ratio;
-          }
-          cropBox.y = startBoxY + deltaY;
-          cropBox.w = Math.max(50, newW);
-          cropBox.h = Math.max(50, newH);
-        } else if (currentHandle.includes('nw')) {
-          let newW = startW - deltaX;
-          let newH = startH - deltaY;
-          if (cropRatioX && cropRatioY) {
-            const ratio = cropRatioX / cropRatioY;
-            newH = newW / ratio;
-          }
-          cropBox.x = startBoxX + deltaX;
-          cropBox.y = startBoxY + deltaY;
-          cropBox.w = Math.max(50, newW);
-          cropBox.h = Math.max(50, newH);
+    function applyFilter(filter) {
+      cells.forEach(cell => {
+        if (cell.image) {
+          cell.filter = filter;
+          applyStoredFilter(cells.indexOf(cell));
         }
-        updateCropBox();
+      });
+      showToast(`${filter ? filter.charAt(0).toUpperCase() + filter.slice(1) : 'No'} filter applied`);
+    }
+
+    function applyStoredFilter(index) {
+      const cell = cells[index];
+      if (!cell.image) return;
+
+      const filters = {
+        grayscale: 'grayscale(100%)',
+        sepia: 'sepia(100%)',
+        brightness: 'brightness(1.3)'
       };
 
-      const stopResizeCrop = () => {
-        document.removeEventListener('mousemove', resizeCrop);
-        document.removeEventListener('touchmove', resizeCrop);
-        document.removeEventListener('mouseup', stopResizeCrop);
-        document.removeEventListener('touchend', stopResizeCrop);
-      };
-
-      document.addEventListener('mousemove', resizeCrop);
-      document.addEventListener('touchmove', resizeCrop);
-      document.addEventListener('mouseup', stopResizeCrop);
-      document.addEventListener('touchend', stopResizeCrop);
+      cell.image.style.filter = cell.filter ? filters[cell.filter] : '';
+      const badge = cell.element.querySelector('.filter-badge');
+      badge.textContent = cell.filter ? cell.filter : '';
+      badge.style.display = cell.filter ? 'block' : 'none';
     }
 
-    function updateCropBox() {
-      const box = document.getElementById('cropBox');
-      box.style.left = cropBox.x + 'px';
-      box.style.top = cropBox.y + 'px';
-      box.style.width = cropBox.w + 'px';
-      box.style.height = cropBox.h + 'px';
+    function startCrop() {
+      if (!cells.some(c => c.image)) {
+        showToast('Add an image first');
+        return;
+      }
+      const imageCell = cells.find(c => c.image);
+      currentEditingIndex = cells.indexOf(imageCell);
+      openCropModal();
     }
 
-    function setCropPreset(ratioX, ratioY) {
-      cropRatioX = ratioX;
-      cropRatioY = ratioY;
-      const ratio = ratioX / ratioY;
-      const newH = cropBox.w / ratio;
-      cropBox.h = newH;
-      updateCropBox();
+    function openCropModal() {
+      const cell = cells[currentEditingIndex];
+      if (!cell.image) {
+        showToast('No image to crop');
+        return;
+      }
 
-      const presets = document.querySelectorAll('.crop-preset-btn');
-      presets.forEach(p => p.classList.remove('active'));
-      event.target.classList.add('active');
+      const modal = document.getElementById('cropModal');
+      const img = document.getElementById('cropImage');
+      img.src = cell.originalSrc;
+      modal.style.display = 'flex';
+      cropMode = 'auto';
+      document.querySelector('input[value="auto"]').checked = true;
+      lucide.createIcons();
     }
 
-    function cropImageApply() {
-      const img = document.getElementById('cropImg');
+    function cancelCrop() {
+      document.getElementById('cropModal').style.display = 'none';
+    }
+
+    function applyCrop() {
+      const img = document.getElementById('cropImage');
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const imgElement = new Image();
+      const tempImg = new Image();
+      tempImg.crossOrigin = 'anonymous';
+      
+      tempImg.onload = () => {
+        const size = 300;
+        canvas.width = size;
+        canvas.height = size;
+        
+        if (cropMode === 'auto') {
+          // Auto: fit image to square, maintaining aspect ratio
+          const scale = Math.max(size / tempImg.width, size / tempImg.height);
+          const width = tempImg.width * scale;
+          const height = tempImg.height * scale;
+          const x = (size - width) / 2;
+          const y = (size - height) / 2;
+          ctx.drawImage(tempImg, x, y, width, height);
+        } else {
+          // Manual: center crop
+          const scale = Math.max(size / tempImg.width, size / tempImg.height);
+          const width = tempImg.width * scale;
+          const height = tempImg.height * scale;
+          const x = (size - width) / 2;
+          const y = (size - height) / 2;
+          ctx.drawImage(tempImg, x, y, width, height);
+        }
 
-      imgElement.onload = () => {
-        const scale = imgElement.width / img.offsetWidth;
-        const cropX = Math.floor(cropBox.x * scale);
-        const cropY = Math.floor(cropBox.y * scale);
-        const cropW = Math.floor(cropBox.w * scale);
-        const cropH = Math.floor(cropBox.h * scale);
-
-        canvas.width = cropW;
-        canvas.height = cropH;
-        ctx.drawImage(imgElement, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-
-        const cellIndex = currentCropIndex;
-        const cell = document.getElementById(`cell-${cellIndex}`);
-        const oldImg = cell.querySelector('img');
-        if (oldImg) oldImg.remove();
-
-        const newImg = document.createElement('img');
-        newImg.src = canvas.toDataURL();
-        cell.insertBefore(newImg, cell.firstChild);
-        photos[cellIndex] = canvas.toDataURL();
-
-        closeCrop();
-        showToast('Photo cropped!');
+        const cell = cells[currentEditingIndex];
+        const croppedImg = document.createElement('img');
+        croppedImg.src = canvas.toDataURL();
+        croppedImg.className = 'canvas-img';
+        croppedImg.style.objectFit = 'cover';
+        
+        cell.element.innerHTML = `
+          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${currentEditingIndex})">
+            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+          </button>
+          <span class="filter-badge"></span>
+        `;
+        cell.element.appendChild(croppedImg);
+        cell.image = croppedImg;
+        cell.originalSrc = canvas.toDataURL();
+        applyStoredFilter(currentEditingIndex);
+        lucide.createIcons();
+        
+        cancelCrop();
+        showToast('Image cropped!');
       };
-
-      imgElement.src = img.src;
+      
+      tempImg.onerror = () => {
+        showToast('Error loading image');
+      };
+      
+      tempImg.src = img.src;
     }
 
-    function closeCrop() {
-      document.getElementById('cropModal').classList.remove('active');
-      const box = document.getElementById('cropBox');
-      box.classList.remove('active');
-      currentCropIndex = null;
+    function startZoom() {
+      if (!cells.some(c => c.image)) {
+        showToast('Add an image first');
+        return;
+      }
+      const imageCell = cells.find(c => c.image);
+      currentEditingIndex = cells.indexOf(imageCell);
+      openZoomModal();
+    }
+
+    function openZoomModal() {
+      const cell = cells[currentEditingIndex];
+      if (!cell.image) {
+        showToast('No image to zoom');
+        return;
+      }
+
+      const modal = document.getElementById('zoomModal');
+      const img = document.getElementById('zoomImage');
+      img.src = cell.originalSrc;
+      document.getElementById('zoomSlider').value = 100;
+      zoomLevel = 100;
+      updateZoom(100);
+      modal.style.display = 'flex';
+      lucide.createIcons();
+    }
+
+    function cancelZoom() {
+      document.getElementById('zoomModal').style.display = 'none';
+    }
+
+    function updateZoom(value) {
+      zoomLevel = parseInt(value);
+      document.getElementById('zoomValue').textContent = zoomLevel + '%';
+      const zoomImage = document.getElementById('zoomImage');
+      zoomImage.style.transform = `scale(${zoomLevel / 100})`;
+    }
+
+    function applyZoom() {
+      const img = document.getElementById('zoomImage');
+      const preview = document.getElementById('zoomPreview');
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 300;
+      
+      const ctx = canvas.getContext('2d');
+      const tempImg = new Image();
+      tempImg.crossOrigin = 'anonymous';
+      
+      tempImg.onload = () => {
+        const scale = zoomLevel / 100;
+        const x = (canvas.width - tempImg.width * scale) / 2;
+        const y = (canvas.height - tempImg.height * scale) / 2;
+        
+        ctx.drawImage(tempImg, x, y, tempImg.width * scale, tempImg.height * scale);
+        
+        const cell = cells[currentEditingIndex];
+        const zoomedImg = document.createElement('img');
+        zoomedImg.src = canvas.toDataURL();
+        zoomedImg.className = 'canvas-img';
+        zoomedImg.style.objectFit = 'cover';
+        
+        cell.element.innerHTML = `
+          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${currentEditingIndex})">
+            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+          </button>
+          <span class="filter-badge"></span>
+        `;
+        cell.element.appendChild(zoomedImg);
+        cell.image = zoomedImg;
+        cell.originalSrc = canvas.toDataURL();
+        applyStoredFilter(currentEditingIndex);
+        lucide.createIcons();
+        
+        cancelZoom();
+        showToast('Image zoomed!');
+      };
+      
+      tempImg.onerror = () => {
+        showToast('Error loading image');
+      };
+      
+      tempImg.src = img.src;
+    }
+
+    function downloadCollage() {
+      if (!cells.some(c => c.image)) {
+        showToast('Add images first');
+        return;
+      }
+
+      const grid = document.getElementById('collageGrid');
+      const width = 1200;
+      const height = 900;
+
+      const canvas = document.getElementById('hiddenCanvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      html2canvas(grid, { scale: 2, useCORS: true }).then((canvasResult) => {
+        ctx.drawImage(canvasResult, 0, 0);
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.download = 'collage.jpg';
+        link.click();
+        showToast('Collage downloaded!');
+      }).catch(() => {
+        showToast('Download failed');
+      });
     }
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
-      toast.classList.add('show', 'fade-up');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    window.addEventListener('load', () => {
-      lucide.createIcons();
-      document.querySelector('.layout-thumb').classList.add('active');
-    });
+    initCollage();
+    lucide.createIcons();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e480dbf25d69081',t:'MTc3NDg4MzU1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e48514cf31090a4',t:'MTc3NDg4NjMyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
