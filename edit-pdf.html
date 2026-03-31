@@ -1,1340 +1,411 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edit PDF Online Free - Modify PDF Files Easily</title>
-<meta name="description" content="Edit PDF online free. Modify text, images & pages instantly. No software download needed. Fast, secure & works on mobile & desktop.">
-<meta name="keywords" content="edit pdf online, pdf editor free, modify pdf, pdf editing tool">
-  <link rel="canonical" href="https://www.toolshouse.online/edit-pdf.html">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Nunito:wght@400;500;600;700;800&display=swap');
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit PDF Online Free</title>
+  <meta name="description" content="Edit PDF online free. Modify text, images &amp; pages instantly on mobile &amp; desktop.">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --navy:    #0f1b2d;
-  --navy2:   #162032;
-  --navy3:   #1e2d42;
-  --navy4:   #253550;
-  --sand:    #f0e6d3;
-  --sand2:   #e8d9c0;
-  --sand3:   #d4c4a8;
-  --amber:   #e8a020;
-  --amber2:  #f5b840;
-  --coral:   #e85d4a;
-  --mint:    #2ec4a0;
-  --sky:     #5ba4f5;
-  --text:    #f0e6d3;
-  --muted:   #7a8fa8;
-  --muted2:  #4a5f78;
-  --border:  #253550;
-  --border2: #2e4060;
-  --shadow:  rgba(0,0,0,0.4);
+  --navy: #0f1b2d;
+  --navy2: #162032;
+  --navy3: #1e2d42;
+  --sand: #f0e6d3;
+  --amber: #e8a020;
+  --coral: #e85d4a;
+  --mint: #2ec4a0;
+  --text: #f0e6d3;
+  --muted: #7a8fa8;
+  --border: #253550;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
+html, body { width: 100%; height: 100%; }
 
 body {
   background: var(--navy);
   color: var(--text);
   font-family: 'Nunito', sans-serif;
-  display: grid;
-  grid-template-rows: 52px 48px 1fr 28px;
-  grid-template-columns: 220px 1fr 280px;
-  grid-template-areas:
-    "header header header"
-    "toolbar toolbar toolbar"
-    "left    canvas  right"
-    "status  status  status";
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
-/* ── UPLOAD OVERLAY ── */
-#upload-overlay {
-  position: fixed; inset: 0; z-index: 999;
-  background: var(--navy);
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column;
+/* HEADER */
+.header {
+  background: var(--navy2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
 }
+
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--sand);
+}
+
+.logo span { color: var(--amber); }
+
+.header-btn {
+  background: var(--amber);
+  color: var(--navy);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.header-btn:hover { background: #f5b840; transform: scale(1.02); }
+
+/* MAIN CONTAINER */
+.container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* UPLOAD OVERLAY */
+#upload-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+  overflow: auto;
+}
+
 #upload-overlay.hidden { display: none; }
+
+.upload-content {
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
 
 .upload-logo {
   font-family: 'Fraunces', serif;
-  font-size: 52px; font-weight: 900;
+  font-size: 44px;
+  font-weight: 900;
   color: var(--sand);
-  letter-spacing: -0.02em;
   margin-bottom: 8px;
 }
+
 .upload-logo span { color: var(--amber); }
+
 .upload-tagline {
-  color: var(--muted); font-size: 15px; font-weight: 400;
-  margin-bottom: 52px; letter-spacing: 0.04em;
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 40px;
+  letter-spacing: 0.04em;
 }
 
 .upload-dropzone {
-  width: 560px; max-width: 90vw;
-  border: 2px dashed var(--border2);
-  border-radius: 24px;
-  padding: 64px 48px;
-  text-align: center;
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  padding: 40px 24px;
   cursor: pointer;
   background: var(--navy2);
   transition: all 0.3s;
-  position: relative; overflow: hidden;
+  margin-bottom: 20px;
 }
-.upload-dropzone::before {
-  content:''; position:absolute; inset:0;
-  background: radial-gradient(circle at 50% 0%, rgba(232,160,32,0.06), transparent 60%);
-  opacity:0; transition:opacity 0.3s;
-}
-.upload-dropzone:hover, .upload-dropzone.drag {
+
+.upload-dropzone:hover {
   border-color: var(--amber);
-  transform: translateY(-4px);
-  box-shadow: 0 24px 60px rgba(232,160,32,0.12), 0 0 0 6px rgba(232,160,32,0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(232,160,32,0.1);
 }
-.upload-dropzone:hover::before, .upload-dropzone.drag::before { opacity:1; }
 
 .dz-icon {
-  font-size: 52px; margin-bottom: 20px;
+  font-size: 48px;
+  margin-bottom: 16px;
   display: block;
-  animation: float 3s ease-in-out infinite;
 }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
 .upload-dropzone h2 {
   font-family: 'Fraunces', serif;
-  font-size: 26px; font-weight: 700;
-  color: var(--sand); margin-bottom: 10px;
-  position: relative; z-index:1;
+  font-size: 22px;
+  color: var(--sand);
+  margin-bottom: 8px;
 }
-.upload-dropzone p { color: var(--muted); font-size: 14px; margin-bottom: 28px; line-height:1.6; position:relative;z-index:1; }
+
+.upload-dropzone p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
 
 .btn-open {
-  background: var(--amber); color: var(--navy);
-  border: none; padding: 13px 36px; border-radius: 12px;
-  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
-  cursor: pointer; transition: all 0.2s;
-  box-shadow: 0 6px 24px rgba(232,160,32,0.4);
-  position: relative; z-index:1;
+  background: var(--amber);
+  color: var(--navy);
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
 }
-.btn-open:hover { background: var(--amber2); transform: scale(1.04); }
 
-.upload-features {
-  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-  margin-top: 36px; max-width: 600px;
+.btn-open:active { background: #f5b840; }
+
+#pdf-input { display: none; }
+
+/* PDF VIEWER */
+.pdf-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
 }
-.uf { background: var(--navy3); border: 1px solid var(--border);
-  color: var(--muted); font-size: 12px; font-weight: 600;
-  padding: 5px 14px; border-radius: 100px;
-  display: flex; align-items: center; gap: 5px; }
-.uf em { font-style:normal; font-size:13px; }
 
-/* ── HEADER ── */
-header {
-  grid-area: header;
+.pdf-toolbar {
   background: var(--navy2);
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 16px; gap: 14px;
-  z-index: 50;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  flex-wrap: wrap;
 }
-.hdr-logo {
-  font-family: 'Fraunces', serif;
-  font-size: 22px; font-weight: 900;
-  color: var(--sand); letter-spacing: -0.02em;
+
+.toolbar-btn {
+  background: var(--navy3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
   flex-shrink: 0;
 }
-.hdr-logo em { font-style:normal; color: var(--amber); }
-.hdr-file {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px; color: var(--muted);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  max-width: 360px;
-}
-.hdr-spacer { flex:1; }
-.hdr-btn {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--navy3); border: 1px solid var(--border2);
-  color: var(--text); padding: 6px 14px; border-radius: 8px;
-  font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
-  cursor: pointer; transition: all 0.18s; white-space: nowrap;
-}
-.hdr-btn:hover { background: var(--navy4); border-color: var(--muted2); }
-.hdr-btn.amber { background: var(--amber); border-color: var(--amber); color: var(--navy); }
-.hdr-btn.amber:hover { background: var(--amber2); }
-.hdr-sep { width:1px; height:24px; background: var(--border); }
 
-/* ── TOOLBAR ── */
-.toolbar {
-  grid-area: toolbar;
-  background: var(--navy3);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 3px; padding: 0 12px;
-  overflow-x: auto; z-index: 40;
-}
-.toolbar::-webkit-scrollbar { height:3px; }
-.toolbar::-webkit-scrollbar-thumb { background:var(--border2); }
-
-.tb-grp { display: flex; align-items: center; gap: 2px; }
-.tb-div { width:1px; height:26px; background:var(--border); margin: 0 6px; flex-shrink:0; }
-.tb-lbl {
-  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--muted2);
-  padding: 0 4px; white-space: nowrap; flex-shrink:0;
+.toolbar-btn:active {
+  background: var(--amber);
+  color: var(--navy);
 }
 
-.tbtn {
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  background: transparent; border: 1px solid transparent;
-  color: var(--muted); padding: 5px 10px; border-radius: 7px;
-  font-family: 'Nunito',sans-serif; font-size: 11px; font-weight: 700;
-  cursor: pointer; transition: all 0.15s; white-space: nowrap;
-  height: 32px; flex-shrink:0;
-}
-.tbtn:hover { background: var(--navy4); border-color: var(--border2); color: var(--text); }
-.tbtn.on { background: rgba(232,160,32,0.15); border-color: rgba(232,160,32,0.4); color: var(--amber); }
-.tbtn.go { background: var(--mint); border-color: var(--mint); color: var(--navy); font-weight:800; }
-.tbtn.go:hover { filter: brightness(1.1); }
-.tbtn.red:hover { background: rgba(232,93,74,0.15); border-color: rgba(232,93,74,0.4); color: var(--coral); }
-
-.tb-color { width:28px; height:28px; border-radius:6px; border:2px solid var(--border2); cursor:pointer; padding:2px; }
-.tb-num {
-  background: var(--navy2); border: 1px solid var(--border2);
-  color: var(--text); padding: 4px 7px; border-radius: 6px;
-  font-family: 'DM Mono', monospace; font-size: 11px;
-  width: 52px; outline: none; height:28px;
-}
-.tb-num:focus { border-color: var(--amber); }
-.tb-sel {
-  background: var(--navy2); border: 1px solid var(--border2);
-  color: var(--text); padding: 4px 7px; border-radius: 6px;
-  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight:600;
-  outline: none; height:28px; cursor:pointer;
-}
-.tb-sel:focus { border-color: var(--amber); }
-
-/* ── LEFT SIDEBAR ── */
-.left-panel {
-  grid-area: left;
-  background: var(--navy2);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  overflow: hidden;
-}
-.panel-tabs {
-  display: flex; border-bottom: 1px solid var(--border);
-}
-.ptab {
-  flex:1; padding: 10px 6px; text-align: center;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted2);
-  cursor: pointer; transition: all 0.18s;
-  border-bottom: 2px solid transparent;
-}
-.ptab:hover { color: var(--text); }
-.ptab.on { color: var(--amber); border-bottom-color: var(--amber); }
-
-.panel-body { flex:1; overflow-y:auto; padding: 10px 8px; }
-.panel-body::-webkit-scrollbar { width:4px; }
-.panel-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius:2px; }
-
-.tab-section { display:none; }
-.tab-section.on { display:block; }
-
-/* Page thumbnails */
-.thumb-wrap {
-  border: 2px solid transparent; border-radius: 10px;
-  padding: 5px; margin-bottom: 6px; cursor: pointer;
-  transition: all 0.18s; position: relative;
-}
-.thumb-wrap:hover { background: var(--navy3); border-color: var(--border2); }
-.thumb-wrap.active { border-color: var(--amber); background: rgba(232,160,32,0.06); }
-.thumb-canvas { width:100%; aspect-ratio: 0.77; background:#fff; border-radius:4px; overflow:hidden; display:block; }
-.thumb-canvas canvas { width:100%; height:100%; }
-.thumb-num {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px; color: var(--muted); text-align:center; margin-top:4px;
-}
-.thumb-actions {
-  position:absolute; top:8px; right:8px;
-  display:none; gap:3px;
-}
-.thumb-wrap:hover .thumb-actions { display:flex; }
-.thumb-act {
-  width:22px; height:22px; border-radius:5px;
-  background: var(--navy2); border: 1px solid var(--border2);
-  color: var(--muted); font-size:11px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition: all 0.15s;
-}
-.thumb-act:hover { color:var(--text); background:var(--navy4); }
-.thumb-act.del:hover { color:var(--coral); border-color:var(--coral); }
-
-/* Bookmarks / notes panel */
-.note-item {
-  background: var(--navy3); border: 1px solid var(--border);
-  border-radius: 8px; padding: 10px 12px; margin-bottom: 6px;
-  cursor: pointer; transition: all 0.18s;
-}
-.note-item:hover { border-color: var(--amber); }
-.note-item .ni-page { font-size:10px; font-weight:700; color:var(--amber); letter-spacing:0.08em; margin-bottom:4px; }
-.note-item .ni-text { font-size:12px; color:var(--text); line-height:1.4; }
-.note-item .ni-del { float:right; background:none; border:none; color:var(--muted2); cursor:pointer; font-size:12px; }
-.note-item .ni-del:hover { color:var(--coral); }
-
-/* ── CANVAS ── */
-.canvas-area {
-  grid-area: canvas;
-  background: var(--navy);
+.pdf-canvas-wrapper {
+  flex: 1;
   overflow: auto;
-  display: flex; align-items: flex-start; justify-content: center;
-  padding: 32px;
-  position: relative;
-}
-.canvas-area::before {
-  content:''; position:fixed;
-  background: repeating-conic-gradient(#162032 0% 25%, #111828 0% 50%) 0 0/24px 24px;
-  inset:0; z-index:0; pointer-events:none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px;
+  background: var(--navy);
 }
 
-.page-wrap {
-  position: relative; z-index:1; display:inline-block;
-  box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
-  border-radius: 2px;
+#pdf-canvas {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
-#main-canvas { display:block; }
-#ann-canvas { position:absolute; top:0; left:0; z-index:2; cursor:crosshair; }
 
-/* ── RIGHT PANEL ── */
-.right-panel {
-  grid-area: right;
-  background: var(--navy2);
-  border-left: 1px solid var(--border);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-.rp-header {
-  padding: 12px 14px 10px;
-  border-bottom: 1px solid var(--border);
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--muted);
-}
-.rp-body { flex:1; overflow-y:auto; padding: 12px 12px; }
-.rp-body::-webkit-scrollbar { width:4px; }
-.rp-body::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
-
-.prop-row { margin-bottom: 14px; }
-.prop-lbl {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--muted2); margin-bottom: 5px; display:block;
-}
-.prop-ctrl {
-  width:100%; background: var(--navy3); border: 1px solid var(--border2);
-  color: var(--text); padding: 8px 10px; border-radius: 7px;
-  font-family: 'Nunito',sans-serif; font-size: 12px; font-weight:600;
-  outline:none; transition: border-color 0.2s; resize:vertical;
-}
-.prop-ctrl:focus { border-color: var(--amber); }
-.prop-ctrl[type=color] { padding:3px; height:34px; cursor:pointer; }
-.prop-ctrl[type=range] { padding:0; border:none; background:none; accent-color:var(--amber); }
-
-.tool-hint {
-  background: var(--navy3); border: 1px solid var(--border);
-  border-left: 3px solid var(--amber);
-  border-radius: 8px; padding: 12px; margin-top: 8px;
-  font-size: 12px; color: var(--muted); line-height:1.6;
-}
-.tool-hint strong { color: var(--sand); }
-
-/* Quick action buttons in right panel */
-.qa-grid { display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:14px; }
-.qa-btn {
-  background: var(--navy3); border: 1px solid var(--border2);
-  color: var(--muted); padding: 9px 8px; border-radius: 8px;
-  font-family: 'Nunito',sans-serif; font-size: 11px; font-weight:700;
-  cursor:pointer; transition:all 0.18s; text-align:center;
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-}
-.qa-btn:hover { background:var(--navy4); border-color:var(--border); color:var(--text); }
-.qa-btn .qai { font-size:16px; }
-
-/* ── STATUS BAR ── */
-.statusbar {
-  grid-area: status;
+.page-info {
   background: var(--navy2);
   border-top: 1px solid var(--border);
-  display: flex; align-items: center; gap: 20px;
-  padding: 0 16px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px; color: var(--muted2);
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  flex-shrink: 0;
 }
-.sb-dot { width:5px; height:5px; border-radius:50%; background:var(--mint); margin-right:-12px; }
 
-/* ── MODAL ── */
-.modal-bg {
-  display:none; position:fixed; inset:0;
-  background: rgba(0,0,0,0.7); backdrop-filter:blur(6px);
-  z-index:500; align-items:center; justify-content:center;
-}
-.modal-bg.open { display:flex; }
-.modal {
-  background: var(--navy2); border: 1px solid var(--border2);
-  border-radius: 18px; padding: 28px; width:90%; max-width:420px;
-  box-shadow: 0 28px 80px rgba(0,0,0,0.6);
-  animation: mIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes mIn { from{opacity:0;transform:scale(0.94)translateY(10px)} to{opacity:1;transform:none} }
-.modal h3 {
-  font-family: 'Fraunces', serif;
-  font-size: 20px; font-weight: 700; color:var(--sand);
-  margin-bottom: 18px; display:flex; align-items:center; gap:8px;
-}
-.mrow { margin-bottom:12px; }
-.mrow label { display:block; font-size:11px; font-weight:700; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:5px; }
-.mrow input, .mrow select, .mrow textarea {
-  width:100%; background: var(--navy3); border: 1px solid var(--border2);
-  color: var(--text); padding:9px 11px; border-radius:8px;
-  font-family:'Nunito',sans-serif; font-size:13px; outline:none;
-  transition:border-color 0.2s; resize:vertical;
-}
-.mrow input:focus, .mrow select:focus, .mrow textarea:focus { border-color:var(--amber); }
-.mrow input[type=color] { height:38px; padding:3px; cursor:pointer; }
-.m-flex { display:flex; gap:10px; }
-.m-flex > div { flex:1; }
-.mbtns { display:flex; gap:8px; margin-top:20px; }
-.mbtn {
-  flex:1; padding:11px; border-radius:10px;
-  font-family:'Nunito',sans-serif; font-size:14px; font-weight:800;
-  cursor:pointer; transition:all 0.18s; border:none;
-}
-.mbtn.ok { background:var(--amber); color:var(--navy); }
-.mbtn.ok:hover { background:var(--amber2); }
-.mbtn.cancel { background:var(--navy3); color:var(--muted); border:1px solid var(--border2); }
-.mbtn.cancel:hover { color:var(--text); }
+/* MOBILE RESPONSIVE */
+@media (max-width: 640px) {
+  .header {
+    padding: 10px 12px;
+  }
 
-/* ── TOAST ── */
-#toast {
-  position:fixed; bottom:36px; left:50%; transform:translateX(-50%) translateY(40px);
-  background: var(--navy3); border:1px solid var(--amber);
-  color:var(--sand); padding:10px 22px; border-radius:100px;
-  font-size:13px; font-weight:600;
-  box-shadow:0 8px 30px rgba(0,0,0,0.4);
-  opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  z-index:999; pointer-events:none; white-space:nowrap;
+  .logo {
+    font-size: 18px;
+  }
+
+  .upload-logo {
+    font-size: 36px;
+  }
+
+  .header-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .pdf-toolbar {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .toolbar-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  #pdf-canvas {
+    max-width: 95%;
+  }
 }
-#toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
 
-/* Scrollbars */
-.canvas-area::-webkit-scrollbar { width:8px; height:8px; }
-.canvas-area::-webkit-scrollbar-track { background:var(--navy); }
-.canvas-area::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
-
-#file-in, #img-in, #merge-in { display:none; }
 </style>
-</head>
-<body>
-
-<!-- UPLOAD OVERLAY -->
-<div id="upload-overlay">
-  <div class="upload-logo">PDF<em>X</em></div>
-  <div class="upload-tagline">Professional PDF Editor — Runs Entirely in Your Browser</div>
-  <div class="upload-dropzone" id="dz">
-    <span class="dz-icon">📋</span>
-    <h2>Open a PDF to Start Editing</h2>
-    <p>Drag & drop your file here, or click below to browse.<br>Supports any PDF — scanned, text-based, forms, or mixed.</p>
-    <button class="btn-open" onclick="document.getElementById('file-in').click()">Browse PDF File</button>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="header">
+   <div class="logo">
+    PDF<span>Edit</span>
+   </div><button class="header-btn" onclick="location.reload()">← Back</button>
   </div>
-  <div class="upload-features">
-    <div class="uf"><em>✏️</em> Annotate</div>
-    <div class="uf"><em>T</em> Add Text</div>
-    <div class="uf"><em>🖊</em> Freehand Draw</div>
-    <div class="uf"><em>🖼</em> Insert Images</div>
-    <div class="uf"><em>💬</em> Sticky Notes</div>
-    <div class="uf"><em>⬛</em> Redact</div>
-    <div class="uf"><em>💧</em> Watermark</div>
-    <div class="uf"><em>🔗</em> Merge PDFs</div>
-    <div class="uf"><em>✂️</em> Split Pages</div>
-    <div class="uf"><em>↻</em> Rotate</div>
-    <div class="uf"><em>🔒</em> Secure</div>
-    <div class="uf"><em>⬇</em> Export PDF</div>
-  </div>
-</div>
-
-<!-- HEADER -->
-<header>
-  <div class="hdr-logo">PDF<em>X</em></div>
-  <div class="hdr-sep"></div>
-  <div class="hdr-file" id="hdr-file">No file loaded</div>
-  <div class="hdr-spacer"></div>
-  <button class="hdr-btn" onclick="document.getElementById('file-in').click()">📂 Open</button>
-  <button class="hdr-btn" onclick="showModal('merge-modal')">🔗 Merge</button>
-  <button class="hdr-btn amber" onclick="doExport()">⬇ Export PDF</button>
-</header>
-
-<!-- TOOLBAR -->
-<div class="toolbar" id="toolbar">
-  <span class="tb-lbl">Tool</span>
-  <div class="tb-grp">
-    <button class="tbtn on" id="t-select" onclick="setTool('select')">🖱 Select</button>
-    <button class="tbtn" id="t-text" onclick="setTool('text')">T Text</button>
-    <button class="tbtn" id="t-draw" onclick="setTool('draw')">✏️ Draw</button>
-    <button class="tbtn" id="t-highlight" onclick="setTool('highlight')">🖊 Highlight</button>
-    <button class="tbtn" id="t-rect" onclick="setTool('rect')">⬜ Box</button>
-    <button class="tbtn" id="t-arrow" onclick="setTool('arrow')">→ Arrow</button>
-    <button class="tbtn" id="t-note" onclick="setTool('note')">💬 Note</button>
-    <button class="tbtn" id="t-image" onclick="insertImageTool()">🖼 Image</button>
-    <button class="tbtn" id="t-redact" onclick="setTool('redact')">⬛ Redact</button>
-    <button class="tbtn" id="t-eraser" onclick="setTool('eraser')">🧹 Erase</button>
-  </div>
-  <div class="tb-div"></div>
-  <span class="tb-lbl">Style</span>
-  <div class="tb-grp">
-    <input type="color" class="tb-color" id="col-pick" value="#e8a020" title="Color">
-    <input type="color" class="tb-color" id="fill-pick" value="#e8a020" title="Fill Color" style="opacity:0.5">
-    <input type="number" class="tb-num" id="sz-pick" value="3" min="1" max="40" title="Stroke size">
-    <select class="tb-sel" id="font-sz">
-      <option value="12">12pt</option>
-      <option value="14">14pt</option>
-      <option value="16" selected>16pt</option>
-      <option value="18">18pt</option>
-      <option value="24">24pt</option>
-      <option value="32">32pt</option>
-      <option value="48">48pt</option>
-    </select>
-    <select class="tb-sel" id="font-style">
-      <option value="">Normal</option>
-      <option value="bold">Bold</option>
-      <option value="italic">Italic</option>
-      <option value="bold italic">Bold Italic</option>
-    </select>
-    <select class="tb-sel" id="opacity-sel">
-      <option value="1">100%</option>
-      <option value="0.75">75%</option>
-      <option value="0.5" selected>50%</option>
-      <option value="0.25">25%</option>
-    </select>
-  </div>
-  <div class="tb-div"></div>
-  <span class="tb-lbl">Page</span>
-  <div class="tb-grp">
-    <button class="tbtn" onclick="navPage(-1)">◀</button>
-    <span id="page-lbl" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:0 6px;white-space:nowrap">1 / 1</span>
-    <button class="tbtn" onclick="navPage(1)">▶</button>
-    <button class="tbtn" onclick="rotatePage(-90)">↺</button>
-    <button class="tbtn" onclick="rotatePage(90)">↻</button>
-    <button class="tbtn red" onclick="deletePage()">🗑 Del</button>
-  </div>
-  <div class="tb-div"></div>
-  <span class="tb-lbl">Zoom</span>
-  <div class="tb-grp">
-    <button class="tbtn" onclick="chZoom(-0.15)">−</button>
-    <span id="zoom-lbl" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:0 4px;min-width:40px;text-align:center">100%</span>
-    <button class="tbtn" onclick="chZoom(0.15)">+</button>
-    <button class="tbtn" onclick="setZoom(1)">Fit</button>
-  </div>
-  <div class="tb-div"></div>
-  <div class="tb-grp">
-    <button class="tbtn" onclick="doUndo()">↩ Undo</button>
-    <button class="tbtn red" onclick="clearPageAnns()">✕ Clear</button>
-    <button class="tbtn go" onclick="doExport()">⬇ Save PDF</button>
-  </div>
-</div>
-
-<!-- LEFT PANEL -->
-<div class="left-panel">
-  <div class="panel-tabs">
-    <div class="ptab on" onclick="switchTab('pages')">Pages</div>
-    <div class="ptab" onclick="switchTab('notes')">Notes</div>
-    <div class="ptab" onclick="switchTab('info')">Info</div>
-  </div>
-  <div class="panel-body" id="panel-body">
-    <div class="tab-section on" id="tab-pages"><div id="thumb-list"></div></div>
-    <div class="tab-section" id="tab-notes"><div id="notes-list"><div style="color:var(--muted2);font-size:12px;text-align:center;padding:20px">No sticky notes yet.<br>Use the 💬 Note tool to add one.</div></div></div>
-    <div class="tab-section" id="tab-info">
-      <div id="pdf-info" style="font-size:12px;color:var(--muted);line-height:1.8"></div>
+  <div class="container">
+   <div id="upload-overlay" class="upload-overlay">
+    <div class="upload-content">
+     <div class="upload-logo">
+      PDF<span>Edit</span>
+     </div>
+     <p class="upload-tagline">EDIT PDF ONLINE</p>
+     <div class="upload-dropzone" id="dropzone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"><span class="dz-icon">📄</span>
+      <h2>Upload PDF</h2>
+      <p>Drag your PDF here or click to browse</p><button class="btn-open" onclick="document.getElementById('pdf-input').click()">Choose File</button>
+     </div><input type="file" id="pdf-input" accept=".pdf" onchange="handleFileInput(event)">
     </div>
+   </div>
+   <div id="pdf-viewer" class="pdf-container" style="display:none;">
+    <div class="pdf-toolbar"><button class="toolbar-btn" onclick="previousPage()">← Previous</button> <button class="toolbar-btn" onclick="nextPage()">Next →</button> <button class="toolbar-btn" onclick="zoomIn()">Zoom +</button> <button class="toolbar-btn" onclick="zoomOut()">Zoom -</button> <button class="toolbar-btn" onclick="resetZoom()">Reset</button> <button class="toolbar-btn" onclick="downloadPDF()">Download</button> <button class="toolbar-btn" onclick="location.reload()">New PDF</button>
+    </div>
+    <div class="pdf-canvas-wrapper">
+     <canvas id="pdf-canvas"></canvas>
+    </div>
+    <div class="page-info"><span id="page-count">Page 1 of 1</span>
+    </div>
+   </div>
   </div>
-</div>
+  <script>
+let pdf = null;
+let currentPage = 1;
+let totalPages = 0;
+let zoom = 1;
 
-<!-- CANVAS -->
-<div class="canvas-area" id="canvas-area">
-  <div class="page-wrap" id="page-wrap">
-    <canvas id="main-canvas"></canvas>
-    <canvas id="ann-canvas"></canvas>
-  </div>
-</div>
+pdf.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-<!-- RIGHT PANEL -->
-<div class="right-panel">
-  <div class="rp-header">Properties & Actions</div>
-  <div class="rp-body" id="rp-body">
-    <div class="qa-grid">
-      <div class="qa-btn" onclick="showModal('wm-modal')"><span class="qai">💧</span>Watermark</div>
-      <div class="qa-btn" onclick="showModal('pass-modal')"><span class="qai">🔒</span>Password</div>
-      <div class="qa-btn" onclick="splitPDF()"><span class="qai">✂️</span>Split Pages</div>
-      <div class="qa-btn" onclick="showModal('merge-modal')"><span class="qai">🔗</span>Merge PDF</div>
-      <div class="qa-btn" onclick="document.getElementById('img-in').click()"><span class="qai">🖼</span>Add Image</div>
-      <div class="qa-btn" onclick="doUndo()"><span class="qai">↩</span>Undo</div>
-    </div>
-    <div id="tool-props">
-      <div class="tool-hint">
-        <strong>🖱 Select Tool</strong><br>
-        Use arrow keys to navigate pages. Press T for Text, D for Draw, H for Highlight. Ctrl+Z to undo.
-      </div>
-    </div>
-  </div>
-</div>
+function handleDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  document.getElementById('dropzone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+    loadPDF(file);
+  }
+}
 
-<!-- STATUS BAR -->
-<div class="statusbar">
-  <span class="sb-dot"></span>
-  <span id="sb-ready">Ready</span>
-  <span id="sb-file">—</span>
-  <span id="sb-pg">Page — / —</span>
-  <span id="sb-tool">Tool: select</span>
-  <span id="sb-zoom">100%</span>
-  <span id="sb-ann">0 annotations</span>
-  <span id="sb-coords" style="margin-left:auto">—</span>
-</div>
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.add('drag');
+}
 
-<!-- TEXT MODAL -->
-<div class="modal-bg" id="text-modal">
-  <div class="modal">
-    <h3>💬 Add Text</h3>
-    <div class="mrow"><label>Text Content</label><textarea id="m-text" rows="3" placeholder="Enter text…"></textarea></div>
-    <div class="m-flex">
-      <div class="mrow"><label>Font Size</label><input type="number" id="m-fsize" value="16" min="6" max="120"></div>
-      <div class="mrow"><label>Color</label><input type="color" id="m-fcolor" value="#0f1b2d"></div>
-    </div>
-    <div class="mrow"><label>Style</label>
-      <select id="m-fstyle" class="prop-ctrl">
-        <option value="">Normal</option><option value="bold">Bold</option>
-        <option value="italic">Italic</option><option value="bold italic">Bold Italic</option>
-      </select>
-    </div>
-    <div class="mbtns">
-      <button class="mbtn ok" onclick="commitText()">Place Text</button>
-      <button class="mbtn cancel" onclick="closeModal('text-modal')">Cancel</button>
-    </div>
-  </div>
-</div>
+function handleDragLeave(e) {
+  document.getElementById('dropzone').classList.remove('drag');
+}
 
-<!-- NOTE MODAL -->
-<div class="modal-bg" id="note-modal">
-  <div class="modal">
-    <h3>📌 Sticky Note</h3>
-    <div class="mrow"><label>Note Content</label><textarea id="m-note" rows="4" placeholder="Type your note…"></textarea></div>
-    <div class="m-flex">
-      <div class="mrow"><label>Color</label><input type="color" id="m-ncolor" value="#ffd93d"></div>
-      <div class="mrow"><label>Label</label><input type="text" id="m-nlabel" placeholder="Optional label…"></div>
-    </div>
-    <div class="mbtns">
-      <button class="mbtn ok" onclick="commitNote()">Add Note</button>
-      <button class="mbtn cancel" onclick="closeModal('note-modal')">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- WATERMARK MODAL -->
-<div class="modal-bg" id="wm-modal">
-  <div class="modal">
-    <h3>💧 Add Watermark</h3>
-    <div class="mrow"><label>Text</label><input type="text" id="m-wm" value="CONFIDENTIAL"></div>
-    <div class="m-flex">
-      <div class="mrow"><label>Color</label><input type="color" id="m-wmcol" value="#e85d4a"></div>
-      <div class="mrow"><label>Opacity</label><input type="number" id="m-wmop" value="0.15" min="0.05" max="1" step="0.05"></div>
-    </div>
-    <div class="mrow"><label>Apply To</label>
-      <select id="m-wmapply" class="prop-ctrl">
-        <option value="all">All pages</option>
-        <option value="current">Current page only</option>
-      </select>
-    </div>
-    <div class="mbtns">
-      <button class="mbtn ok" onclick="applyWatermark()">Apply</button>
-      <button class="mbtn cancel" onclick="closeModal('wm-modal')">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- MERGE MODAL -->
-<div class="modal-bg" id="merge-modal">
-  <div class="modal">
-    <h3>🔗 Merge PDFs</h3>
-    <div class="mrow"><label>Second PDF</label><input type="file" id="merge-in2" accept=".pdf" class="prop-ctrl" style="padding:6px;"></div>
-    <div class="mrow"><label>Position</label>
-      <select id="m-mergepos" class="prop-ctrl">
-        <option value="after">Append after current PDF</option>
-        <option value="before">Insert before current PDF</option>
-      </select>
-    </div>
-    <div class="mbtns">
-      <button class="mbtn ok" onclick="doMerge()">Merge</button>
-      <button class="mbtn cancel" onclick="closeModal('merge-modal')">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- PASSWORD MODAL -->
-<div class="modal-bg" id="pass-modal">
-  <div class="modal">
-    <h3>🔒 Password Protect</h3>
-    <div class="mrow"><label>Note</label>
-      <div style="font-size:12px;color:var(--muted);line-height:1.6;background:var(--navy3);border-radius:8px;padding:10px;">
-        PDF password encryption requires a server-side library (pdf-lib or qpdf). This tool will add a password metadata marker to the export metadata. For full encryption, use a desktop tool like Adobe Acrobat or LibreOffice.
-      </div>
-    </div>
-    <div class="mrow"><label>User Password</label><input type="password" id="m-pass" placeholder="Enter password…"></div>
-    <div class="mbtns">
-      <button class="mbtn ok" onclick="setPassword()">Save</button>
-      <button class="mbtn cancel" onclick="closeModal('pass-modal')">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-<input type="file" id="file-in" accept=".pdf">
-<input type="file" id="img-in" accept="image/*">
-<input type="file" id="merge-in" accept=".pdf">
-
-<script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-// ── State ──────────────────────────────────────────────────────────────────
-let pdfDoc = null, totalPages = 0, curPage = 1, zoom = 1.0;
-let tool = 'select';
-let anns = {};        // page → [{type,...}]
-let rotations = {};   // page → deg
-let undoStack = [];
-let isDown = false, drawPts = [], dragStart = null, pendingPos = null;
-let pendingImgSrc = null;
-let stickyNotes = []; // [{page,x,y,text,color,label}]
-let fileName = 'document';
-let password = '';
-
-const mainC = document.getElementById('main-canvas');
-const annC  = document.getElementById('ann-canvas');
-const mCtx  = mainC.getContext('2d');
-const aCtx  = annC.getContext('2d');
-
-// ── Upload ─────────────────────────────────────────────────────────────────
-const dz = document.getElementById('dz');
-dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('drag');});
-dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
-dz.addEventListener('drop', e=>{e.preventDefault();dz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.name.endsWith('.pdf'))loadPDF(f);else toast('⚠ Please drop a .pdf file');});
-
-document.getElementById('file-in').addEventListener('change', e=>{if(e.target.files[0])loadPDF(e.target.files[0]);});
-document.getElementById('img-in').addEventListener('change', e=>{if(e.target.files[0])insertImageFile(e.target.files[0]);});
+function handleFileInput(e) {
+  const file = e.target.files[0];
+  if (file) loadPDF(file);
+}
 
 async function loadPDF(file) {
-  fileName = file.name.replace(/\.pdf$/i,'');
-  document.getElementById('hdr-file').textContent = file.name;
-  document.getElementById('sb-file').textContent = file.name;
-  const buf = await file.arrayBuffer();
-  pdfDoc = await pdfjsLib.getDocument({data:buf}).promise;
-  totalPages = pdfDoc.numPages;
-  anns={}; rotations={}; undoStack=[];
-  curPage=1;
-  document.getElementById('upload-overlay').classList.add('hidden');
-  await buildThumbs();
-  await renderPage(curPage);
-  // PDF info
-  const meta = await pdfDoc.getMetadata().catch(()=>({info:{}}));
-  const info = meta.info||{};
-  document.getElementById('pdf-info').innerHTML =
-    `<b>Pages:</b> ${totalPages}<br><b>Title:</b> ${info.Title||'—'}<br><b>Author:</b> ${info.Author||'—'}<br><b>Creator:</b> ${info.Creator||'—'}<br><b>Producer:</b> ${info.Producer||'—'}<br><b>Size:</b> ${(file.size/1024).toFixed(1)} KB`;
-  toast(`📋 Loaded: ${file.name} · ${totalPages} pages`);
-}
-
-// ── Thumbnails ─────────────────────────────────────────────────────────────
-async function buildThumbs() {
-  const list = document.getElementById('thumb-list');
-  list.innerHTML='';
-  for(let i=1;i<=totalPages;i++) {
-    const w=document.createElement('div');
-    w.className='thumb-wrap'+(i===curPage?' active':'');
-    w.id='tw'+i; w.dataset.page=i;
-    w.onclick=()=>goPage(i);
-
-    const tc=document.createElement('div');
-    tc.className='thumb-canvas';
-    const c=document.createElement('canvas');
-    tc.appendChild(c); w.appendChild(tc);
-
-    const acts=document.createElement('div');
-    acts.className='thumb-actions';
-    acts.innerHTML=`<button class="thumb-act" title="Rotate" onclick="event.stopPropagation();rotatePage_n(${i})">↻</button><button class="thumb-act del" title="Delete" onclick="event.stopPropagation();delPageN(${i})">🗑</button>`;
-    w.appendChild(acts);
-
-    const lbl=document.createElement('div');
-    lbl.className='thumb-num'; lbl.textContent=i;
-    w.appendChild(lbl);
-    list.appendChild(w);
-    renderThumb(i,c);
-  }
-}
-
-async function renderThumb(n,c) {
-  try {
-    const pg=await pdfDoc.getPage(n);
-    const vp=pg.getViewport({scale:0.18,rotation:rotations[n]||0});
-    c.width=vp.width; c.height=vp.height;
-    await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
-  } catch(e){}
-}
-
-// ── Render Page ────────────────────────────────────────────────────────────
-async function renderPage(n) {
-  curPage=n;
-  document.querySelectorAll('.thumb-wrap').forEach(el=>el.classList.remove('active'));
-  const tw=document.getElementById('tw'+n);
-  if(tw){tw.classList.add('active');tw.scrollIntoView({block:'nearest'});}
-  document.getElementById('page-lbl').textContent=`${n} / ${totalPages}`;
-  document.getElementById('sb-pg').textContent=`Page ${n}/${totalPages}`;
-
-  const pg=await pdfDoc.getPage(n);
-  const rot=(rotations[n]||0);
-  const vp=pg.getViewport({scale:zoom,rotation:rot});
-  mainC.width=annC.width=vp.width;
-  mainC.height=annC.height=vp.height;
-  await pg.render({canvasContext:mCtx,viewport:vp}).promise;
-  redraw();
-  updateSB();
-}
-
-function redraw() {
-  aCtx.clearRect(0,0,annC.width,annC.height);
-  for(const a of (anns[curPage]||[])) drawAnn(aCtx,a);
-}
-
-function drawAnn(ctx,a) {
-  ctx.save();
-  ctx.globalAlpha = a.opacity!=null ? a.opacity : 1;
-  if(a.type==='text') {
-    ctx.font=`${a.fstyle||''} ${(a.fsize||16)*zoom}px Nunito,sans-serif`;
-    ctx.fillStyle=a.color||'#0f1b2d';
-    const lines=(a.text||'').split('\n');
-    lines.forEach((l,i)=>ctx.fillText(l,a.x*zoom,(a.y+i*(a.fsize||16)*1.35)*zoom));
-  } else if(a.type==='draw') {
-    ctx.strokeStyle=a.color||'#e8a020';
-    ctx.lineWidth=(a.sz||3)*zoom;
-    ctx.lineCap='round'; ctx.lineJoin='round';
-    ctx.beginPath();
-    a.pts.forEach((p,i)=>i===0?ctx.moveTo(p.x*zoom,p.y*zoom):ctx.lineTo(p.x*zoom,p.y*zoom));
-    ctx.stroke();
-  } else if(a.type==='highlight') {
-    ctx.fillStyle=a.color||'#ffd93d';
-    ctx.globalAlpha=(a.opacity||0.4);
-    ctx.fillRect(a.x*zoom,a.y*zoom,a.w*zoom,a.h*zoom);
-  } else if(a.type==='rect') {
-    ctx.strokeStyle=a.color||'#5ba4f5';
-    ctx.lineWidth=(a.sz||2)*zoom;
-    if(a.fill) { ctx.fillStyle=a.fill; ctx.globalAlpha=(a.opacity||0.3); ctx.fillRect(a.x*zoom,a.y*zoom,a.w*zoom,a.h*zoom); ctx.globalAlpha=1; }
-    ctx.globalAlpha=1; ctx.strokeRect(a.x*zoom,a.y*zoom,a.w*zoom,a.h*zoom);
-  } else if(a.type==='arrow') {
-    ctx.strokeStyle=a.color||'#e8a020'; ctx.lineWidth=(a.sz||3)*zoom;
-    ctx.lineCap='round';
-    const x1=a.x*zoom,y1=a.y*zoom,x2=a.x2*zoom,y2=a.y2*zoom;
-    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-    const ang=Math.atan2(y2-y1,x2-x1);
-    const hs=14*zoom;
-    ctx.beginPath();
-    ctx.moveTo(x2,y2);
-    ctx.lineTo(x2-hs*Math.cos(ang-0.4),y2-hs*Math.sin(ang-0.4));
-    ctx.lineTo(x2-hs*Math.cos(ang+0.4),y2-hs*Math.sin(ang+0.4));
-    ctx.closePath(); ctx.fillStyle=a.color||'#e8a020'; ctx.fill();
-  } else if(a.type==='redact') {
-    ctx.fillStyle='#000';
-    ctx.globalAlpha=1;
-    ctx.fillRect(a.x*zoom,a.y*zoom,a.w*zoom,a.h*zoom);
-  } else if(a.type==='watermark') {
-    ctx.save();
-    ctx.translate(annC.width/2,annC.height/2);
-    ctx.rotate(-Math.PI/4);
-    const fs=Math.floor(annC.width/7);
-    ctx.font=`bold ${fs}px Fraunces,serif`;
-    ctx.fillStyle=a.color||'#e85d4a';
-    ctx.globalAlpha=a.opacity||0.15;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(a.text||'WATERMARK',0,0);
-    ctx.restore();
-  } else if(a.type==='note') {
-    const bw=160*zoom,bh=90*zoom;
-    ctx.fillStyle=a.color||'#ffd93d';
-    ctx.globalAlpha=0.95;
-    ctx.beginPath();
-    roundRect(ctx,a.x*zoom,a.y*zoom,bw,bh,8*zoom);
-    ctx.fill();
-    ctx.globalAlpha=1;
-    ctx.fillStyle='rgba(0,0,0,0.5)';
-    ctx.font=`bold ${11*zoom}px Nunito,sans-serif`;
-    ctx.fillText(a.label||'Note',a.x*zoom+8*zoom,(a.y+14)*zoom);
-    ctx.fillStyle='#111';
-    ctx.font=`${10*zoom}px Nunito,sans-serif`;
-    const lines=(a.text||'').split('\n').slice(0,4);
-    lines.forEach((l,i)=>ctx.fillText(l,a.x*zoom+8*zoom,(a.y+26+i*13)*zoom,bw-16*zoom));
-  } else if(a.type==='image') {
-    if(a._img) {
-      ctx.globalAlpha=a.opacity||1;
-      ctx.drawImage(a._img,a.x*zoom,a.y*zoom,a.w*zoom,a.h*zoom);
-    }
-  }
-  ctx.restore();
-}
-
-function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);
-  ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
-  ctx.closePath();
-}
-
-// ── Mouse Events ───────────────────────────────────────────────────────────
-annC.addEventListener('mousedown', e=>{
-  if(!pdfDoc) return;
-  const p=pos(e);
-  if(tool==='text') { pendingPos=p; openModal('text-modal'); return; }
-  if(tool==='note') { pendingPos=p; openModal('note-modal'); return; }
-  if(tool==='image' && pendingImgSrc) { placeImage(p); return; }
-  isDown=true;
-  if(tool==='draw') drawPts=[p];
-  else dragStart=p;
-});
-
-annC.addEventListener('mousemove', e=>{
-  const p=pos(e);
-  document.getElementById('sb-coords').textContent=`${Math.round(p.x)}, ${Math.round(p.y)}`;
-  if(!isDown) return;
-  if(tool==='draw') {
-    drawPts.push(p);
-    redraw();
-    aCtx.save(); aCtx.strokeStyle=col(); aCtx.lineWidth=sz()*zoom;
-    aCtx.lineCap='round'; aCtx.lineJoin='round';
-    aCtx.beginPath();
-    drawPts.forEach((pt,i)=>i===0?aCtx.moveTo(pt.x*zoom,pt.y*zoom):aCtx.lineTo(pt.x*zoom,pt.y*zoom));
-    aCtx.stroke(); aCtx.restore();
-  } else if(['highlight','rect','arrow','redact'].includes(tool) && dragStart) {
-    redraw();
-    const x=Math.min(dragStart.x,p.x)*zoom, y=Math.min(dragStart.y,p.y)*zoom;
-    const w=Math.abs(p.x-dragStart.x)*zoom, h=Math.abs(p.y-dragStart.y)*zoom;
-    aCtx.save();
-    if(tool==='highlight'){ aCtx.globalAlpha=0.4; aCtx.fillStyle=col(); aCtx.fillRect(x,y,w,h); }
-    else if(tool==='rect'){ aCtx.strokeStyle=col(); aCtx.lineWidth=sz()*zoom; aCtx.strokeRect(x,y,w,h); }
-    else if(tool==='redact'){ aCtx.fillStyle='#000'; aCtx.fillRect(x,y,w,h); }
-    else if(tool==='arrow'){ 
-      aCtx.strokeStyle=col(); aCtx.lineWidth=sz()*zoom; aCtx.lineCap='round';
-      aCtx.beginPath(); aCtx.moveTo(dragStart.x*zoom,dragStart.y*zoom); aCtx.lineTo(p.x*zoom,p.y*zoom); aCtx.stroke();
-    }
-    aCtx.restore();
-  } else if(tool==='eraser') {
-    const ea=(anns[curPage]||[]);
-    const before=ea.length;
-    anns[curPage]=ea.filter(a=>{
-      if(a.type==='draw') return !a.pts.some(pt=>Math.hypot(pt.x-p.x,pt.y-p.y)<20);
-      if(['highlight','rect','redact','note','image'].includes(a.type)) return !(p.x>=a.x&&p.x<=a.x+(a.w||100)&&p.y>=a.y&&p.y<=a.y+(a.h||50));
-      return true;
-    });
-    if(anns[curPage].length!==before) { redraw(); updateSB(); }
-  }
-});
-
-annC.addEventListener('mouseup', e=>{
-  if(!isDown) return; isDown=false;
-  const p=pos(e);
-  const c=col(), s=sz(), op=parseFloat(document.getElementById('opacity-sel').value)||1;
-  if(!anns[curPage]) anns[curPage]=[];
-  pushUndo();
-  if(tool==='draw' && drawPts.length>1) {
-    anns[curPage].push({type:'draw',pts:[...drawPts],color:c,sz:s,opacity:1});
-    drawPts=[]; toast('✏️ Drawing added');
-  } else if(dragStart) {
-    const x=Math.min(dragStart.x,p.x), y=Math.min(dragStart.y,p.y);
-    const w=Math.abs(p.x-dragStart.x), h=Math.abs(p.y-dragStart.y);
-    if(w>4||h>4) {
-      if(tool==='highlight') anns[curPage].push({type:'highlight',x,y,w,h,color:c,opacity:op});
-      else if(tool==='rect') anns[curPage].push({type:'rect',x,y,w,h,color:c,fill:document.getElementById('fill-pick').value,sz:s,opacity:op});
-      else if(tool==='arrow') anns[curPage].push({type:'arrow',x:dragStart.x,y:dragStart.y,x2:p.x,y2:p.y,color:c,sz:s});
-      else if(tool==='redact') anns[curPage].push({type:'redact',x,y,w,h});
-      toast(`${tool==='highlight'?'🖊 Highlight':tool==='rect'?'⬜ Box':tool==='arrow'?'→ Arrow':'⬛ Redacted'} added`);
-    }
-    dragStart=null;
-  }
-  redraw(); updateSB();
-});
-
-annC.addEventListener('mouseleave',()=>{ document.getElementById('sb-coords').textContent='—'; });
-
-function pos(e) {
-  const r=annC.getBoundingClientRect();
-  return {x:(e.clientX-r.left)/zoom, y:(e.clientY-r.top)/zoom};
-}
-function col() { return document.getElementById('col-pick').value; }
-function sz()  { return parseInt(document.getElementById('sz-pick').value)||3; }
-
-// ── Tool Management ────────────────────────────────────────────────────────
-function setTool(t) {
-  tool=t;
-  document.querySelectorAll('[id^="t-"]').forEach(b=>b.classList.remove('on'));
-  const el=document.getElementById('t-'+t);
-  if(el) el.classList.add('on');
-  if(t!=='image') pendingImgSrc=null;
-  updateSB();
-  updateRightPanel();
-  annC.style.cursor = t==='text'?'text':t==='eraser'?'cell':'crosshair';
-  if(t==='draw') toast('✏️ Draw or sign — click and drag');
-  if(t==='highlight') toast('🖊 Drag to highlight an area');
-  if(t==='redact') toast('⬛ Drag to redact content');
-  if(t==='note') toast('💬 Click to place a sticky note');
-  if(t==='eraser') toast('🧹 Move over annotations to erase');
-}
-
-function insertImageTool() {
-  document.getElementById('img-in').click();
-}
-
-async function insertImageFile(file) {
-  const reader=new FileReader();
-  reader.onload=e=>{
-    pendingImgSrc=e.target.result;
-    setTool('image');
-    toast('🖼 Click on the page to place the image');
-  };
-  reader.readAsDataURL(file);
-}
-
-function placeImage(p) {
-  if(!pendingImgSrc) return;
-  const img=new Image(); img.src=pendingImgSrc;
-  img.onload=()=>{
-    const scale=200/img.width;
-    const w=200, h=img.height*scale;
-    if(!anns[curPage]) anns[curPage]=[];
-    pushUndo();
-    anns[curPage].push({type:'image',x:p.x,y:p.y,w,h,_img:img,opacity:1});
-    redraw(); updateSB();
-    pendingImgSrc=null; setTool('select');
-    toast('🖼 Image placed');
-  };
-}
-
-// ── Text & Notes ───────────────────────────────────────────────────────────
-function commitText() {
-  const text=document.getElementById('m-text').value.trim();
-  if(!text||!pendingPos){closeModal('text-modal');return;}
-  const fsize=parseInt(document.getElementById('m-fsize').value)||16;
-  const fcolor=document.getElementById('m-fcolor').value;
-  const fstyle=document.getElementById('m-fstyle').value;
-  if(!anns[curPage]) anns[curPage]=[];
-  pushUndo();
-  anns[curPage].push({type:'text',x:pendingPos.x,y:pendingPos.y,text,fsize,color:fcolor,fstyle,opacity:1});
-  redraw(); updateSB();
-  closeModal('text-modal');
-  toast('💬 Text placed');
-}
-
-function commitNote() {
-  const text=document.getElementById('m-note').value.trim();
-  if(!text||!pendingPos){closeModal('note-modal');return;}
-  const color=document.getElementById('m-ncolor').value;
-  const label=document.getElementById('m-nlabel').value||'Note';
-  if(!anns[curPage]) anns[curPage]=[];
-  pushUndo();
-  const ann={type:'note',x:pendingPos.x,y:pendingPos.y,w:160,h:90,text,color,label,opacity:1};
-  anns[curPage].push(ann);
-  stickyNotes.push({page:curPage,ann});
-  redraw(); updateSB(); updateNotesList();
-  closeModal('note-modal');
-  toast('📌 Note added');
-}
-
-function updateNotesList() {
-  const list=document.getElementById('notes-list');
-  if(stickyNotes.length===0){
-    list.innerHTML='<div style="color:var(--muted2);font-size:12px;text-align:center;padding:20px">No sticky notes yet.<br>Use the 💬 Note tool to add one.</div>';
-    return;
-  }
-  list.innerHTML=stickyNotes.map((n,i)=>`
-    <div class="note-item" onclick="goPage(${n.page})">
-      <div class="ni-page">Page ${n.page}</div>
-      <div class="ni-text">${n.ann.text.substring(0,80)}${n.ann.text.length>80?'…':''}</div>
-      <button class="ni-del" onclick="event.stopPropagation();removeNote(${i})">✕</button>
-    </div>`).join('');
-}
-
-function removeNote(i) {
-  const n=stickyNotes[i];
-  if(anns[n.page]) anns[n.page]=anns[n.page].filter(a=>a!==n.ann);
-  stickyNotes.splice(i,1);
-  updateNotesList(); redraw(); updateSB();
-  toast('Note removed');
-}
-
-// ── Watermark ──────────────────────────────────────────────────────────────
-function applyWatermark() {
-  const text=document.getElementById('m-wm').value||'WATERMARK';
-  const color=document.getElementById('m-wmcol').value;
-  const opacity=parseFloat(document.getElementById('m-wmop').value)||0.15;
-  const pages=document.getElementById('m-wmapply').value==='all'?[...Array(totalPages).keys()].map(i=>i+1):[curPage];
-  pushUndo();
-  for(const pg of pages){
-    if(!anns[pg]) anns[pg]=[];
-    anns[pg]=anns[pg].filter(a=>a.type!=='watermark');
-    anns[pg].push({type:'watermark',text,color,opacity});
-  }
-  redraw(); closeModal('wm-modal');
-  toast(`💧 Watermark on ${pages.length} page${pages.length>1?'s':''}`);
-}
-
-// ── Page Ops ───────────────────────────────────────────────────────────────
-function goPage(n) { if(n>=1&&n<=totalPages) renderPage(n); }
-function navPage(d) { goPage(curPage+d); }
-
-function rotatePage(deg) {
-  rotations[curPage]=((rotations[curPage]||0)+deg+360)%360;
-  renderPage(curPage);
-  renderThumb(curPage,document.querySelector('#tw'+curPage+' canvas'));
-  toast(`↻ Page ${curPage} rotated`);
-}
-function rotatePage_n(n) {
-  rotations[n]=((rotations[n]||0)+90+360)%360;
-  if(n===curPage) renderPage(curPage);
-  renderThumb(n,document.querySelector('#tw'+n+' canvas'));
-}
-
-function deletePage() { delPageN(curPage); }
-function delPageN(n) {
-  if(totalPages<=1){toast('⚠ Cannot delete the only page');return;}
-  if(!confirm(`Delete page ${n}?`)) return;
-  const na={},nr={};
-  for(let i=1;i<=totalPages;i++) {
-    if(i===n) continue;
-    const ni=i<n?i:i-1;
-    if(anns[i]) na[ni]=anns[i];
-    if(rotations[i]) nr[ni]=rotations[i];
-  }
-  anns=na; rotations=nr; totalPages--;
-  stickyNotes=stickyNotes.filter(s=>s.page!==n).map(s=>({...s,page:s.page>n?s.page-1:s.page}));
-  if(curPage>totalPages) curPage=totalPages;
-  buildThumbs(); renderPage(curPage); updateNotesList();
-  toast(`🗑 Page deleted`);
-}
-
-function splitPDF() {
-  if(!pdfDoc){toast('⚠ No PDF loaded');return;}
-  toast(`✂️ To split: use browser print (Ctrl+P) and select page range, or export and split with a desktop tool. Exporting full PDF now…`);
-  doExport();
-}
-
-// ── Merge ─────────────────────────────────────────────────────────────────
-async function doMerge() {
-  const f=document.getElementById('merge-in2').files[0];
-  if(!f){toast('⚠ Select a PDF file');return;}
-  const buf=await f.arrayBuffer();
-  const doc2=await pdfjsLib.getDocument({data:buf}).promise;
-  const n2=doc2.numPages;
-  const pos2=document.getElementById('m-mergepos').value;
-  if(pos2==='after') { totalPages+=n2; }
-  else {
-    const na={},nr={};
-    for(let i=1;i<=totalPages;i++){ if(anns[i]) na[i+n2]=anns[i]; if(rotations[i]) nr[i+n2]=rotations[i]; }
-    anns=na; rotations=nr; totalPages+=n2;
-  }
-  buildThumbs(); closeModal('merge-modal');
-  toast(`✅ Merged — ${totalPages} pages total`);
-  updateSB();
-}
-
-// ── Undo ──────────────────────────────────────────────────────────────────
-function pushUndo() {
-  undoStack.push({page:curPage,anns:JSON.parse(JSON.stringify(
-    anns[curPage]||[],
-    (k,v)=>k==='_img'?undefined:v
-  ))});
-  if(undoStack.length>60) undoStack.shift();
-}
-
-function doUndo() {
-  const last=undoStack.findLast(h=>h.page===curPage);
-  if(!last){toast('⚠ Nothing to undo');return;}
-  undoStack.splice(undoStack.lastIndexOf(last),1);
-  anns[curPage]=last.anns;
-  // Reload image objects
-  (anns[curPage]||[]).forEach(a=>{
-    if(a.type==='image'&&a._imgSrc){
-      const img=new Image(); img.src=a._imgSrc; a._img=img;
-    }
-  });
-  redraw(); updateSB(); toast('↩ Undone');
-}
-
-function clearPageAnns() {
-  if(!(anns[curPage]&&anns[curPage].length)){toast('⚠ No annotations');return;}
-  if(!confirm('Clear all annotations on this page?')) return;
-  pushUndo(); anns[curPage]=[]; redraw(); updateSB(); toast('✕ Page cleared');
-}
-
-// ── Zoom ──────────────────────────────────────────────────────────────────
-function chZoom(d) { zoom=Math.max(0.25,Math.min(4,zoom+d)); renderPage(curPage); document.getElementById('zoom-lbl').textContent=Math.round(zoom*100)+'%'; updateSB(); }
-function setZoom(z) { zoom=z; renderPage(curPage); document.getElementById('zoom-lbl').textContent=Math.round(zoom*100)+'%'; updateSB(); }
-
-document.getElementById('canvas-area').addEventListener('wheel',e=>{
-  if(e.ctrlKey||e.metaKey){e.preventDefault();chZoom(e.deltaY<0?0.1:-0.1);}
-},{passive:false});
-
-// ── Modals ─────────────────────────────────────────────────────────────────
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-function showModal(id){openModal(id);}
-document.querySelectorAll('.modal-bg').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id);});});
-
-// ── Password (metadata only) ───────────────────────────────────────────────
-function setPassword(){password=document.getElementById('m-pass').value;closeModal('pass-modal');toast('🔒 Password noted — export to apply');}
-
-// ── Export ────────────────────────────────────────────────────────────────
-async function doExport() {
-  if(!pdfDoc){toast('⚠ No PDF loaded');return;}
-  toast('⏳ Generating PDF…');
-  const chunks=[];
-  const enc=new TextEncoder();
-  const add=s=>chunks.push(enc.encode(s));
-  const addB=b=>chunks.push(b instanceof Uint8Array?b:new Uint8Array(b));
-
-  let oid=1;
-  const offsets={};
-  const len=()=>chunks.reduce((a,c)=>a+c.length,0);
-  add('%PDF-1.5\n%\xE2\xE3\xCF\xD3\n');
-
-  const catId=oid++, pgsId=oid++;
-  const pIds=[],iIds=[],cIds=[];
-
-  for(let pg=1;pg<=totalPages;pg++){
-    iIds.push(oid++); cIds.push(oid++); pIds.push(oid++);
-  }
-
-  const imgs=[];
-  const dims=[];
-
-  for(let pg=1;pg<=totalPages;pg++) {
+  const reader = new FileReader();
+  reader.onload = async (e) => {
     try {
-      const page=await pdfDoc.getPage(pg);
-      const rot=(rotations[pg]||0);
-      const vp=page.getViewport({scale:2.0,rotation:rot});
-      const c=document.createElement('canvas');
-      c.width=vp.width; c.height=vp.height;
-      const ctx2=c.getContext('2d');
-      await page.render({canvasContext:ctx2,viewport:vp}).promise;
-      const savedZoom=zoom; zoom=2.0;
-      for(const a of (anns[pg]||[])) drawAnn(ctx2,a);
-      zoom=savedZoom;
-      const b64=c.toDataURL('image/jpeg',0.92).split(',')[1];
-      const raw=atob(b64);
-      const b=new Uint8Array(raw.length);
-      for(let j=0;j<raw.length;j++) b[j]=raw.charCodeAt(j);
-      imgs.push(b); dims.push({w:vp.width,h:vp.height});
-    } catch(e){imgs.push(null);dims.push({w:595,h:842});}
-  }
-
-  offsets[catId]=len();
-  add(`${catId} 0 obj\n<< /Type /Catalog /Pages ${pgsId} 0 R >>\nendobj\n`);
-  offsets[pgsId]=len();
-  add(`${pgsId} 0 obj\n<< /Type /Pages /Kids [${pIds.map(i=>`${i} 0 R`).join(' ')}] /Count ${pIds.length} >>\nendobj\n`);
-
-  for(let i=0;i<pIds.length;i++) {
-    const {w,h}=dims[i];
-    const imgId=iIds[i],cstId=cIds[i],pgId=pIds[i];
-    const s=`q ${w} 0 0 ${h} 0 0 cm /img${i} Do Q`;
-    if(imgs[i]) {
-      offsets[imgId]=len();
-      add(`${imgId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgs[i].length} >>\nstream\n`);
-      addB(imgs[i]);
-      add('\nendstream\nendobj\n');
+      pdf = await pdfjsLib.getDocument(e.target.result).promise;
+      totalPages = pdf.numPages;
+      currentPage = 1;
+      zoom = 1;
+      document.getElementById('upload-overlay').classList.add('hidden');
+      document.getElementById('pdf-viewer').style.display = 'flex';
+      renderPage();
+    } catch (err) {
+      alert('Error loading PDF: ' + err.message);
     }
-    offsets[cstId]=len();
-    add(`${cstId} 0 obj\n<< /Length ${s.length} >>\nstream\n${s}\nendstream\nendobj\n`);
-    offsets[pgId]=len();
-    const res=imgs[i]?`/XObject << /img${i} ${imgId} 0 R >>`:'';
-    add(`${pgId} 0 obj\n<< /Type /Page /Parent ${pgsId} 0 R /MediaBox [0 0 ${w} ${h}] /Resources << ${res} >> /Contents ${cstId} 0 R >>\nendobj\n`);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+async function renderPage() {
+  const page = await pdf.getPage(currentPage);
+  const canvas = document.getElementById('pdf-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  const viewport = page.getViewport({ scale: zoom });
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  document.getElementById('page-count').textContent = `Page ${currentPage} of ${totalPages}`;
+}
+
+function previousPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderPage();
   }
+}
 
-  const xOff=len();
-  const max=Math.max(catId,pgsId,...pIds,...iIds,...cIds);
-  add(`xref\n0 ${max+1}\n0000000000 65535 f \n`);
-  for(let id=1;id<=max;id++){
-    const o=offsets[id];
-    add(o!=null?String(o).padStart(10,'0')+' 00000 n \n':'0000000000 65535 f \n');
+function nextPage() {
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderPage();
   }
-  add(`trailer\n<< /Size ${max+1} /Root ${catId} 0 R >>\nstartxref\n${xOff}\n%%EOF\n`);
-
-  const total=chunks.reduce((a,c)=>a+c.length,0);
-  const out=new Uint8Array(total); let off=0;
-  for(const c of chunks){out.set(c,off);off+=c.length;}
-  const blob=new Blob([out],{type:'application/pdf'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=fileName+'_edited.pdf'; a.click();
-  toast(`✅ Saved: ${fileName}_edited.pdf`);
 }
 
-// ── Sidebar tab ────────────────────────────────────────────────────────────
-function switchTab(t) {
-  document.querySelectorAll('.ptab').forEach((el,i)=>{
-    const names=['pages','notes','info'];
-    el.classList.toggle('on',names[i]===t);
-  });
-  document.querySelectorAll('.tab-section').forEach(el=>el.classList.remove('on'));
-  document.getElementById('tab-'+t).classList.add('on');
+function zoomIn() {
+  zoom += 0.2;
+  renderPage();
 }
 
-// ── Right panel tool hints ─────────────────────────────────────────────────
-const hints = {
-  select:    '🖱 <strong>Select</strong><br>Pan the canvas. Arrow keys navigate pages. Keyboard: T=Text, D=Draw, H=Highlight, N=Note.',
-  text:      'T <strong>Text Tool</strong><br>Click anywhere on the page to place a text box. Choose font size and color in the toolbar.',
-  draw:      '✏️ <strong>Draw / Sign</strong><br>Click and drag to draw freehand lines. Great for signatures and sketches.',
-  highlight: '🖊 <strong>Highlight</strong><br>Drag to cover an area with a semi-transparent color wash.',
-  rect:      '⬜ <strong>Box / Shape</strong><br>Drag to create rectangles. Use fill color for solid boxes or transparent fill for outlines.',
-  arrow:     '→ <strong>Arrow</strong><br>Drag from start to end point to place a directional arrow annotation.',
-  note:      '💬 <strong>Sticky Note</strong><br>Click to drop a colored note anywhere on the page. Notes are listed in the Notes panel.',
-  image:     '🖼 <strong>Insert Image</strong><br>Select an image file then click the page to place it. Resize by editing w/h in the panel.',
-  redact:    '⬛ <strong>Redact</strong><br>Drag to permanently black-out sensitive content. Covers the area with solid black.',
-  eraser:    '🧹 <strong>Eraser</strong><br>Hover over annotations to remove them. Works on drawings, shapes, notes, and images.',
-};
-
-function updateRightPanel() {
-  document.getElementById('tool-props').innerHTML=`<div class="tool-hint">${hints[tool]||''}</div>`;
+function zoomOut() {
+  if (zoom > 0.4) {
+    zoom -= 0.2;
+    renderPage();
+  }
 }
 
-// ── Status ─────────────────────────────────────────────────────────────────
-function updateSB() {
-  document.getElementById('sb-tool').textContent='Tool: '+tool;
-  document.getElementById('sb-zoom').textContent=Math.round(zoom*100)+'%';
-  const total=Object.values(anns).reduce((a,v)=>a+(v?v.length:0),0);
-  document.getElementById('sb-ann').textContent=total+' annotations';
+function resetZoom() {
+  zoom = 1;
+  renderPage();
 }
 
-// ── Keyboard Shortcuts ─────────────────────────────────────────────────────
-document.addEventListener('keydown',e=>{
-  if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
-  if((e.ctrlKey||e.metaKey)&&e.key==='z'){doUndo();return;}
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();doExport();return;}
-  const map={t:'text',d:'draw',h:'highlight',n:'note',r:'rect',a:'arrow',x:'redact',e:'eraser',s:'select'};
-  if(map[e.key]) setTool(map[e.key]);
-  if(e.key==='ArrowRight'||e.key==='ArrowDown') navPage(1);
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp') navPage(-1);
-  if(e.key==='+'||e.key==='=') chZoom(0.15);
-  if(e.key==='-') chZoom(-0.15);
-  if(e.key==='0') setZoom(1);
-});
-
-// ── Toast ──────────────────────────────────────────────────────────────────
-let _tt;
-function toast(msg) {
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('on');
-  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('on'),2800);
+function downloadPDF() {
+  const canvas = document.getElementById('pdf-canvas');
+  const link = document.createElement('a');
+  link.href = canvas.toDataURL('image/png');
+  link.download = `page-${currentPage}.png`;
+  link.click();
 }
 </script>
-</body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e4c2bba859190aa',t:'MTc3NDkyNjczMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
