@@ -1,640 +1,740 @@
-<!doctype html>
-<html lang="en" class="h-full">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF Reader</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>PDF ToolKit Pro | Reader & Gallery Manager</title>
+  <!-- PDF.js core from Mozilla CDN (stable v3.11.174) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <!-- FileSaver.js for reliable save-as (gallery export) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <!-- Simple CSS reset + modern glassmorphic UI -->
   <style>
-    * { font-family: 'DM Sans', sans-serif; }
-    html, body { height: 100%; margin: 0; padding: 0; }
-    
-    .app-wrapper {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: #f8fafc;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
-    
-    .header {
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 1rem 1.5rem;
+
+    body {
+      background: linear-gradient(145deg, #e0eaf4 0%, #cfdef3 100%);
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      padding: 20px;
+      min-height: 100vh;
       display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    
-    .main-content {
-      flex: 1;
-      display: flex;
+
+    /* main app container */
+    .app-container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(2px);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
       overflow: hidden;
-      gap: 1rem;
-      padding: 1.5rem;
-    }
-    
-    .sidebar {
-      width: 280px;
-      background: white;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      overflow: hidden;
-    }
-    
-    .sidebar-header {
-      padding: 1rem;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #475569;
-    }
-    
-    .sidebar-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0.75rem;
-    }
-    
-    .sidebar-item {
-      padding: 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.875rem;
-      color: #475569;
-      background: #f8fafc;
-      margin-bottom: 0.5rem;
       transition: all 0.2s;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
-    
-    .sidebar-item:hover {
-      background: #e2e8f0;
-    }
-    
-    .viewer-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      overflow: hidden;
-    }
-    
+
+    /* header area */
     .toolbar {
+      background: #1e2a3e;
+      padding: 1rem 1.8rem;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      padding: 1rem;
-      border-bottom: 1px solid #e2e8f0;
+      gap: 12px;
+      border-bottom: 2px solid #ffb347;
+    }
+
+    .logo h1 {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+    .logo span {
+      font-size: 0.8rem;
+      background: #ffb347;
+      padding: 2px 8px;
+      border-radius: 40px;
+      margin-left: 8px;
+      color: #1e2a3e;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      background: #2c3e4e;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .btn-primary {
+      background: #ff8c42;
+      color: #1e2a3e;
+    }
+    .btn-primary:hover {
+      background: #ff9e5e;
+      transform: scale(0.97);
+    }
+    .btn-danger {
+      background: #c44536;
+    }
+    .btn-danger:hover {
+      background: #b33a2b;
+    }
+    .btn-success {
+      background: #2c7a4d;
+    }
+    .btn-success:hover {
+      background: #1f5e3a;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #ffb347;
+      color: #ffb347;
+    }
+    .btn-outline:hover {
+      background: #ffb34720;
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    /* main two-column layout: PDF reader + Gallery */
+    .split-layout {
+      display: flex;
+      flex-direction: row;
       flex-wrap: wrap;
     }
-    
-    .toolbar-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+
+    .reader-section {
+      flex: 2;
+      min-width: 280px;
+      background: #fef9f0;
+      padding: 20px;
+      border-right: 1px solid #ddd8ce;
     }
-    
-    .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      border: none;
-      background: #e2e8f0;
-      color: #475569;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 0.875rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .btn:hover {
-      background: #cbd5e1;
-    }
-    
-    .btn:active {
-      transform: scale(0.95);
-    }
-    
-    .btn-primary {
-      background: #4f46e5;
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background: #4338ca;
-    }
-    
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    .page-info {
-      font-size: 0.875rem;
-      color: #64748b;
-      min-width: 120px;
-      text-align: center;
-    }
-    
-    .pdf-container {
-      flex: 1;
-      overflow: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      background: #f1f5f9;
-    }
-    
-    .pdf-canvas {
-      max-width: 100%;
-      max-height: 100%;
-      border-radius: 8px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-    }
-    
-    .drop-zone {
-      border: 3px dashed #94a3b8;
-      border-radius: 12px;
-      padding: 3rem 2rem;
-      text-align: center;
-      transition: all 0.25s;
-      cursor: pointer;
-      background: #f8fafc;
-    }
-    
-    .drop-zone.dragover {
-      border-color: #4f46e5;
-      background: #eef2ff;
-    }
-    
-    .drop-zone-content {
+
+    .gallery-section {
+      flex: 1.2;
+      min-width: 260px;
+      background: #f5f1ea;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 1rem;
+      gap: 18px;
     }
-    
-    .drop-icon {
-      width: 48px;
-      height: 48px;
-      color: #cbd5e1;
+
+    /* file upload zone */
+    .upload-zone {
+      background: #fff6e8;
+      border: 2px dashed #ffb347;
+      border-radius: 28px;
+      padding: 20px 12px;
+      text-align: center;
+      margin-bottom: 24px;
+      transition: 0.2s;
     }
-    
-    .drop-zone.dragover .drop-icon {
-      color: #4f46e5;
+    .upload-zone label {
+      font-weight: bold;
+      display: inline-block;
+      background: #ffb347;
+      padding: 10px 24px;
+      border-radius: 40px;
+      cursor: pointer;
+      color: #1e2a3e;
+      margin-top: 8px;
     }
-    
-    .drop-text {
-      font-size: 1rem;
-      color: #64748b;
-      font-weight: 500;
-    }
-    
-    .drop-hint {
-      font-size: 0.875rem;
-      color: #94a3b8;
-    }
-    
-    #pdfInput {
+    #fileInput {
       display: none;
     }
-    
-    .empty-state {
+    .pdf-info {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: #4a5562;
+    }
+
+    /* canvas viewer */
+    .pdf-viewer {
+      background: #e2dcd0;
+      border-radius: 24px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: inset 0 1px 4px #0001, 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .canvas-container {
+      overflow-x: auto;
+      text-align: center;
+      background: #3e3a35;
+      border-radius: 20px;
+      padding: 12px;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      border-radius: 12px;
+      background: white;
+    }
+    .page-controls {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin: 20px 0 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .page-num {
+      background: #2c3e4e;
+      padding: 6px 14px;
+      border-radius: 32px;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* gallery list */
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 2px solid #ffb347;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .gallery-list {
+      max-height: 420px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
+      gap: 12px;
+    }
+    .gallery-item {
+      background: white;
+      border-radius: 20px;
+      padding: 12px;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 1rem;
-      color: #94a3b8;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: 0.1s;
+      cursor: pointer;
+      border-left: 5px solid #ffb347;
     }
-    
-    .empty-icon {
-      width: 64px;
-      height: 64px;
-      color: #cbd5e1;
+    .gallery-item:hover {
+      background: #fff3e0;
+      transform: translateX(4px);
     }
-    
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    .file-meta {
+      flex: 1;
+      overflow: hidden;
     }
-    
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
+    .file-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 3px;
+    .file-size {
+      font-size: 0.7rem;
+      color: gray;
     }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+    .item-actions {
+      display: flex;
+      gap: 8px;
     }
-    
-    @media (max-width: 768px) {
-      .app-wrapper {
-        height: 100%;
-      }
-      
-      .header {
-        padding: 0.75rem 1rem;
-      }
-      
-      .main-content {
-        flex-direction: column;
-        padding: 0.75rem;
-        gap: 0.5rem;
-      }
-      
-      .sidebar {
-        width: 100%;
-        max-height: 150px;
-        display: none;
-      }
-      
-      .sidebar.mobile-visible {
-        display: flex;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        width: 100%;
-        z-index: 50;
-        border-radius: 0;
-        max-height: 200px;
-      }
-      
-      .toolbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.75rem;
-      }
-      
-      .toolbar-group {
-        width: 100%;
-        flex-wrap: wrap;
-      }
-      
-      .btn {
-        flex: 1;
-        min-width: 80px;
-        padding: 0.625rem 0.75rem;
-        font-size: 0.8125rem;
-      }
-      
-      .page-info {
-        min-width: 100px;
-      }
-      
-      .pdf-container {
-        padding: 0.5rem;
-      }
-      
-      .drop-zone {
-        padding: 2rem 1.5rem;
-      }
-      
-      .drop-icon {
-        width: 40px;
-        height: 40px;
-      }
-      
-      .drop-text {
-        font-size: 0.9375rem;
-      }
-      
-      .drop-hint {
-        font-size: 0.8125rem;
-      }
-      
-      .viewer-section {
-        border-radius: 8px;
-      }
+    .icon-btn {
+      background: #e9ecef;
+      border: none;
+      border-radius: 40px;
+      padding: 6px 12px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      cursor: pointer;
     }
-    
-    @media (max-width: 480px) {
-      .header {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-start;
-      }
-      
-      #fileNameDisplay {
-        max-width: 100%;
-        width: 100%;
-      }
-      
-      .toolbar {
-        padding: 0.75rem;
-      }
-      
-      .toolbar-group {
-        gap: 0.25rem;
-      }
-      
-      .btn {
-        padding: 0.5rem 0.625rem;
-        font-size: 0.75rem;
-      }
-      
-      .page-info {
-        font-size: 0.8125rem;
-      }
-      
-      input[type="range"] {
-        width: 80px;
-      }
+    .icon-btn.save-pdf {
+      background: #2c7a4d;
+      color: white;
+    }
+    .icon-btn.delete-item {
+      background: #c44536;
+      color: white;
+    }
+    .empty-gallery {
+      text-align: center;
+      color: #7c6e5e;
+      padding: 40px 10px;
+      font-style: italic;
+    }
+    .clear-all-btn {
+      width: 100%;
+      background: #c44536cc;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 780px) {
+      body { padding: 12px; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .action-buttons { justify-content: center; }
+      .split-layout { flex-direction: column; }
+      .reader-section { border-right: none; border-bottom: 1px solid #ddd; }
+    }
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      padding: 12px;
+      background: #e8e2d6;
+      color: #3b3a36;
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div class="app-wrapper"><!-- Header -->
-   <header class="header">
-    <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
-     <button class="btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" style="display: none; background: #e2e8f0; width: 36px; padding: 0.5rem;" title="Menu"> <i data-lucide="menu" style="width: 18px; height: 18px;"></i> </button>
-     <div style="width: 36px; height: 36px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-      <i data-lucide="file-text" style="width: 20px; height: 20px; color: white;"></i>
-     </div>
-     <h1 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">PDF Reader</h1>
+</head>
+<body>
+<div class="app-container">
+  <div class="toolbar">
+    <div class="logo">
+      <h1>📄 PDF ToolKit <span>reader + gallery</span></h1>
     </div>
-    <div id="fileNameDisplay" style="font-size: 0.875rem; color: #64748b; text-align: right; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
-   </header><!-- Main Content -->
-   <div class="main-content"><!-- Sidebar -->
-    <aside class="sidebar">
-     <div class="sidebar-header">
-      Recent PDFs
-     </div>
-     <div class="sidebar-content" id="recentList">
-      <div style="text-align: center; color: #94a3b8; font-size: 0.875rem; padding: 2rem 0;">
-       No PDFs opened yet
-      </div>
-     </div>
-    </aside><!-- Viewer -->
-    <div class="viewer-section"><!-- Toolbar -->
-     <div class="toolbar">
-      <div class="toolbar-group"><button class="btn btn-primary" onclick="document.getElementById('pdfInput').click()"> <i data-lucide="upload" style="width: 16px; height: 16px;"></i> Upload PDF </button>
-      </div>
-      <div class="toolbar-group" id="controlsGroup" style="display: none;"><button class="btn" onclick="previousPage()" id="prevBtn" title="Previous page"> <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i> </button>
-       <div class="page-info"><span id="currentPage">0</span> / <span id="totalPages">0</span>
-       </div><button class="btn" onclick="nextPage()" id="nextBtn" title="Next page"> <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i> </button>
-      </div>
-      <div class="toolbar-group" id="zoomGroup" style="display: none;"><button class="btn" onclick="zoomOut()" title="Zoom out"> <i data-lucide="minus" style="width: 16px; height: 16px;"></i> </button> <input type="range" id="zoomSlider" min="50" max="200" value="100" style="width: 100px; cursor: pointer;" oninput="setZoom(this.value)"> <span style="font-size: 0.875rem; color: #64748b; min-width: 40px; text-align: right;"><span id="zoomLevel">100</span>%</span> <button class="btn" onclick="zoomIn()" title="Zoom in"> <i data-lucide="plus" style="width: 16px; height: 16px;"></i> </button>
-      </div>
-     </div><!-- PDF Display -->
-     <div class="pdf-container" id="pdfContainer" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-      <div class="drop-zone" id="dropZone">
-       <div class="drop-zone-content"><i data-lucide="cloud-upload" class="drop-icon"></i>
-        <div class="drop-text">
-         Drop PDF here or click to upload
-        </div>
-        <div class="drop-hint">
-         Supported: PDF files (unlimited size)
-        </div>
-       </div>
-      </div>
-     </div>
+    <div class="action-buttons">
+      <button id="saveCurrentPdfBtn" class="btn btn-success">💾 Save PDF to Gallery</button>
+      <button id="clearAllGalleryBtn" class="btn btn-danger">🗑 Clear All Gallery</button>
+      <button id="detectPDFinfoBtn" class="btn btn-outline">🔍 Detect PDF Info</button>
     </div>
-   </div>
-  </div><input type="file" id="pdfInput" accept=".pdf" onchange="handleFileSelect(event)">
-  <script>
-    // PDF.js setup
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </div>
 
-    let pdfDoc = null;
-    let currentPage = 1;
-    let zoom = 100;
-    let recentPdfs = [];
-    let isMobileMenuOpen = false;
+  <div class="split-layout">
+    <!-- LEFT: PDF READER SECTION -->
+    <div class="reader-section">
+      <div class="upload-zone">
+        <p>📂 <strong>Load PDF document</strong> (drag & drop or click)</p>
+        <label for="fileInput">📁 Choose PDF file</label>
+        <input type="file" id="fileInput" accept="application/pdf">
+        <div id="pdfDetectionStatus" class="pdf-info"></div>
+      </div>
 
-    function toggleMobileMenu() {
-      const sidebar = document.querySelector('.sidebar');
-      isMobileMenuOpen = !isMobileMenuOpen;
-      
-      if (isMobileMenuOpen) {
-        sidebar.classList.add('mobile-visible');
-      } else {
-        sidebar.classList.remove('mobile-visible');
-      }
-    }
+      <div class="pdf-viewer" id="pdfViewerArea">
+        <div class="canvas-container">
+          <canvas id="pdfCanvas"></canvas>
+        </div>
+        <div class="page-controls">
+          <button id="prevPageBtn" class="btn" style="background:#3a5a6e;">◀ Previous</button>
+          <span id="pageNumDisplay" class="page-num">Page: 0 / 0</span>
+          <button id="nextPageBtn" class="btn" style="background:#3a5a6e;">Next ▶</button>
+        </div>
+        <div id="pdfMetaInfo" style="font-size:0.75rem; color:#5b4b3a; margin-top:6px;"></div>
+      </div>
+    </div>
 
-    function closeMobileMenu() {
-      const sidebar = document.querySelector('.sidebar');
-      sidebar.classList.remove('mobile-visible');
-      isMobileMenuOpen = false;
-    }
+    <!-- RIGHT: GALLERY (saved PDFs) -->
+    <div class="gallery-section">
+      <div class="gallery-header">
+        <h3>📚 Gallery <span style="font-size:0.7rem;">(saved PDFs)</span></h3>
+        <button id="refreshGalleryBtn" class="icon-btn" style="background:#ffb347;">⟳ Refresh</button>
+      </div>
+      <div id="galleryListContainer" class="gallery-list">
+        <div class="empty-gallery">✨ No saved PDFs yet.<br>Use "Save PDF to Gallery"</div>
+      </div>
+      <button id="clearAllGalleryBottomBtn" class="btn btn-danger clear-all-btn">🗑 Clear All Gallery Items</button>
+      <p style="font-size:11px; text-align:center;">💡 Click on any gallery item to instantly READ it.<br>📱 Mobile ready: tap & view.</p>
+    </div>
+  </div>
+  <footer>🔍 PDF detection active | Save PDFs to gallery (IndexedDB) | Full reader + page navigation</footer>
+</div>
 
-    function updateMobileMenu() {
-      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-      if (window.innerWidth <= 768) {
-        mobileMenuBtn.style.display = 'flex';
-      } else {
-        mobileMenuBtn.style.display = 'none';
-        closeMobileMenu();
-      }
-    }
+<script>
+  (function() {
+    // ---------- GLOBALS ----------
+    let currentPdfData = null;        // stores ArrayBuffer of loaded PDF
+    let currentPdfDoc = null;         // pdf.js document object
+    let currentPageNum = 1;
+    let totalPages = 0;
+    let currentFileName = "document.pdf";
+    
+    // DOM elements
+    const fileInput = document.getElementById('fileInput');
+    const canvas = document.getElementById('pdfCanvas');
+    const ctx = canvas.getContext('2d');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const pageNumSpan = document.getElementById('pageNumDisplay');
+    const pdfMetaSpan = document.getElementById('pdfMetaInfo');
+    const detectionStatusDiv = document.getElementById('pdfDetectionStatus');
+    const saveCurrentBtn = document.getElementById('saveCurrentPdfBtn');
+    const clearAllBtn = document.getElementById('clearAllGalleryBtn');
+    const clearAllBottom = document.getElementById('clearAllGalleryBottomBtn');
+    const detectInfoBtn = document.getElementById('detectPDFinfoBtn');
+    const refreshGalleryBtn = document.getElementById('refreshGalleryBtn');
+    const galleryContainer = document.getElementById('galleryListContainer');
 
-    window.addEventListener('resize', updateMobileMenu);
-    window.addEventListener('load', updateMobileMenu);
+    // ---------- INDEXEDDB: PDF GALLERY (store blobs) ----------
+    const DB_NAME = "PDFGalleryDB";
+    const DB_VERSION = 1;
+    const STORE_NAME = "pdfFiles";
+    let db = null;
 
-    async function loadPdf(file) {
-      try {
-        closeMobileMenu();
-        const fileReader = new FileReader();
-        fileReader.onload = async (e) => {
-          try {
-            const typedarray = new Uint8Array(e.target.result);
-            pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
-            
-            // Update UI
-            document.getElementById('totalPages').textContent = pdfDoc.numPages;
-            document.getElementById('controlsGroup').style.display = 'flex';
-            document.getElementById('zoomGroup').style.display = 'flex';
-            document.getElementById('dropZone').style.display = 'none';
-            
-            // Add to recent PDFs
-            addToRecent(file.name);
-            
-            // Display file name
-            document.getElementById('fileNameDisplay').textContent = file.name;
-            
-            // Render first page
-            currentPage = 1;
-            await renderPage(currentPage);
-          } catch (error) {
-            showError('Failed to load PDF: ' + error.message);
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        if (db && db.name === DB_NAME) return resolve(db);
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = (event) => reject("IndexedDB error: " + event.target.errorCode);
+        request.onsuccess = (event) => {
+          db = event.target.result;
+          resolve(db);
+        };
+        request.onupgradeneeded = (event) => {
+          const dbEv = event.target.result;
+          if (!dbEv.objectStoreNames.contains(STORE_NAME)) {
+            dbEv.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
           }
         };
-        fileReader.readAsArrayBuffer(file);
-      } catch (error) {
-        showError('Error reading file: ' + error.message);
+      });
+    }
+
+    // Save PDF blob (ArrayBuffer) with filename & size
+    async function savePdfToGallery(pdfArrayBuffer, originalName, sizeBytes) {
+      try {
+        const database = await openDB();
+        const transaction = database.transaction([STORE_NAME], "readwrite");
+        const store = transaction.objectStore(STORE_NAME);
+        const pdfBlob = new Blob([pdfArrayBuffer], { type: "application/pdf" });
+        const record = {
+          name: originalName,
+          blob: pdfBlob,
+          size: sizeBytes,
+          timestamp: Date.now(),
+        };
+        const request = store.add(record);
+        return new Promise((resolve, reject) => {
+          request.onsuccess = () => resolve(true);
+          request.onerror = (err) => reject(err);
+        });
+      } catch (err) {
+        console.error("save error", err);
+        throw err;
       }
     }
 
-    async function renderPage(num) {
-      if (!pdfDoc) return;
-      
+    // Load all gallery items as list (metadata)
+    async function getAllGalleryItems() {
+      const database = await openDB();
+      const transaction = database.transaction([STORE_NAME], "readonly");
+      const store = transaction.objectStore(STORE_NAME);
+      const items = await new Promise((resolve) => {
+        const result = [];
+        const cursor = store.openCursor();
+        cursor.onsuccess = (event) => {
+          const cur = event.target.result;
+          if (cur) {
+            result.push({ id: cur.key, name: cur.value.name, size: cur.value.size, timestamp: cur.value.timestamp, blob: cur.value.blob });
+            cur.continue();
+          } else {
+            resolve(result);
+          }
+        };
+        cursor.onerror = () => resolve([]);
+      });
+      return items;
+    }
+
+    // Delete gallery item by id
+    async function deleteGalleryItem(id) {
+      const database = await openDB();
+      const transaction = database.transaction([STORE_NAME], "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      return new Promise((resolve, reject) => {
+        const req = store.delete(id);
+        req.onsuccess = () => resolve(true);
+        req.onerror = (e) => reject(e);
+      });
+    }
+
+    async function clearAllGallery() {
+      const database = await openDB();
+      const transaction = database.transaction([STORE_NAME], "readwrite");
+      const store = transaction.objectStore(STORE_NAME);
+      store.clear();
+      return new Promise((resolve) => {
+        transaction.oncomplete = () => resolve(true);
+      });
+    }
+
+    // Render gallery list UI
+    async function renderGallery() {
+      if (!galleryContainer) return;
       try {
-        const page = await pdfDoc.getPage(num);
-        const scale = zoom / 100;
-        const viewport = page.getViewport({ scale });
-        
-        const canvas = document.getElementById('pdfCanvas') || document.createElement('canvas');
-        canvas.id = 'pdfCanvas';
+        const items = await getAllGalleryItems();
+        if (!items.length) {
+          galleryContainer.innerHTML = `<div class="empty-gallery">📭 No saved PDFs.<br>Use "Save PDF to Gallery"</div>`;
+          return;
+        }
+        let html = '';
+        items.forEach(item => {
+          const sizeStr = (item.size / 1024).toFixed(1) + " KB";
+          const dateStr = new Date(item.timestamp).toLocaleTimeString();
+          html += `
+            <div class="gallery-item" data-id="${item.id}" data-name="${escapeHtml(item.name)}">
+              <div class="file-meta">
+                <div class="file-name">📄 ${escapeHtml(item.name.length>28? item.name.substring(0,25)+'...':item.name)}</div>
+                <div class="file-size">${sizeStr} • ${dateStr}</div>
+              </div>
+              <div class="item-actions">
+                <button class="icon-btn save-pdf gallery-read-btn" data-id="${item.id}" data-name="${escapeHtml(item.name)}">📖 Read</button>
+                <button class="icon-btn delete-item" data-id="${item.id}">❌ Del</button>
+              </div>
+            </div>
+          `;
+        });
+        galleryContainer.innerHTML = html;
+        // Attach event listeners dynamically
+        document.querySelectorAll('.gallery-read-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const id = Number(btn.getAttribute('data-id'));
+            const name = btn.getAttribute('data-name');
+            await loadPdfFromGalleryById(id, name);
+          });
+        });
+        document.querySelectorAll('.delete-item').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const id = Number(btn.getAttribute('data-id'));
+            await deleteGalleryItem(id);
+            renderGallery();
+            // if currently open PDF is same as deleted? optional ignore
+          });
+        });
+      } catch (err) {
+        console.warn("renderGallery error", err);
+      }
+    }
+
+    async function loadPdfFromGalleryById(id, displayName) {
+      try {
+        const database = await openDB();
+        const transaction = database.transaction([STORE_NAME], "readonly");
+        const store = transaction.objectStore(STORE_NAME);
+        const record = await new Promise((resolve) => {
+          const getReq = store.get(id);
+          getReq.onsuccess = () => resolve(getReq.result);
+          getReq.onerror = () => resolve(null);
+        });
+        if (record && record.blob) {
+          const arrayBuffer = await record.blob.arrayBuffer();
+          currentFileName = displayName || record.name;
+          await loadPdfFromArrayBuffer(arrayBuffer, currentFileName);
+          detectionStatusDiv.innerHTML = `✅ Loaded from gallery: ${currentFileName}`;
+        } else {
+          alert("Could not load PDF from gallery.");
+        }
+      } catch (err) {
+        alert("Failed to read PDF from gallery");
+      }
+    }
+
+    // Load PDF from arrayBuffer using pdf.js
+    async function loadPdfFromArrayBuffer(arrayBuffer, filenameHint) {
+      try {
+        // detect PDF signature
+        const uint8 = new Uint8Array(arrayBuffer.slice(0, 5));
+        const isPdf = uint8[0] === 0x25 && uint8[1] === 0x50 && uint8[2] === 0x44 && uint8[3] === 0x46;
+        if (!isPdf) {
+          detectionStatusDiv.innerHTML = "⚠️ Detected: Not a valid PDF file!";
+          return;
+        }
+        detectionStatusDiv.innerHTML = `✅ PDF detected! (${filenameHint}) - ${(arrayBuffer.byteLength/1024).toFixed(1)} KB`;
+        currentPdfData = arrayBuffer;
+        // load with pdf.js
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdfDocument = await loadingTask.promise;
+        currentPdfDoc = pdfDocument;
+        totalPages = pdfDocument.numPages;
+        currentPageNum = 1;
+        await renderPage(currentPageNum);
+        updatePageControls();
+        // metadata
+        const metadata = await pdfDocument.getMetadata().catch(()=>({}));
+        const info = metadata.info;
+        pdfMetaSpan.innerHTML = `📑 ${filenameHint} | Pages: ${totalPages} | ${info?.Title ? `Title: ${info.Title}` : ''}`;
+      } catch (err) {
+        console.error(err);
+        detectionStatusDiv.innerHTML = "❌ Error reading PDF (corrupted or unsupported).";
+        pdfMetaSpan.innerHTML = "Failed to parse PDF";
+      }
+    }
+
+    async function renderPage(pageNumber) {
+      if (!currentPdfDoc) return;
+      try {
+        const page = await currentPdfDoc.getPage(pageNumber);
+        const viewport = page.getViewport({ scale: 1.5 }); // scale for readability on mobile/desktop
         canvas.width = viewport.width;
         canvas.height = viewport.height;
-        
-        const context = canvas.getContext('2d');
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        }).promise;
-        
-        const container = document.getElementById('pdfContainer');
-        if (!document.getElementById('pdfCanvas')) {
-          container.innerHTML = '';
-          container.appendChild(canvas);
-        }
-        
-        document.getElementById('currentPage').textContent = num;
-        updateNavigationButtons();
-      } catch (error) {
-        showError('Failed to render page: ' + error.message);
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport,
+        };
+        await page.render(renderContext).promise;
+      } catch (e) {
+        console.warn("render error", e);
       }
     }
 
-    function updateNavigationButtons() {
-      document.getElementById('prevBtn').disabled = currentPage <= 1;
-      document.getElementById('nextBtn').disabled = currentPage >= pdfDoc.numPages;
+    function updatePageControls() {
+      if (totalPages > 0) {
+        pageNumSpan.innerText = `Page: ${currentPageNum} / ${totalPages}`;
+      } else {
+        pageNumSpan.innerText = `Page: 0 / 0`;
+      }
+      prevBtn.disabled = (currentPageNum <= 1);
+      nextBtn.disabled = (currentPageNum >= totalPages);
     }
 
-    async function nextPage() {
-      if (currentPage < pdfDoc.numPages) {
-        currentPage++;
-        await renderPage(currentPage);
+    function nextPage() {
+      if (currentPdfDoc && currentPageNum < totalPages) {
+        currentPageNum++;
+        renderPage(currentPageNum);
+        updatePageControls();
+      }
+    }
+    function prevPage() {
+      if (currentPdfDoc && currentPageNum > 1) {
+        currentPageNum--;
+        renderPage(currentPageNum);
+        updatePageControls();
       }
     }
 
-    async function previousPage() {
-      if (currentPage > 1) {
-        currentPage--;
-        await renderPage(currentPage);
-      }
-    }
-
-    function zoomIn() {
-      zoom = Math.min(zoom + 10, 200);
-      document.getElementById('zoomSlider').value = zoom;
-      updateZoom();
-    }
-
-    function zoomOut() {
-      zoom = Math.max(zoom - 10, 50);
-      document.getElementById('zoomSlider').value = zoom;
-      updateZoom();
-    }
-
-    function setZoom(value) {
-      zoom = parseInt(value);
-      updateZoom();
-    }
-
-    async function updateZoom() {
-      document.getElementById('zoomLevel').textContent = zoom;
-      if (pdfDoc) {
-        await renderPage(currentPage);
-      }
-    }
-
-    function addToRecent(fileName) {
-      if (!recentPdfs.includes(fileName)) {
-        recentPdfs.unshift(fileName);
-        if (recentPdfs.length > 5) recentPdfs.pop();
-      }
-      updateRecentList();
-    }
-
-    function updateRecentList() {
-      const list = document.getElementById('recentList');
-      if (recentPdfs.length === 0) {
-        list.innerHTML = '<div style="text-align: center; color: #94a3b8; font-size: 0.875rem; padding: 2rem 0;">No PDFs opened yet</div>';
+    // Save current loaded PDF to gallery (from memory)
+    async function saveCurrentToGallery() {
+      if (!currentPdfData) {
+        alert("No PDF loaded. Please upload or select a PDF from gallery first.");
         return;
       }
-      
-      list.innerHTML = recentPdfs.map((pdf, i) => `
-        <div class="sidebar-item" title="${pdf}" onclick="closeMobileMenu()">${pdf}</div>
-      `).join('');
-    }
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (file && file.type === 'application/pdf') {
-        loadPdf(file);
-      } else {
-        showError('Please select a valid PDF file');
+      try {
+        const sizeBytes = currentPdfData.byteLength;
+        const baseName = currentFileName || "document.pdf";
+        let finalName = baseName;
+        if (!finalName.toLowerCase().endsWith('.pdf')) finalName += ".pdf";
+        await savePdfToGallery(currentPdfData, finalName, sizeBytes);
+        alert(`✅ PDF "${finalName}" saved to gallery!`);
+        renderGallery();
+      } catch (err) {
+        alert("Failed to save to gallery: " + err);
       }
-      event.target.value = '';
     }
 
-    function handleDragOver(event) {
-      event.preventDefault();
-      document.getElementById('dropZone').classList.add('dragover');
-    }
-
-    function handleDragLeave(event) {
-      event.preventDefault();
-      document.getElementById('dropZone').classList.remove('dragover');
-    }
-
-    function handleDrop(event) {
-      event.preventDefault();
-      document.getElementById('dropZone').classList.remove('dragover');
-      
-      const files = event.dataTransfer.files;
-      if (files.length > 0) {
-        const file = files[0];
-        if (file.type === 'application/pdf') {
-          loadPdf(file);
-        } else {
-          showError('Please drop a PDF file');
+    // Detect PDF info: re-analyze current loaded PDF and show extra detection
+    function detectPDFExtraInfo() {
+      if (!currentPdfData) {
+        detectionStatusDiv.innerHTML = "⚠️ No PDF loaded. Upload a file to detect.";
+        return;
+      }
+      const bytes = currentPdfData.byteLength;
+      const headerCheck = new Uint8Array(currentPdfData.slice(0,5));
+      const isPdf = headerCheck[0] === 0x25 && headerCheck[1] === 0x50 && headerCheck[2] === 0x44 && headerCheck[3] === 0x46;
+      if (isPdf) {
+        detectionStatusDiv.innerHTML = `🔎 PDF VALID | size: ${(bytes/1024).toFixed(2)} KB | version signature: %PDF | pages: ${totalPages || 'loading...'}`;
+        if (currentPdfDoc) {
+          pdfMetaSpan.innerHTML += ` | ✅ valid PDF document`;
         }
+      } else {
+        detectionStatusDiv.innerHTML = `❌ NOT a valid PDF (magic bytes missing)`;
       }
     }
 
-    function showError(message) {
-      const errorDiv = document.createElement('div');
-      errorDiv.style.cssText = 'position: fixed; bottom: 1rem; right: 1rem; background: #dc2626; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; max-width: 90%; animation: slideUp 0.3s ease;';
-      errorDiv.textContent = message;
-      document.body.appendChild(errorDiv);
-      
-      setTimeout(() => {
-        errorDiv.style.animation = 'slideDown 0.3s ease';
-        setTimeout(() => errorDiv.remove(), 300);
-      }, 3000);
+    // handle file upload
+    async function handleFileUpload(file) {
+      if (!file || file.type !== "application/pdf") {
+        detectionStatusDiv.innerHTML = "❌ Please select a valid PDF file.";
+        return;
+      }
+      currentFileName = file.name;
+      const arrayBuffer = await file.arrayBuffer();
+      await loadPdfFromArrayBuffer(arrayBuffer, currentFileName);
     }
 
-    // Initialize
-    lucide.createIcons();
-    updateMobileMenu();
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e48664e73b490a4',t:'MTc3NDg4NzE4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    // drag & drop support
+    const readerZone = document.querySelector('.upload-zone');
+    readerZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      readerZone.style.background = "#ffefcf";
+    });
+    readerZone.addEventListener('dragleave', () => {
+      readerZone.style.background = "#fff6e8";
+    });
+    readerZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      readerZone.style.background = "#fff6e8";
+      const files = e.dataTransfer.files;
+      if (files.length && files[0].type === "application/pdf") {
+        await handleFileUpload(files[0]);
+      } else {
+        detectionStatusDiv.innerHTML = "Drop a valid PDF file only.";
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFileUpload(e.target.files[0]);
+    });
+
+    // Event listeners
+    prevBtn.addEventListener('click', prevPage);
+    nextBtn.addEventListener('click', nextPage);
+    saveCurrentBtn.addEventListener('click', saveCurrentToGallery);
+    detectInfoBtn.addEventListener('click', detectPDFExtraInfo);
+    
+    async function handleClearAll() {
+      if (confirm("⚠️ Clear entire gallery? All saved PDFs will be lost.")) {
+        await clearAllGallery();
+        renderGallery();
+      }
+    }
+    clearAllBtn.addEventListener('click', handleClearAll);
+    clearAllBottom.addEventListener('click', handleClearAll);
+    refreshGalleryBtn.addEventListener('click', () => renderGallery());
+
+    // initial render gallery from indexedDB
+    openDB().then(() => {
+      renderGallery();
+    }).catch(e => console.warn("IndexedDB not supported? fallback", e));
+
+    // set pdf.js worker (for CDN)
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    // default show empty canvas placeholder
+    ctx.fillStyle = "#f0ebe0";
+    ctx.fillRect(0,0,300,200);
+    ctx.fillStyle = "#7c6e5e";
+    ctx.font = "14px sans-serif";
+    ctx.fillText("PDF preview will appear here", 40, 100);
+    
+    function escapeHtml(str) { 
+      if(!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        return m;
+      });
+    }
+  })();
+</script>
+</body>
 </html>
