@@ -1,1022 +1,616 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Unlock Pro - Remove Password Protection</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #0f172a;
-            --secondary: #1e293b;
-            --accent: #0ea5e9;
-            --accent-bright: #06b6d4;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border: #334155;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, #1a1f3a 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: slideDown 0.8s ease-out;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-            animation: slideUp 0.8s ease-out 0.1s backwards;
-        }
-
-        .tab-btn {
-            padding: 12px 24px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .tab-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .tab-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: var(--primary);
-        }
-
-        /* Content */
-        .content {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .content.active {
-            display: block;
-        }
-
-        /* Cards */
-        .card {
-            background: var(--secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            animation: slideUp 0.8s ease-out;
-        }
-
-        .card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--accent);
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="file"],
-        input[type="password"],
-        textarea {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: inherit;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="file"]:focus,
-        input[type="password"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--primary);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-bright);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(14, 165, 233, 0.3);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: var(--border);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--accent);
-            color: var(--primary);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        /* File Upload Area */
-        .file-upload-area {
-            border: 2px dashed var(--accent);
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(14, 165, 233, 0.05);
-        }
-
-        .file-upload-area:hover {
-            background: rgba(14, 165, 233, 0.1);
-            border-color: var(--accent-bright);
-        }
-
-        .file-upload-area.dragover {
-            background: rgba(14, 165, 233, 0.2);
-            border-color: var(--accent-bright);
-        }
-
-        .file-upload-area p {
-            margin: 10px 0;
-            color: var(--text-secondary);
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .progress-bar.active {
-            display: block;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--accent-bright));
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        /* Messages */
-        .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            animation: slideUp 0.3s ease-out;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
-
-        .message.error {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--danger);
-            color: var(--danger);
-        }
-
-        .message.warning {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid var(--warning);
-            color: var(--warning);
-        }
-
-        .message.info {
-            background: rgba(14, 165, 233, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-
-        /* File Info */
-        .file-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .info-box {
-            background: var(--primary);
-            border: 1px solid var(--border);
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .info-box h4 {
-            color: var(--accent);
-            font-size: 0.85rem;
-            margin-bottom: 5px;
-        }
-
-        .info-box p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            word-break: break-all;
-        }
-
-        /* Preview Area */
-        .preview-area {
-            background: var(--primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .preview-area canvas {
-            max-width: 100%;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        .modal-close {
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-
-        /* Animations */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .container {
-                padding: 15px;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .file-upload-area {
-                padding: 25px;
-            }
-
-            .tabs {
-                gap: 5px;
-            }
-
-            .tab-btn {
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-
-            .file-info {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--primary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-bright);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(14, 165, 233, 0.3);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>PDF Unlocker · Mobile Friendly Tool</title>
+  <!-- PDF.js core library from Mozilla CDN (stable) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <!-- Configure worker for better performance & compatibility -->
+  <script>
+    // Set worker source for PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.25rem;
+    }
+
+    /* main card container — mobile-first, fully responsive */
+    .unlock-card {
+      max-width: 560px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(0px);
+      border-radius: 2rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    /* header area */
+    .card-header {
+      background: #1a3e60;
+      padding: 1.6rem 1.8rem;
+      color: white;
+      text-align: center;
+    }
+    .card-header h1 {
+      font-size: 1.85rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-header h1 span {
+      background: #ffcd3c;
+      color: #1a2a3a;
+      font-size: 1.3rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 60px;
+    }
+    .card-header p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-top: 10px;
+    }
+
+    /* main content */
+    .card-body {
+      padding: 1.8rem 1.6rem 2rem;
+    }
+
+    /* file dropzone + input */
+    .file-area {
+      background: #f8fafd;
+      border: 2px dashed #b9cadf;
+      border-radius: 1.5rem;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+    .file-area:hover, .drag-over {
+      border-color: #2c7da0;
+      background: #ecf3f9;
+    }
+    .file-icon {
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .file-label {
+      font-weight: 500;
+      color: #1e4663;
+      background: #e2eaf1;
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    #fileInput {
+      display: none;
+    }
+    .file-name {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #0f3b4f;
+      word-break: break-all;
+    }
+
+    /* password section */
+    .password-section {
+      margin: 1.2rem 0 1.5rem;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .input-group label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1f3e53;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .password-wrapper {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #cbdde9;
+      border-radius: 60px;
+      overflow: hidden;
+      transition: 0.2s;
+    }
+    .password-wrapper:focus-within {
+      border-color: #2c7da0;
+      box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+    }
+    #pdfPassword {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      border: none;
+      font-size: 1rem;
+      background: transparent;
+      outline: none;
+      font-family: monospace;
+    }
+    .toggle-pwd {
+      background: transparent;
+      border: none;
+      padding: 0 1rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #5f7f9a;
+    }
+    .helper-note {
+      font-size: 0.7rem;
+      color: #6b7f8e;
+      margin-top: 6px;
+      padding-left: 8px;
+    }
+
+    /* action buttons */
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 1.8rem 0 1.5rem;
+    }
+    .btn {
+      flex: 1;
+      padding: 0.85rem 0.7rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      background: #eef2f7;
+      color: #1f4e6e;
+      transition: 0.2s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: #1e6f5c;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .btn-primary:active { transform: scale(0.97); background: #155a4a; }
+    .btn-secondary {
+      background: #eef2f7;
+      border: 1px solid #cde0ec;
+    }
+    .btn-secondary:active { background: #e2e8f0; }
+    .btn:disabled {
+      opacity: 0.55;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    /* status & log */
+    .status-area {
+      background: #f1f5f9;
+      border-radius: 1.2rem;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.85rem;
+      margin: 1rem 0 1rem;
+      border-left: 4px solid #2c7da0;
+    }
+    .status-message {
+      color: #1f4a6e;
+      word-break: break-word;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .error-status {
+      border-left-color: #e15554;
+      color: #b13b3b;
+    }
+    .success-status {
+      border-left-color: #2a9d8f;
+    }
+    .log-details {
+      font-family: monospace;
+      font-size: 0.75rem;
+      margin-top: 8px;
+      color: #4b6b82;
+    }
+
+    /* download link + unlock result */
+    .download-area {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    #downloadBtn {
+      background: #2c7da0;
+      color: white;
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      gap: 8px;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    #downloadBtn:active { transform: scale(0.98); background: #1f5e7a; }
+    hr {
+      margin: 1rem 0;
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, #cbdde9, transparent);
+    }
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #7c93a3;
+      padding: 1rem 1rem 1.2rem;
+      border-top: 1px solid #e2edf5;
+      background: #ffffffcc;
+    }
+    @media (max-width: 480px) {
+      .card-body { padding: 1.3rem; }
+      .btn { padding: 0.7rem 0.5rem; font-size: 0.9rem; }
+      .card-header h1 { font-size: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🔓 PDF Unlock Pro</h1>
-            <p>Remove password protection, extract text, and analyze PDF files</p>
+<div class="unlock-card">
+  <div class="card-header">
+    <h1>
+      🔓 PDF Unlocker 
+      <span>mobile</span>
+    </h1>
+    <p>Remove password protection · Works 100% in your browser</p>
+  </div>
+  <div class="card-body">
+    <!-- Drag & drop or click zone -->
+    <div class="file-area" id="dropZone">
+      <div class="file-icon">📄📂</div>
+      <div>Click or drag & drop PDF file</div>
+      <div class="file-label">Select PDF</div>
+      <div id="fileNameDisplay" class="file-name"></div>
+    </div>
+    <input type="file" id="fileInput" accept="application/pdf" />
+
+    <div class="password-section">
+      <div class="input-group">
+        <label>🔑 Document password (if any)</label>
+        <div class="password-wrapper">
+          <input type="password" id="pdfPassword" placeholder="Enter password to unlock" autocomplete="off">
+          <button type="button" class="toggle-pwd" id="togglePasswordBtn" aria-label="Show password">👁️</button>
         </div>
-
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('unlock')">Unlock PDF</button>
-            <button class="tab-btn" onclick="switchTab('extract')">Extract Text</button>
-            <button class="tab-btn" onclick="switchTab('info')">File Info</button>
-            <button class="tab-btn" onclick="switchTab('merge')">Merge PDFs</button>
-        </div>
-
-        <!-- Unlock PDF Tab -->
-        <div id="unlock" class="content active">
-            <div class="card">
-                <h2>🔓 Unlock PDF</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">Remove password protection and restrictions from PDF files</p>
-                
-                <div class="form-group">
-                    <label>Select PDF File</label>
-                    <div class="file-upload-area" ondrop="handleDrop(event, 'unlockFile')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <p>📄 Drag & drop your PDF here</p>
-                        <p style="font-size: 0.85rem;">or click to browse</p>
-                        <input type="file" id="unlockFile" accept=".pdf" style="display: none;">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>PDF Password (if protected)</label>
-                    <input type="password" id="unlockPassword" placeholder="Enter password if PDF is encrypted">
-                </div>
-
-                <button class="btn btn-primary" onclick="unlockPDF()" style="width: 100%;">
-                    <span id="unlockBtnText">🔓 Unlock PDF</span>
-                </button>
-
-                <div id="unlockMessage" class="message"></div>
-                <div class="progress-bar" id="unlockProgress">
-                    <div class="progress-fill" id="unlockProgressFill"></div>
-                </div>
-
-                <div id="unlockInfo" class="file-info hidden"></div>
-            </div>
-        </div>
-
-        <!-- Extract Text Tab -->
-        <div id="extract" class="content">
-            <div class="card">
-                <h2>📄 Extract Text from PDF</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">Extract all text content from your PDF file</p>
-                
-                <div class="form-group">
-                    <label>Select PDF File</label>
-                    <div class="file-upload-area" ondrop="handleDrop(event, 'extractFile')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <p>📄 Drag & drop your PDF here</p>
-                        <p style="font-size: 0.85rem;">or click to browse</p>
-                        <input type="file" id="extractFile" accept=".pdf" style="display: none;">
-                    </div>
-                </div>
-
-                <button class="btn btn-primary" onclick="extractText()" style="width: 100%; margin-bottom: 20px;">
-                    <span id="extractBtnText">📋 Extract Text</span>
-                </button>
-
-                <div id="extractMessage" class="message"></div>
-                <div class="progress-bar" id="extractProgress">
-                    <div class="progress-fill" id="extractProgressFill"></div>
-                </div>
-
-                <label style="margin-top: 20px;">Extracted Content</label>
-                <div id="extractResult" class="preview-area"></div>
-                
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn btn-secondary" onclick="copyText('extractResult')" style="flex: 1;">📋 Copy Text</button>
-                    <button class="btn btn-secondary" onclick="downloadText('extractResult')" style="flex: 1;">⬇️ Download TXT</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- File Info Tab -->
-        <div id="info" class="content">
-            <div class="card">
-                <h2>ℹ️ PDF File Information</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">View detailed information and preview your PDF</p>
-                
-                <div class="form-group">
-                    <label>Select PDF File</label>
-                    <div class="file-upload-area" ondrop="handleDrop(event, 'infoFile')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <p>📄 Drag & drop your PDF here</p>
-                        <p style="font-size: 0.85rem;">or click to browse</p>
-                        <input type="file" id="infoFile" accept=".pdf" style="display: none;">
-                    </div>
-                </div>
-
-                <button class="btn btn-primary" onclick="getFileInfo()" style="width: 100%; margin-bottom: 20px;">
-                    <span id="infoBtnText">ℹ️ Analyze PDF</span>
-                </button>
-
-                <div id="infoMessage" class="message"></div>
-                <div id="infoResult" class="file-info"></div>
-                <div id="infoPreview" class="preview-area hidden"></div>
-            </div>
-        </div>
-
-        <!-- Merge PDFs Tab -->
-        <div id="merge" class="content">
-            <div class="card">
-                <h2>🔗 Merge PDFs</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">Combine multiple PDF files into one</p>
-                
-                <div class="form-group">
-                    <label>Select PDF Files (Multiple)</label>
-                    <div class="file-upload-area" ondrop="handleDropMultiple(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <p>📄 Drag & drop PDFs here</p>
-                        <p style="font-size: 0.85rem;">or click to browse (select multiple)</p>
-                        <input type="file" id="mergeFiles" accept=".pdf" multiple style="display: none;">
-                    </div>
-                </div>
-
-                <div id="fileList" class="preview-area" style="max-height: 300px;"></div>
-
-                <button class="btn btn-primary" onclick="mergePDFs()" style="width: 100%; margin-top: 20px;">
-                    <span id="mergeBtnText">🔗 Merge PDFs</span>
-                </button>
-
-                <div id="mergeMessage" class="message"></div>
-            </div>
-        </div>
+        <div class="helper-note">⚡ The PDF will be unlocked locally. Your file never leaves your device.</div>
+      </div>
     </div>
 
-    <!-- Password Modal -->
-    <div id="passwordModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closePasswordModal()">&times;</span>
-            <h2 style="margin-bottom: 20px;">PDF is Password Protected</h2>
-            <div class="form-group">
-                <label>Enter Password</label>
-                <input type="password" id="modalPassword" placeholder="Enter the PDF password">
-            </div>
-            <button class="btn btn-primary" onclick="confirmPassword()" style="width: 100%;">Unlock with Password</button>
-        </div>
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="unlockBtn">🔓 Unlock PDF</button>
+      <button class="btn btn-secondary" id="clearBtn">🗑️ Clear</button>
     </div>
 
-    <script>
-        pdfjsWorker.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        const { jsPDF } = window.jspdf;
+    <!-- Status messages container -->
+    <div id="statusBox" class="status-area">
+      <div class="status-message" id="statusMsg">
+        ⚡ Ready — select a protected PDF and enter password.
+      </div>
+      <div id="logDetails" class="log-details"></div>
+    </div>
 
-        let currentFile = null;
-        let currentPassword = '';
-        let mergedFiles = [];
+    <!-- Download section appears after successful unlock -->
+    <div id="downloadContainer" style="display: none;">
+      <hr />
+      <div class="download-area">
+        <button id="downloadBtn">⬇️ Download unlocked PDF</button>
+        <p style="font-size:0.7rem; margin-top:8px;">No server — direct download, private & secure</p>
+      </div>
+    </div>
+  </div>
+  <footer>
+    🧩 Advanced PDF processing · Password removal works with standard owner/user passwords (if known)
+  </footer>
+</div>
 
-        // Tab Switching
-        function switchTab(tabName) {
-            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+<script>
+  // ----- DOM elements
+  const fileInput = document.getElementById('fileInput');
+  const dropZone = document.getElementById('dropZone');
+  const fileNameDisplay = document.getElementById('fileNameDisplay');
+  const pdfPasswordInput = document.getElementById('pdfPassword');
+  const togglePwdBtn = document.getElementById('togglePasswordBtn');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const statusMsgDiv = document.getElementById('statusMsg');
+  const logDetailsSpan = document.getElementById('logDetails');
+  const downloadContainer = document.getElementById('downloadContainer');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  // state
+  let selectedFile = null;           // original File object
+  let unlockedPdfBlob = null;        // resulting unlocked PDF blob (if success)
+  let currentFileName = "";
+
+  // Helper: update status with type (success, error, info)
+  function setStatus(message, isError = false, isSuccess = false, details = "") {
+    statusMsgDiv.innerHTML = message;
+    const parentBox = document.getElementById('statusBox');
+    if (isError) {
+      parentBox.classList.add('error-status');
+      parentBox.classList.remove('success-status');
+    } else if (isSuccess) {
+      parentBox.classList.add('success-status');
+      parentBox.classList.remove('error-status');
+    } else {
+      parentBox.classList.remove('error-status', 'success-status');
+    }
+    if (details) {
+      logDetailsSpan.innerHTML = details;
+    } else {
+      logDetailsSpan.innerHTML = "";
+    }
+  }
+
+  // reset UI after clear / new file
+  function resetUnlockState() {
+    unlockedPdfBlob = null;
+    downloadContainer.style.display = 'none';
+    if (selectedFile) {
+      // keep file name but reset unlocking status
+    } else {
+      fileNameDisplay.innerText = "";
+    }
+  }
+
+  // display file name
+  function updateFileDisplay(file) {
+    if (file) {
+      const truncated = file.name.length > 45 ? file.name.slice(0, 42) + "..." : file.name;
+      fileNameDisplay.innerText = `📄 ${truncated} (${(file.size / 1024).toFixed(1)} KB)`;
+    } else {
+      fileNameDisplay.innerText = "";
+    }
+  }
+
+  // handle file selection
+  function handleFile(file) {
+    if (!file || file.type !== 'application/pdf') {
+      setStatus("❌ Invalid file: please select a PDF document.", true, false);
+      selectedFile = null;
+      updateFileDisplay(null);
+      resetUnlockState();
+      return false;
+    }
+    selectedFile = file;
+    currentFileName = file.name.replace(/\.pdf$/i, '') || "unlocked";
+    updateFileDisplay(file);
+    setStatus(`✅ PDF loaded: "${file.name}". Enter password (if required) and press Unlock.`, false, false);
+    resetUnlockState();
+    return true;
+  }
+
+  // drag & drop events
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('drag-over');
+  });
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFile(files[0]);
+    } else {
+      setStatus("Drop a valid PDF file.", true);
+    }
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    } else {
+      selectedFile = null;
+      resetUnlockState();
+      updateFileDisplay(null);
+    }
+  });
+
+  // toggle password visibility
+  togglePwdBtn.addEventListener('click', () => {
+    const type = pdfPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    pdfPasswordInput.setAttribute('type', type);
+    togglePwdBtn.textContent = type === 'password' ? '👁️' : '🙈';
+  });
+
+  // clear all data
+  clearBtn.addEventListener('click', () => {
+    selectedFile = null;
+    unlockedPdfBlob = null;
+    fileInput.value = "";
+    pdfPasswordInput.value = "";
+    updateFileDisplay(null);
+    downloadContainer.style.display = 'none';
+    setStatus("🧹 Cleared. Upload a new PDF file.", false, false);
+    // also reset any loaded file
+  });
+
+  // ---------- Core unlocking logic using PDF.js ----------
+  // Since PDF.js can decrypt PDFs with owner/user password when given correct pw
+  // Approach: load PDF document with provided password, then render/get all pages data and produce a new PDF
+  // However, PDF.js does not directly export a "decrypted" PDF blob. But we can rebuild a new PDF using the
+  // same content without encryption by using the loaded document and then using jsPDF or similar? 
+  // Actually, pure approach: use pdf-lib? but we want lightweight all-in-one without extra huge libs. 
+  // Workaround: Extract each page as canvas, then re-assemble PDF? not ideal (text becomes image).
+  // Better: use pdf.js's getData()? Actually PDF.js can decrypt in memory but doesn't provide a direct way to strip encryption.
+  // I'll implement a robust method: Use "pdf-lib" but to avoid extra lib, we can use a clever method: 
+  // Since we want a reliable unlock that preserves text/vectors, we can leverage the fact that PDF.js can load
+  // the decrypted document and we can fetch the raw bytes after decryption? There's undocumented internal method: 
+  // pdfDocument.getData() returns original data, but for encrypted PDF it returns encrypted unless we supply password.
+  // Actually, after calling getDocument with password, the internal transport stream is decrypted, but getData() still gives raw encrypted? 
+  // Instead we can use the fact that PDF.js builds a "PDFDocumentProxy" and we can use `pdfDocument.getData()` after loading? 
+  // According to PDF.js documentation, getData() returns the original binary data of the PDF file (the raw bytes).
+  // If we load the PDF with the correct password, the returned data from getData() is the raw PDF but still might be encrypted? Actually the decryption is applied during parsing, but getData() returns the original file content, not the decrypted stream.
+  // To produce an unlocked PDF, we need to generate a new PDF without encryption. But for a standalone offline tool, we can use "pdf-lib" dynamic import? Not good.
+  // I'll implement a modern technique: use the "pdfjs-dist" + "jspdf" but that rasterizes. Not acceptable.
+  // Alternate reliable: We can use "PDF-LIB" which is a powerful library to modify PDFs and remove encryption.
+  // Since the requirement says "all coding together a single file", I can embed pdf-lib from CDN. 
+  // Let's embed pdf-lib to actually remove password and generate new PDF with no encryption flags. It's robust.
+  // I will add pdf-lib script and use it to remove encryption when correct password is supplied.
+  // Adding pdf-lib CDN to ensure high-quality text/vector preservation.
+  </script>
+  <!-- Load pdf-lib for actual decryption & removal of encryption (preserves content) -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script>
+    // After pdf-lib loaded, we complete unlocking logic.
+    // Wait for pdf-lib to be fully ready
+    function waitForPdfLib() {
+      return new Promise((resolve) => {
+        if (window.pdfLib) resolve(window.pdfLib);
+        else {
+          const check = setInterval(() => {
+            if (window.pdfLib) {
+              clearInterval(check);
+              resolve(window.pdfLib);
+            }
+          }, 50);
         }
+      });
+    }
 
-        // File Upload Handlers
-        document.addEventListener('click', (e) => {
-            const area = e.target.closest('.file-upload-area');
-            if (area) {
-                const input = area.querySelector('input[type="file"]');
-                input?.click();
-            }
-        });
-
-        document.addEventListener('change', (e) => {
-            if (e.target.type === 'file') {
-                const area = e.target.closest('.file-upload-area');
-                if (area) {
-                    const fileCount = e.target.files.length;
-                    const fileName = fileCount === 1 ? e.target.files[0].name : `${fileCount} files selected`;
-                    const p = area.querySelector('p:first-of-type');
-                    if (p) p.textContent = '✓ ' + fileName;
-
-                    // Handle merge files
-                    if (e.target.id === 'mergeFiles') {
-                        updateFileList();
-                    }
-                }
-            }
-        });
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.target.closest('.file-upload-area')?.classList.add('dragover');
+    // Unlock PDF using pdf-lib: load with password (if any) and then save without encryption.
+    async function unlockPdfWithPassword(file, password) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfLib = await waitForPdfLib();
+        let pdfDoc;
+        // attempt to load the PDF document with password handling
+        try {
+          // if password is empty, try loading without password.
+          if (!password || password.trim() === "") {
+            pdfDoc = await pdfLib.PDFDocument.load(arrayBuffer);
+          } else {
+            pdfDoc = await pdfLib.PDFDocument.load(arrayBuffer, { password: password });
+          }
+        } catch (err) {
+          // if error: possibly wrong password or encryption not supported
+          if (err.message && (err.message.includes("password") || err.message.includes("encrypted"))) {
+            throw new Error("Incorrect password or document uses unsupported encryption. Check password and try again.");
+          } else {
+            throw new Error(`PDF load error: ${err.message}`);
+          }
         }
+        // Check if document is still encrypted? pdf-lib will have decrypted if password correct.
+        // Now we will save a new PDF which does NOT include any encryption.
+        const newPdfBytes = await pdfDoc.save({ useObjectStreams: false });
+        const unlockedBlob = new Blob([newPdfBytes], { type: 'application/pdf' });
+        return unlockedBlob;
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    }
 
-        function handleDragLeave(e) {
-            e.target.closest('.file-upload-area')?.classList.remove('dragover');
-        }
-
-        function handleDrop(e, inputId) {
-            e.preventDefault();
-            const area = e.target.closest('.file-upload-area');
-            area?.classList.remove('dragover');
-            
-            const files = e.dataTransfer.files;
-            const input = document.getElementById(inputId);
-            if (input) {
-                input.files = files;
-                const event = new Event('change', { bubbles: true });
-                input.dispatchEvent(event);
+    // main unlock action
+    unlockBtn.addEventListener('click', async () => {
+      if (!selectedFile) {
+        setStatus("⚠️ No PDF file selected. Please upload a PDF first.", true, false);
+        return;
+      }
+      const password = pdfPasswordInput.value; // can be empty
+      setStatus("⏳ Processing & unlocking PDF ... please wait (this may take a few seconds).", false, false, "Decrypting in memory ...");
+      unlockBtn.disabled = true;
+      unlockBtn.textContent = "⏳ Unlocking...";
+      
+      try {
+        const unlockedBlob = await unlockPdfWithPassword(selectedFile, password);
+        if (unlockedBlob && unlockedBlob.size > 0) {
+          unlockedPdfBlob = unlockedBlob;
+          // success UI update
+          let originalName = selectedFile.name.replace(/\.pdf$/i, '');
+          let successMsg = `🎉 PDF successfully unlocked! ${unlockedBlob.size > 0 ? `Size: ${(unlockedBlob.size / 1024).toFixed(1)} KB` : ''}`;
+          setStatus(successMsg, false, true, "✔️ Password protection removed. You can now download the unlocked PDF.");
+          downloadContainer.style.display = 'block';
+          // setup download
+          downloadBtn.onclick = () => {
+            if (!unlockedPdfBlob) {
+              setStatus("No unlocked PDF available. Please unlock again.", true);
+              return;
             }
-        }
-
-        function handleDropMultiple(e) {
-            handleDrop(e, 'mergeFiles');
-        }
-
-        function updateFileList() {
-            const files = document.getElementById('mergeFiles').files;
-            const list = document.getElementById('fileList');
-            list.innerHTML = '';
-
-            if (files.length === 0) {
-                list.innerHTML = '<p style="color: var(--text-secondary);">No files selected</p>';
-                return;
-            }
-
-            list.innerHTML = '<p style="color: var(--accent); margin-bottom: 10px;"><strong>Selected Files:</strong></p>';
-            
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const size = (file.size / 1024).toFixed(2);
-                const item = document.createElement('div');
-                item.style.cssText = 'padding: 10px; background: var(--secondary); border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;';
-                item.innerHTML = `
-                    <div>
-                        <p style="color: var(--text-primary); margin-bottom: 3px;"><strong>${i + 1}. ${file.name}</strong></p>
-                        <p style="color: var(--text-secondary); font-size: 0.85rem;">${size} KB</p>
-                    </div>
-                    <button class="btn btn-danger" onclick="removeFile(${i})" style="padding: 5px 10px; font-size: 0.85rem;">Remove</button>
-                `;
-                list.appendChild(item);
-            }
-        }
-
-        function removeFile(index) {
-            const input = document.getElementById('mergeFiles');
-            const dataTransfer = new DataTransfer();
-            
-            for (let i = 0; i < input.files.length; i++) {
-                if (i !== index) {
-                    dataTransfer.items.add(input.files[i]);
-                }
-            }
-            
-            input.files = dataTransfer.files;
-            updateFileList();
-        }
-
-        // Unlock PDF
-        async function unlockPDF() {
-            const file = document.getElementById('unlockFile').files[0];
-            if (!file) {
-                showMessage('unlockMessage', 'Please select a PDF file', 'error');
-                return;
-            }
-
-            currentFile = file;
-            currentPassword = document.getElementById('unlockPassword').value;
-
-            try {
-                showProgress('unlockProgress', true);
-                document.getElementById('unlockBtnText').innerHTML = '<span class="spinner"></span> Processing...';
-
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsWorker.getDocument({ data: arrayBuffer, password: currentPassword }).promise;
-
-                // Extract pages
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                
-                for (let pageNum = 1; pageNum <= Math.min(pdf.numPages, 2); pageNum++) {
-                    const page = await pdf.getPage(pageNum);
-                    const viewport = page.getViewport({ scale: 1.5 });
-                    canvas.width = viewport.width;
-                    canvas.height = viewport.height;
-
-                    await page.render({ canvasContext: context, viewport }).promise;
-                }
-
-                // Create new PDF without password
-                const newPDF = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-
-                showMessage('unlockMessage', '✓ PDF unlocked successfully! Preparing download...', 'success');
-
-                // Create unlocked version
-                const unlockedBlob = new Blob([arrayBuffer], { type: 'application/pdf' });
-                downloadFile(unlockedBlob, `unlocked-${file.name}`);
-
-                setTimeout(() => {
-                    showProgress('unlockProgress', false);
-                    document.getElementById('unlockBtnText').textContent = '🔓 Unlock PDF';
-                }, 1500);
-
-            } catch (error) {
-                if (error.name === 'PasswordException') {
-                    showMessage('unlockMessage', '🔒 PDF is password protected. Enter the correct password.', 'warning');
-                } else {
-                    console.error('Error:', error);
-                    showMessage('unlockMessage', '❌ ' + (error.message || 'Error processing PDF'), 'error');
-                }
-                showProgress('unlockProgress', false);
-                document.getElementById('unlockBtnText').textContent = '🔓 Unlock PDF';
-            }
-        }
-
-        // Extract Text
-        async function extractText() {
-            const file = document.getElementById('extractFile').files[0];
-            if (!file) {
-                showMessage('extractMessage', 'Please select a PDF file', 'error');
-                return;
-            }
-
-            try {
-                showProgress('extractProgress', true);
-                document.getElementById('extractBtnText').innerHTML = '<span class="spinner"></span> Extracting...';
-
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsWorker.getDocument({ data: arrayBuffer }).promise;
-
-                let fullText = '';
-
-                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                    const page = await pdf.getPage(pageNum);
-                    const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(' ');
-                    fullText += `--- Page ${pageNum} ---\n${pageText}\n\n`;
-                    
-                    updateProgress('extractProgressFill', (pageNum / pdf.numPages) * 100);
-                }
-
-                document.getElementById('extractResult').textContent = fullText;
-                showMessage('extractMessage', `✓ Successfully extracted text from ${pdf.numPages} pages`, 'success');
-
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('extractMessage', '❌ Error extracting text: ' + error.message, 'error');
-            }
-
-            showProgress('extractProgress', false);
-            document.getElementById('extractBtnText').textContent = '📋 Extract Text';
-        }
-
-        // Get File Info
-        async function getFileInfo() {
-            const file = document.getElementById('infoFile').files[0];
-            if (!file) {
-                showMessage('infoMessage', 'Please select a PDF file', 'error');
-                return;
-            }
-
-            try {
-                document.getElementById('infoBtnText').innerHTML = '<span class="spinner"></span> Analyzing...';
-
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsWorker.getDocument({ data: arrayBuffer }).promise;
-
-                const result = document.getElementById('infoResult');
-                result.innerHTML = `
-                    <div class="info-box">
-                        <h4>File Name</h4>
-                        <p>${file.name}</p>
-                    </div>
-                    <div class="info-box">
-                        <h4>File Size</h4>
-                        <p>${(file.size / 1024).toFixed(2)} KB</p>
-                    </div>
-                    <div class="info-box">
-                        <h4>Total Pages</h4>
-                        <p>${pdf.numPages}</p>
-                    </div>
-                    <div class="info-box">
-                        <h4>File Type</h4>
-                        <p>${file.type}</p>
-                    </div>
-                    <div class="info-box">
-                        <h4>Last Modified</h4>
-                        <p>${new Date(file.lastModified).toLocaleString()}</p>
-                    </div>
-                    <div class="info-box">
-                        <h4>Encrypted</h4>
-                        <p>${pdf.isEncrypted ? '🔒 Yes' : '🔓 No'}</p>
-                    </div>
-                `;
-
-                showMessage('infoMessage', '✓ PDF information retrieved', 'success');
-
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('infoMessage', '❌ Error analyzing PDF: ' + error.message, 'error');
-            }
-
-            document.getElementById('infoBtnText').textContent = 'ℹ️ Analyze PDF';
-        }
-
-        // Merge PDFs
-        async function mergePDFs() {
-            const files = document.getElementById('mergeFiles').files;
-            if (files.length < 2) {
-                showMessage('mergeMessage', 'Please select at least 2 PDF files', 'error');
-                return;
-            }
-
-            try {
-                document.getElementById('mergeBtnText').innerHTML = '<span class="spinner"></span> Merging...';
-                showProgress('unlockProgress', true);
-
-                const newPDF = new jsPDF();
-                let isFirstPage = true;
-
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const arrayBuffer = await file.arrayBuffer();
-                    const pdf = await pdfjsWorker.getDocument({ data: arrayBuffer }).promise;
-
-                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                        if (!isFirstPage) {
-                            newPDF.addPage();
-                        }
-                        isFirstPage = false;
-
-                        const page = await pdf.getPage(pageNum);
-                        const viewport = page.getViewport({ scale: 1.5 });
-                        const canvas = document.createElement('canvas');
-                        canvas.width = viewport.width;
-                        canvas.height = viewport.height;
-
-                        const context = canvas.getContext('2d');
-                        await page.render({ canvasContext: context, viewport }).promise;
-
-                        const imgData = canvas.toDataURL('image/png');
-                        newPDF.addImage(imgData, 'PNG', 0, 0, 210, 297);
-                    }
-
-                    updateProgress('unlockProgressFill', ((i + 1) / files.length) * 100);
-                }
-
-                const mergedPDF = newPDF.output('blob');
-                downloadFile(mergedPDF, `merged-${Date.now()}.pdf`);
-
-                showMessage('mergeMessage', `✓ Successfully merged ${files.length} PDF files!`, 'success');
-                showProgress('unlockProgress', false);
-
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('mergeMessage', '❌ Error merging PDFs: ' + error.message, 'error');
-            }
-
-            document.getElementById('mergeBtnText').textContent = '🔗 Merge PDFs';
-        }
-
-        // Utility Functions
-        function showMessage(elementId, message, type) {
-            const element = document.getElementById(elementId);
-            element.textContent = message;
-            element.className = `message show ${type}`;
-        }
-
-        function showProgress(elementId, show) {
-            const element = document.getElementById(elementId);
-            if (show) {
-                element.classList.add('active');
-            } else {
-                element.classList.remove('active');
-                updateProgress(elementId + 'Fill', 0);
-            }
-        }
-
-        function updateProgress(elementId, percent) {
-            document.getElementById(elementId).style.width = percent + '%';
-        }
-
-        function copyText(elementId) {
-            const text = document.getElementById(elementId).textContent;
-            if (!text) {
-                alert('No content to copy');
-                return;
-            }
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✓ Copied to clipboard!');
-            });
-        }
-
-        function downloadText(elementId) {
-            const text = document.getElementById(elementId).textContent;
-            if (!text) {
-                alert('No content to download');
-                return;
-            }
-
-            const blob = new Blob([text], { type: 'text/plain' });
-            downloadFile(blob, `extracted-${Date.now()}.txt`);
-        }
-
-        function downloadFile(blob, filename) {
-            const url = URL.createObjectURL(blob);
+            const downloadUrl = URL.createObjectURL(unlockedPdfBlob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
+            a.href = downloadUrl;
+            let downloadName = (currentFileName ? currentFileName : "unlocked_document") + "_unlocked.pdf";
+            if (selectedFile && selectedFile.name) {
+              const base = selectedFile.name.replace(/\.pdf$/i, '');
+              downloadName = base + "_unlocked.pdf";
+            }
+            a.download = downloadName;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(downloadUrl);
+            setStatus(`✅ Download started: ${downloadName}`, false, true, "Unlocked PDF saved locally.");
+          };
+        } else {
+          throw new Error("Generated unlocked PDF is empty.");
         }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').classList.remove('active');
+      } catch (err) {
+        let errorDetail = err.message || "Unknown error while unlocking PDF.";
+        if (errorDetail.includes("Incorrect password") || errorDetail.includes("password")) {
+          setStatus(`🔐 ${errorDetail}`, true, false, "Double‑check the password or try a different PDF.");
+        } else {
+          setStatus(`❌ Unlock failed: ${errorDetail}`, true, false, "The PDF might be corrupted or uses advanced encryption. Try online tools as fallback.");
         }
+        downloadContainer.style.display = 'none';
+        unlockedPdfBlob = null;
+      } finally {
+        unlockBtn.disabled = false;
+        unlockBtn.textContent = "🔓 Unlock PDF";
+      }
+    });
 
-        function confirmPassword() {
-            closePasswordModal();
-            unlockPDF();
-        }
-
-        // Click to open file inputs
-        document.getElementById('unlockFile')?.addEventListener('change', (e) => {
-            if (e.target.files.length) updateFileList();
-        });
-        document.getElementById('extractFile')?.addEventListener('change', (e) => {
-            if (e.target.files.length) updateFileList();
-        });
-        document.getElementById('infoFile')?.addEventListener('change', (e) => {
-            if (e.target.files.length) updateFileList();
-        });
-    </script>
+    // additional polish: clear button also resets download & status
+    const originalClear = clearBtn.onclick;
+    clearBtn.addEventListener('click', () => {
+      selectedFile = null;
+      unlockedPdfBlob = null;
+      fileInput.value = "";
+      pdfPasswordInput.value = "";
+      updateFileDisplay(null);
+      downloadContainer.style.display = 'none';
+      setStatus("Cleared. Choose a PDF file and provide password if needed.", false);
+    });
+    // initial ready message
+    setStatus("📄 Ready. Drop a password-protected PDF, enter the password, then click Unlock.", false);
+  </script>
 </body>
 </html>
