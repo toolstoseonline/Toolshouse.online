@@ -1,717 +1,766 @@
-<!doctype html>
-<html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Collage Maker</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
-  <style>
-    html, body { height: 100%; margin: 0; }
-    * { box-sizing: border-box; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>CollaCraft - Mobile Friendly Collage Maker</title>
+    <!-- Font Awesome Icons (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- HTML2Canvas for exporting collage -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none; /* avoid accidental text selection while dragging */
+        }
 
-    .collage-grid {
-      display: grid;
-      gap: 6px;
-      width: 100%;
-      height: 100%;
-    }
+        body {
+            background: linear-gradient(145deg, #1a2a3a 0%, #0f1a24 100%);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px 12px 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .layout-2x2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
-    .layout-3col { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
-    .layout-hero { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
-    .layout-hero .cell:first-child { grid-row: 1 / -1; }
-    .layout-mosaic { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-    .layout-mosaic .cell:first-child { grid-column: 1 / 3; grid-row: 1 / 3; }
-    .layout-strip { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr; }
-    .layout-tall { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-    .layout-tall .cell:first-child { grid-row: 1 / 3; }
-    .layout-tall .cell:nth-child(4) { grid-row: 2 / 4; }
-    .layout-mosaic2 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-    .layout-mosaic2 .cell:nth-child(2) { grid-column: 2 / 4; grid-row: 1 / 3; }
-    .layout-focus { grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
-    .layout-focus .cell:first-child { grid-row: 1 / -1; }
-    .layout-quad { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr 1fr; }
-    .layout-quad .cell:nth-child(1) { grid-column: 1 / 3; }
-    .layout-quad .cell:nth-child(4) { grid-column: 1 / 3; }
-    .layout-frame { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
-    .layout-frame .cell:nth-child(2) { grid-row: 1 / 3; }
-    .layout-zigzag { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-    .layout-zigzag .cell:nth-child(1) { grid-column: 1 / 2; grid-row: 1 / 2; }
-    .layout-zigzag .cell:nth-child(2) { grid-column: 2 / 4; grid-row: 1 / 2; }
-    .layout-zigzag .cell:nth-child(3) { grid-column: 1 / 3; grid-row: 2 / 3; }
-    .layout-zigzag .cell:nth-child(4) { grid-column: 3 / 4; grid-row: 2 / 4; }
-    .layout-zigzag .cell:nth-child(5) { grid-column: 1 / 2; grid-row: 3 / 4; }
-    .layout-zigzag .cell:nth-child(6) { grid-column: 2 / 3; grid-row: 3 / 4; }
-    .layout-split { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
-    .layout-split .cell:nth-child(1) { grid-column: 1 / 3; }
-    .layout-split .cell:nth-child(2) { grid-column: 3 / 5; }
-    .layout-split .cell:nth-child(3) { grid-column: 1 / 2; grid-row: 2; }
-    .layout-split .cell:nth-child(4) { grid-column: 2 / 3; grid-row: 2; }
-    .layout-split .cell:nth-child(5) { grid-column: 3 / 4; grid-row: 2; }
-    .layout-split .cell:nth-child(6) { grid-column: 4 / 5; grid-row: 2; }
-    .layout-corner { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-    .layout-corner .cell:first-child { grid-column: 1 / 3; grid-row: 1 / 3; }
-    .layout-corner .cell:nth-child(2) { grid-column: 3 / 4; grid-row: 1 / 2; }
-    .layout-corner .cell:nth-child(3) { grid-column: 3 / 4; grid-row: 2 / 3; }
-    .layout-corner .cell:nth-child(4) { grid-column: 1 / 2; grid-row: 3 / 4; }
-    .layout-corner .cell:nth-child(5) { grid-column: 2 / 3; grid-row: 3 / 4; }
-    .layout-corner .cell:nth-child(6) { grid-column: 3 / 4; grid-row: 3 / 4; }
-    .layout-stack { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto; }
-    .layout-stack .cell:nth-child(1) { grid-column: 1 / 4; }
-    .layout-stack .cell:nth-child(2) { grid-column: 1 / 4; }
-    .layout-stack .cell:nth-child(3) { grid-column: 1 / 4; }
-    .layout-wave { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-    .layout-wave .cell:nth-child(1) { grid-column: 1 / 2; }
-    .layout-wave .cell:nth-child(2) { grid-column: 2 / 4; grid-row: 1 / 2; }
-    .layout-wave .cell:nth-child(3) { grid-column: 1 / 3; grid-row: 2 / 3; }
-    .layout-wave .cell:nth-child(4) { grid-column: 3 / 4; grid-row: 2 / 3; }
-    .layout-wave .cell:nth-child(5) { grid-column: 2 / 4; grid-row: 3 / 4; }
-    .layout-wave .cell:nth-child(6) { grid-column: 1 / 2; grid-row: 3 / 4; }
-    .layout-spiral { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
-    .layout-spiral .cell:nth-child(1) { grid-column: 1 / 4; grid-row: 1 / 2; }
-    .layout-spiral .cell:nth-child(2) { grid-column: 3 / 4; grid-row: 2 / 4; }
-    .layout-spiral .cell:nth-child(3) { grid-column: 1 / 3; grid-row: 3 / 4; }
-    .layout-spiral .cell:nth-child(4) { grid-column: 1 / 2; grid-row: 2 / 3; }
-    .layout-spiral .cell:nth-child(5) { grid-column: 2 / 3; grid-row: 2 / 3; }
-    .layout-spiral .cell:nth-child(6) { grid-column: 2 / 3; grid-row: 2 / 3; display: none; }
+        /* main app container */
+        .collage-app {
+            max-width: 550px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(2px);
+            border-radius: 48px;
+            padding: 20px 16px 28px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.25);
+        }
 
-    @media (max-width: 768px) {
-      .layout-3col { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-      .layout-hero { grid-template-columns: 1fr; grid-template-rows: auto; }
-      .layout-hero .cell:first-child { grid-row: auto; grid-column: auto; }
-      .layout-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-      .layout-mosaic .cell:first-child { grid-column: auto; grid-row: auto; }
-      .layout-strip { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-      .layout-tall { grid-template-columns: 1fr; grid-template-rows: auto; }
-      .layout-tall .cell:first-child { grid-row: auto; }
-      .layout-tall .cell:nth-child(4) { grid-row: auto; }
-    }
+        h1 {
+            font-size: 1.8rem;
+            margin: 0 0 6px 0;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFF9C4, #FFE0B5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        h1 i {
+            background: none;
+            color: #ffcd7e;
+            font-size: 1.7rem;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+        }
+        .sub {
+            text-align: center;
+            color: #cbd5e6;
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,215,150,0.4);
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 6px;
+        }
 
-    .cell {
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 120px;
-      aspect-ratio: 1;
-    }
+        /* canvas area - collage stage */
+        .collage-stage {
+            background: #e9f0f5;
+            background-image: radial-gradient(circle at 10% 20%, rgba(0,0,0,0.05) 2%, transparent 2.5%);
+            background-size: 24px 24px;
+            border-radius: 32px;
+            padding: 12px;
+            box-shadow: inset 0 0 0 2px #fff8, 0 12px 24px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
 
-    @media (max-width: 768px) {
-      .cell { min-height: 100px; }
-    }
+        #collageCanvas {
+            position: relative;
+            background: #ffffff;
+            border-radius: 24px;
+            min-height: 380px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.1s ease;
+            touch-action: none; /* better touch handling */
+        }
 
-    @media (max-width: 480px) {
-      .cell { min-height: 80px; }
-    }
+        .canvas-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #fef7e0;
+            background-size: 30px 30px;
+            background-image: linear-gradient(to right, #f0e7ce 1px, transparent 1px),
+                              linear-gradient(to bottom, #f0e7ce 1px, transparent 1px);
+        }
 
-    .cell:hover { transform: scale(1.01); z-index: 2; }
-    .cell img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .cell .placeholder-content {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 8px; opacity: 0.5;
-      pointer-events: none;
-    }
+        /* draggable images inside collage */
+        .collage-img {
+            position: absolute;
+            cursor: grab;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+            border-radius: 16px;
+            border: 2px solid white;
+            transition: box-shadow 0.1s, transform 0.05s linear;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            touch-action: none;
+            will-change: transform;
+        }
+        .collage-img:active {
+            cursor: grabbing;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .resize-handle {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            width: 26px;
+            height: 26px;
+            background: #ffffffdd;
+            backdrop-filter: blur(4px);
+            border-radius: 30px;
+            border: 1px solid #ffb347;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #e67e22;
+            cursor: nw-resize;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            pointer-events: auto;
+            z-index: 20;
+            font-weight: bold;
+        }
+        /* active selected item */
+        .collage-img.selected {
+            outline: 3px solid #ffaa33;
+            outline-offset: 2px;
+            filter: drop-shadow(0 0 6px gold);
+        }
 
-    .cell .remove-btn {
-      position: absolute; top: 6px; right: 6px;
-      width: 28px; height: 28px;
-      border-radius: 50%; border: none;
-      display: none; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 5;
-      transition: transform 0.15s;
-    }
-    .cell:hover .remove-btn { display: flex; }
-    .cell:active .remove-btn { display: flex; }
-    .cell .remove-btn:hover { transform: scale(1.15); }
+        /* toolbar: flat modern */
+        .tools-panel {
+            background: #1e2b32c9;
+            backdrop-filter: blur(12px);
+            border-radius: 44px;
+            padding: 14px 12px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid rgba(255,215,150,0.5);
+        }
 
-    .cell .filter-badge {
-      position: absolute; bottom: 6px; left: 6px;
-      font-size: 10px; padding: 2px 8px;
-      border-radius: 999px; pointer-events: none;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
+        .tool-btn {
+            background: #2c3e2fcc;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .tool-btn i {
+            font-size: 1.1rem;
+        }
+        .tool-btn:active {
+            transform: scale(0.96);
+            background: #1f543e;
+        }
+        .btn-primary {
+            background: #f39c12;
+            color: #1e2a2f;
+            box-shadow: 0 4px 12px #f39c1240;
+        }
+        .btn-danger {
+            background: #c44536cc;
+        }
+        .file-input-label {
+            background: #2c5a6e;
+            cursor: pointer;
+        }
 
-    .toolbar-btn {
-      padding: 8px 14px; border-radius: 10px;
-      border: 2px solid transparent;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all 0.15s;
-      display: inline-flex; align-items: center; gap: 6px;
-      white-space: nowrap;
-    }
+        /* slider + size row */
+        .edit-options {
+            background: #1f2e2ee0;
+            border-radius: 40px;
+            padding: 12px 18px;
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            backdrop-filter: blur(8px);
+        }
+        .size-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #00000033;
+            padding: 6px 14px;
+            border-radius: 60px;
+            flex: 2;
+            min-width: 140px;
+        }
+        .size-control span {
+            color: #ffe3b3;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        input[type="range"] {
+            flex: 2;
+            height: 4px;
+            border-radius: 10px;
+            background: #ffe0a3;
+        }
+        .coord-badge {
+            background: #00000066;
+            border-radius: 32px;
+            padding: 5px 12px;
+            font-size: 0.7rem;
+            font-family: monospace;
+            color: #ffdd99;
+        }
 
-    @media (max-width: 480px) {
-      .toolbar-btn { padding: 6px 10px; font-size: 12px; }
-    }
+        button:active {
+            transform: scale(0.96);
+        }
 
-    .layout-thumb {
-      width: 48px; height: 36px;
-      border-radius: 6px; cursor: pointer;
-      border: 2px solid transparent;
-      display: grid; gap: 2px; padding: 3px;
-      transition: all 0.15s;
-    }
+        @media (max-width: 500px) {
+            .tool-btn {
+                padding: 8px 14px;
+                font-size: 0.75rem;
+            }
+            .edit-options {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .size-control {
+                justify-content: space-between;
+            }
+            .collage-app {
+                padding: 16px 12px;
+            }
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 18px;
+            color: #b7cdc9;
+        }
+        .info-text {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
 
-    @media (max-width: 480px) {
-      .layout-thumb { width: 40px; height: 30px; }
-    }
+<div class="collage-app">
+    <h1>
+        <i class="fas fa-images"></i> CollaCraft 
+        <i class="fas fa-mobile-alt"></i>
+    </h1>
+    <div style="text-align: center;"><span class="sub">✨ drag, resize, double-tap to select ✨</span></div>
 
-    .layout-thumb.active { transform: scale(1.1); }
-    .layout-thumb div { border-radius: 2px; }
-
-    .filter-btn {
-      padding: 5px 12px; border-radius: 999px;
-      font-size: 12px; font-weight: 500;
-      cursor: pointer; border: 1.5px solid;
-      transition: all 0.15s;
-    }
-
-    @media (max-width: 480px) {
-      .filter-btn { padding: 4px 10px; font-size: 11px; }
-    }
-
-    .toast-msg {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      padding: 10px 24px; border-radius: 12px;
-      font-size: 14px; font-weight: 500;
-      z-index: 100; opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      max-width: 90vw;
-    }
-    .toast-msg.show { opacity: 1; }
-
-    .canvas-img { image-rendering: auto; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up { animation: fadeUp 0.3s ease-out; }
-
-    .crop-modal {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7); z-index: 50;
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px;
-    }
-
-    .crop-container {
-      background: white; border-radius: 12px;
-      max-width: 500px; width: 100%;
-      overflow: hidden; display: flex; flex-direction: column;
-    }
-
-    .crop-preview {
-      position: relative; width: 100%; aspect-ratio: 1;
-      background: #f3f4f6; overflow: hidden;
-      cursor: grab;
-    }
-
-    .crop-preview.dragging { cursor: grabbing; }
-
-    .crop-preview img {
-      position: absolute; width: 100%; height: 100%;
-      object-fit: cover;
-    }
-
-    .crop-grid {
-      position: absolute; width: 100%; height: 100%;
-      pointer-events: none;
-      background: linear-gradient(90deg, rgba(0,0,0,0.3) 33%, transparent 33%, transparent 66%, rgba(0,0,0,0.3) 66%),
-                  linear-gradient(0deg, rgba(0,0,0,0.3) 33%, transparent 33%, transparent 66%, rgba(0,0,0,0.3) 66%);
-      background-size: 33.33% 33.33%;
-    }
-
-    .crop-actions {
-      display: flex; gap: 8px; padding: 16px;
-      justify-content: flex-end;
-    }
-
-    .crop-actions button {
-      padding: 8px 16px; border-radius: 6px; border: none;
-      font-weight: 600; cursor: pointer; transition: all 0.15s;
-    }
-
-    .crop-actions .cancel { background: #e5e7eb; color: #374151; }
-    .crop-actions .cancel:hover { background: #d1d5db; }
-    .crop-actions .apply { background: #3b82f6; color: white; }
-    .crop-actions .apply:hover { background: #2563eb; }
-
-    .zoom-control {
-      display: flex; align-items: center; gap: 8px;
-      padding: 12px 16px; background: #f9fafb; border-bottom: 1px solid #e5e7eb;
-      font-size: 12px;
-    }
-
-    .zoom-slider {
-      flex: 1; height: 4px; -webkit-appearance: none; appearance: none;
-      background: #e5e7eb; border-radius: 2px; outline: none;
-      cursor: pointer;
-    }
-
-    .zoom-slider::-webkit-slider-thumb {
-      -webkit-appearance: none; appearance: none;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #3b82f6; cursor: pointer;
-    }
-
-    .zoom-slider::-moz-range-thumb {
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #3b82f6; cursor: pointer; border: none;
-    }
-
-    .zoom-value {
-      min-width: 40px; text-align: right; font-weight: 600;
-      color: #374151;
-    }
-  </style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <style>body { box-sizing: border-box; }</style>
- </head>
- <body class="h-full bg-gray-50">
-  <div class="h-full flex flex-col"><!-- Header -->
-   <header class="bg-white border-b border-gray-200 px-4 py-4 md:px-6 md:py-5">
-    <h1 class="text-xl md:text-2xl font-bold" style="font-family: 'Syne', sans-serif;">Collage Maker</h1>
-    <p class="text-xs md:text-sm text-gray-600 mt-1">Create beautiful photo collages</p>
-   </header><!-- Main Content -->
-   <div class="flex-1 flex flex-col md:flex-row overflow-hidden gap-4 p-4 md:p-6"><!-- Canvas Area -->
-    <div class="flex-1 bg-white rounded-lg shadow-sm overflow-hidden flex flex-col min-h-0">
-     <div class="flex-1 overflow-auto p-4">
-      <div id="collageGrid" class="collage-grid layout-2x2" style="gap: 6px;"><!-- Cells will be generated here -->
-      </div>
-     </div>
-    </div><!-- Controls Panel -->
-    <div class="w-full md:w-64 bg-white rounded-lg shadow-sm overflow-y-auto flex flex-col">
-     <div class="p-4 md:p-5 space-y-6 flex-1"><!-- Layouts Section -->
-      <div>
-       <h3 class="text-sm font-semibold mb-3" style="font-family: 'Syne', sans-serif;">Layouts</h3>
-       <div class="grid grid-cols-4 md:grid-cols-3 gap-2"><button onclick="changeLayout('2x2')" class="layout-thumb active" data-layout="2x2" style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #3b82f6;">
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('3col')" class="layout-thumb" data-layout="3col" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('hero')" class="layout-thumb" data-layout="hero" style="grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb; grid-row: 1 / -1;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('strip')" class="layout-thumb" data-layout="strip" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('mosaic2')" class="layout-thumb" data-layout="mosaic2" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb; grid-column: 2 / 4; grid-row: 1 / 3;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('focus')" class="layout-thumb" data-layout="focus" style="grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb; grid-row: 1 / -1;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('corner')" class="layout-thumb" data-layout="corner" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb; grid-column: 1 / 3; grid-row: 1 / 3;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('stack')" class="layout-thumb" data-layout="stack" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div>
-         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div>
-         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div></button> <button onclick="changeLayout('wave')" class="layout-thumb" data-layout="wave" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb; grid-column: 2 / 4;"></div>
-         <div style="background: #e5e7eb;"></div>
-         <div style="background: #e5e7eb;"></div></button> <button onclick="changeLayout('spiral')" class="layout-thumb" data-layout="spiral" style="grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; background: #f3f4f6; border-color: #9ca3af;">
-         <div style="background: #e5e7eb; grid-column: 1 / 4;"></div>
-         <div style="background: #e5e7eb; grid-row: 2 / 4;"></div>
-         <div style="background: #e5e7eb;"></div></button>
-       </div>
-      </div><!-- Filters Section -->
-      <div>
-       <h3 class="text-sm font-semibold mb-3" style="font-family: 'Syne', sans-serif;">Quick Filters</h3>
-       <div class="space-y-2"><button onclick="applyFilter(null)" class="w-full filter-btn" style="border-color: #3b82f6; background: #eff6ff; color: #1e40af;">No Filter</button> <button onclick="applyFilter('grayscale')" class="w-full filter-btn" style="border-color: #9ca3af; color: #6b7280;">Grayscale</button> <button onclick="applyFilter('sepia')" class="w-full filter-btn" style="border-color: #9ca3af; color: #6b7280;">Sepia</button> <button onclick="applyFilter('brightness')" class="w-full filter-btn" style="border-color: #9ca3af; color: #6b7280;">Bright</button>
-       </div>
-      </div><!-- Download Button --> <button onclick="downloadCollage()" class="w-full toolbar-btn" style="background: #3b82f6; color: white; border-color: #3b82f6;"> <i data-lucide="download" style="width: 16px; height: 16px;"></i> Download </button>
-     </div>
+    <!-- collage stage -->
+    <div class="collage-stage">
+        <div id="collageCanvas" style="position: relative; touch-action: none;">
+            <div id="canvasInner" class="canvas-inner" style="position: relative; width:100%; height:100%;">
+                <!-- dynamic images will appear here as absolutely positioned divs -->
+            </div>
+        </div>
     </div>
-   </div>
-  </div><!-- Hidden Canvas for Download -->
-  <canvas id="hiddenCanvas" style="display: none;"></canvas><!-- File Input --> <input id="fileInput" type="file" accept="image/*" style="display: none;"><!-- Toast Message -->
-  <div id="toast" class="toast-msg"></div><!-- Crop Modal -->
-  <div id="cropModal" style="display: none;" class="crop-modal">
-   <div class="crop-container">
-    <div class="zoom-control"><span style="font-weight: 500;">Auto</span> <input type="radio" name="cropMode" value="auto" checked onchange="cropMode='auto'"> <span style="font-weight: 500; margin-left: 12px;">Manual</span> <input type="radio" name="cropMode" value="manual" onchange="cropMode='manual'">
+
+    <!-- main tools: add images, clear, export -->
+    <div class="tools-panel">
+        <label class="tool-btn file-input-label" for="imageUpload">
+            <i class="fas fa-plus-circle"></i> Add Photo
+        </label>
+        <input type="file" id="imageUpload" accept="image/jpeg,image/png,image/webp" multiple style="display: none;">
+        <button id="clearAllBtn" class="tool-btn btn-danger"><i class="fas fa-trash-alt"></i> Clear All</button>
+        <button id="exportBtn" class="tool-btn btn-primary"><i class="fas fa-download"></i> Save Collage</button>
     </div>
-    <div class="crop-preview" id="cropPreview"><img id="cropImage" src="" alt="Crop">
-     <div class="crop-grid"></div>
+
+    <!-- editing options (selected image) -->
+    <div class="edit-options" id="editPanel">
+        <div class="size-control">
+            <span><i class="fas fa-arrows-alt"></i> Size</span>
+            <input type="range" id="sizeSlider" min="40" max="280" step="2" value="130">
+            <span id="sizeValue">130px</span>
+        </div>
+        <div class="coord-badge" id="coordDisplay">
+            <i class="fas fa-location-dot"></i> X: -- , Y: --
+        </div>
+        <button id="deleteSelectedBtn" class="tool-btn" style="background:#bc4e2c;"><i class="fas fa-cut"></i> Remove</button>
     </div>
-    <div class="crop-actions"><button class="cancel" onclick="cancelCrop()">Cancel</button> <button class="apply" onclick="applyCrop()">Apply</button>
+    <div class="info-text">
+        <i class="fas fa-hand-pointer"></i> Tap image → selected (orange glow) | Drag to move | Drag <b>◢ corner</b> to resize
     </div>
-   </div>
-  </div><!-- Zoom Modal -->
-  <div id="zoomModal" style="display: none;" class="crop-modal">
-   <div class="crop-container">
-    <div class="zoom-control"><i data-lucide="zoom-out" style="width: 16px; height: 16px; color: #6b7280;"></i> <input type="range" class="zoom-slider" id="zoomSlider" min="100" max="300" value="100" oninput="updateZoom(this.value)"> <span class="zoom-value" id="zoomValue">100%</span>
-    </div>
-    <div class="crop-preview" id="zoomPreview"><img id="zoomImage" src="" alt="Zoom">
-    </div>
-    <div class="crop-actions"><button class="cancel" onclick="cancelZoom()">Cancel</button> <button class="apply" onclick="applyZoom()">Apply</button>
-    </div>
-   </div>
-  </div>
-  <script>
-    let currentLayout = '2x2';
-    let cells = [];
-    let cropMode = 'auto';
-    let currentEditingIndex = -1;
-    let zoomLevel = 100;
+    <footer>📸 Mobile friendly • Add multiple pics • Rearrange freely</footer>
+</div>
+
+<script>
+    // ---------- DOM elements ----------
+    const canvasContainer = document.getElementById('collageCanvas');
+    const canvasInner = document.getElementById('canvasInner');
+    const imageUploadInput = document.getElementById('imageUpload');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const sizeSlider = document.getElementById('sizeSlider');
+    const sizeValueSpan = document.getElementById('sizeValue');
+    const coordDisplay = document.getElementById('coordDisplay');
+    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+
+    // Data model: array of image objects
+    let images = [];        // each: { id, element, width, height, left, top, imgUrl, naturalWidth, naturalHeight }
+    let nextId = 1;
+    let selectedImageId = null;
+
+    // Helper: update coord display & slider based on selected image
+    function updateUIFromSelection() {
+        if (selectedImageId !== null) {
+            const imgObj = images.find(img => img.id === selectedImageId);
+            if (imgObj && imgObj.element) {
+                const w = parseInt(imgObj.element.style.width);
+                if (!isNaN(w)) {
+                    sizeSlider.value = w;
+                    sizeValueSpan.innerText = w + 'px';
+                }
+                const left = parseFloat(imgObj.element.style.left);
+                const top = parseFloat(imgObj.element.style.top);
+                coordDisplay.innerHTML = `<i class="fas fa-location-dot"></i> X: ${Math.round(left)} , Y: ${Math.round(top)}`;
+                return;
+            }
+        }
+        // no selection
+        coordDisplay.innerHTML = `<i class="fas fa-location-dot"></i> X: -- , Y: --`;
+        sizeSlider.value = 130;
+        sizeValueSpan.innerText = '130px';
+    }
+
+    // remove selection outline from all
+    function clearSelectionHighlight() {
+        images.forEach(img => {
+            if (img.element) img.element.classList.remove('selected');
+        });
+    }
+
+    function selectImage(id) {
+        clearSelectionHighlight();
+        selectedImageId = id;
+        const selectedObj = images.find(img => img.id === id);
+        if (selectedObj && selectedObj.element) {
+            selectedObj.element.classList.add('selected');
+            // bring to front on select
+            selectedObj.element.style.zIndex = 100;
+            // also lower others zIndex
+            images.forEach(img => {
+                if (img.id !== id && img.element) img.element.style.zIndex = 1;
+            });
+        }
+        updateUIFromSelection();
+    }
+
+    // deselect
+    function deselect() {
+        clearSelectionHighlight();
+        selectedImageId = null;
+        updateUIFromSelection();
+    }
+
+    // apply size change to selected image
+    function applySizeToSelected(newWidth) {
+        if (selectedImageId === null) return;
+        const imgObj = images.find(img => img.id === selectedImageId);
+        if (!imgObj || !imgObj.element) return;
+        const originalWidth = imgObj.width;
+        const ratio = imgObj.naturalHeight / imgObj.naturalWidth;
+        const newHeight = newWidth * ratio;
+        imgObj.element.style.width = newWidth + 'px';
+        imgObj.element.style.height = newHeight + 'px';
+        imgObj.width = newWidth;
+        imgObj.height = newHeight;
+        // optional boundary adjust (keep inside canvas)
+        constrainImageWithinCanvas(imgObj);
+        updateUIFromSelection();
+    }
+
+    // keep image fully inside canvas bounds
+    function constrainImageWithinCanvas(imgObj) {
+        const containerRect = canvasInner.getBoundingClientRect();
+        const parentWidth = containerRect.width;
+        const parentHeight = containerRect.height;
+        let left = parseFloat(imgObj.element.style.left);
+        let top = parseFloat(imgObj.element.style.top);
+        const w = parseFloat(imgObj.element.style.width);
+        const h = parseFloat(imgObj.element.style.height);
+        if (isNaN(left)) left = 0;
+        if (isNaN(top)) top = 0;
+        let newLeft = Math.min(Math.max(left, 0), parentWidth - w);
+        let newTop = Math.min(Math.max(top, 0), parentHeight - h);
+        if (newLeft !== left) imgObj.element.style.left = newLeft + 'px';
+        if (newTop !== top) imgObj.element.style.top = newTop + 'px';
+        imgObj.left = newLeft;
+        imgObj.top = newTop;
+    }
+
+    // create new image element inside canvas from file
+    function addImageFromFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const imgUrl = e.target.result;
+            const img = new Image();
+            img.onload = () => {
+                const naturalW = img.width;
+                const naturalH = img.height;
+                // initial dimensions: fit inside canvas area ~40% of container but limit to 140px maxWidth
+                const containerRect = canvasInner.getBoundingClientRect();
+                let initWidth = Math.min(140, containerRect.width * 0.45, naturalW);
+                let initHeight = initWidth * (naturalH / naturalW);
+                if (initHeight > containerRect.height * 0.6) {
+                    initHeight = containerRect.height * 0.6;
+                    initWidth = initHeight * (naturalW / naturalH);
+                }
+                // random position inside canvas, avoiding edges
+                const maxLeft = Math.max(0, containerRect.width - initWidth - 10);
+                const maxTop = Math.max(0, containerRect.height - initHeight - 10);
+                const randLeft = Math.min(maxLeft, Math.random() * (maxLeft * 0.8) + 10);
+                const randTop = Math.min(maxTop, Math.random() * (maxTop * 0.8) + 10);
+
+                const imgDiv = document.createElement('div');
+                imgDiv.className = 'collage-img';
+                imgDiv.style.position = 'absolute';
+                imgDiv.style.left = randLeft + 'px';
+                imgDiv.style.top = randTop + 'px';
+                imgDiv.style.width = initWidth + 'px';
+                imgDiv.style.height = initHeight + 'px';
+                imgDiv.style.backgroundImage = `url(${imgUrl})`;
+                imgDiv.style.backgroundSize = 'cover';
+                imgDiv.style.backgroundPosition = 'center';
+                imgDiv.style.backgroundRepeat = 'no-repeat';
+                // resize handle
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = 'resize-handle';
+                resizeHandle.innerHTML = '◢';
+                resizeHandle.setAttribute('aria-label', 'resize');
+                imgDiv.appendChild(resizeHandle);
+                
+                const id = nextId++;
+                imgDiv.setAttribute('data-id', id);
+                
+                // store object
+                const imageObj = {
+                    id: id,
+                    element: imgDiv,
+                    width: initWidth,
+                    height: initHeight,
+                    left: randLeft,
+                    top: randTop,
+                    imgUrl: imgUrl,
+                    naturalWidth: naturalW,
+                    naturalHeight: naturalH
+                };
+                images.push(imageObj);
+                canvasInner.appendChild(imgDiv);
+                
+                // attach event handlers for drag, resize, selection
+                attachDragEvents(imgDiv, imageObj);
+                attachResizeEvents(resizeHandle, imageObj);
+                // selection on tap/click
+                imgDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectImage(imageObj.id);
+                });
+                // double-tap also selects
+                imgDiv.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    selectImage(imageObj.id);
+                });
+                // by default select new image
+                selectImage(imageObj.id);
+            };
+            img.src = imgUrl;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ----- DRAG LOGIC (touch + mouse) -----
+    function attachDragEvents(element, imgObj) {
+        let startX, startY, startLeft, startTop, isDragging = false;
+        
+        function onPointerMove(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+            let newLeft = startLeft + dx;
+            let newTop = startTop + dy;
+            const containerRect = canvasInner.getBoundingClientRect();
+            const maxLeft = containerRect.width - imgObj.width;
+            const maxTop = containerRect.height - imgObj.height;
+            newLeft = Math.min(Math.max(newLeft, 0), maxLeft);
+            newTop = Math.min(Math.max(newTop, 0), maxTop);
+            element.style.left = newLeft + 'px';
+            element.style.top = newTop + 'px';
+            imgObj.left = newLeft;
+            imgObj.top = newTop;
+            if (selectedImageId === imgObj.id) updateUIFromSelection();
+        }
+        
+        function onPointerUp() {
+            if (isDragging) {
+                isDragging = false;
+                document.removeEventListener('mousemove', onPointerMove);
+                document.removeEventListener('mouseup', onPointerUp);
+                document.removeEventListener('touchmove', onPointerMove);
+                document.removeEventListener('touchend', onPointerUp);
+                document.removeEventListener('touchcancel', onPointerUp);
+            }
+        }
+        
+        function startDrag(e) {
+            // avoid if target is resize handle
+            if (e.target.classList && e.target.classList.contains('resize-handle')) return;
+            e.preventDefault();
+            e.stopPropagation();
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            startX = clientX;
+            startY = clientY;
+            startLeft = parseFloat(element.style.left);
+            startTop = parseFloat(element.style.top);
+            if (isNaN(startLeft)) startLeft = 0;
+            if (isNaN(startTop)) startTop = 0;
+            isDragging = true;
+            document.addEventListener('mousemove', onPointerMove);
+            document.addEventListener('mouseup', onPointerUp);
+            document.addEventListener('touchmove', onPointerMove, { passive: false });
+            document.addEventListener('touchend', onPointerUp);
+            document.addEventListener('touchcancel', onPointerUp);
+            // bring to front while dragging
+            element.style.zIndex = 200;
+        }
+        
+        element.addEventListener('mousedown', startDrag);
+        element.addEventListener('touchstart', startDrag, { passive: false });
+    }
     
-    const cellCount = { '2x2': 4, '3col': 6, 'hero': 5, 'mosaic': 6, 'strip': 4, 'tall': 6, 'mosaic2': 6, 'focus': 5, 'quad': 6, 'frame': 6, 'zigzag': 6, 'split': 6, 'corner': 6, 'stack': 6, 'wave': 6, 'spiral': 5 };
-
-    function initCollage() {
-      createCells(cellCount[currentLayout]);
+    // resize handle logic
+    function attachResizeEvents(handle, imgObj) {
+        let startWidth, startHeight, startX, startY, isResizing = false;
+        
+        function onResizeMove(e) {
+            if (!isResizing) return;
+            e.preventDefault();
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            const dx = clientX - startX;
+            // scale based on movement (proportional)
+            let newWidth = startWidth + dx;
+            const minSize = 40;
+            const containerRect = canvasInner.getBoundingClientRect();
+            newWidth = Math.min(Math.max(newWidth, minSize), containerRect.width * 0.9);
+            const ratio = imgObj.naturalHeight / imgObj.naturalWidth;
+            let newHeight = newWidth * ratio;
+            // also avoid overflowing bottom/right
+            const currentLeft = parseFloat(imgObj.element.style.left);
+            const currentTop = parseFloat(imgObj.element.style.top);
+            if (currentLeft + newWidth > containerRect.width) {
+                newWidth = containerRect.width - currentLeft;
+                if (newWidth < minSize) newWidth = minSize;
+                newHeight = newWidth * ratio;
+            }
+            if (currentTop + newHeight > containerRect.height) {
+                newHeight = containerRect.height - currentTop;
+                if (newHeight < minSize) newHeight = minSize;
+                newWidth = newHeight / ratio;
+            }
+            imgObj.element.style.width = newWidth + 'px';
+            imgObj.element.style.height = newHeight + 'px';
+            imgObj.width = newWidth;
+            imgObj.height = newHeight;
+            if (selectedImageId === imgObj.id) updateUIFromSelection();
+        }
+        
+        function stopResize() {
+            if (isResizing) {
+                isResizing = false;
+                document.removeEventListener('mousemove', onResizeMove);
+                document.removeEventListener('mouseup', stopResize);
+                document.removeEventListener('touchmove', onResizeMove);
+                document.removeEventListener('touchend', stopResize);
+            }
+        }
+        
+        function startResize(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            startWidth = parseFloat(imgObj.element.style.width);
+            startHeight = parseFloat(imgObj.element.style.height);
+            startX = clientX;
+            startY = clientY;
+            isResizing = true;
+            document.addEventListener('mousemove', onResizeMove);
+            document.addEventListener('mouseup', stopResize);
+            document.addEventListener('touchmove', onResizeMove, { passive: false });
+            document.addEventListener('touchend', stopResize);
+            // bring to front and select owner image
+            selectImage(imgObj.id);
+        }
+        
+        handle.addEventListener('mousedown', startResize);
+        handle.addEventListener('touchstart', startResize, { passive: false });
     }
-
-    function createCells(count) {
-      const grid = document.getElementById('collageGrid');
-      grid.innerHTML = '';
-      cells = [];
-
-      for (let i = 0; i < count; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.innerHTML = `
-          <div style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;" class="placeholder-content">
-            <i data-lucide="image" style="width: 32px; height: 32px;"></i>
-          </div>
-          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${i})">
-            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-          </button>
-          <span class="filter-badge"></span>
-        `;
-        cell.addEventListener('click', () => uploadImage(i));
-        grid.appendChild(cell);
-        cells.push({ element: cell, image: null, filter: null, originalSrc: null });
-      }
-
-      lucide.createIcons();
+    
+    // delete selected image
+    function deleteSelected() {
+        if (selectedImageId !== null) {
+            const index = images.findIndex(img => img.id === selectedImageId);
+            if (index !== -1) {
+                const imgObj = images[index];
+                if (imgObj.element && imgObj.element.remove) imgObj.element.remove();
+                images.splice(index, 1);
+                deselect();
+            }
+        }
     }
-
-    function changeLayout(layout) {
-      currentLayout = layout;
-      document.querySelectorAll('.layout-thumb').forEach(t => {
-        t.classList.toggle('active', t.dataset.layout === layout);
-        t.style.borderColor = t.dataset.layout === layout ? '#3b82f6' : '#9ca3af';
-      });
-
-      const grid = document.getElementById('collageGrid');
-      grid.className = `collage-grid layout-${layout}`;
-      createCells(cellCount[layout]);
+    
+    // clear all images
+    function clearAllImages() {
+        images.forEach(img => {
+            if (img.element && img.element.remove) img.element.remove();
+        });
+        images = [];
+        deselect();
+        nextId = 1;
     }
-
-    function uploadImage(index) {
-      const fileInput = document.getElementById('fileInput');
-      fileInput.dataset.cellIndex = index;
-      fileInput.click();
+    
+    // Export collage via html2canvas
+    function exportCollage() {
+        const originalOverflow = canvasContainer.style.overflow;
+        canvasContainer.style.overflow = 'visible';
+        html2canvas(canvasInner, {
+            scale: 2,
+            backgroundColor: '#fef7e0',
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'my_collage.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            canvasContainer.style.overflow = originalOverflow;
+        }).catch(err => {
+            console.warn(err);
+            alert("Export ready, but check console. Try again.");
+            canvasContainer.style.overflow = originalOverflow;
+        });
     }
-
-    document.getElementById('fileInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const index = parseInt(e.target.dataset.cellIndex);
-        const img = document.createElement('img');
-        img.src = event.target.result;
-        img.className = 'canvas-img';
-
-        const cell = cells[index];
-        cell.element.innerHTML = `
-          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${index})">
-            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-          </button>
-          <span class="filter-badge"></span>
-        `;
-        cell.element.appendChild(img);
-        cell.image = img;
-        cell.originalSrc = event.target.result;
-        applyStoredFilter(index);
-        lucide.createIcons();
-      };
-      reader.readAsDataURL(file);
+    
+    // handle multiple image uploads
+    imageUploadInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+                addImageFromFile(file);
+            }
+        });
+        imageUploadInput.value = ''; // allow re-upload same files
     });
-
-    function removeImage(index) {
-      const cell = cells[index];
-      const placeholder = document.createElement('div');
-      placeholder.style.cssText = 'position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;';
-      placeholder.className = 'placeholder-content';
-      placeholder.innerHTML = '<i data-lucide="image" style="width: 32px; height: 32px;"></i>';
-
-      cell.element.innerHTML = `
-        <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white; display: none;" onclick="removeImage(${index})">
-          <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-        </button>
-        <span class="filter-badge"></span>
-      `;
-      cell.element.appendChild(placeholder);
-      cell.image = null;
-      cell.filter = null;
-      cell.originalSrc = null;
-      lucide.createIcons();
-    }
-
-    function applyFilter(filter) {
-      cells.forEach(cell => {
-        if (cell.image) {
-          cell.filter = filter;
-          applyStoredFilter(cells.indexOf(cell));
+    
+    // slider event
+    sizeSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        sizeValueSpan.innerText = val + 'px';
+        if (selectedImageId !== null) {
+            applySizeToSelected(val);
         }
-      });
-      showToast(`${filter ? filter.charAt(0).toUpperCase() + filter.slice(1) : 'No'} filter applied`);
-    }
-
-    function applyStoredFilter(index) {
-      const cell = cells[index];
-      if (!cell.image) return;
-
-      const filters = {
-        grayscale: 'grayscale(100%)',
-        sepia: 'sepia(100%)',
-        brightness: 'brightness(1.3)'
-      };
-
-      cell.image.style.filter = cell.filter ? filters[cell.filter] : '';
-      const badge = cell.element.querySelector('.filter-badge');
-      badge.textContent = cell.filter ? cell.filter : '';
-      badge.style.display = cell.filter ? 'block' : 'none';
-    }
-
-    function startCrop() {
-      if (!cells.some(c => c.image)) {
-        showToast('Add an image first');
-        return;
-      }
-      const imageCell = cells.find(c => c.image);
-      currentEditingIndex = cells.indexOf(imageCell);
-      openCropModal();
-    }
-
-    function openCropModal() {
-      const cell = cells[currentEditingIndex];
-      if (!cell.image) {
-        showToast('No image to crop');
-        return;
-      }
-
-      const modal = document.getElementById('cropModal');
-      const img = document.getElementById('cropImage');
-      img.src = cell.originalSrc;
-      modal.style.display = 'flex';
-      cropMode = 'auto';
-      document.querySelector('input[value="auto"]').checked = true;
-      lucide.createIcons();
-    }
-
-    function cancelCrop() {
-      document.getElementById('cropModal').style.display = 'none';
-    }
-
-    function applyCrop() {
-      const img = document.getElementById('cropImage');
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const tempImg = new Image();
-      tempImg.crossOrigin = 'anonymous';
-      
-      tempImg.onload = () => {
-        const size = 300;
-        canvas.width = size;
-        canvas.height = size;
-        
-        if (cropMode === 'auto') {
-          // Auto: fit image to square, maintaining aspect ratio
-          const scale = Math.max(size / tempImg.width, size / tempImg.height);
-          const width = tempImg.width * scale;
-          const height = tempImg.height * scale;
-          const x = (size - width) / 2;
-          const y = (size - height) / 2;
-          ctx.drawImage(tempImg, x, y, width, height);
-        } else {
-          // Manual: center crop
-          const scale = Math.max(size / tempImg.width, size / tempImg.height);
-          const width = tempImg.width * scale;
-          const height = tempImg.height * scale;
-          const x = (size - width) / 2;
-          const y = (size - height) / 2;
-          ctx.drawImage(tempImg, x, y, width, height);
+    });
+    
+    deleteSelectedBtn.addEventListener('click', deleteSelected);
+    clearAllBtn.addEventListener('click', clearAllImages);
+    exportBtn.addEventListener('click', exportCollage);
+    
+    // click on empty canvas to deselect
+    canvasInner.addEventListener('click', (e) => {
+        if (e.target === canvasInner || e.target.id === 'canvasInner') {
+            deselect();
         }
-
-        const cell = cells[currentEditingIndex];
-        const croppedImg = document.createElement('img');
-        croppedImg.src = canvas.toDataURL();
-        croppedImg.className = 'canvas-img';
-        croppedImg.style.objectFit = 'cover';
-        
-        cell.element.innerHTML = `
-          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${currentEditingIndex})">
-            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-          </button>
-          <span class="filter-badge"></span>
-        `;
-        cell.element.appendChild(croppedImg);
-        cell.image = croppedImg;
-        cell.originalSrc = canvas.toDataURL();
-        applyStoredFilter(currentEditingIndex);
-        lucide.createIcons();
-        
-        cancelCrop();
-        showToast('Image cropped!');
-      };
-      
-      tempImg.onerror = () => {
-        showToast('Error loading image');
-      };
-      
-      tempImg.src = img.src;
+    });
+    
+    // initial background hint: add a couple of sample pics ? optional but we'll add one demo image? 
+    // for better demo, add default sample image?
+    function addDemoImage() {
+        fetch('https://picsum.photos/200/150?random=1')
+            .then(res => res.blob())
+            .then(blob => {
+                const file = new File([blob], "demo1.jpg", { type: "image/jpeg" });
+                addImageFromFile(file);
+            }).catch(()=>{});
+        setTimeout(() => {
+            fetch('https://picsum.photos/200/150?random=2')
+            .then(res => res.blob())
+            .then(blob => {
+                const file2 = new File([blob], "demo2.jpg", { type: "image/jpeg" });
+                addImageFromFile(file2);
+            }).catch(()=>{});
+        }, 200);
     }
-
-    function startZoom() {
-      if (!cells.some(c => c.image)) {
-        showToast('Add an image first');
-        return;
-      }
-      const imageCell = cells.find(c => c.image);
-      currentEditingIndex = cells.indexOf(imageCell);
-      openZoomModal();
-    }
-
-    function openZoomModal() {
-      const cell = cells[currentEditingIndex];
-      if (!cell.image) {
-        showToast('No image to zoom');
-        return;
-      }
-
-      const modal = document.getElementById('zoomModal');
-      const img = document.getElementById('zoomImage');
-      img.src = cell.originalSrc;
-      document.getElementById('zoomSlider').value = 100;
-      zoomLevel = 100;
-      updateZoom(100);
-      modal.style.display = 'flex';
-      lucide.createIcons();
-    }
-
-    function cancelZoom() {
-      document.getElementById('zoomModal').style.display = 'none';
-    }
-
-    function updateZoom(value) {
-      zoomLevel = parseInt(value);
-      document.getElementById('zoomValue').textContent = zoomLevel + '%';
-      const zoomImage = document.getElementById('zoomImage');
-      zoomImage.style.transform = `scale(${zoomLevel / 100})`;
-    }
-
-    function applyZoom() {
-      const img = document.getElementById('zoomImage');
-      const preview = document.getElementById('zoomPreview');
-      
-      const canvas = document.createElement('canvas');
-      canvas.width = 300;
-      canvas.height = 300;
-      
-      const ctx = canvas.getContext('2d');
-      const tempImg = new Image();
-      tempImg.crossOrigin = 'anonymous';
-      
-      tempImg.onload = () => {
-        const scale = zoomLevel / 100;
-        const x = (canvas.width - tempImg.width * scale) / 2;
-        const y = (canvas.height - tempImg.height * scale) / 2;
-        
-        ctx.drawImage(tempImg, x, y, tempImg.width * scale, tempImg.height * scale);
-        
-        const cell = cells[currentEditingIndex];
-        const zoomedImg = document.createElement('img');
-        zoomedImg.src = canvas.toDataURL();
-        zoomedImg.className = 'canvas-img';
-        zoomedImg.style.objectFit = 'cover';
-        
-        cell.element.innerHTML = `
-          <button class="remove-btn" style="background: rgba(0,0,0,0.6); color: white;" onclick="removeImage(${currentEditingIndex})">
-            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-          </button>
-          <span class="filter-badge"></span>
-        `;
-        cell.element.appendChild(zoomedImg);
-        cell.image = zoomedImg;
-        cell.originalSrc = canvas.toDataURL();
-        applyStoredFilter(currentEditingIndex);
-        lucide.createIcons();
-        
-        cancelZoom();
-        showToast('Image zoomed!');
-      };
-      
-      tempImg.onerror = () => {
-        showToast('Error loading image');
-      };
-      
-      tempImg.src = img.src;
-    }
-
-    function downloadCollage() {
-      if (!cells.some(c => c.image)) {
-        showToast('Add images first');
-        return;
-      }
-
-      const grid = document.getElementById('collageGrid');
-      const width = 1200;
-      const height = 900;
-
-      const canvas = document.getElementById('hiddenCanvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, width, height);
-
-      html2canvas(grid, { scale: 2, useCORS: true }).then((canvasResult) => {
-        ctx.drawImage(canvasResult, 0, 0);
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/jpeg', 0.95);
-        link.download = 'collage.jpg';
-        link.click();
-        showToast('Collage downloaded!');
-      }).catch(() => {
-        showToast('Download failed');
-      });
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    initCollage();
-    lucide.createIcons();
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e48514cf31090a4',t:'MTc3NDg4NjMyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    // tiny delay for nicer first look
+    setTimeout(addDemoImage, 100);
+</script>
+</body>
 </html>
