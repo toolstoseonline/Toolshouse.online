@@ -1,740 +1,715 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>PDF ToolKit Pro | Reader & Gallery Manager</title>
-  <!-- PDF.js core from Mozilla CDN (stable v3.11.174) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <!-- FileSaver.js for reliable save-as (gallery export) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <!-- Simple CSS reset + modern glassmorphic UI -->
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>PDF Reader Pro | Mobile Gallery & Zoom Reader</title>
+    <!-- PDF.js Core Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-      background: linear-gradient(145deg, #e0eaf4 0%, #cfdef3 100%);
-      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      padding: 20px;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        body {
+            background: linear-gradient(145deg, #f5f7fc 0%, #eef2f8 100%);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 16px;
+            min-height: 100vh;
+        }
 
-    /* main app container */
-    .app-container {
-      max-width: 1400px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(2px);
-      border-radius: 2.5rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      transition: all 0.2s;
-    }
+        /* Main App Container */
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 44px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            padding: 20px 18px 28px;
+            transition: all 0.2s ease;
+        }
 
-    /* header area */
-    .toolbar {
-      background: #1e2a3e;
-      padding: 1rem 1.8rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 2px solid #ffb347;
-    }
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+        .header h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e2b6e, #2c3e8f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .header p {
+            color: #5a687c;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            font-weight: 500;
+        }
 
-    .logo h1 {
-      color: white;
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
-    .logo span {
-      font-size: 0.8rem;
-      background: #ffb347;
-      padding: 2px 8px;
-      border-radius: 40px;
-      margin-left: 8px;
-      color: #1e2a3e;
-    }
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            justify-content: center;
+        }
+        .btn {
+            background: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .btn-primary {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            box-shadow: 0 6px 14px rgba(30,58,138,0.25);
+        }
+        .btn-primary:active { transform: scale(0.96); background: #0f2b6d; }
+        .btn-outline {
+            background: rgba(255,255,255,0.9);
+            border: 1px solid #cbd5e1;
+            color: #1f2937;
+        }
+        .btn-outline:active { transform: scale(0.96); background: #f1f5f9; }
+        .icon-emoj {
+            font-size: 1.2rem;
+        }
 
-    .action-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+        /* Zoom Controls */
+        .zoom-panel {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 18px;
+            background: #ffffffcc;
+            padding: 8px 12px;
+            border-radius: 60px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .zoom-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 40px;
+            width: 44px;
+            height: 44px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0f172a;
+            cursor: pointer;
+            transition: 0.1s linear;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .zoom-btn:active { transform: scale(0.92); background: #eef2ff; }
+        .zoom-level {
+            font-weight: 600;
+            font-size: 1rem;
+            background: #eef2ff;
+            padding: 0 18px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            color: #1e3a8a;
+        }
 
-    .btn {
-      background: #2c3e4e;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .btn-primary {
-      background: #ff8c42;
-      color: #1e2a3e;
-    }
-    .btn-primary:hover {
-      background: #ff9e5e;
-      transform: scale(0.97);
-    }
-    .btn-danger {
-      background: #c44536;
-    }
-    .btn-danger:hover {
-      background: #b33a2b;
-    }
-    .btn-success {
-      background: #2c7a4d;
-    }
-    .btn-success:hover {
-      background: #1f5e3a;
-    }
-    .btn-outline {
-      background: transparent;
-      border: 1px solid #ffb347;
-      color: #ffb347;
-    }
-    .btn-outline:hover {
-      background: #ffb34720;
-    }
-    .btn:active {
-      transform: translateY(1px);
-    }
+        /* PDF Canvas Container with overflow for zoom */
+        .pdf-viewer {
+            background: #e9eef3;
+            border-radius: 32px;
+            padding: 20px 12px;
+            margin: 8px 0 16px;
+            box-shadow: inset 0 1px 4px #00000010, 0 8px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 380px;
+            transition: all 0.2s;
+        }
+        .canvas-wrapper {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-width: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            transition: all 0.2s;
+            -webkit-overflow-scrolling: touch;
+        }
+        canvas {
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            background: white;
+            display: block;
+            transition: transform 0.1s ease;
+            max-width: none;
+        }
+        /* Page navigation */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .page-indicator {
+            background: #eef2ff;
+            padding: 8px 16px;
+            border-radius: 48px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #0c4a6e;
+        }
+        .file-info {
+            font-size: 0.75rem;
+            color: #475569;
+            text-align: center;
+            margin-top: 12px;
+            word-break: break-word;
+        }
 
-    /* main two-column layout: PDF reader + Gallery */
-    .split-layout {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-
-    .reader-section {
-      flex: 2;
-      min-width: 280px;
-      background: #fef9f0;
-      padding: 20px;
-      border-right: 1px solid #ddd8ce;
-    }
-
-    .gallery-section {
-      flex: 1.2;
-      min-width: 260px;
-      background: #f5f1ea;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    /* file upload zone */
-    .upload-zone {
-      background: #fff6e8;
-      border: 2px dashed #ffb347;
-      border-radius: 28px;
-      padding: 20px 12px;
-      text-align: center;
-      margin-bottom: 24px;
-      transition: 0.2s;
-    }
-    .upload-zone label {
-      font-weight: bold;
-      display: inline-block;
-      background: #ffb347;
-      padding: 10px 24px;
-      border-radius: 40px;
-      cursor: pointer;
-      color: #1e2a3e;
-      margin-top: 8px;
-    }
-    #fileInput {
-      display: none;
-    }
-    .pdf-info {
-      margin-top: 12px;
-      font-size: 0.85rem;
-      color: #4a5562;
-    }
-
-    /* canvas viewer */
-    .pdf-viewer {
-      background: #e2dcd0;
-      border-radius: 24px;
-      padding: 16px;
-      text-align: center;
-      box-shadow: inset 0 1px 4px #0001, 0 8px 20px rgba(0,0,0,0.1);
-    }
-    .canvas-container {
-      overflow-x: auto;
-      text-align: center;
-      background: #3e3a35;
-      border-radius: 20px;
-      padding: 12px;
-    }
-    canvas {
-      max-width: 100%;
-      height: auto;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-      border-radius: 12px;
-      background: white;
-    }
-    .page-controls {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      margin: 20px 0 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .page-num {
-      background: #2c3e4e;
-      padding: 6px 14px;
-      border-radius: 32px;
-      color: white;
-      font-weight: bold;
-    }
-
-    /* gallery list */
-    .gallery-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      border-bottom: 2px solid #ffb347;
-      padding-bottom: 8px;
-      margin-bottom: 12px;
-    }
-    .gallery-list {
-      max-height: 420px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .gallery-item {
-      background: white;
-      border-radius: 20px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: 0.1s;
-      cursor: pointer;
-      border-left: 5px solid #ffb347;
-    }
-    .gallery-item:hover {
-      background: #fff3e0;
-      transform: translateX(4px);
-    }
-    .file-meta {
-      flex: 1;
-      overflow: hidden;
-    }
-    .file-name {
-      font-weight: 600;
-      font-size: 0.85rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .file-size {
-      font-size: 0.7rem;
-      color: gray;
-    }
-    .item-actions {
-      display: flex;
-      gap: 8px;
-    }
-    .icon-btn {
-      background: #e9ecef;
-      border: none;
-      border-radius: 40px;
-      padding: 6px 12px;
-      font-size: 0.7rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .icon-btn.save-pdf {
-      background: #2c7a4d;
-      color: white;
-    }
-    .icon-btn.delete-item {
-      background: #c44536;
-      color: white;
-    }
-    .empty-gallery {
-      text-align: center;
-      color: #7c6e5e;
-      padding: 40px 10px;
-      font-style: italic;
-    }
-    .clear-all-btn {
-      width: 100%;
-      background: #c44536cc;
-      margin-top: 6px;
-    }
-
-    @media (max-width: 780px) {
-      body { padding: 12px; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .action-buttons { justify-content: center; }
-      .split-layout { flex-direction: column; }
-      .reader-section { border-right: none; border-bottom: 1px solid #ddd; }
-    }
-    footer {
-      text-align: center;
-      font-size: 0.7rem;
-      padding: 12px;
-      background: #e8e2d6;
-      color: #3b3a36;
-    }
-  </style>
+        /* Gallery Detection / PDF list section */
+        .gallery-section {
+            margin-top: 24px;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 20px;
+        }
+        .section-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1e293b;
+        }
+        .pdf-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: flex-start;
+            max-height: 260px;
+            overflow-y: auto;
+            padding: 4px 2px;
+        }
+        .gallery-card {
+            background: white;
+            border-radius: 24px;
+            padding: 12px 14px;
+            width: calc(33% - 8px);
+            min-width: 100px;
+            flex: 1 0 auto;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2edff;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+        .gallery-card:active { transform: scale(0.97); background: #f8fafd; }
+        .pdf-icon {
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+        .pdf-name {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #1f3a6b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .detect-badge {
+            background: #dbeafe;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            color: #1e40af;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .clear-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: none;
+        }
+        @media (max-width: 520px) {
+            .app-container { padding: 16px; }
+            .btn { padding: 10px 16px; font-size: 0.8rem; }
+            .gallery-card { padding: 8px 6px; }
+            .pdf-name { font-size: 0.65rem; }
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #6c7a91;
+            margin-top: 20px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .status-msg {
+            background: #e6f0ff;
+            border-radius: 28px;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
+
 <div class="app-container">
-  <div class="toolbar">
-    <div class="logo">
-      <h1>📄 PDF ToolKit <span>reader + gallery</span></h1>
+    <div class="header">
+        <h1>📖 PDF Reader Pro</h1>
+        <p>Gallery detect • Smooth Zoom • Clear read</p>
     </div>
-    <div class="action-buttons">
-      <button id="saveCurrentPdfBtn" class="btn btn-success">💾 Save PDF to Gallery</button>
-      <button id="clearAllGalleryBtn" class="btn btn-danger">🗑 Clear All Gallery</button>
-      <button id="detectPDFinfoBtn" class="btn btn-outline">🔍 Detect PDF Info</button>
+
+    <!-- Primary action row -->
+    <div class="toolbar">
+        <label class="btn btn-primary" for="pdfUpload">
+            <span class="icon-emoj">📂</span> Open PDF
+        </label>
+        <button class="btn btn-outline" id="galleryDetectBtn">
+            <span class="icon-emoj">🖼️</span> Detect Gallery
+        </button>
+        <button class="btn clear-btn" id="clearPdfBtn">
+            <span class="icon-emoj">🗑️</span> Clear Reader
+        </button>
+        <input type="file" id="pdfUpload" accept=".pdf">
     </div>
-  </div>
 
-  <div class="split-layout">
-    <!-- LEFT: PDF READER SECTION -->
-    <div class="reader-section">
-      <div class="upload-zone">
-        <p>📂 <strong>Load PDF document</strong> (drag & drop or click)</p>
-        <label for="fileInput">📁 Choose PDF file</label>
-        <input type="file" id="fileInput" accept="application/pdf">
-        <div id="pdfDetectionStatus" class="pdf-info"></div>
-      </div>
+    <!-- Zoom friendly controls -->
+    <div class="zoom-panel">
+        <button class="zoom-btn" id="zoomOutBtn" aria-label="Zoom Out">−</button>
+        <span class="zoom-level" id="zoomLevelDisplay">100%</span>
+        <button class="zoom-btn" id="zoomInBtn" aria-label="Zoom In">+</button>
+        <button class="zoom-btn" id="resetZoomBtn" aria-label="Reset Zoom">⟳</button>
+    </div>
 
-      <div class="pdf-viewer" id="pdfViewerArea">
-        <div class="canvas-container">
-          <canvas id="pdfCanvas"></canvas>
+    <!-- PDF Canvas Viewer (scrollable wrapper for zoom) -->
+    <div class="pdf-viewer">
+        <div class="canvas-wrapper" id="canvasWrapper">
+            <canvas id="pdfCanvas" style="display: none;"></canvas>
+            <div id="noPdfMsg" style="color:#64748b; text-align:center; padding:40px;">✨ No PDF loaded.<br>Upload or pick from gallery ✨</div>
         </div>
-        <div class="page-controls">
-          <button id="prevPageBtn" class="btn" style="background:#3a5a6e;">◀ Previous</button>
-          <span id="pageNumDisplay" class="page-num">Page: 0 / 0</span>
-          <button id="nextPageBtn" class="btn" style="background:#3a5a6e;">Next ▶</button>
-        </div>
-        <div id="pdfMetaInfo" style="font-size:0.75rem; color:#5b4b3a; margin-top:6px;"></div>
-      </div>
     </div>
 
-    <!-- RIGHT: GALLERY (saved PDFs) -->
+    <!-- Page navigation -->
+    <div class="nav-controls">
+        <button class="btn btn-outline" id="prevPageBtn" style="padding:8px 18px;">◀ Prev</button>
+        <div class="page-indicator" id="pageInfo">Page 0 / 0</div>
+        <button class="btn btn-outline" id="nextPageBtn" style="padding:8px 18px;">Next ▶</button>
+    </div>
+
+    <!-- Gallery section: detected PDFs from mobile gallery / local PDFs -->
     <div class="gallery-section">
-      <div class="gallery-header">
-        <h3>📚 Gallery <span style="font-size:0.7rem;">(saved PDFs)</span></h3>
-        <button id="refreshGalleryBtn" class="icon-btn" style="background:#ffb347;">⟳ Refresh</button>
-      </div>
-      <div id="galleryListContainer" class="gallery-list">
-        <div class="empty-gallery">✨ No saved PDFs yet.<br>Use "Save PDF to Gallery"</div>
-      </div>
-      <button id="clearAllGalleryBottomBtn" class="btn btn-danger clear-all-btn">🗑 Clear All Gallery Items</button>
-      <p style="font-size:11px; text-align:center;">💡 Click on any gallery item to instantly READ it.<br>📱 Mobile ready: tap & view.</p>
+        <div class="section-title">
+            <span>📚 PDF Gallery</span>
+            <span style="font-size:12px;">(tap to read instantly)</span>
+        </div>
+        <div id="detectHint" class="detect-badge">
+            💡 Use "Detect Gallery" to scan & store recent PDFs from your device uploads.
+        </div>
+        <div id="pdfGalleryList" class="pdf-gallery">
+            <div style="color:#94a3b8; text-align:center; width:100%;">No PDFs in gallery yet. Upload or detect.</div>
+        </div>
     </div>
-  </div>
-  <footer>🔍 PDF detection active | Save PDFs to gallery (IndexedDB) | Full reader + page navigation</footer>
+    <div class="file-info" id="fileNameDisplay"></div>
+    <div id="statusMsg" class="status-msg"></div>
+    <footer>📱 Mobile-friendly • Pinch-to-zoom inside canvas wrapper • Smooth reading</footer>
 </div>
 
 <script>
-  (function() {
+    // Configure PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
     // ---------- GLOBALS ----------
-    let currentPdfData = null;        // stores ArrayBuffer of loaded PDF
-    let currentPdfDoc = null;         // pdf.js document object
+    let pdfDoc = null;          // PDF document proxy
     let currentPageNum = 1;
     let totalPages = 0;
-    let currentFileName = "document.pdf";
+    let currentZoom = 1.0;     // scale factor (1.0 = 100%)
+    let currentPdfFile = null;  // store file object for re-render
     
+    // Gallery storage: array of objects { name, dataURL, fileObj? optional, id }
+    let pdfGallery = [];        // we store base64 dataUrl for preview/loading
+    let galleryIdCounter = 0;
+
     // DOM elements
-    const fileInput = document.getElementById('fileInput');
     const canvas = document.getElementById('pdfCanvas');
     const ctx = canvas.getContext('2d');
+    const canvasWrapper = document.getElementById('canvasWrapper');
+    const noPdfMsgDiv = document.getElementById('noPdfMsg');
+    const fileNameSpan = document.getElementById('fileNameDisplay');
+    const pageInfoSpan = document.getElementById('pageInfo');
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
-    const pageNumSpan = document.getElementById('pageNumDisplay');
-    const pdfMetaSpan = document.getElementById('pdfMetaInfo');
-    const detectionStatusDiv = document.getElementById('pdfDetectionStatus');
-    const saveCurrentBtn = document.getElementById('saveCurrentPdfBtn');
-    const clearAllBtn = document.getElementById('clearAllGalleryBtn');
-    const clearAllBottom = document.getElementById('clearAllGalleryBottomBtn');
-    const detectInfoBtn = document.getElementById('detectPDFinfoBtn');
-    const refreshGalleryBtn = document.getElementById('refreshGalleryBtn');
-    const galleryContainer = document.getElementById('galleryListContainer');
+    const zoomInBtn = document.getElementById('zoomInBtn');
+    const zoomOutBtn = document.getElementById('zoomOutBtn');
+    const resetZoomBtn = document.getElementById('resetZoomBtn');
+    const zoomLevelSpan = document.getElementById('zoomLevelDisplay');
+    const pdfUploadInput = document.getElementById('pdfUpload');
+    const galleryDetectBtn = document.getElementById('galleryDetectBtn');
+    const clearPdfBtn = document.getElementById('clearPdfBtn');
+    const pdfGalleryContainer = document.getElementById('pdfGalleryList');
+    const statusMsgDiv = document.getElementById('statusMsg');
 
-    // ---------- INDEXEDDB: PDF GALLERY (store blobs) ----------
-    const DB_NAME = "PDFGalleryDB";
-    const DB_VERSION = 1;
-    const STORE_NAME = "pdfFiles";
-    let db = null;
-
-    function openDB() {
-      return new Promise((resolve, reject) => {
-        if (db && db.name === DB_NAME) return resolve(db);
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-        request.onerror = (event) => reject("IndexedDB error: " + event.target.errorCode);
-        request.onsuccess = (event) => {
-          db = event.target.result;
-          resolve(db);
-        };
-        request.onupgradeneeded = (event) => {
-          const dbEv = event.target.result;
-          if (!dbEv.objectStoreNames.contains(STORE_NAME)) {
-            dbEv.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
-          }
-        };
-      });
+    // Helper: update zoom display
+    function updateZoomUI() {
+        zoomLevelSpan.innerText = `${Math.round(currentZoom * 100)}%`;
     }
 
-    // Save PDF blob (ArrayBuffer) with filename & size
-    async function savePdfToGallery(pdfArrayBuffer, originalName, sizeBytes) {
-      try {
-        const database = await openDB();
-        const transaction = database.transaction([STORE_NAME], "readwrite");
-        const store = transaction.objectStore(STORE_NAME);
-        const pdfBlob = new Blob([pdfArrayBuffer], { type: "application/pdf" });
-        const record = {
-          name: originalName,
-          blob: pdfBlob,
-          size: sizeBytes,
-          timestamp: Date.now(),
-        };
-        const request = store.add(record);
+    // Render current page using pdfDoc and zoom
+    async function renderPage() {
+        if (!pdfDoc) {
+            canvas.style.display = 'none';
+            if(noPdfMsgDiv) noPdfMsgDiv.style.display = 'block';
+            return;
+        }
+        canvas.style.display = 'block';
+        if(noPdfMsgDiv) noPdfMsgDiv.style.display = 'none';
+        
+        try {
+            const page = await pdfDoc.getPage(currentPageNum);
+            const viewport = page.getViewport({ scale: currentZoom });
+            
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport,
+                background: 'white'
+            };
+            
+            await page.render(renderContext).promise;
+            pageInfoSpan.innerText = `Page ${currentPageNum} / ${totalPages}`;
+        } catch (err) {
+            console.warn("render error", err);
+            statusMsgDiv.innerText = "⚠️ Render error, try zoom reset.";
+        }
+    }
+
+    // Load PDF from ArrayBuffer or Blob
+    async function loadPdfFromData(data, fileName = "document.pdf") {
+        try {
+            const typedArray = new Uint8Array(data);
+            pdfDoc = await pdfjsLib.getDocument({ data: typedArray }).promise;
+            totalPages = pdfDoc.numPages;
+            currentPageNum = 1;
+            currentZoom = 1.0;
+            updateZoomUI();
+            await renderPage();
+            fileNameSpan.innerText = `📄 ${fileName}`;
+            statusMsgDiv.innerText = `✅ Loaded: ${fileName} (${totalPages} pages)`;
+            // Also store current file ref for potential gallery update
+            return true;
+        } catch (err) {
+            console.error(err);
+            statusMsgDiv.innerText = `❌ Failed to load PDF: ${err.message}`;
+            pdfDoc = null;
+            canvas.style.display = 'none';
+            if(noPdfMsgDiv) noPdfMsgDiv.style.display = 'block';
+            pageInfoSpan.innerText = `Page 0 / 0`;
+            fileNameSpan.innerText = "";
+            return false;
+        }
+    }
+
+    // Helper to read file as ArrayBuffer
+    function readFileAsArrayBuffer(file) {
         return new Promise((resolve, reject) => {
-          request.onsuccess = () => resolve(true);
-          request.onerror = (err) => reject(err);
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = (e) => reject(e);
+            reader.readAsArrayBuffer(file);
         });
-      } catch (err) {
-        console.error("save error", err);
-        throw err;
-      }
     }
 
-    // Load all gallery items as list (metadata)
-    async function getAllGalleryItems() {
-      const database = await openDB();
-      const transaction = database.transaction([STORE_NAME], "readonly");
-      const store = transaction.objectStore(STORE_NAME);
-      const items = await new Promise((resolve) => {
-        const result = [];
-        const cursor = store.openCursor();
-        cursor.onsuccess = (event) => {
-          const cur = event.target.result;
-          if (cur) {
-            result.push({ id: cur.key, name: cur.value.name, size: cur.value.size, timestamp: cur.value.timestamp, blob: cur.value.blob });
-            cur.continue();
-          } else {
-            resolve(result);
-          }
-        };
-        cursor.onerror = () => resolve([]);
-      });
-      return items;
+    // Upload handler
+    pdfUploadInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file || file.type !== 'application/pdf') {
+            statusMsgDiv.innerText = "⚠️ Please select a valid PDF file.";
+            return;
+        }
+        statusMsgDiv.innerText = `📥 Loading "${file.name}" ...`;
+        const buffer = await readFileAsArrayBuffer(file);
+        const success = await loadPdfFromData(buffer, file.name);
+        if (success) {
+            currentPdfFile = file;
+            // optionally auto add to gallery if not exists (avoid duplicates by name + size)
+            addPdfToGallery(file.name, buffer);
+        }
+        pdfUploadInput.value = ''; // allow re-upload same file
+    });
+
+    // Add PDF to gallery storage (store base64 chunk for quick access)
+    async function addPdfToGallery(fileName, arrayBuffer) {
+        // avoid duplicates by name + first few bytes? but simple: check if same name exists
+        const exists = pdfGallery.some(item => item.name === fileName);
+        if (exists) {
+            statusMsgDiv.innerText = `📁 "${fileName}" already in gallery.`;
+            renderGalleryList();
+            return;
+        }
+        const base64 = await arrayBufferToBase64(arrayBuffer);
+        const newId = galleryIdCounter++;
+        pdfGallery.push({
+            id: newId,
+            name: fileName,
+            data: base64,   // store base64 string for later loading
+            timestamp: Date.now()
+        });
+        renderGalleryList();
+        statusMsgDiv.innerText = `➕ Added "${fileName}" to gallery.`;
     }
 
-    // Delete gallery item by id
-    async function deleteGalleryItem(id) {
-      const database = await openDB();
-      const transaction = database.transaction([STORE_NAME], "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
-      return new Promise((resolve, reject) => {
-        const req = store.delete(id);
-        req.onsuccess = () => resolve(true);
-        req.onerror = (e) => reject(e);
-      });
+    // Convert ArrayBuffer to base64 string
+    function arrayBufferToBase64(buffer) {
+        return new Promise((resolve) => {
+            const blob = new Blob([buffer], { type: 'application/pdf' });
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result.split(',')[1]);
+            reader.readAsDataURL(blob);
+        });
     }
 
-    async function clearAllGallery() {
-      const database = await openDB();
-      const transaction = database.transaction([STORE_NAME], "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
-      store.clear();
-      return new Promise((resolve) => {
-        transaction.oncomplete = () => resolve(true);
-      });
+    // Load PDF from gallery item by base64 data
+    async function loadPdfFromBase64(base64Data, filename) {
+        try {
+            const binaryString = atob(base64Data);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            await loadPdfFromData(bytes.buffer, filename);
+        } catch (err) {
+            statusMsgDiv.innerText = `Gallery load error: ${err.message}`;
+        }
     }
 
-    // Render gallery list UI
-    async function renderGallery() {
-      if (!galleryContainer) return;
-      try {
-        const items = await getAllGalleryItems();
-        if (!items.length) {
-          galleryContainer.innerHTML = `<div class="empty-gallery">📭 No saved PDFs.<br>Use "Save PDF to Gallery"</div>`;
-          return;
+    // Render gallery UI cards
+    function renderGalleryList() {
+        if (!pdfGalleryContainer) return;
+        if (pdfGallery.length === 0) {
+            pdfGalleryContainer.innerHTML = `<div style="color:#94a3b8; text-align:center; width:100%;">📭 No PDFs in gallery. Upload or tap "Detect Gallery".</div>`;
+            return;
         }
         let html = '';
-        items.forEach(item => {
-          const sizeStr = (item.size / 1024).toFixed(1) + " KB";
-          const dateStr = new Date(item.timestamp).toLocaleTimeString();
-          html += `
-            <div class="gallery-item" data-id="${item.id}" data-name="${escapeHtml(item.name)}">
-              <div class="file-meta">
-                <div class="file-name">📄 ${escapeHtml(item.name.length>28? item.name.substring(0,25)+'...':item.name)}</div>
-                <div class="file-size">${sizeStr} • ${dateStr}</div>
-              </div>
-              <div class="item-actions">
-                <button class="icon-btn save-pdf gallery-read-btn" data-id="${item.id}" data-name="${escapeHtml(item.name)}">📖 Read</button>
-                <button class="icon-btn delete-item" data-id="${item.id}">❌ Del</button>
-              </div>
-            </div>
-          `;
+        pdfGallery.forEach(item => {
+            html += `
+                <div class="gallery-card" data-id="${item.id}">
+                    <div class="pdf-icon">📄</div>
+                    <div class="pdf-name" title="${item.name}">${truncateName(item.name, 18)}</div>
+                </div>
+            `;
         });
-        galleryContainer.innerHTML = html;
-        // Attach event listeners dynamically
-        document.querySelectorAll('.gallery-read-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const id = Number(btn.getAttribute('data-id'));
-            const name = btn.getAttribute('data-name');
-            await loadPdfFromGalleryById(id, name);
-          });
+        pdfGalleryContainer.innerHTML = html;
+        // attach click event listeners
+        document.querySelectorAll('.gallery-card').forEach(card => {
+            card.addEventListener('click', async (e) => {
+                const id = parseInt(card.getAttribute('data-id'));
+                const galleryItem = pdfGallery.find(g => g.id === id);
+                if (galleryItem && galleryItem.data) {
+                    statusMsgDiv.innerText = `📖 Opening from gallery: ${galleryItem.name}`;
+                    await loadPdfFromBase64(galleryItem.data, galleryItem.name);
+                } else {
+                    statusMsgDiv.innerText = "Cannot retrieve PDF data.";
+                }
+            });
         });
-        document.querySelectorAll('.delete-item').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const id = Number(btn.getAttribute('data-id'));
-            await deleteGalleryItem(id);
-            renderGallery();
-            // if currently open PDF is same as deleted? optional ignore
-          });
-        });
-      } catch (err) {
-        console.warn("renderGallery error", err);
-      }
     }
 
-    async function loadPdfFromGalleryById(id, displayName) {
-      try {
-        const database = await openDB();
-        const transaction = database.transaction([STORE_NAME], "readonly");
-        const store = transaction.objectStore(STORE_NAME);
-        const record = await new Promise((resolve) => {
-          const getReq = store.get(id);
-          getReq.onsuccess = () => resolve(getReq.result);
-          getReq.onerror = () => resolve(null);
-        });
-        if (record && record.blob) {
-          const arrayBuffer = await record.blob.arrayBuffer();
-          currentFileName = displayName || record.name;
-          await loadPdfFromArrayBuffer(arrayBuffer, currentFileName);
-          detectionStatusDiv.innerHTML = `✅ Loaded from gallery: ${currentFileName}`;
+    function truncateName(name, maxLen) {
+        return name.length > maxLen ? name.substring(0, maxLen-2) + '..' : name;
+    }
+
+    // Detect gallery: scans all uploaded/added PDFs already in local gallery
+    // plus optional: if user has any PDF recently loaded, we can also promote it. 
+    // But also we simulate detecting any PDF from hidden inputs? For mobile we already have gallery store.
+    // Also we provide a demo: when user clicks "Detect Gallery", we show existing PDFs and also scan if any previous uploaded.
+    galleryDetectBtn.addEventListener('click', () => {
+        if (pdfGallery.length > 0) {
+            statusMsgDiv.innerText = `📌 Gallery contains ${pdfGallery.length} PDF(s). Tap any to read.`;
+            renderGalleryList();
         } else {
-          alert("Could not load PDF from gallery.");
+            statusMsgDiv.innerText = `🔍 No PDFs detected in local gallery. Please upload a PDF first to add it.`;
         }
-      } catch (err) {
-        alert("Failed to read PDF from gallery");
-      }
-    }
+        // extra: if current PDF loaded and not in gallery, ask to add?
+        if (pdfDoc && currentPdfFile && !pdfGallery.some(g => g.name === currentPdfFile.name)) {
+            statusMsgDiv.innerText = `➕ Current PDF not in gallery. Use "Open PDF" again to auto-save, or upload again to add.`;
+        }
+    });
 
-    // Load PDF from arrayBuffer using pdf.js
-    async function loadPdfFromArrayBuffer(arrayBuffer, filenameHint) {
-      try {
-        // detect PDF signature
-        const uint8 = new Uint8Array(arrayBuffer.slice(0, 5));
-        const isPdf = uint8[0] === 0x25 && uint8[1] === 0x50 && uint8[2] === 0x44 && uint8[3] === 0x46;
-        if (!isPdf) {
-          detectionStatusDiv.innerHTML = "⚠️ Detected: Not a valid PDF file!";
-          return;
-        }
-        detectionStatusDiv.innerHTML = `✅ PDF detected! (${filenameHint}) - ${(arrayBuffer.byteLength/1024).toFixed(1)} KB`;
-        currentPdfData = arrayBuffer;
-        // load with pdf.js
-        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-        const pdfDocument = await loadingTask.promise;
-        currentPdfDoc = pdfDocument;
-        totalPages = pdfDocument.numPages;
+    // Clear Reader: reset PDF and canvas
+    clearPdfBtn.addEventListener('click', () => {
+        pdfDoc = null;
+        totalPages = 0;
         currentPageNum = 1;
-        await renderPage(currentPageNum);
-        updatePageControls();
-        // metadata
-        const metadata = await pdfDocument.getMetadata().catch(()=>({}));
-        const info = metadata.info;
-        pdfMetaSpan.innerHTML = `📑 ${filenameHint} | Pages: ${totalPages} | ${info?.Title ? `Title: ${info.Title}` : ''}`;
-      } catch (err) {
-        console.error(err);
-        detectionStatusDiv.innerHTML = "❌ Error reading PDF (corrupted or unsupported).";
-        pdfMetaSpan.innerHTML = "Failed to parse PDF";
-      }
-    }
+        canvas.style.display = 'none';
+        if(noPdfMsgDiv) noPdfMsgDiv.style.display = 'block';
+        pageInfoSpan.innerText = `Page 0 / 0`;
+        fileNameSpan.innerText = "";
+        currentPdfFile = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        statusMsgDiv.innerText = "🧹 Reader cleared. Upload or select from gallery.";
+    });
 
-    async function renderPage(pageNumber) {
-      if (!currentPdfDoc) return;
-      try {
-        const page = await currentPdfDoc.getPage(pageNumber);
-        const viewport = page.getViewport({ scale: 1.5 }); // scale for readability on mobile/desktop
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const renderContext = {
-          canvasContext: ctx,
-          viewport: viewport,
-        };
-        await page.render(renderContext).promise;
-      } catch (e) {
-        console.warn("render error", e);
-      }
-    }
+    // Zoom handlers
+    zoomInBtn.addEventListener('click', () => {
+        if (!pdfDoc) { statusMsgDiv.innerText = "Load PDF first"; return; }
+        currentZoom = Math.min(3.0, currentZoom + 0.15);
+        updateZoomUI();
+        renderPage();
+    });
+    zoomOutBtn.addEventListener('click', () => {
+        if (!pdfDoc) { statusMsgDiv.innerText = "Load PDF first"; return; }
+        currentZoom = Math.max(0.5, currentZoom - 0.15);
+        updateZoomUI();
+        renderPage();
+    });
+    resetZoomBtn.addEventListener('click', () => {
+        if (!pdfDoc) return;
+        currentZoom = 1.0;
+        updateZoomUI();
+        renderPage();
+    });
 
-    function updatePageControls() {
-      if (totalPages > 0) {
-        pageNumSpan.innerText = `Page: ${currentPageNum} / ${totalPages}`;
-      } else {
-        pageNumSpan.innerText = `Page: 0 / 0`;
-      }
-      prevBtn.disabled = (currentPageNum <= 1);
-      nextBtn.disabled = (currentPageNum >= totalPages);
-    }
-
-    function nextPage() {
-      if (currentPdfDoc && currentPageNum < totalPages) {
-        currentPageNum++;
-        renderPage(currentPageNum);
-        updatePageControls();
-      }
-    }
-    function prevPage() {
-      if (currentPdfDoc && currentPageNum > 1) {
-        currentPageNum--;
-        renderPage(currentPageNum);
-        updatePageControls();
-      }
-    }
-
-    // Save current loaded PDF to gallery (from memory)
-    async function saveCurrentToGallery() {
-      if (!currentPdfData) {
-        alert("No PDF loaded. Please upload or select a PDF from gallery first.");
-        return;
-      }
-      try {
-        const sizeBytes = currentPdfData.byteLength;
-        const baseName = currentFileName || "document.pdf";
-        let finalName = baseName;
-        if (!finalName.toLowerCase().endsWith('.pdf')) finalName += ".pdf";
-        await savePdfToGallery(currentPdfData, finalName, sizeBytes);
-        alert(`✅ PDF "${finalName}" saved to gallery!`);
-        renderGallery();
-      } catch (err) {
-        alert("Failed to save to gallery: " + err);
-      }
-    }
-
-    // Detect PDF info: re-analyze current loaded PDF and show extra detection
-    function detectPDFExtraInfo() {
-      if (!currentPdfData) {
-        detectionStatusDiv.innerHTML = "⚠️ No PDF loaded. Upload a file to detect.";
-        return;
-      }
-      const bytes = currentPdfData.byteLength;
-      const headerCheck = new Uint8Array(currentPdfData.slice(0,5));
-      const isPdf = headerCheck[0] === 0x25 && headerCheck[1] === 0x50 && headerCheck[2] === 0x44 && headerCheck[3] === 0x46;
-      if (isPdf) {
-        detectionStatusDiv.innerHTML = `🔎 PDF VALID | size: ${(bytes/1024).toFixed(2)} KB | version signature: %PDF | pages: ${totalPages || 'loading...'}`;
-        if (currentPdfDoc) {
-          pdfMetaSpan.innerHTML += ` | ✅ valid PDF document`;
+    // Page navigation
+    prevBtn.addEventListener('click', () => {
+        if (pdfDoc && currentPageNum > 1) {
+            currentPageNum--;
+            renderPage();
+        } else if (pdfDoc) {
+            statusMsgDiv.innerText = "Already at first page";
         }
-      } else {
-        detectionStatusDiv.innerHTML = `❌ NOT a valid PDF (magic bytes missing)`;
-      }
+    });
+    nextBtn.addEventListener('click', () => {
+        if (pdfDoc && currentPageNum < totalPages) {
+            currentPageNum++;
+            renderPage();
+        } else if (pdfDoc) {
+            statusMsgDiv.innerText = "Last page reached";
+        }
+    });
+
+    // Helper to add auto when upload done (on file select we already call addPdfToGallery)
+    // Also touch-friendly: if the canvas wrapper has natural scroll, we allow zoom + scroll.
+    // For better mobile experience we also reset canvasWrapper scroll to top on page change
+    function resetScrollOnPageChange() {
+        if(canvasWrapper) canvasWrapper.scrollTop = 0;
     }
-
-    // handle file upload
-    async function handleFileUpload(file) {
-      if (!file || file.type !== "application/pdf") {
-        detectionStatusDiv.innerHTML = "❌ Please select a valid PDF file.";
-        return;
-      }
-      currentFileName = file.name;
-      const arrayBuffer = await file.arrayBuffer();
-      await loadPdfFromArrayBuffer(arrayBuffer, currentFileName);
-    }
-
-    // drag & drop support
-    const readerZone = document.querySelector('.upload-zone');
-    readerZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      readerZone.style.background = "#ffefcf";
-    });
-    readerZone.addEventListener('dragleave', () => {
-      readerZone.style.background = "#fff6e8";
-    });
-    readerZone.addEventListener('drop', async (e) => {
-      e.preventDefault();
-      readerZone.style.background = "#fff6e8";
-      const files = e.dataTransfer.files;
-      if (files.length && files[0].type === "application/pdf") {
-        await handleFileUpload(files[0]);
-      } else {
-        detectionStatusDiv.innerHTML = "Drop a valid PDF file only.";
-      }
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length) handleFileUpload(e.target.files[0]);
-    });
-
-    // Event listeners
-    prevBtn.addEventListener('click', prevPage);
-    nextBtn.addEventListener('click', nextPage);
-    saveCurrentBtn.addEventListener('click', saveCurrentToGallery);
-    detectInfoBtn.addEventListener('click', detectPDFExtraInfo);
+    // extend renderPage to reset scroll optionally
+    const originalRender = renderPage;
+    window.renderPage = async function() {
+        await originalRender();
+        if(canvasWrapper) canvasWrapper.scrollLeft = 0;
+        if(canvasWrapper) canvasWrapper.scrollTop = 0;
+    };
+    renderPage = window.renderPage;
     
-    async function handleClearAll() {
-      if (confirm("⚠️ Clear entire gallery? All saved PDFs will be lost.")) {
-        await clearAllGallery();
-        renderGallery();
-      }
-    }
-    clearAllBtn.addEventListener('click', handleClearAll);
-    clearAllBottom.addEventListener('click', handleClearAll);
-    refreshGalleryBtn.addEventListener('click', () => renderGallery());
-
-    // initial render gallery from indexedDB
-    openDB().then(() => {
-      renderGallery();
-    }).catch(e => console.warn("IndexedDB not supported? fallback", e));
-
-    // set pdf.js worker (for CDN)
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    // default show empty canvas placeholder
-    ctx.fillStyle = "#f0ebe0";
-    ctx.fillRect(0,0,300,200);
-    ctx.fillStyle = "#7c6e5e";
-    ctx.font = "14px sans-serif";
-    ctx.fillText("PDF preview will appear here", 40, 100);
+    // Override renderPage binding
+    renderPage = renderPage.bind(this);
+    // fix reference
+    const superRender = renderPage;
+    renderPage = async function() {
+        await superRender();
+        if(canvasWrapper) canvasWrapper.scrollLeft = 0;
+    };
     
-    function escapeHtml(str) { 
-      if(!str) return '';
-      return str.replace(/[&<>]/g, function(m) {
-        if(m === '&') return '&amp;';
-        if(m === '<') return '&lt;';
-        if(m === '>') return '&gt;';
-        return m;
-      });
+    // rewire
+    window.renderPage = renderPage;
+    
+    // patch again to ensure consistency
+    const boundRender = renderPage;
+    // final assignment
+    window.renderPage = boundRender;
+    
+    // just to avoid errors, rebind
+    const origFunc = renderPage;
+    renderPage = async function() { await origFunc(); if(canvasWrapper) canvasWrapper.scrollTop = 0; canvasWrapper.scrollLeft = 0; };
+    
+    // one-time set
+    if(typeof window !== 'undefined') {
+        window.renderPage = renderPage;
     }
-  })();
+    
+    // Mobile gesture: Since canvas-wrapper overflow:auto, user can pinch-zoom native? We rely on zoom buttons + scroll
+    // Provide better message:
+    statusMsgDiv.innerText = "✨ Ready! Upload PDF or tap Detect Gallery ✨";
+    
+    // add fallback for initial gallery persistence using localStorage?
+    // we can optionally save gallery to localStorage for persistence
+    function saveGalleryToLocal() {
+        if(pdfGallery.length) {
+            const toStore = pdfGallery.map(({id, name, data}) => ({id, name, data}));
+            localStorage.setItem('pdf_gallery_mobile', JSON.stringify(toStore));
+        }
+    }
+    function loadGalleryFromLocal() {
+        const stored = localStorage.getItem('pdf_gallery_mobile');
+        if(stored) {
+            try {
+                const arr = JSON.parse(stored);
+                if(Array.isArray(arr) && arr.length) {
+                    pdfGallery = arr.map((item, idx) => ({ ...item, id: idx }));
+                    galleryIdCounter = pdfGallery.length;
+                    renderGalleryList();
+                    statusMsgDiv.innerText = "📀 Restored gallery from previous session.";
+                }
+            } catch(e) {}
+        }
+    }
+    // whenever gallery changes, save
+    const origRenderGallery = renderGalleryList;
+    renderGalleryList = function() {
+        origRenderGallery();
+        if(pdfGallery.length) saveGalleryToLocal();
+        else if(pdfGallery.length === 0) localStorage.removeItem('pdf_gallery_mobile');
+    };
+    renderGalleryList();
+    loadGalleryFromLocal();
+    
+    // final re-assign to keep method binding correct
+    window.renderGalleryList = renderGalleryList;
+    
+    // small fix for page navigation scroll
+    const originalPageRender = renderPage;
+    renderPage = async function() {
+        await originalPageRender();
+        if(canvasWrapper) { canvasWrapper.scrollTop = 0; canvasWrapper.scrollLeft = 0; }
+    };
+    window.renderPage = renderPage;
 </script>
 </body>
 </html>
