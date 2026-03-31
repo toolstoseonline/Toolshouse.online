@@ -1,216 +1,743 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Free Photo Retouch Online – Enhance Portrait Photos – Tools House Online</title>
-<meta name="description" content="Retouch photos online free. Enhance skin & remove blemishes instantly. No signup needed. Fast, natural results on mobile & desktop now.">
-<link rel="canonical" href="https://www.toolshouse.online/Photo Retouch.html">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Free Photo Retouch Online – Enhance Portrait Photos – Tools House Online">
-<meta property="og:description" content="Retouch portrait photos online for free. Enhance skin, remove blemishes and improve photo quality instantly. No signup needed.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.toolshouse.online/Photo Retouch.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Photo Retouch Online – Enhance Portrait Photos – Tools House Online">
-<meta name="twitter:description" content="Retouch portrait photos online for free. Enhance skin, remove blemishes and improve photo quality instantly. No signup needed.">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>PixelGlow - Photo Retouch Studio | Mobile Friendly</title>
+    <!-- Font Awesome 6 Free -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- html2canvas for export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
 
+        body {
+            background: linear-gradient(145deg, #0b1219 0%, #0a0f17 100%);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px 12px 32px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
+        /* main app card */
+        .retouch-app {
+            max-width: 580px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(22, 28, 38, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 44px;
+            padding: 20px 16px 24px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,215,150,0.25);
+        }
 
+        h1 {
+            font-size: 1.7rem;
+            margin: 0 0 4px;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FDE68A, #FFB347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        h1 i {
+            background: none;
+            color: #fbbf24;
+        }
+        .sub {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.7rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,200,100,0.3);
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 5px;
+        }
 
+        /* canvas area with preview */
+        .canvas-stage {
+            background: #1e1f2c;
+            border-radius: 32px;
+            padding: 12px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,240,0.15), 0 12px 24px rgba(0,0,0,0.3);
+        }
+        .image-container {
+            position: relative;
+            width: 100%;
+            background: #0f111a;
+            border-radius: 28px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 340px;
+            aspect-ratio: 1 / 1;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+        }
+        #mainCanvas {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .placeholder-text {
+            color: #6b7280;
+            text-align: center;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
 
-<style>
-body{
-    margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#d7e9ff,#f3e5d0);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
+        /* toolbar: main actions */
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .tool-btn {
+            background: #2d3748dd;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 60px;
+            color: #f3f4f6;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .tool-btn:active {
+            transform: scale(0.96);
+        }
+        .btn-primary {
+            background: #e67e22;
+            color: white;
+            box-shadow: 0 4px 12px #e67e2240;
+        }
+        .btn-secondary {
+            background: #3b4b5e;
+        }
+        .file-label {
+            background: #2c5a6e;
+        }
 
-.container{
-    width:95%;
-    max-width:1000px;
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.15);
-}
-
-h1{
-    text-align:center;
-    margin-bottom:5px;
-}
-
-p{
-    text-align:center;
-    color:#555;
-    margin-bottom:20px;
-}
-
-.upload-area{
-    text-align:center;
-    margin-bottom:20px;
-}
-
-input[type="file"]{
-    padding:10px;
-}
-
-.canvas-container{
-    display:flex;
-    justify-content:center;
-    margin-bottom:20px;
-}
-
-canvas{
-    max-width:100%;
-    border-radius:10px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-
-.controls{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-    margin-bottom:20px;
-}
-
-.control-box{
-    display:flex;
-    flex-direction:column;
-}
-
-.control-box label{
-    font-size:14px;
-    margin-bottom:5px;
-}
-
-input[type="range"]{
-    width:100%;
-}
-
-button{
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-    transition:0.3s;
-}
-
-.apply-btn{
-    background:#4da6ff;
-    color:white;
-}
-
-.apply-btn:hover{
-    background:#3399ff;
-}
-
-.download-btn{
-    background:#c49b66;
-    color:white;
-    margin-top:10px;
-}
-
-.download-btn:hover{
-    background:#b88a4f;
-}
-
-@media(max-width:768px){
-    .controls{
-        grid-template-columns:1fr;
-    }
-}
-</style>
+        /* sliders and retouch panel */
+        .retouch-panel {
+            background: #1e293bc9;
+            backdrop-filter: blur(16px);
+            border-radius: 40px;
+            padding: 16px 14px;
+            margin-top: 12px;
+            border: 1px solid rgba(255,200,100,0.3);
+        }
+        .control-group {
+            margin-bottom: 18px;
+        }
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            color: #ffdeae;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 5px;
+            -webkit-appearance: none;
+            background: #4b5563;
+            border-radius: 10px;
+            outline: none;
+        }
+        input[type="range"]:focus {
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #f59e0b;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px black;
+            border: none;
+        }
+        .filter-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0 8px;
+        }
+        .filter-chip {
+            background: #2d3748;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 1px solid transparent;
+        }
+        .filter-chip.active {
+            background: #f59e0b;
+            color: #0f172a;
+            border-color: #ffdd99;
+            box-shadow: 0 2px 10px #f59e0b60;
+        }
+        .filter-chip:active {
+            transform: scale(0.94);
+        }
+        .reset-btn {
+            background: #4a2e2b;
+            width: 100%;
+            margin-top: 8px;
+            justify-content: center;
+        }
+        .value-badge {
+            background: #00000066;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 0.7rem;
+            font-family: monospace;
+        }
+        .info-tip {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #b9c7d9;
+            margin-top: 14px;
+        }
+        @media (max-width: 500px) {
+            .tool-btn {
+                padding: 8px 14px;
+                font-size: 0.7rem;
+            }
+            .filter-chip {
+                padding: 4px 12px;
+            }
+            .retouch-app {
+                padding: 14px 12px;
+            }
+        }
+        footer {
+            text-align: center;
+            font-size: 0.65rem;
+            margin-top: 20px;
+            color: #6f7c91;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>✨ Photo Retouch</h1>
-    <p>Retouch Portraits Like a Pro – Simple, Fast & Professional</p>
+<div class="retouch-app">
+    <h1>
+        <i class="fas fa-magic"></i> PixelGlow 
+        <i class="fas fa-sliders-h"></i>
+    </h1>
+    <div style="text-align: center;"><span class="sub">✨ AI-powered retouch • filters • adjustments ✨</span></div>
 
-    <div class="upload-area">
-        <input type="file" id="upload" accept="image/*">
-    </div>
-
-    <div class="canvas-container">
-        <canvas id="canvas"></canvas>
-    </div>
-
-    <div class="controls">
-        <div class="control-box">
-            <label>Skin Smoothening</label>
-            <input type="range" id="blur" min="0" max="5" step="0.1" value="0">
-        </div>
-
-        <div class="control-box">
-            <label>Brightness</label>
-            <input type="range" id="brightness" min="50" max="150" value="100">
-        </div>
-
-        <div class="control-box">
-            <label>Contrast</label>
-            <input type="range" id="contrast" min="50" max="150" value="100">
-        </div>
-
-        <div class="control-box">
-            <label>Eye Enhancement</label>
-            <input type="range" id="saturate" min="100" max="200" value="100">
+    <!-- Canvas Preview -->
+    <div class="canvas-stage">
+        <div class="image-container" id="imageContainer">
+            <canvas id="mainCanvas" width="500" height="500" style="width:100%; height:auto; max-width:500px; aspect-ratio:1/1;"></canvas>
         </div>
     </div>
 
-    <button class="apply-btn" onclick="applyEffects()">Apply Effects</button>
-    <button class="download-btn" onclick="downloadImage()">Download Edited Photo</button>
+    <!-- Top action bar -->
+    <div class="action-bar">
+        <label class="tool-btn file-label" for="uploadPhoto">
+            <i class="fas fa-upload"></i> Open Image
+        </label>
+        <input type="file" id="uploadPhoto" accept="image/jpeg,image/png,image/webp" style="display:none">
+        <button id="exportImageBtn" class="tool-btn btn-primary"><i class="fas fa-download"></i> Save</button>
+        <button id="resetAllBtn" class="tool-btn btn-secondary"><i class="fas fa-undo-alt"></i> Reset</button>
+    </div>
 
+    <!-- Retouch sliders panel -->
+    <div class="retouch-panel">
+        <div class="control-group">
+            <div class="control-header">
+                <span><i class="fas fa-sun"></i> Brightness</span>
+                <span id="brightnessVal" class="value-badge">0%</span>
+            </div>
+            <input type="range" id="brightnessSlider" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="control-group">
+            <div class="control-header">
+                <span><i class="fas fa-adjust"></i> Contrast</span>
+                <span id="contrastVal" class="value-badge">0%</span>
+            </div>
+            <input type="range" id="contrastSlider" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="control-group">
+            <div class="control-header">
+                <span><i class="fas fa-droplet"></i> Saturation</span>
+                <span id="saturationVal" class="value-badge">0%</span>
+            </div>
+            <input type="range" id="saturationSlider" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="control-group">
+            <div class="control-header">
+                <span><i class="fas fa-blur"></i> Blur (smooth skin)</span>
+                <span id="blurVal" class="value-badge">0px</span>
+            </div>
+            <input type="range" id="blurSlider" min="0" max="8" value="0" step="0.5">
+        </div>
+        <div class="control-group">
+            <div class="control-header">
+                <span><i class="fas fa-sharpness"></i> Sharpness</span>
+                <span id="sharpnessVal" class="value-badge">0%</span>
+            </div>
+            <input type="range" id="sharpnessSlider" min="0" max="100" value="0" step="1">
+        </div>
+
+        <!-- Filter presets (creative retouch) -->
+        <div class="control-header" style="margin-top: 6px;">
+            <span><i class="fas fa-filters"></i> Creative Filters</span>
+            <span style="font-size:0.65rem;">tap to apply</span>
+        </div>
+        <div class="filter-grid" id="filterGrid">
+            <div class="filter-chip" data-filter="none">✨ Normal</div>
+            <div class="filter-chip" data-filter="vintage">📷 Vintage</div>
+            <div class="filter-chip" data-filter="warm">🔥 Warm Glow</div>
+            <div class="filter-chip" data-filter="cool">❄️ Cool Breeze</div>
+            <div class="filter-chip" data-filter="dramatic">🎭 Dramatic</div>
+            <div class="filter-chip" data-filter="softglow">🌸 Soft Retouch</div>
+        </div>
+        
+        <button id="smartRetouchBtn" class="tool-btn reset-btn" style="background:#5a3e2b; margin-top:12px;"><i class="fas fa-wand-magic"></i> ✨ Smart Enhance (auto tone)</button>
+    </div>
+    <div class="info-tip">
+        <i class="fas fa-fingerprint"></i> Adjust sliders for pro retouch | Filters + sharpness for skin smoothing
+    </div>
+    <footer>Mobile friendly • Real-time preview • High-quality export</footer>
 </div>
 
 <script>
-const upload = document.getElementById("upload");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-let img = new Image();
+    // ---------- DOM Elements ----------
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    const uploadInput = document.getElementById('uploadPhoto');
+    const exportBtn = document.getElementById('exportImageBtn');
+    const resetAllBtn = document.getElementById('resetAllBtn');
+    const smartRetouch = document.getElementById('smartRetouchBtn');
 
-upload.addEventListener("change", function(e){
-    const reader = new FileReader();
-    reader.onload = function(event){
-        img.onload = function(){
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img,0,0);
-        }
-        img.src = event.target.result;
+    // sliders
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const contrastSlider = document.getElementById('contrastSlider');
+    const saturationSlider = document.getElementById('saturationSlider');
+    const blurSlider = document.getElementById('blurSlider');
+    const sharpnessSlider = document.getElementById('sharpnessSlider');
+    
+    // value spans
+    const brightnessVal = document.getElementById('brightnessVal');
+    const contrastVal = document.getElementById('contrastVal');
+    const saturationVal = document.getElementById('saturationVal');
+    const blurVal = document.getElementById('blurVal');
+    const sharpnessVal = document.getElementById('sharpnessVal');
+    
+    // state
+    let originalImageData = null;       // stores original ImageBitmap or Image element
+    let currentFilter = 'none';
+    let adjustments = {
+        brightness: 0,
+        contrast: 0,
+        saturation: 0,
+        blur: 0,
+        sharpness: 0
+    };
+    let currentImgBitmap = null;        // keep original image bitmap for re-processing
+    
+    // default demo image (solid placeholder with gradient but we will load a nice unsplash default)
+    function loadDefaultDemoImage() {
+        const demoUrl = "https://picsum.photos/id/104/600/600";  // peaceful landscape with dog
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => {
+            setImageFromElement(img);
+        };
+        img.onerror = () => {
+            // fallback: create canvas gradient
+            const fallbackCanvas = document.createElement('canvas');
+            fallbackCanvas.width = 600;
+            fallbackCanvas.height = 600;
+            const fctx = fallbackCanvas.getContext('2d');
+            const grad = fctx.createLinearGradient(0,0,600,600);
+            grad.addColorStop(0, '#ffb347');
+            grad.addColorStop(1, '#ff6b6b');
+            fctx.fillStyle = grad;
+            fctx.fillRect(0,0,600,600);
+            fctx.fillStyle = "white";
+            fctx.font = "bold 26px system-ui";
+            fctx.shadowBlur = 0;
+            fctx.fillText("📸 Demo", 220, 300);
+            const imgDataUrl = fallbackCanvas.toDataURL();
+            const fallbackImg = new Image();
+            fallbackImg.onload = () => setImageFromElement(fallbackImg);
+            fallbackImg.src = imgDataUrl;
+        };
+        img.src = demoUrl;
     }
-    reader.readAsDataURL(e.target.files[0]);
-});
-
-function applyEffects(){
-    const blur = document.getElementById("blur").value;
-    const brightness = document.getElementById("brightness").value;
-    const contrast = document.getElementById("contrast").value;
-    const saturate = document.getElementById("saturate").value;
-
-    ctx.filter = `
-        blur(${blur}px)
-        brightness(${brightness}%)
-        contrast(${contrast}%)
-        saturate(${saturate}%)
-    `;
-    ctx.drawImage(img,0,0);
-}
-
-function downloadImage(){
-    const link = document.createElement("a");
-    link.download = "retouched-photo.png";
-    link.href = canvas.toDataURL();
-    link.click();
-}
+    
+    // main function: take image element and store original, then render
+    function setImageFromElement(imgElement) {
+        // set canvas size to match image (maintain ratio but fit inside container)
+        const maxSize = 500;
+        let width = imgElement.width;
+        let height = imgElement.height;
+        let targetWidth, targetHeight;
+        if (width > height) {
+            targetWidth = Math.min(maxSize, width);
+            targetHeight = (height * targetWidth) / width;
+        } else {
+            targetHeight = Math.min(maxSize, height);
+            targetWidth = (width * targetHeight) / height;
+        }
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        // draw original image onto canvas temporarily to extract bitmap
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+        // store original pixel data snapshot (original bitmap)
+        const originalCanvas = document.createElement('canvas');
+        originalCanvas.width = canvas.width;
+        originalCanvas.height = canvas.height;
+        const origCtx = originalCanvas.getContext('2d');
+        origCtx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+        originalImageData = originalCanvas; // store as canvas reference
+        
+        // create ImageBitmap for later processing? we will re-apply adjustments using the original image data each time
+        // For performance, we keep the original image element and re-render with filters.
+        // store as imageBitmap
+        const offscreen = new Image();
+        offscreen.src = originalCanvas.toDataURL();
+        offscreen.onload = () => {
+            // ready to apply full adjustments
+            applyAllAdjustmentsAndFilters();
+        };
+    }
+    
+    // Apply all adjustments + filters + blur + sharpness (full retouch pipeline)
+    function applyAllAdjustmentsAndFilters() {
+        if (!originalImageData) return;
+        // Create temporary canvas from original untouched image
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(originalImageData, 0, 0, canvas.width, canvas.height);
+        let imageData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // 1. Apply brightness, contrast, saturation (pixel manipulation)
+        let data = imageData.data;
+        const brightness = adjustments.brightness;
+        const contrast = adjustments.contrast;
+        const saturation = adjustments.saturation;
+        
+        // contrast factor
+        const contrastFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+        for (let i = 0; i < data.length; i += 4) {
+            let r = data[i];
+            let g = data[i+1];
+            let b = data[i+2];
+            
+            // Brightness
+            r = r + brightness * 2.55;
+            g = g + brightness * 2.55;
+            b = b + brightness * 2.55;
+            
+            // Contrast
+            if (contrast !== 0) {
+                r = contrastFactor * (r - 128) + 128;
+                g = contrastFactor * (g - 128) + 128;
+                b = contrastFactor * (b - 128) + 128;
+            }
+            
+            // Saturation (simple method)
+            if (saturation !== 0) {
+                const gray = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+                const satVal = (saturation + 100) / 100;
+                r = gray + (r - gray) * satVal;
+                g = gray + (g - gray) * satVal;
+                b = gray + (b - gray) * satVal;
+            }
+            
+            data[i] = Math.min(255, Math.max(0, r));
+            data[i+1] = Math.min(255, Math.max(0, g));
+            data[i+2] = Math.min(255, Math.max(0, b));
+        }
+        tempCtx.putImageData(imageData, 0, 0);
+        
+        // 2. Apply creative filter (color transform)
+        applyFilterOnContext(tempCtx, currentFilter);
+        
+        // 3. Apply blur (if any)
+        let finalCanvas = tempCanvas;
+        if (adjustments.blur > 0) {
+            const blurCanvas = document.createElement('canvas');
+            blurCanvas.width = canvas.width;
+            blurCanvas.height = canvas.height;
+            const blurCtx = blurCanvas.getContext('2d');
+            blurCtx.filter = `blur(${adjustments.blur}px)`;
+            blurCtx.drawImage(tempCanvas, 0, 0);
+            finalCanvas = blurCanvas;
+        }
+        
+        // 4. Apply sharpness (custom convolution or simple unsharp mask via filter)
+        let sharpenedCanvas = finalCanvas;
+        if (adjustments.sharpness > 0 && adjustments.sharpness > 2) {
+            sharpenedCanvas = applySharpness(finalCanvas, adjustments.sharpness);
+        } else if (adjustments.sharpness > 0) {
+            // mild sharpness via canvas filter
+            const sharpCanvas = document.createElement('canvas');
+            sharpCanvas.width = canvas.width;
+            sharpCanvas.height = canvas.height;
+            const sharpCtx = sharpCanvas.getContext('2d');
+            sharpCtx.filter = `contrast(1.02) brightness(1.01)`; // subtle
+            sharpCtx.drawImage(finalCanvas, 0, 0);
+            sharpenedCanvas = sharpCanvas;
+        }
+        
+        // final draw to main canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(sharpenedCanvas, 0, 0);
+    }
+    
+    // apply creative color filter
+    function applyFilterOnContext(ctx, filterName) {
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imgData.data;
+        for (let i = 0; i < data.length; i += 4) {
+            let r = data[i];
+            let g = data[i+1];
+            let b = data[i+2];
+            
+            switch(filterName) {
+                case 'vintage':
+                    r = r * 0.9 + 50;
+                    g = g * 0.85 + 20;
+                    b = b * 0.75;
+                    break;
+                case 'warm':
+                    r = r * 1.12;
+                    g = g * 1.02;
+                    b = b * 0.88;
+                    break;
+                case 'cool':
+                    r = r * 0.85;
+                    g = g * 0.98;
+                    b = b * 1.18;
+                    break;
+                case 'dramatic':
+                    r = Math.min(255, r * 1.25);
+                    g = Math.min(255, g * 1.1);
+                    b = Math.min(255, b * 0.9);
+                    break;
+                case 'softglow':
+                    r = Math.min(255, r * 1.05 + 12);
+                    g = Math.min(255, g * 1.05 + 8);
+                    b = Math.min(255, b * 1.03 + 5);
+                    break;
+                default: break;
+            }
+            data[i] = Math.min(255, Math.max(0, r));
+            data[i+1] = Math.min(255, Math.max(0, g));
+            data[i+2] = Math.min(255, Math.max(0, b));
+        }
+        ctx.putImageData(imgData, 0, 0);
+    }
+    
+    // sharpness convolution (unsharp mask)
+    function applySharpness(sourceCanvas, amount) {
+        const w = sourceCanvas.width, h = sourceCanvas.height;
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = w; offCanvas.height = h;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.drawImage(sourceCanvas, 0, 0);
+        const srcData = offCtx.getImageData(0, 0, w, h);
+        const dstCanvas = document.createElement('canvas');
+        dstCanvas.width = w; dstCanvas.height = h;
+        const dstCtx = dstCanvas.getContext('2d');
+        const dstData = dstCtx.getImageData(0, 0, w, h);
+        const strength = amount / 50; // 0-2 range
+        const kernel = [0, -1, 0, -1, 4 + strength, -1, 0, -1, 0];
+        const side = 3;
+        const half = 1;
+        for (let y = half; y < h - half; y++) {
+            for (let x = half; x < w - half; x++) {
+                let r = 0, g = 0, b = 0;
+                for (let ky = -half; ky <= half; ky++) {
+                    for (let kx = -half; kx <= half; kx++) {
+                        const pixel = (y + ky) * w + (x + kx);
+                        const weight = kernel[(ky+1)*3 + (kx+1)];
+                        r += srcData.data[pixel*4] * weight;
+                        g += srcData.data[pixel*4+1] * weight;
+                        b += srcData.data[pixel*4+2] * weight;
+                    }
+                }
+                const idx = (y * w + x) * 4;
+                dstData.data[idx] = Math.min(255, Math.max(0, r));
+                dstData.data[idx+1] = Math.min(255, Math.max(0, g));
+                dstData.data[idx+2] = Math.min(255, Math.max(0, b));
+                dstData.data[idx+3] = srcData.data[idx+3];
+            }
+        }
+        dstCtx.putImageData(dstData, 0, 0);
+        return dstCanvas;
+    }
+    
+    // update all UI sliders + values and trigger full render
+    function updateFromSliders() {
+        adjustments.brightness = parseInt(brightnessSlider.value);
+        adjustments.contrast = parseInt(contrastSlider.value);
+        adjustments.saturation = parseInt(saturationSlider.value);
+        adjustments.blur = parseFloat(blurSlider.value);
+        adjustments.sharpness = parseInt(sharpnessSlider.value);
+        
+        brightnessVal.innerText = (adjustments.brightness > 0 ? '+' : '') + adjustments.brightness + '%';
+        contrastVal.innerText = (adjustments.contrast > 0 ? '+' : '') + adjustments.contrast + '%';
+        saturationVal.innerText = (adjustments.saturation > 0 ? '+' : '') + adjustments.saturation + '%';
+        blurVal.innerText = adjustments.blur + 'px';
+        sharpnessVal.innerText = adjustments.sharpness + '%';
+        
+        if (originalImageData) {
+            applyAllAdjustmentsAndFilters();
+        }
+    }
+    
+    // reset all sliders + filter to default
+    function resetAllSettings() {
+        brightnessSlider.value = 0;
+        contrastSlider.value = 0;
+        saturationSlider.value = 0;
+        blurSlider.value = 0;
+        sharpnessSlider.value = 0;
+        currentFilter = 'none';
+        highlightActiveFilter('none');
+        updateFromSliders();
+    }
+    
+    // highlight filter chip
+    function highlightActiveFilter(filterId) {
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            if (chip.getAttribute('data-filter') === filterId) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+    }
+    
+    // handle filter selection
+    function setFilter(filterName) {
+        currentFilter = filterName;
+        highlightActiveFilter(filterName);
+        if (originalImageData) applyAllAdjustmentsAndFilters();
+    }
+    
+    // smart enhance: auto adjust brightness/contrast/saturation based on histogram (simulate)
+    function smartEnhance() {
+        if (!originalImageData) return;
+        // smart preset: increase contrast +12, brightness +8, saturation +10, mild sharpness
+        brightnessSlider.value = 12;
+        contrastSlider.value = 15;
+        saturationSlider.value = 12;
+        blurSlider.value = 0;
+        sharpnessSlider.value = 28;
+        updateFromSliders();
+        setFilter('none');
+    }
+    
+    // export final image
+    function exportImage() {
+        if (!originalImageData) {
+            alert("Load an image first");
+            return;
+        }
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = canvas.width;
+        exportCanvas.height = canvas.height;
+        const expCtx = exportCanvas.getContext('2d');
+        expCtx.drawImage(canvas, 0, 0);
+        const link = document.createElement('a');
+        link.download = 'retouched_photo.png';
+        link.href = exportCanvas.toDataURL('image/png');
+        link.click();
+    }
+    
+    // file upload handler
+    uploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    setImageFromElement(img);
+                    // reset adjustments after new image load
+                    resetAllSettings();
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        uploadInput.value = '';
+    });
+    
+    // attach events
+    brightnessSlider.addEventListener('input', updateFromSliders);
+    contrastSlider.addEventListener('input', updateFromSliders);
+    saturationSlider.addEventListener('input', updateFromSliders);
+    blurSlider.addEventListener('input', updateFromSliders);
+    sharpnessSlider.addEventListener('input', updateFromSliders);
+    resetAllBtn.addEventListener('click', resetAllSettings);
+    exportBtn.addEventListener('click', exportImage);
+    smartRetouch.addEventListener('click', smartEnhance);
+    
+    // filter chips
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const filterVal = chip.getAttribute('data-filter');
+            setFilter(filterVal);
+        });
+    });
+    
+    // load default demo image on start
+    loadDefaultDemoImage();
 </script>
-     <script>(function(s){s.dataset.zone='10673896',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))) </script>
-
 </body>
 </html>
