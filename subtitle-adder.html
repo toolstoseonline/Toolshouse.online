@@ -1,693 +1,589 @@
-<!doctype html>
-<html lang="en" class="h-full">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subtitles to Video</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Subtitle Studio — Add & Style Captions to Video</title>
+  <!-- Tailwind + Fonts -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'DM Sans', sans-serif; }
-    html, body { height: 100%; margin: 0; }
-    .app-wrapper { height: 100%; width: 100%; overflow: auto; }
-
-    .subtitle-overlay {
-      position: absolute;
-      bottom: 12%;
-      left: 50%;
-      transform: translateX(-50%);
-      pointer-events: none;
-      text-align: center;
-      max-width: 90%;
-      transition: all 0.2s ease;
-    }
-
-    .timeline-track {
-      position: relative;
-      height: 50px;
-      border-radius: 8px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      cursor: pointer;
-    }
-
+    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    body { background: #0b0b10; margin: 0; }
+    /* custom smooth scroll & drag */
     .subtitle-block {
-      position: absolute;
-      height: 36px;
-      top: 7px;
-      border-radius: 6px;
+      transition: transform 0.05s linear, background 0.1s;
       cursor: grab;
-      display: flex;
-      align-items: center;
-      padding: 0 8px;
-      font-size: 11px;
-      font-weight: 600;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      transition: all 0.15s;
       user-select: none;
       touch-action: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .subtitle-block:hover { opacity: 0.9; transform: scaleY(1.1); }
-    .subtitle-block.dragging { opacity: 0.7; }
-
-    .time-input {
-      width: 100%;
-      max-width: 80px;
-      text-align: center;
+    .subtitle-block:active { cursor: grabbing; }
+    .timeline-track {
+      scrollbar-width: thin;
+      scrollbar-color: #6c5ce7 #2d2d3a;
     }
-
-    .toast-msg {
+    .timeline-track::-webkit-scrollbar { height: 6px; }
+    .timeline-track::-webkit-scrollbar-track { background: #1e1e2a; border-radius: 10px; }
+    .timeline-track::-webkit-scrollbar-thumb { background: #6c5ce7; border-radius: 10px; }
+    .video-container {
+      background: #000;
+      border-radius: 20px;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+    }
+    .toast-modern {
       position: fixed;
-      bottom: 24px;
+      bottom: 28px;
       left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      z-index: 999;
-      transition: transform 0.35s ease, opacity 0.35s ease;
+      transform: translateX(-50%) translateY(40px);
+      background: #1f1f2e;
+      backdrop-filter: blur(12px);
+      padding: 10px 24px;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: white;
+      z-index: 2000;
+      transition: transform 0.25s ease, opacity 0.2s;
       opacity: 0;
       pointer-events: none;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.3);
+      border: 1px solid rgba(108,92,231,0.4);
     }
-    .toast-msg.show {
+    .toast-modern.show {
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
-
-    .video-container {
-      position: relative;
-      background: #000;
-      border-radius: 12px;
-      overflow: hidden;
-      aspect-ratio: 16/9;
-      width: 100%;
+    .subtitle-list-scroll {
+      scrollbar-width: thin;
+      max-height: 380px;
     }
-    .video-container video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    .time-input {
+      background: #12121a;
+      border: 1px solid #2c2c38;
+      color: #eef2ff;
+      font-family: monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.3px;
     }
-
-    .no-video-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 12px;
-      cursor: pointer;
+    .drag-overlay-active {
+      background: rgba(108,92,231,0.08);
+      transition: 0.1s;
     }
-
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in { animation: fadeSlideIn 0.5s ease forwards; }
-    .fade-in-d1 { animation-delay: 0.1s; opacity: 0; }
-    .fade-in-d2 { animation-delay: 0.2s; opacity: 0; }
-    .fade-in-d3 { animation-delay: 0.3s; opacity: 0; }
-
-    .btn-primary {
-      transition: all 0.15s ease;
-    }
-    .btn-primary:hover {
-      filter: brightness(1.12);
-      transform: translateY(-1px);
-    }
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    .scrollbar-thin::-webkit-scrollbar { height: 6px; }
-    .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-    
-    @media (max-width: 768px) {
-      .app-wrapper { padding-bottom: 60px; }
+    button:active { transform: scale(0.97); }
+    .subtitle-editor-card {
+      transition: all 0.2s;
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div class="app-wrapper" id="appWrapper" style="background: #0f0f14;">
-   <!-- Header -->
-   <header class="px-4 md:px-6 py-4 md:py-5 flex flex-col md:flex-row items-start md:items-center justify-between border-b gap-3 fade-in" style="border-color: #1e1e2a;">
-    <div class="flex items-center gap-3 w-full md:w-auto">
-     <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #6c5ce7;">
-      <i data-lucide="subtitles" style="width:20px;height:20px;color:#fff;"></i>
-     </div>
-     <div>
-      <h1 id="pageTitle" class="text-lg font-bold" style="color: #f0f0f5;">Subtitles to Video</h1>
-      <p id="tagline" class="text-xs" style="color: #6b6b80;">Add professional subtitles to any video</p>
-     </div>
+</head>
+<body class="antialiased">
+
+<div class="max-w-[1600px] mx-auto px-3 sm:px-5 py-4 sm:py-6">
+  <!-- header with brand + export -->
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m9 8 6 4-6 4Z"/></svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-white">Subtitle<span class="text-indigo-400">Forge</span></h1>
+        <p class="text-xs text-gray-400">Drag, drop, edit & export SRT</p>
+      </div>
     </div>
-    <div class="flex gap-2 w-full md:w-auto">
-     <button onclick="exportSRT()" class="btn-primary flex-1 md:flex-none flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-semibold" style="background:#6c5ce7;color:#fff;"> <i data-lucide="download" style="width:16px;height:16px;"></i> <span class="hidden sm:inline">Export SRT</span> <span class="sm:hidden">Export</span> </button>
-    </div>
-   </header>
-   <main class="p-3 md:p-6 flex flex-col lg:flex-row gap-4 md:gap-5">
-    <!-- Left: Video Preview -->
-    <section class="flex-1 fade-in fade-in-d1 min-w-0">
-     <div class="video-container" id="videoContainer">
-      <div class="no-video-placeholder" id="noVideoPlaceholder" onclick="document.getElementById('videoInput').click()">
-       <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:rgba(108,92,231,0.15);">
-        <i data-lucide="upload" style="width:28px;height:28px;color:#6c5ce7;"></i>
-       </div>
-       <p class="font-semibold text-base" style="color:#f0f0f5;">Drop your video here</p>
-       <p class="text-xs" style="color:#6b6b80;">or click to browse</p><input type="file" accept="video/*" id="videoInput" class="hidden" aria-label="Upload video">
-      </div>
-      <video id="videoPlayer" class="hidden" controls></video>
-      <div class="subtitle-overlay" id="subtitleOverlay"></div>
-     </div><!-- Timeline -->
-     <div class="mt-3 md:mt-4 p-3 rounded-xl fade-in fade-in-d2" style="background:#1a1a24;">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-2">
-       <span class="text-xs font-bold" style="color:#6c5ce7;">⏱ TIMELINE</span> <span class="text-xs mono" style="color:#6b6b80;" id="currentTimeLabel">00:00 / 00:00</span>
-      </div>
-      <div class="timeline-track scrollbar-thin" id="timeline" style="background:#12121a;">
-       <div id="timelinePlayhead" style="position:absolute;top:0;bottom:0;width:2px;background:#6c5ce7;z-index:10;pointer-events:none;left:0;"></div>
-      </div>
-     </div>
-    </section><!-- Right: Subtitle Editor -->
-    <aside class="w-full lg:w-[340px] md:w-[360px] flex flex-col gap-3 md:gap-4 fade-in fade-in-d3">
-     <!-- Add Subtitle -->
-     <div class="p-3 md:p-4 rounded-xl" style="background:#1a1a24;">
-      <div class="flex items-center justify-between mb-3 gap-2">
-       <span class="font-bold text-sm" style="color:#f0f0f5;">📝 Subtitles</span>
-       <div class="flex gap-1">
-        <button onclick="addSubtitle()" class="btn-primary flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold" style="background:#6c5ce7;color:#fff;"> <i data-lucide="plus" style="width:14px;height:14px;"></i> <span class="hidden sm:inline">Add</span> </button> <button onclick="clearAllSubs()" class="btn-primary flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold" style="background:#ff6b6b;color:#fff;" title="Clear all subtitles"> <i data-lucide="trash-2" style="width:14px;height:14px;"></i> </button>
-       </div>
-      </div><!-- Subtitle List -->
-      <div id="subtitleList" class="flex flex-col gap-2 max-h-[400px] md:max-h-[340px] overflow-y-auto pr-1" style="scrollbar-width:thin;">
-       <div class="text-center py-8" style="color:#6b6b80;">
-        <i data-lucide="message-square-plus" style="width:28px;height:28px;margin:0 auto 8px;display:block;color:#333;"></i>
-        <p class="text-xs">No subtitles yet. Click "Add" to start.</p>
-       </div>
-      </div>
-     </div><!-- Style Settings -->
-     <div class="p-3 md:p-4 rounded-xl" style="background:#1a1a24;">
-      <span class="font-bold text-sm block mb-3" style="color:#f0f0f5;">🎨 Style</span>
-      <div class="grid grid-cols-2 gap-2 md:gap-3">
-       <label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">Font Size</span> <select id="subFontSize" onchange="renderPreview()" class="rounded-lg px-2 py-2 text-xs md:text-sm font-medium" style="background:#12121a;color:#f0f0f5;border:1px solid #2a2a3a;"> <option value="16">Small</option> <option value="22" selected>Medium</option> <option value="30">Large</option> <option value="40">X-Large</option> </select> </label> <label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">Text Color</span> <input type="color" id="subColor" value="#ffffff" onchange="renderPreview()" class="w-full h-[36px] rounded-lg cursor-pointer" style="background:#12121a;border:1px solid #2a2a3a;"> </label> <label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">BG Color</span> <input type="color" id="subBgColor" value="#000000" onchange="renderPreview()" class="w-full h-[36px] rounded-lg cursor-pointer" style="background:#12121a;border:1px solid #2a2a3a;"> </label> <label class="flex flex-col gap-1"> <span class="text-xs" style="color:#6b6b80;">BG Opacity</span> <input type="range" id="subBgOpacity" min="0" max="100" value="70" oninput="renderPreview()" class="mt-1"> </label>
-      </div>
-     </div>
-    </aside>
-   </main>
-   <div class="toast-msg" id="toastMsg"></div>
+    <button id="globalExportBtn" class="bg-indigo-600 hover:bg-indigo-500 transition-all px-5 py-2 rounded-xl text-white font-semibold text-sm flex items-center gap-2 shadow-lg shadow-indigo-900/20">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polygon points="7 10 12 15 17 10 12 15 7 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export SRT
+    </button>
   </div>
-  <script>
-    // ============================================
-    // STATE MANAGEMENT
-    // ============================================
-    let subtitles = [];
-    let subIdCounter = 0;
-    let videoDuration = 0;
-    let isDraggingSubtitle = null;
-    let dragStartX = 0;
-    let dragStartTime = 0;
 
-    const defaultConfig = {
-      page_title: 'Subtitles to Video',
-      tagline: 'Add professional subtitles to any video'
-    };
-
-    // ============================================
-    // ELEMENT SDK INITIALIZATION
-    // ============================================
-    window.elementSdk.init({
-      defaultConfig,
-      onConfigChange: async (config) => {
-        const c = (key) => config[key] || defaultConfig[key];
-        const titleEl = document.getElementById('pageTitle');
-        const taglineEl = document.getElementById('tagline');
-        
-        if (titleEl) titleEl.textContent = c('page_title');
-        if (taglineEl) taglineEl.textContent = c('tagline');
-      },
-      mapToCapabilities: (config) => ({
-        recolorables: [],
-        borderables: [],
-        fontEditable: undefined,
-        fontSizeable: undefined
-      }),
-      mapToEditPanelValues: (config) => new Map([
-        ['page_title', config.page_title || defaultConfig.page_title],
-        ['tagline', config.tagline || defaultConfig.tagline]
-      ])
-    });
-
-    // ============================================
-    // VIDEO UPLOAD & PLAYBACK
-    // ============================================
-    const videoInput = document.getElementById('videoInput');
-    const videoPlayer = document.getElementById('videoPlayer');
-    const noVideoPlaceholder = document.getElementById('noVideoPlaceholder');
-    const videoContainer = document.getElementById('videoContainer');
-
-    videoInput.addEventListener('change', handleVideoUpload);
-    
-    videoContainer.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      videoContainer.style.opacity = '0.8';
-    });
-    
-    videoContainer.addEventListener('dragleave', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      videoContainer.style.opacity = '1';
-    });
-    
-    videoContainer.addEventListener('drop', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      videoContainer.style.opacity = '1';
-      const file = e.dataTransfer.files?.[0];
-      if (file && file.type.startsWith('video/')) {
-        handleVideoUploadFile(file);
-      } else {
-        showToast('Please drop a valid video file', 'error');
-      }
-    });
-
-    function handleVideoUpload(e) {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      handleVideoUploadFile(file);
-    }
-
-    function handleVideoUploadFile(file) {
-      if (!file.type.startsWith('video/')) {
-        showToast('Please select a valid video file', 'error');
-        return;
-      }
-
-      try {
-        const url = URL.createObjectURL(file);
-        videoPlayer.src = url;
-        videoPlayer.classList.remove('hidden');
-        noVideoPlaceholder.classList.add('hidden');
-
-        videoPlayer.addEventListener('loadedmetadata', function handleMetadata() {
-          videoDuration = videoPlayer.duration;
-          renderTimeline();
-          updateTimeLabel();
-          showToast('Video loaded successfully!');
-          videoPlayer.removeEventListener('loadedmetadata', handleMetadata);
-        });
-
-        videoPlayer.addEventListener('error', function handleError() {
-          showToast('Error loading video file', 'error');
-          videoPlayer.classList.add('hidden');
-          noVideoPlaceholder.classList.remove('hidden');
-          videoPlayer.removeEventListener('error', handleError);
-        });
-
-        videoPlayer.load();
-      } catch (err) {
-        showToast('Failed to upload video: ' + err.message, 'error');
-      }
-    }
-
-    videoPlayer.addEventListener('timeupdate', () => {
-      renderPreview();
-      updatePlayhead();
-      updateTimeLabel();
-    });
-
-    // ============================================
-    // TIME DISPLAY & TIMELINE
-    // ============================================
-    function updateTimeLabel() {
-      const currentEl = document.getElementById('currentTimeLabel');
-      if (!currentEl) return;
-      
-      const cur = formatTimeDisplay(videoPlayer.currentTime || 0);
-      const dur = formatTimeDisplay(videoDuration || 0);
-      currentEl.textContent = `${cur} / ${dur}`;
-    }
-
-    function updatePlayhead() {
-      if (!videoDuration || videoDuration === 0) return;
-      const pct = (videoPlayer.currentTime / videoDuration) * 100;
-      const playhead = document.getElementById('timelinePlayhead');
-      if (playhead) playhead.style.left = pct + '%';
-    }
-
-    function seekTimeline(e) {
-      if (!videoDuration || videoDuration === 0) return;
-      const timeline = document.getElementById('timeline');
-      const rect = timeline.getBoundingClientRect();
-      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-      videoPlayer.currentTime = pct * videoDuration;
-    }
-
-    // ============================================
-    // SUBTITLE OPERATIONS
-    // ============================================
-    function addSubtitle() {
-      if (videoDuration === 0) {
-        showToast('Please upload a video first', 'info');
-        return;
-      }
-
-      const startTime = videoPlayer.currentTime || 0;
-      const sub = {
-        id: ++subIdCounter,
-        text: 'New subtitle',
-        start: startTime,
-        end: Math.min(startTime + 3, videoDuration)
-      };
-      subtitles.push(sub);
-      subtitles.sort((a, b) => a.start - b.start);
-      
-      renderSubtitleList();
-      renderTimeline();
-      showToast('Subtitle added');
-    }
-
-    function duplicateSub(id) {
-      const original = subtitles.find(s => s.id === id);
-      if (!original) return;
-
-      const dup = {
-        id: ++subIdCounter,
-        text: original.text,
-        start: original.end + 0.1,
-        end: Math.min(original.end + 3.1, videoDuration)
-      };
-      subtitles.push(dup);
-      subtitles.sort((a, b) => a.start - b.start);
-      
-      renderSubtitleList();
-      renderTimeline();
-      showToast('Subtitle duplicated');
-    }
-
-    function updateSub(id, field, value) {
-      const sub = subtitles.find(s => s.id === id);
-      if (!sub) return;
-
-      if (field === 'start' || field === 'end') {
-        const newValue = parseTimeInput(value);
-        if (field === 'start') {
-          sub.start = Math.max(0, Math.min(newValue, sub.end - 0.1));
-        } else {
-          sub.end = Math.max(sub.start + 0.1, Math.min(newValue, videoDuration));
-        }
-      } else {
-        sub[field] = value;
-      }
-
-      subtitles.sort((a, b) => a.start - b.start);
-      renderTimeline();
-      renderPreview();
-    }
-
-    function deleteSub(id) {
-      subtitles = subtitles.filter(s => s.id !== id);
-      renderSubtitleList();
-      renderTimeline();
-      renderPreview();
-      showToast('Subtitle deleted');
-    }
-
-    function clearAllSubs() {
-      if (subtitles.length === 0) {
-        showToast('No subtitles to clear', 'info');
-        return;
-      }
-      subtitles = [];
-      subIdCounter = 0;
-      renderSubtitleList();
-      renderTimeline();
-      renderPreview();
-      showToast('All subtitles cleared');
-    }
-
-    // ============================================
-    // RENDERING FUNCTIONS
-    // ============================================
-    function renderSubtitleList() {
-      const list = document.getElementById('subtitleList');
-      if (!list) return;
-
-      if (subtitles.length === 0) {
-        list.innerHTML = `
-          <div class="text-center py-8" style="color:#6b6b80;">
-            <i data-lucide="message-square-plus" style="width:28px;height:28px;margin:0 auto 8px;display:block;color:#333;"></i>
-            <p class="text-xs">No subtitles yet. Click "Add" to start.</p>
+  <!-- main 2-col layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- LEFT PANEL: video + timeline -->
+    <div class="lg:col-span-2 space-y-4">
+      <!-- video zone -->
+      <div class="video-container relative bg-black rounded-2xl overflow-hidden shadow-2xl" id="videoZone">
+        <div id="videoPlaceholder" class="flex flex-col items-center justify-center py-16 sm:py-24 cursor-pointer bg-gradient-to-br from-[#0a0a12] to-[#111117]">
+          <div class="bg-indigo-500/10 p-4 rounded-full mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6c5ce7" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polygon points="7 10 12 15 17 10 12 15 7 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </div>
-        `;
-        lucide.createIcons();
-        return;
-      }
+          <p class="text-white font-medium">Click or drop video file</p>
+          <p class="text-gray-400 text-xs mt-1">MP4, MOV, WebM — max 200MB</p>
+          <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime,video/mov" class="hidden">
+        </div>
+        <video id="mainVideo" class="w-full object-contain hidden" controls playsinline></video>
+        <!-- dynamic subtitle overlay -->
+        <div id="liveSubtitleOverlay" class="absolute bottom-[12%] left-0 right-0 text-center pointer-events-none transition-all duration-150" style="display: none;"></div>
+      </div>
 
-      list.innerHTML = subtitles.map(s => `
-        <div class="p-2 md:p-3 rounded-lg transition" style="background:#12121a;" data-sub-id="${s.id}">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold" style="color:#6c5ce7;">#${s.id}</span>
-            <div class="flex gap-1">
-              <button onclick="duplicateSub(${s.id})" class="p-1 rounded hover:bg-blue-500/20 transition" style="color:#4ecdc4;" title="Duplicate">
-                <i data-lucide="copy" style="width:12px;height:12px;"></i>
-              </button>
-              <button onclick="deleteSub(${s.id})" class="p-1 rounded hover:bg-red-500/20 transition" style="color:#ff6b6b;" title="Delete">
-                <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
-              </button>
-            </div>
-          </div>
-          <label class="block text-xs mb-1" style="color:#6b6b80;">Text</label>
-          <textarea id="subtext${s.id}" rows="2" class="w-full rounded-lg px-2 py-1.5 text-xs md:text-sm mb-2 resize-none" style="background:#1a1a24;color:#f0f0f5;border:1px solid #2a2a3a;"
-            oninput="updateSub(${s.id},'text',this.value)">${s.text}</textarea>
-          <div class="flex gap-1 md:gap-2">
-            <label class="flex-1 flex flex-col gap-1">
-              <span class="text-xs" style="color:#6b6b80;">Start</span>
-              <input type="text" value="${formatShort(s.start)}" class="time-input rounded-lg px-2 py-1 text-xs" style="background:#1a1a24;color:#f0f0f5;border:1px solid #2a2a3a;"
-                onchange="updateSub(${s.id},'start',this.value)" placeholder="MM:SS">
-            </label>
-            <label class="flex-1 flex flex-col gap-1">
-              <span class="text-xs" style="color:#6b6b80;">End</span>
-              <input type="text" value="${formatShort(s.end)}" class="time-input rounded-lg px-2 py-1 text-xs" style="background:#1a1a24;color:#f0f0f5;border:1px solid #2a2a3a;"
-                onchange="updateSub(${s.id},'end',this.value)" placeholder="MM:SS">
-            </label>
+      <!-- Timeline bar with drag interaction -->
+      <div class="bg-[#13131c] rounded-xl p-3 shadow-lg border border-[#252530]">
+        <div class="flex justify-between text-[11px] font-mono text-gray-400 mb-2 px-1">
+          <span>⏵ TIMELINE</span>
+          <span id="timecodeDisplay">00:00 / 00:00</span>
+        </div>
+        <div id="timelineContainer" class="timeline-track relative bg-[#0a0a12] h-14 rounded-lg cursor-pointer overflow-hidden">
+          <div id="timelineBlocksWrapper" class="relative w-full h-full"></div>
+          <div id="playhead" class="absolute top-0 bottom-0 w-0.5 bg-indigo-400 z-20 shadow-sm" style="left: 0%; pointer-events: none;"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-[10px] text-gray-500 px-1">
+          <button id="resetPlayBtn" class="bg-[#23222e] hover:bg-indigo-700/40 px-2 py-1 rounded-md text-indigo-300 text-xs transition">⏵ Play/Pause</button>
+          <span class="text-indigo-400/70 text-[10px]">drag blocks ↦ shift time</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: subtitle editor & style -->
+    <div class="space-y-5">
+      <!-- actions -->
+      <div class="bg-[#13131c] rounded-xl p-4 border border-[#252530]">
+        <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+          <h2 class="text-white font-semibold text-base flex items-center gap-1"><span>📝</span> Subtitles</h2>
+          <div class="flex gap-2">
+            <button id="addSubtitleBtn" class="bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-lg text-white text-xs font-semibold flex items-center gap-1 shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              Add at current time
+            </button>
+            <button id="clearAllBtn" class="bg-gray-700/60 hover:bg-red-800/50 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-200 transition">Clear all</button>
           </div>
         </div>
-      `).join('');
-      lucide.createIcons();
+        <!-- subtitle list dynamic -->
+        <div id="subtitleListContainer" class="subtitle-list-scroll overflow-y-auto space-y-3 pr-1" style="max-height: 360px;">
+          <div class="text-center py-8 text-gray-500 text-sm">✨ No subtitles — click "Add" to start</div>
+        </div>
+      </div>
+
+      <!-- style panel -->
+      <div class="bg-[#13131c] rounded-xl p-4 border border-[#252530]">
+        <h3 class="text-white text-sm font-semibold mb-3 flex items-center gap-2"><span>🎨</span> Caption style</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-[11px] text-gray-400">Font size</label>
+            <select id="fontSizeSelect" class="w-full bg-[#0f0f18] border border-[#2c2c38] rounded-lg text-white text-sm py-1.5 px-2">
+              <option value="18">Small (18px)</option>
+              <option value="24" selected>Medium (24px)</option>
+              <option value="32">Large (32px)</option>
+              <option value="44">X-Large (44px)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] text-gray-400">Text color</label>
+            <input type="color" id="textColorPicker" value="#FFFFFF" class="w-full h-9 bg-[#0f0f18] border border-[#2c2c38] rounded-lg cursor-pointer">
+          </div>
+          <div>
+            <label class="text-[11px] text-gray-400">Background</label>
+            <input type="color" id="bgColorPicker" value="#000000" class="w-full h-9 bg-[#0f0f18] border border-[#2c2c38] rounded-lg">
+          </div>
+          <div>
+            <label class="text-[11px] text-gray-400">BG opacity</label>
+            <input type="range" id="bgOpacitySlider" min="0" max="100" value="75" class="w-full accent-indigo-500 mt-1">
+            <span id="opacityValue" class="text-[10px] text-gray-400">75%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toastMessage" class="toast-modern">✨ Ready</div>
+
+<script>
+  // ---------- APP STATE ----------
+  let subtitles = [];            // { id, text, start, end }
+  let nextId = 1;
+  let videoDuration = 0;
+  let videoFileUrl = null;
+  const videoElem = document.getElementById('mainVideo');
+  const videoPlaceholderDiv = document.getElementById('videoPlaceholder');
+  const timelineWrap = document.getElementById('timelineBlocksWrapper');
+  const playhead = document.getElementById('playhead');
+  const timecodeSpan = document.getElementById('timecodeDisplay');
+  const subtitleOverlay = document.getElementById('liveSubtitleOverlay');
+  const subtitleListContainer = document.getElementById('subtitleListContainer');
+  let dragSubId = null;
+  let dragStartClientX = 0;
+  let dragOriginalStart = 0;
+
+  // style dom elements
+  const fontSizeSelect = document.getElementById('fontSizeSelect');
+  const textColorPicker = document.getElementById('textColorPicker');
+  const bgColorPicker = document.getElementById('bgColorPicker');
+  const bgOpacitySlider = document.getElementById('bgOpacitySlider');
+  const opacitySpan = document.getElementById('opacityValue');
+
+  // ----- helper: format time for inputs & display ----
+  function formatTimeMMSSms(seconds) {
+    if (isNaN(seconds)) seconds = 0;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    const ms = Math.floor((seconds % 1) * 100);
+    return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}.${ms.toString().padStart(2,'0')}`;
+  }
+  function formatShortTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toFixed(1)}`;
+  }
+  function parseTimeFromString(str) {
+    if (!str) return 0;
+    str = str.trim().replace(',', '.');
+    let parts = str.split(':');
+    if (parts.length === 2) {
+      let mins = parseFloat(parts[0]);
+      let secs = parseFloat(parts[1]);
+      if (isNaN(mins)) mins = 0;
+      if (isNaN(secs)) secs = 0;
+      return mins * 60 + secs;
+    } else if (parts.length === 3) {
+      let hours = parseFloat(parts[0]);
+      let mins = parseFloat(parts[1]);
+      let secs = parseFloat(parts[2]);
+      return hours*3600 + mins*60 + secs;
     }
+    return parseFloat(str) || 0;
+  }
 
-    function renderTimeline() {
-      const tl = document.getElementById('timeline');
-      if (!tl) return;
+  function formatSRTTime(sec) {
+    const hours = Math.floor(sec / 3600);
+    const mins = Math.floor((sec % 3600) / 60);
+    const secs = Math.floor(sec % 60);
+    const ms = Math.floor((sec % 1) * 1000);
+    return `${hours.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')},${ms.toString().padStart(3,'0')}`;
+  }
 
-      const blocks = tl.querySelectorAll('.subtitle-block');
-      blocks.forEach(b => b.remove());
+  // show toast
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('toastMessage');
+    toast.textContent = msg;
+    toast.style.background = isError ? '#c2413c' : '#2d2d44';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
 
-      if (!videoDuration || videoDuration === 0) return;
-
-      subtitles.forEach(s => {
-        const left = (s.start / videoDuration) * 100;
-        const width = Math.max(((s.end - s.start) / videoDuration) * 100, 2);
-        
-        const el = document.createElement('div');
-        el.className = 'subtitle-block';
-        el.style.left = left + '%';
-        el.style.width = width + '%';
-        el.style.background = '#6c5ce7';
-        el.style.color = '#fff';
-        el.textContent = s.text.substring(0, 20);
-        el.title = s.text;
-        
-        el.addEventListener('mousedown', (e) => startDragSubtitle(e, s.id));
-        el.addEventListener('touchstart', (e) => startDragSubtitle(e.touches[0], s.id), { passive: false });
-        
-        tl.appendChild(el);
+  // RENDER timeline blocks
+  function renderTimeline() {
+    if (!timelineWrap || videoDuration <= 0) {
+      timelineWrap.innerHTML = '';
+      return;
+    }
+    timelineWrap.innerHTML = '';
+    subtitles.forEach(sub => {
+      const leftPercent = (sub.start / videoDuration) * 100;
+      const widthPercent = ((sub.end - sub.start) / videoDuration) * 100;
+      if (widthPercent <= 0) return;
+      const block = document.createElement('div');
+      block.className = 'subtitle-block absolute top-1/2 -translate-y-1/2 h-9 rounded-md bg-indigo-500 text-white text-[11px] font-semibold flex items-center px-2 shadow-md';
+      block.style.left = `${leftPercent}%`;
+      block.style.width = `${Math.max(widthPercent, 1.5)}%`;
+      block.style.backgroundColor = '#6c5ce7';
+      block.style.zIndex = 5;
+      block.innerText = sub.text.length > 22 ? sub.text.slice(0, 20) + '..' : sub.text;
+      block.setAttribute('data-id', sub.id);
+      block.addEventListener('mousedown', (e) => startDragSubtitle(e, sub.id));
+      block.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        startDragSubtitle(touch, sub.id);
       });
-    }
-
-    function renderPreview() {
-      const overlay = document.getElementById('subtitleOverlay');
-      if (!overlay) return;
-
-      const t = videoPlayer.currentTime || 0;
-      const active = subtitles.find(s => t >= s.start && t < s.end);
-
-      if (!active) {
-        overlay.textContent = '';
-        overlay.style.display = 'none';
-        return;
-      }
-
-      const fontSize = document.getElementById('subFontSize')?.value || 22;
-      const color = document.getElementById('subColor')?.value || '#ffffff';
-      const bgColor = document.getElementById('subBgColor')?.value || '#000000';
-      const opacity = (document.getElementById('subBgOpacity')?.value || 70) / 100;
-
-      const r = parseInt(bgColor.slice(1, 3), 16);
-      const g = parseInt(bgColor.slice(3, 5), 16);
-      const b = parseInt(bgColor.slice(5, 7), 16);
-
-      overlay.textContent = active.text;
-      overlay.style.display = 'block';
-      overlay.style.fontSize = fontSize + 'px';
-      overlay.style.color = color;
-      overlay.style.background = `rgba(${r},${g},${b},${opacity})`;
-      overlay.style.padding = '8px 16px';
-      overlay.style.borderRadius = '6px';
-      overlay.style.fontWeight = '600';
-      overlay.style.lineHeight = '1.4';
-      overlay.style.maxWidth = '85%';
-      overlay.style.wordWrap = 'break-word';
-    }
-
-    // ============================================
-    // SUBTITLE DRAGGING
-    // ============================================
-    function startDragSubtitle(e, subId) {
-      e.preventDefault?.();
-      isDraggingSubtitle = subId;
-      dragStartX = e.clientX;
-      const sub = subtitles.find(s => s.id === subId);
-      if (sub) dragStartTime = sub.start;
-      
-      document.addEventListener('mousemove', onDragSubtitle);
-      document.addEventListener('touchmove', onDragSubtitle);
-      document.addEventListener('mouseup', stopDragSubtitle);
-      document.addEventListener('touchend', stopDragSubtitle);
-    }
-
-    function onDragSubtitle(e) {
-      if (!isDraggingSubtitle) return;
-      const sub = subtitles.find(s => s.id === isDraggingSubtitle);
-      if (!sub) return;
-
-      const timeline = document.getElementById('timeline');
-      const rect = timeline.getBoundingClientRect();
-      const currentX = e.touches ? e.touches[0].clientX : e.clientX;
-      const deltaX = currentX - dragStartX;
-      const deltaTime = (deltaX / rect.width) * videoDuration;
-
-      const newStart = Math.max(0, Math.min(dragStartTime + deltaTime, videoDuration - 0.1));
-      const duration = sub.end - sub.start;
-      
-      sub.start = newStart;
-      sub.end = Math.min(newStart + duration, videoDuration);
-
-      renderTimeline();
-    }
-
-    function stopDragSubtitle() {
-      isDraggingSubtitle = null;
-      document.removeEventListener('mousemove', onDragSubtitle);
-      document.removeEventListener('touchmove', onDragSubtitle);
-      document.removeEventListener('mouseup', stopDragSubtitle);
-      document.removeEventListener('touchend', stopDragSubtitle);
-    }
-
-    // ============================================
-    // TIME FORMATTING HELPERS
-    // ============================================
-    function formatTimeSRT(sec) {
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = Math.floor(sec % 60);
-      const ms = Math.round((sec % 1) * 1000);
-      return `${padZero(h)}:${padZero(m)}:${padZero(s)},${String(ms).padStart(3, '0')}`;
-    }
-
-    function formatTimeDisplay(sec) {
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60);
-      const ms = Math.floor((sec % 1) * 100);
-      return `${padZero(m)}:${padZero(s)}.${String(ms).padStart(2, '0')}`;
-    }
-
-    function formatShort(sec) {
-      const m = Math.floor(sec / 60);
-      const s = sec % 60;
-      return `${padZero(m)}:${s.toFixed(1)}`;
-    }
-
-    function padZero(n) {
-      return String(Math.floor(n)).padStart(2, '0');
-    }
-
-    function parseTimeInput(val) {
-      if (!val || typeof val !== 'string') return 0;
-      const parts = val.split(':');
-      
-      if (parts.length === 2) {
-        return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
-      } else if (parts.length === 3) {
-        return parseFloat(parts[0]) * 3600 + parseFloat(parts[1]) * 60 + parseFloat(parts[2]);
-      }
-      return parseFloat(val) || 0;
-    }
-
-    // ============================================
-    // EXPORT FUNCTIONALITY
-    // ============================================
-    function exportSRT() {
-      if (subtitles.length === 0) {
-        showToast('No subtitles to export', 'info');
-        return;
-      }
-
-      let srt = '';
-      subtitles.forEach((s, idx) => {
-        srt += `${idx + 1}\n`;
-        srt += `${formatTimeSRT(s.start)} --> ${formatTimeSRT(s.end)}\n`;
-        srt += `${s.text}\n\n`;
-      });
-
-      const blob = new Blob([srt], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `subtitles_${Date.now()}.srt`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      showToast('SRT file downloaded!');
-    }
-
-    // ============================================
-    // UI NOTIFICATIONS
-    // ============================================
-    function showToast(msg, type = 'success') {
-      const el = document.getElementById('toastMsg');
-      if (!el) return;
-
-      el.textContent = msg;
-      
-      const bgColors = {
-        success: '#6c5ce7',
-        error: '#ff6b6b',
-        info: '#4ecdc4'
-      };
-      
-      el.style.background = bgColors[type] || bgColors.success;
-      el.style.color = '#fff';
-      el.classList.add('show');
-
-      setTimeout(() => {
-        el.classList.remove('show');
-      }, 2200);
-    }
-
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      updateTimeLabel();
+      timelineWrap.appendChild(block);
     });
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e54e43c754490a5',t:'MTc3NTAxODE3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  }
+
+  // drag handlers
+  function startDragSubtitle(e, subId) {
+    e.stopPropagation();
+    if (!videoDuration) return;
+    dragSubId = subId;
+    dragStartClientX = e.clientX;
+    const sub = subtitles.find(s => s.id === subId);
+    if (sub) dragOriginalStart = sub.start;
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchmove', onDragMove);
+    document.addEventListener('touchend', stopDrag);
+  }
+  function onDragMove(e) {
+    if (dragSubId === null) return;
+    const subIdx = subtitles.findIndex(s => s.id === dragSubId);
+    if (subIdx === -1) return;
+    const currentX = e.touches ? e.touches[0].clientX : e.clientX;
+    const timelineRect = document.getElementById('timelineContainer').getBoundingClientRect();
+    const deltaX = currentX - dragStartClientX;
+    const deltaTime = (deltaX / timelineRect.width) * videoDuration;
+    let newStart = dragOriginalStart + deltaTime;
+    const sub = subtitles[subIdx];
+    const duration = sub.end - sub.start;
+    newStart = Math.min(Math.max(0, newStart), videoDuration - 0.05);
+    let newEnd = newStart + duration;
+    if (newEnd > videoDuration) newEnd = videoDuration;
+    if (newStart < 0) newStart = 0;
+    subtitles[subIdx].start = newStart;
+    subtitles[subIdx].end = newEnd;
+    // sort & rerender
+    subtitles.sort((a,b) => a.start - b.start);
+    renderTimeline();
+    renderSubtitleListUI();
+    renderPreviewSubtitle();  // live preview while dragging
+  }
+  function stopDrag() {
+    dragSubId = null;
+    document.removeEventListener('mousemove', onDragMove);
+    document.removeEventListener('mouseup', stopDrag);
+    document.removeEventListener('touchmove', onDragMove);
+    document.removeEventListener('touchend', stopDrag);
+    renderTimeline();
+    renderSubtitleListUI();
+  }
+
+  // update playhead + time display
+  function updatePlayheadAndTime() {
+    if (!videoDuration || videoDuration === 0) return;
+    const current = videoElem.currentTime;
+    const percent = (current / videoDuration) * 100;
+    playhead.style.left = `${percent}%`;
+    timecodeSpan.innerText = `${formatTimeMMSSms(current)} / ${formatTimeMMSSms(videoDuration)}`;
+    renderPreviewSubtitle();
+  }
+
+  function renderPreviewSubtitle() {
+    if (!videoElem || !subtitleOverlay) return;
+    const currentTime = videoElem.currentTime;
+    const activeSub = subtitles.find(s => currentTime >= s.start && currentTime <= s.end);
+    if (!activeSub) {
+      subtitleOverlay.style.display = 'none';
+      return;
+    }
+    const fontSize = fontSizeSelect.value;
+    const textColor = textColorPicker.value;
+    const bgRaw = bgColorPicker.value;
+    const opacity = (bgOpacitySlider.value / 100);
+    let r=0,g=0,b=0;
+    if (bgRaw.length === 7) {
+      r = parseInt(bgRaw.slice(1,3),16);
+      g = parseInt(bgRaw.slice(3,5),16);
+      b = parseInt(bgRaw.slice(5,7),16);
+    }
+    subtitleOverlay.style.display = 'block';
+    subtitleOverlay.innerText = activeSub.text;
+    subtitleOverlay.style.fontSize = `${fontSize}px`;
+    subtitleOverlay.style.color = textColor;
+    subtitleOverlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    subtitleOverlay.style.padding = '8px 20px';
+    subtitleOverlay.style.borderRadius = '14px';
+    subtitleOverlay.style.fontWeight = '600';
+    subtitleOverlay.style.maxWidth = '85%';
+    subtitleOverlay.style.margin = '0 auto';
+    subtitleOverlay.style.backdropFilter = 'blur(2px)';
+    subtitleOverlay.style.whiteSpace = 'pre-wrap';
+    subtitleOverlay.style.wordBreak = 'break-word';
+    subtitleOverlay.style.lineHeight = '1.35';
+    subtitleOverlay.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+  }
+
+  // RENDER subtitle list (editor cards)
+  function renderSubtitleListUI() {
+    if (!subtitleListContainer) return;
+    if (subtitles.length === 0) {
+      subtitleListContainer.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm">🎬 No subtitles — click "Add" to start</div>`;
+      return;
+    }
+    subtitleListContainer.innerHTML = subtitles.map(sub => `
+      <div class="bg-[#0e0e16] rounded-lg p-3 border border-[#262632] transition-all subtitle-editor-card" data-subid="${sub.id}">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-indigo-300 font-mono text-[11px] font-bold">#${sub.id}</span>
+          <div class="flex gap-2">
+            <button class="duplicate-sub-btn text-cyan-400 hover:text-cyan-300" data-id="${sub.id}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+            <button class="delete-sub-btn text-red-400 hover:text-red-300" data-id="${sub.id}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </div>
+        <textarea class="subtitle-textarea w-full bg-[#1a1a26] border border-[#323242] rounded-lg text-white text-sm p-2 resize-y mb-2" data-id="${sub.id}" rows="2">${escapeHtml(sub.text)}</textarea>
+        <div class="flex gap-2">
+          <div class="flex-1">
+            <label class="text-[10px] text-gray-400">Start</label>
+            <input type="text" class="sub-start time-input w-full rounded-md px-2 py-1 text-xs" data-id="${sub.id}" value="${formatShortTime(sub.start)}">
+          </div>
+          <div class="flex-1">
+            <label class="text-[10px] text-gray-400">End</label>
+            <input type="text" class="sub-end time-input w-full rounded-md px-2 py-1 text-xs" data-id="${sub.id}" value="${formatShortTime(sub.end)}">
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // attach events
+    document.querySelectorAll('.subtitle-textarea').forEach(el => {
+      const id = parseInt(el.getAttribute('data-id'));
+      el.addEventListener('input', (e) => {
+        const sub = subtitles.find(s => s.id === id);
+        if (sub) { sub.text = e.target.value; renderTimeline(); renderPreviewSubtitle(); }
+      });
+    });
+    document.querySelectorAll('.sub-start').forEach(inp => {
+      const id = parseInt(inp.getAttribute('data-id'));
+      inp.addEventListener('change', (e) => {
+        const sub = subtitles.find(s => s.id === id);
+        if (sub) {
+          let newVal = parseTimeFromString(e.target.value);
+          newVal = Math.min(Math.max(0, newVal), sub.end - 0.05);
+          if (newVal < 0) newVal = 0;
+          sub.start = newVal;
+          if (sub.end <= sub.start) sub.end = Math.min(sub.start + 1, videoDuration);
+          subtitles.sort((a,b)=> a.start - b.start);
+          renderTimeline();
+          renderSubtitleListUI();
+          renderPreviewSubtitle();
+        }
+      });
+    });
+    document.querySelectorAll('.sub-end').forEach(inp => {
+      const id = parseInt(inp.getAttribute('data-id'));
+      inp.addEventListener('change', (e) => {
+        const sub = subtitles.find(s => s.id === id);
+        if (sub && videoDuration) {
+          let newEnd = parseTimeFromString(e.target.value);
+          newEnd = Math.min(Math.max(sub.start + 0.1, newEnd), videoDuration);
+          sub.end = newEnd;
+          subtitles.sort((a,b)=> a.start - b.start);
+          renderTimeline();
+          renderSubtitleListUI();
+          renderPreviewSubtitle();
+        }
+      });
+    });
+    document.querySelectorAll('.duplicate-sub-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(btn.getAttribute('data-id'));
+        const original = subtitles.find(s => s.id === id);
+        if (original) {
+          const newSub = { id: ++nextId, text: original.text + " (copy)", start: Math.min(original.end + 0.2, videoDuration-0.5), end: Math.min(original.end + 3.2, videoDuration) };
+          if (newSub.start >= videoDuration) newSub.start = Math.max(0, videoDuration-2);
+          if (newSub.end <= newSub.start) newSub.end = newSub.start + 1.5;
+          subtitles.push(newSub);
+          subtitles.sort((a,b)=> a.start - b.start);
+          renderTimeline();
+          renderSubtitleListUI();
+          renderPreviewSubtitle();
+          showToast("Subtitle duplicated");
+        }
+      });
+    });
+    document.querySelectorAll('.delete-sub-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(btn.getAttribute('data-id'));
+        subtitles = subtitles.filter(s => s.id !== id);
+        renderTimeline();
+        renderSubtitleListUI();
+        renderPreviewSubtitle();
+        showToast("Deleted");
+      });
+    });
+  }
+
+  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  // Add subtitle at current video time
+  function addSubtitleAtCurrentTime() {
+    if (!videoElem || !videoDuration || videoDuration === 0) {
+      showToast("Please load a video first", true);
+      return;
+    }
+    let current = videoElem.currentTime;
+    if (current >= videoDuration - 0.1) current = Math.max(0, videoDuration - 1);
+    let endTime = Math.min(current + 3, videoDuration);
+    const newSub = { id: ++nextId, text: "Type your caption", start: current, end: endTime };
+    subtitles.push(newSub);
+    subtitles.sort((a,b)=> a.start - b.start);
+    renderTimeline();
+    renderSubtitleListUI();
+    renderPreviewSubtitle();
+    showToast("Subtitle added ✓");
+  }
+
+  function clearAllSubtitles() {
+    if (subtitles.length === 0) return;
+    subtitles = [];
+    renderTimeline();
+    renderSubtitleListUI();
+    renderPreviewSubtitle();
+    showToast("All subtitles cleared");
+  }
+
+  function exportSRT() {
+    if (subtitles.length === 0) { showToast("No subtitles to export", true); return; }
+    let srtContent = "";
+    subtitles.forEach((sub, idx) => {
+      srtContent += `${idx+1}\n`;
+      srtContent += `${formatSRTTime(sub.start)} --> ${formatSRTTime(sub.end)}\n`;
+      srtContent += `${sub.text.trim() || "(empty caption)"}\n\n`;
+    });
+    const blob = new Blob([srtContent], {type: "text/plain"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `subtitles_${Date.now()}.srt`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    showToast("SRT exported!");
+  }
+
+  // video loading
+  function loadVideo(file) {
+    if (videoFileUrl) URL.revokeObjectURL(videoFileUrl);
+    const url = URL.createObjectURL(file);
+    videoFileUrl = url;
+    videoElem.src = url;
+    videoElem.classList.remove("hidden");
+    videoPlaceholderDiv.classList.add("hidden");
+    videoElem.load();
+    videoElem.addEventListener('loadedmetadata', () => {
+      videoDuration = videoElem.duration;
+      renderTimeline();
+      updatePlayheadAndTime();
+      showToast(`Video ready — ${Math.floor(videoDuration)} sec`);
+    });
+    videoElem.addEventListener('timeupdate', () => { updatePlayheadAndTime(); });
+    videoElem.play().catch(e=>console.log);
+  }
+
+  // drag & drop video zone
+  const videoZone = document.getElementById('videoZone');
+  videoZone.addEventListener('dragover', (e) => { e.preventDefault(); videoZone.classList.add('drag-overlay-active'); });
+  videoZone.addEventListener('dragleave', () => videoZone.classList.remove('drag-overlay-active'));
+  videoZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    videoZone.classList.remove('drag-overlay-active');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('video/')) loadVideo(file);
+    else showToast("Drop a valid video file", true);
+  });
+  document.getElementById('videoFileInput').addEventListener('change', (e) => { if(e.target.files[0]) loadVideo(e.target.files[0]); });
+  videoPlaceholderDiv.addEventListener('click', () => document.getElementById('videoFileInput').click());
+
+  // timeline seek
+  document.getElementById('timelineContainer').addEventListener('click', (e) => {
+    if (!videoDuration) return;
+    const rect = document.getElementById('timelineContainer').getBoundingClientRect();
+    const percent = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+    videoElem.currentTime = percent * videoDuration;
+  });
+
+  document.getElementById('addSubtitleBtn').addEventListener('click', addSubtitleAtCurrentTime);
+  document.getElementById('clearAllBtn').addEventListener('click', clearAllSubtitles);
+  document.getElementById('globalExportBtn').addEventListener('click', exportSRT);
+  document.getElementById('resetPlayBtn').addEventListener('click', () => { if(videoElem.paused) videoElem.play(); else videoElem.pause(); });
+
+  function onStyleChange() { renderPreviewSubtitle(); }
+  fontSizeSelect.addEventListener('change', onStyleChange);
+  textColorPicker.addEventListener('input', onStyleChange);
+  bgColorPicker.addEventListener('input', onStyleChange);
+  bgOpacitySlider.addEventListener('input', (e) => { opacitySpan.innerText = e.target.value + "%"; onStyleChange(); });
+  setInterval(() => { if(videoElem && !videoElem.paused) renderPreviewSubtitle(); }, 60);
+  window.addEventListener('load', () => { lucideIconsFallback(); });
+  function lucideIconsFallback() {}
+</script>
+</body>
 </html>
