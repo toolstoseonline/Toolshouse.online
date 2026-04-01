@@ -3,11 +3,10 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CamScanner </title>
-   <meta name="description" content="Scan documents online for free. Turn photos into high-quality PDFs with edge detection, shadow removal, and perspective correction. No app download,">
+  <title>CamScanner </title><meta name="description" content="Scan documents online for free. Turn photos into high-quality PDFs with edge detection, shadow removal, and perspective correction. No app download,">
 <meta name="keywords" content="CamScanner, scan documents, document scanner, mobile scanner">
     <link rel="canonical" href="https://www.toolshouse.online/camscanner.html">
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -44,14 +43,12 @@ body{font-family:'Outfit',sans-serif}
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="bg-gray-950 text-white">
-  <div class="app-root" id="appRoot">
-   <!-- SCREEN 1: HOME -->
+  <div class="app-root" id="appRoot"><!-- SCREEN 1: HOME -->
    <div id="screenHome" class="h-full w-full flex flex-col items-center justify-center relative" style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#0a0a0a 100%)">
     <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(0,230,118,.06),transparent 50%),radial-gradient(circle at 70% 80%,rgba(0,150,255,.05),transparent 50%)"></div>
     <div class="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
      <div class="relative">
-      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-       <i data-lucide="scan" style="width:40px;height:40px;color:#fff"></i>
+      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20"><i data-lucide="scan" style="width:40px;height:40px;color:#fff"></i>
       </div>
      </div>
      <h1 id="mainTitle" class="text-3xl font-bold tracking-tight">CamScanner Pro</h1>
@@ -59,27 +56,23 @@ body{font-family:'Outfit',sans-serif}
     </div>
    </div><!-- SCREEN 2: CAMERA -->
    <div id="screenCamera" class="h-full w-full flex flex-col hidden" style="background:#000">
-    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative">
-     <button onclick="stopCamera();showScreen('Home')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CAMERA</span> <button onclick="toggleFlash()" id="flashBtn" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="zap-off" style="width:20px;height:20px"></i></button>
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="stopCamera();showScreen('Home')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CAMERA</span> <button onclick="toggleFlash()" id="flashBtn" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="zap-off" style="width:20px;height:20px"></i></button>
     </div>
     <div class="flex-1 relative overflow-hidden flex items-center justify-center">
      <video id="camVideo" autoplay playsinline class="w-full h-full object-cover"></video>
      <div id="scanLineEl" class="scan-line hidden"></div>
      <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
     </div>
-    <div class="flex items-center justify-around py-5 bg-black/80 backdrop-blur-sm relative z-10">
-     <button onclick="toggleAutoDetect()" id="autoDetectBtn" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="maximize" style="width:22px;height:22px;color:#00e676"></i> <span class="text-xs text-gray-300" id="autoLabel">Auto</span> </button>
+    <div class="flex items-center justify-around py-5 bg-black/80 backdrop-blur-sm relative z-10"><button onclick="toggleAutoDetect()" id="autoDetectBtn" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="maximize" style="width:22px;height:22px;color:#00e676"></i> <span class="text-xs text-gray-300" id="autoLabel">Auto</span> </button>
      <div class="relative">
       <div class="absolute inset-0 rounded-full bg-emerald-400/30 pulse-ring"></div><button class="btn-capture" onclick="capturePhoto()"></button>
      </div><button onclick="switchCameraFacing()" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="refresh-cw" style="width:22px;height:22px"></i> <span class="text-xs text-gray-300">Flip</span> </button>
     </div>
    </div><!-- SCREEN 3: CROP -->
    <div id="screenCrop" class="h-full w-full flex flex-col hidden" style="background:#111">
-    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative">
-     <button onclick="showScreen('Camera');startCamera()" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CROP &amp; ADJUST</span> <button onclick="applyCrop()" class="px-4 py-1.5 rounded-xl text-sm font-semibold" style="background:#00e676;color:#0a0a0a">Done</button>
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="showScreen('Camera');startCamera()" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CROP &amp; ADJUST</span> <button onclick="applyCrop()" class="px-4 py-1.5 rounded-xl text-sm font-semibold" style="background:#00e676;color:#0a0a0a">Done</button>
     </div>
-    <div class="flex gap-3 px-4 py-2 overflow-x-auto">
-     <button onclick="autoCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="cpu" style="width:14px;height:14px"></i>Auto Crop</button> <button onclick="resetCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i>Reset</button>
+    <div class="flex gap-3 px-4 py-2 overflow-x-auto"><button onclick="autoCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="cpu" style="width:14px;height:14px"></i>Auto Crop</button> <button onclick="resetCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i>Reset</button>
     </div>
     <div class="flex-1 relative overflow-hidden flex items-center justify-center p-4" id="cropArea">
      <canvas id="cropCanvas" class="max-w-full max-h-full" style="touch-action:none"></canvas>
@@ -88,18 +81,15 @@ body{font-family:'Outfit',sans-serif}
     </div>
    </div><!-- SCREEN 4: EDIT / EXPORT -->
    <div id="screenEdit" class="h-full w-full flex flex-col hidden" style="background:#111">
-    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative">
-     <button onclick="showScreen('Crop')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">PREVIEW &amp; EXPORT</span>
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="showScreen('Crop')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">PREVIEW &amp; EXPORT</span>
      <div class="w-10"></div>
     </div>
-    <div class="flex gap-2 px-4 py-2 overflow-x-auto">
-     <button onclick="applyFilter('none')" class="filter-btn bg-white/5 text-gray-300 active" data-filter="none">Original</button> <button onclick="applyFilter('grayscale')" class="filter-btn bg-white/5 text-gray-300" data-filter="grayscale">B&amp;W</button> <button onclick="applyFilter('contrast')" class="filter-btn bg-white/5 text-gray-300" data-filter="contrast">High Contrast</button> <button onclick="applyFilter('bright')" class="filter-btn bg-white/5 text-gray-300" data-filter="bright">Brighten</button> <button onclick="applyFilter('sepia')" class="filter-btn bg-white/5 text-gray-300" data-filter="sepia">Sepia</button>
+    <div class="flex gap-2 px-4 py-2 overflow-x-auto"><button onclick="applyFilter('none')" class="filter-btn bg-white/5 text-gray-300 active" data-filter="none">Original</button> <button onclick="applyFilter('grayscale')" class="filter-btn bg-white/5 text-gray-300" data-filter="grayscale">B&amp;W</button> <button onclick="applyFilter('contrast')" class="filter-btn bg-white/5 text-gray-300" data-filter="contrast">High Contrast</button> <button onclick="applyFilter('bright')" class="filter-btn bg-white/5 text-gray-300" data-filter="bright">Brighten</button> <button onclick="applyFilter('sepia')" class="filter-btn bg-white/5 text-gray-300" data-filter="sepia">Sepia</button>
     </div>
     <div class="flex-1 flex items-center justify-center p-4 overflow-hidden">
      <canvas id="editCanvas" class="max-w-full max-h-full rounded-lg shadow-2xl"></canvas>
     </div>
-    <div class="grid grid-cols-3 gap-3 px-4 py-4">
-     <button onclick="exportAs('pdf')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#e53935,#d32f2f);color:#fff"> <i data-lucide="file-text" style="width:22px;height:22px"></i>PDF </button> <button onclick="exportAs('jpg')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#fb8c00,#f57c00);color:#fff"> <i data-lucide="image" style="width:22px;height:22px"></i>JPG </button> <button onclick="exportAs('png')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#00b0ff,#0091ea);color:#fff"> <i data-lucide="download" style="width:22px;height:22px"></i>PNG </button>
+    <div class="grid grid-cols-3 gap-3 px-4 py-4"><button onclick="exportAs('pdf')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#e53935,#d32f2f);color:#fff"> <i data-lucide="file-text" style="width:22px;height:22px"></i>PDF </button> <button onclick="exportAs('jpg')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#fb8c00,#f57c00);color:#fff"> <i data-lucide="image" style="width:22px;height:22px"></i>JPG </button> <button onclick="exportAs('png')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#00b0ff,#0091ea);color:#fff"> <i data-lucide="download" style="width:22px;height:22px"></i>PNG </button>
     </div>
    </div>
    <div id="toast" class="toast" style="background:#00e676;color:#0a0a0a"></div>
@@ -357,11 +347,18 @@ function drawCropUI() {
 function setupCropDrag() {
   const area = document.getElementById('cropArea');
   const canvas = document.getElementById('cropCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const areaRect = area.getBoundingClientRect();
+  const offsetX = rect.left - areaRect.left;
+  const offsetY = rect.top - areaRect.top;
 
   function getPos(e) {
     const t = e.touches ? e.touches[0] : e;
-    const rect = canvas.getBoundingClientRect();
-    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+    const areaRect = area.getBoundingClientRect();
+    const canvasRect = canvas.getBoundingClientRect();
+    const x = t.clientX - canvasRect.left;
+    const y = t.clientY - canvasRect.top;
+    return { x, y };
   }
 
   function onStart(e) {
@@ -369,26 +366,33 @@ function setupCropDrag() {
     if (t.classList.contains('crop-handle')) {
       dragIdx = parseInt(t.dataset.idx);
       e.preventDefault();
+      e.stopPropagation();
     }
   }
+
   function onMove(e) {
     if (dragIdx < 0) return;
     e.preventDefault();
+    e.stopPropagation();
     const pos = getPos(e);
+    
     cropPoints[dragIdx] = {
       x: Math.max(0, Math.min(canvas.width, pos.x)),
       y: Math.max(0, Math.min(canvas.height, pos.y))
     };
     drawCropUI();
   }
-  function onEnd() { dragIdx = -1; }
 
-  area.addEventListener('mousedown', onStart);
-  area.addEventListener('mousemove', onMove);
-  area.addEventListener('mouseup', onEnd);
-  area.addEventListener('touchstart', onStart, {passive:false});
-  area.addEventListener('touchmove', onMove, {passive:false});
-  area.addEventListener('touchend', onEnd);
+  function onEnd(e) { 
+    dragIdx = -1; 
+  }
+
+  document.addEventListener('mousedown', onStart, true);
+  document.addEventListener('mousemove', onMove, true);
+  document.addEventListener('mouseup', onEnd, true);
+  document.addEventListener('touchstart', onStart, {capture: true, passive: false});
+  document.addEventListener('touchmove', onMove, {capture: true, passive: false});
+  document.addEventListener('touchend', onEnd, {capture: true, passive: false});
 }
 
 function applyCrop() {
@@ -492,5 +496,5 @@ function showToast(msg) {
 // Init
 lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e54a1fed47890a5',t:'MTc3NTAxNTQ2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e54bade107590a5',t:'MTc3NTAxNjQ3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
