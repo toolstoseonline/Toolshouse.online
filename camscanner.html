@@ -11,36 +11,44 @@
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;overflow:hidden}
+html,body{height:100%;overflow:hidden;-webkit-user-select:none;user-select:none}
 body{font-family:'Outfit',sans-serif}
 .app-root{height:100%;width:100%;overflow-y:auto;overflow-x:hidden}
-.crop-handle{width:28px;height:28px;background:#00e676;border:3px solid #fff;border-radius:50%;position:absolute;cursor:grab;z-index:20;touch-action:none;box-shadow:0 2px 8px rgba(0,0,0,.4)}
-.crop-handle:active{cursor:grabbing;transform:scale(1.2)}
+.crop-handle{width:32px;height:32px;background:#00e676;border:3px solid #fff;border-radius:50%;position:absolute;cursor:grab;z-index:20;touch-action:none;box-shadow:0 2px 12px rgba(0,230,118,.5);transition:transform .1s}
+.crop-handle:hover{transform:scale(1.15)}
+.crop-handle:active{cursor:grabbing;transform:scale(1.3)}
 .crop-overlay{position:absolute;inset:0;z-index:10;pointer-events:none}
-.crop-line{stroke:#00e676;stroke-width:2;fill:none;filter:drop-shadow(0 0 3px rgba(0,230,118,.6))}
-.scan-line{position:absolute;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#00e676,transparent);animation:scanMove 2s ease-in-out infinite;z-index:5;pointer-events:none}
+.crop-line{stroke:#00e676;stroke-width:2.5;fill:none;filter:drop-shadow(0 0 4px rgba(0,230,118,.7))}
+.scan-line{position:absolute;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#00e676,transparent);animation:scanMove 2s ease-in-out infinite;z-index:5;pointer-events:none;box-shadow:0 0 8px rgba(0,230,118,.4)}
 @keyframes scanMove{0%{top:10%}50%{top:85%}100%{top:10%}}
 .pulse-ring{animation:pulse 1.5s ease-out infinite}
 @keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
-.btn-capture{width:72px;height:72px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.4);position:relative;cursor:pointer;transition:transform .15s}
-.btn-capture:active{transform:scale(.9)}
-.btn-capture::after{content:'';position:absolute;inset:6px;border-radius:50%;background:#fff;transition:background .15s}
-.btn-capture:active::after{background:#ddd}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:999px;color:#fff;font-size:14px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s}
+.btn-capture{width:80px;height:80px;border-radius:50%;background:#fff;border:5px solid rgba(255,255,255,.3);position:relative;cursor:pointer;transition:transform .15s;box-shadow:0 0 20px rgba(0,230,118,.3)}
+.btn-capture:active{transform:scale(.85)}
+.btn-capture::after{content:'';position:absolute;inset:8px;border-radius:50%;background:#fff}
+.btn-capture:active::after{background:#e0e0e0}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:999px;color:#fff;font-size:14px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;animation:toastSlide .3s ease-out}
 .toast.show{opacity:1}
-.filter-btn{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:2px solid transparent;transition:all .2s}
-.filter-btn.active{border-color:#00e676;color:#00e676}
+@keyframes toastSlide{from{transform:translateX(-50%) translateY(20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+.filter-btn{padding:8px 16px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;border:2px solid transparent;transition:all .2s;white-space:nowrap}
+.filter-btn.active{border-color:#00e676;color:#00e676;background:rgba(0,230,118,.1)}
+.control-btn{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+.control-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2)}
+.control-btn:active{transform:scale(.9)}
+@media (max-width:480px){.btn-capture{width:70px;height:70px;border-width:4px}.crop-handle{width:28px;height:28px}.control-btn{width:44px;height:44px}}
 </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="bg-gray-950 text-white">
-  <div class="app-root" id="appRoot"><!-- SCREEN 1: HOME -->
+  <div class="app-root" id="appRoot">
+   <!-- SCREEN 1: HOME -->
    <div id="screenHome" class="h-full w-full flex flex-col items-center justify-center relative" style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#0a0a0a 100%)">
     <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(0,230,118,.06),transparent 50%),radial-gradient(circle at 70% 80%,rgba(0,150,255,.05),transparent 50%)"></div>
     <div class="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
      <div class="relative">
-      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20"><i data-lucide="scan" style="width:40px;height:40px;color:#fff"></i>
+      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+       <i data-lucide="scan" style="width:40px;height:40px;color:#fff"></i>
       </div>
      </div>
      <h1 id="mainTitle" class="text-3xl font-bold tracking-tight">CamScanner Pro</h1>
@@ -48,23 +56,27 @@ body{font-family:'Outfit',sans-serif}
     </div>
    </div><!-- SCREEN 2: CAMERA -->
    <div id="screenCamera" class="h-full w-full flex flex-col hidden" style="background:#000">
-    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="stopCamera();showScreen('Home')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CAMERA</span> <button onclick="toggleFlash()" id="flashBtn" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="zap-off" style="width:20px;height:20px"></i></button>
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative">
+     <button onclick="stopCamera();showScreen('Home')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CAMERA</span> <button onclick="toggleFlash()" id="flashBtn" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="zap-off" style="width:20px;height:20px"></i></button>
     </div>
     <div class="flex-1 relative overflow-hidden flex items-center justify-center">
      <video id="camVideo" autoplay playsinline class="w-full h-full object-cover"></video>
      <div id="scanLineEl" class="scan-line hidden"></div>
      <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
     </div>
-    <div class="flex items-center justify-around py-5 bg-black/80 backdrop-blur-sm relative z-10"><button onclick="toggleAutoDetect()" id="autoDetectBtn" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="maximize" style="width:22px;height:22px;color:#00e676"></i> <span class="text-xs text-gray-300" id="autoLabel">Auto</span> </button>
+    <div class="flex items-center justify-around py-5 bg-black/80 backdrop-blur-sm relative z-10">
+     <button onclick="toggleAutoDetect()" id="autoDetectBtn" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="maximize" style="width:22px;height:22px;color:#00e676"></i> <span class="text-xs text-gray-300" id="autoLabel">Auto</span> </button>
      <div class="relative">
       <div class="absolute inset-0 rounded-full bg-emerald-400/30 pulse-ring"></div><button class="btn-capture" onclick="capturePhoto()"></button>
      </div><button onclick="switchCameraFacing()" class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition"> <i data-lucide="refresh-cw" style="width:22px;height:22px"></i> <span class="text-xs text-gray-300">Flip</span> </button>
     </div>
    </div><!-- SCREEN 3: CROP -->
    <div id="screenCrop" class="h-full w-full flex flex-col hidden" style="background:#111">
-    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="showScreen('Camera');startCamera()" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CROP &amp; ADJUST</span> <button onclick="applyCrop()" class="px-4 py-1.5 rounded-xl text-sm font-semibold" style="background:#00e676;color:#0a0a0a">Done</button>
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative">
+     <button onclick="showScreen('Camera');startCamera()" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">CROP &amp; ADJUST</span> <button onclick="applyCrop()" class="px-4 py-1.5 rounded-xl text-sm font-semibold" style="background:#00e676;color:#0a0a0a">Done</button>
     </div>
-    <div class="flex gap-3 px-4 py-2 overflow-x-auto"><button onclick="autoCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="cpu" style="width:14px;height:14px"></i>Auto Crop</button> <button onclick="resetCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i>Reset</button>
+    <div class="flex gap-3 px-4 py-2 overflow-x-auto">
+     <button onclick="autoCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="cpu" style="width:14px;height:14px"></i>Auto Crop</button> <button onclick="resetCrop()" class="filter-btn bg-white/5 text-gray-300 hover:text-white flex items-center gap-1.5"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i>Reset</button>
     </div>
     <div class="flex-1 relative overflow-hidden flex items-center justify-center p-4" id="cropArea">
      <canvas id="cropCanvas" class="max-w-full max-h-full" style="touch-action:none"></canvas>
@@ -73,15 +85,18 @@ body{font-family:'Outfit',sans-serif}
     </div>
    </div><!-- SCREEN 4: EDIT / EXPORT -->
    <div id="screenEdit" class="h-full w-full flex flex-col hidden" style="background:#111">
-    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative"><button onclick="showScreen('Crop')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">PREVIEW &amp; EXPORT</span>
+    <div class="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-sm z-30 relative">
+     <button onclick="showScreen('Crop')" class="p-2 rounded-full hover:bg-white/10"><i data-lucide="arrow-left" style="width:22px;height:22px"></i></button> <span class="font-semibold text-sm tracking-wide">PREVIEW &amp; EXPORT</span>
      <div class="w-10"></div>
     </div>
-    <div class="flex gap-2 px-4 py-2 overflow-x-auto"><button onclick="applyFilter('none')" class="filter-btn bg-white/5 text-gray-300 active" data-filter="none">Original</button> <button onclick="applyFilter('grayscale')" class="filter-btn bg-white/5 text-gray-300" data-filter="grayscale">B&amp;W</button> <button onclick="applyFilter('contrast')" class="filter-btn bg-white/5 text-gray-300" data-filter="contrast">High Contrast</button> <button onclick="applyFilter('bright')" class="filter-btn bg-white/5 text-gray-300" data-filter="bright">Brighten</button> <button onclick="applyFilter('sepia')" class="filter-btn bg-white/5 text-gray-300" data-filter="sepia">Sepia</button>
+    <div class="flex gap-2 px-4 py-2 overflow-x-auto">
+     <button onclick="applyFilter('none')" class="filter-btn bg-white/5 text-gray-300 active" data-filter="none">Original</button> <button onclick="applyFilter('grayscale')" class="filter-btn bg-white/5 text-gray-300" data-filter="grayscale">B&amp;W</button> <button onclick="applyFilter('contrast')" class="filter-btn bg-white/5 text-gray-300" data-filter="contrast">High Contrast</button> <button onclick="applyFilter('bright')" class="filter-btn bg-white/5 text-gray-300" data-filter="bright">Brighten</button> <button onclick="applyFilter('sepia')" class="filter-btn bg-white/5 text-gray-300" data-filter="sepia">Sepia</button>
     </div>
     <div class="flex-1 flex items-center justify-center p-4 overflow-hidden">
      <canvas id="editCanvas" class="max-w-full max-h-full rounded-lg shadow-2xl"></canvas>
     </div>
-    <div class="grid grid-cols-3 gap-3 px-4 py-4"><button onclick="exportAs('pdf')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#e53935,#d32f2f);color:#fff"> <i data-lucide="file-text" style="width:22px;height:22px"></i>PDF </button> <button onclick="exportAs('jpg')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#fb8c00,#f57c00);color:#fff"> <i data-lucide="image" style="width:22px;height:22px"></i>JPG </button> <button onclick="exportAs('png')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#00b0ff,#0091ea);color:#fff"> <i data-lucide="download" style="width:22px;height:22px"></i>PNG </button>
+    <div class="grid grid-cols-3 gap-3 px-4 py-4">
+     <button onclick="exportAs('pdf')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#e53935,#d32f2f);color:#fff"> <i data-lucide="file-text" style="width:22px;height:22px"></i>PDF </button> <button onclick="exportAs('jpg')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#fb8c00,#f57c00);color:#fff"> <i data-lucide="image" style="width:22px;height:22px"></i>JPG </button> <button onclick="exportAs('png')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl font-semibold text-sm transition hover:scale-105 active:scale-95" style="background:linear-gradient(135deg,#00b0ff,#0091ea);color:#fff"> <i data-lucide="download" style="width:22px;height:22px"></i>PNG </button>
     </div>
    </div>
    <div id="toast" class="toast" style="background:#00e676;color:#0a0a0a"></div>
@@ -474,5 +489,5 @@ function showToast(msg) {
 // Init
 lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3f98d9948d90a1',t:'MTc3NDc5NDg4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e54a1fed47890a5',t:'MTc3NTAxNTQ2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
