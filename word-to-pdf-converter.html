@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Word to PDF Converter – Free & Instant | ToolsHouse</title>
 <meta name="description" content="Convert Word to PDF online for free. Transform DOC and DOCX files into high-quality PDFs while preserving formatting, fonts, images, and tables. Batch convert. No signup.">
-      <meta name="keywords" content="Word to PDF converte,convert Word to PDF, DOCX to PDF">
-    <link rel="canonical" href="https://www.toolshouse.online/word-to-pdf-converter.html">
-      <meta name="robots" content="index, follow">
+<meta name="keywords" content="Word to PDF converter, convert Word to PDF, DOCX to PDF">
+<link rel="canonical" href="https://www.toolshouse.online/word-to-pdf-converter.html">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph Meta Tags -->
 <meta property="og:title" content="Word to PDF Converter – Free & Instant | ToolsHouse">
 <meta property="og:description" content="Convert Word to PDF online for free. Transform DOC and DOCX files into high-quality PDFs while preserving formatting.">
 <meta property="og:url" content="https://www.toolshouse.online/word-to-pdf-converter.html">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://www.toolshouse.online/images/og-image.jpg">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Word to PDF Converter – Free & Instant | ToolsHouse">
+<meta name="twitter:description" content="Convert Word to PDF online for free. Transform DOC and DOCX files into high-quality PDFs while preserving formatting.">
+<meta name="twitter:image" content="https://www.toolshouse.online/images/og-image.jpg">
+
+<!-- Structured Data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -26,7 +37,26 @@
     "priceCurrency": "USD"
   }
 }
+</script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": "https://www.toolshouse.online/"
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Word to PDF Converter"
+  }]
+}
+</script>
+
+<style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap');
 
   :root {
@@ -305,6 +335,53 @@
     background: white;
     z-index: -1;
   }
+
+  /* Content section styling */
+  .content-section {
+    max-width: 540px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+  }
+  
+  .content-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+  
+  .content-section h2:first-of-type {
+    margin-top: 0;
+  }
+  
+  .content-section h3 {
+    font-size: 1.2rem;
+    margin-top: 20px;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  
+  .content-section p {
+    margin-bottom: 16px;
+    line-height: 1.5;
+    color: #444;
+  }
+  
+  .content-section ol, .content-section ul {
+    margin-bottom: 20px;
+    padding-left: 24px;
+  }
+  
+  .content-section li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    color: #444;
+  }
+  
+  .content-section li strong {
+    color: var(--ink);
+  }
 </style>
 </head>
 <body>
@@ -318,39 +395,19 @@
   <div class="card">
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept=".docx">
-      <span class="drop-icon">📄</span>
+      <span class="drop-icon" role="img" aria-label="Document icon">📄</span>
       <span class="drop-label">Drop your DOCX file here</span>
       <span class="drop-sub">or click to browse · Max 20MB</span>
     </div>
 
     <div class="file-info" id="fileInfo">
-      <span class="file-icon">📝</span>
+      <span class="file-icon" role="img" aria-label="File icon">📝</span>
       <div class="file-details">
         <div class="file-name" id="fileName">—</div>
         <div class="file-size" id="fileSize">—</div>
       </div>
       <button class="file-remove" id="removeBtn" title="Remove file">✕</button>
-    </div><main>
-  <section class="content">
-    <h2>How to Convert Word to PDF (Step-by-Step)</h2>
-    <ol>
-      <li>Upload your DOCX file by clicking or dragging it to the upload area</li>
-      <li>Click "Convert to PDF" to start the conversion</li>
-      <li>Download your converted PDF file instantly</li>
-    </ol>
-    
-    <h2>Why Use Our Word to PDF Converter?</h2>
-    <ul>
-      <li><strong>100% Free</strong> - No registration or payment required</li>
-      <li><strong>Privacy First</strong> - All conversion happens in your browser</li>
-      <li><strong>Preserves Formatting</strong> - Maintains fonts, tables, images, and layouts</li>
-      <li><strong>Fast Processing</strong> - Instant conversion without uploads</li>
-    </ul>
-  </section>
-  
-  <!-- Keep the conversion card here -->
-  <div class="card">...</div>
-</main>
+    </div>
 
     <div class="progress-wrap" id="progressWrap">
       <div class="progress-label">
@@ -369,7 +426,8 @@
     <div class="note">🔒 All processing happens in your browser — nothing is uploaded</div>
   </div>
 </div>
-<section style="max-width: 540px; margin: 20px auto; padding: 0 20px;">
+
+<section class="content-section">
   <h2>How to Convert Word to PDF</h2>
   <ol>
     <li>Upload your DOCX file by clicking or dragging it to the upload area</li>
@@ -377,229 +435,254 @@
     <li>Download your converted PDF file instantly</li>
   </ol>
   
-  <h3>Why Use Our Word to PDF Converter?</h3>
+  <h2>Why Use Our Word to PDF Converter?</h2>
   <ul>
     <li><strong>100% Free</strong> - No registration or payment required</li>
     <li><strong>Privacy First</strong> - All conversion happens in your browser</li>
     <li><strong>Preserves Formatting</strong> - Maintains fonts, tables, images, and layouts</li>
     <li><strong>Fast Processing</strong> - Instant conversion without uploads</li>
   </ul>
+  
+  <h3>Professional Quality Output</h3>
+  <p>Our Word to PDF converter ensures that your documents maintain their original formatting, including fonts, images, tables, and complex layouts. Perfect for resumes, reports, contracts, and academic papers.</p>
+  
+  <h3>Secure & Private</h3>
+  <p>Unlike online converters that require file uploads, our tool works entirely in your browser. Your documents never leave your computer, ensuring complete privacy and data security.</p>
 </section>
 
 <!-- Off-screen render area -->
 <div id="previewContainer"></div>
 
+<!-- All JavaScript libraries moved to the bottom of the page for better performance -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+
 <script>
-  const fileInput  = document.getElementById('fileInput');
-  const dropZone   = document.getElementById('dropZone');
-  const fileInfo   = document.getElementById('fileInfo');
-  const fileNameEl = document.getElementById('fileName');
-  const fileSizeEl = document.getElementById('fileSize');
-  const removeBtn  = document.getElementById('removeBtn');
-  const convertBtn = document.getElementById('convertBtn');
-  const statusEl   = document.getElementById('status');
-  const progressWrap = document.getElementById('progressWrap');
-  const progressFill = document.getElementById('progressFill');
-  const progressText = document.getElementById('progressText');
-  const progressPct  = document.getElementById('progressPct');
-  const preview    = document.getElementById('previewContainer');
-
-  let selectedFile = null;
-
-  function formatSize(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-  }
-
-  function setFile(file) {
-    if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.docx')) {
-      showStatus('error', '❌ Only .docx files are supported.');
-      return;
+  (function() {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
     }
-    if (file.size > 20 * 1024 * 1024) {
-      showStatus('error', '❌ File too large (max 20MB).');
-      return;
-    }
-    selectedFile = file;
-    fileNameEl.textContent = file.name;
-    fileSizeEl.textContent = formatSize(file.size);
-    fileInfo.classList.add('show');
-    convertBtn.disabled = false;
-    clearStatus();
-  }
+    
+    function init() {
+      const fileInput  = document.getElementById('fileInput');
+      const dropZone   = document.getElementById('dropZone');
+      const fileInfo   = document.getElementById('fileInfo');
+      const fileNameEl = document.getElementById('fileName');
+      const fileSizeEl = document.getElementById('fileSize');
+      const removeBtn  = document.getElementById('removeBtn');
+      const convertBtn = document.getElementById('convertBtn');
+      const statusEl   = document.getElementById('status');
+      const progressWrap = document.getElementById('progressWrap');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      const progressPct  = document.getElementById('progressPct');
+      const preview    = document.getElementById('previewContainer');
 
-  function clearFile() {
-    selectedFile = null;
-    fileInput.value = '';
-    fileInfo.classList.remove('show');
-    convertBtn.disabled = true;
-    clearStatus();
-    setProgress(0, '', false);
-  }
+      let selectedFile = null;
 
-  function showStatus(type, msg) {
-    statusEl.className = 'status show ' + type;
-    statusEl.textContent = msg;
-  }
+      function formatSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      }
 
-  function clearStatus() {
-    statusEl.className = 'status';
-    statusEl.textContent = '';
-  }
+      function setFile(file) {
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith('.docx')) {
+          showStatus('error', '❌ Only .docx files are supported.');
+          return;
+        }
+        if (file.size > 20 * 1024 * 1024) {
+          showStatus('error', '❌ File too large (max 20MB).');
+          return;
+        }
+        selectedFile = file;
+        fileNameEl.textContent = file.name;
+        fileSizeEl.textContent = formatSize(file.size);
+        fileInfo.classList.add('show');
+        convertBtn.disabled = false;
+        clearStatus();
+      }
 
-  function setProgress(pct, label, show) {
-    progressWrap.classList.toggle('show', show);
-    progressFill.style.width = pct + '%';
-    progressText.textContent = label;
-    progressPct.textContent = pct + '%';
-  }
+      function clearFile() {
+        selectedFile = null;
+        fileInput.value = '';
+        fileInfo.classList.remove('show');
+        convertBtn.disabled = true;
+        clearStatus();
+        setProgress(0, '', false);
+      }
 
-  // File input
-  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+      function showStatus(type, msg) {
+        statusEl.className = 'status show ' + type;
+        statusEl.textContent = msg;
+      }
 
-  // Drag-drop
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    setFile(e.dataTransfer.files[0]);
-  });
+      function clearStatus() {
+        statusEl.className = 'status';
+        statusEl.textContent = '';
+      }
 
-  removeBtn.addEventListener('click', clearFile);
+      function setProgress(pct, label, show) {
+        progressWrap.classList.toggle('show', show);
+        progressFill.style.width = pct + '%';
+        progressText.textContent = label;
+        progressPct.textContent = pct + '%';
+      }
 
-  // ── CONVERT ──────────────────────────────────────────────────────────────────
-  convertBtn.addEventListener('click', async () => {
-    if (!selectedFile) return;
-
-    // Safety check: ensure docx-preview loaded correctly
-    if (typeof docx === 'undefined' || typeof docx.renderAsync !== 'function') {
-      showStatus('error', '❌ Library failed to load. Please refresh the page and try again.');
-      return;
-    }
-
-    convertBtn.disabled = true;
-    clearStatus();
-    showStatus('info', '⏳ Converting… This may take a moment for large files.');
-    setProgress(10, 'Reading document…', true);
-
-    try {
-      const arrayBuffer = await selectedFile.arrayBuffer();
-
-      setProgress(30, 'Rendering document…', true);
-
-      // Render the DOCX into the hidden div using docx-preview
-      preview.innerHTML = '';
-      await docx.renderAsync(arrayBuffer, preview, null, {
-        className: 'docx-preview',
-        inWrapper: true,
-        ignoreWidth: false,
-        ignoreHeight: false,
-        ignoreFonts: false,
-        breakPages: true,
-        useBase64URL: true,
-        useMathMLPolyfill: false,
-        renderChanges: false,
-        renderHeaders: true,
-        renderFooters: true,
-        renderFootnotes: true,
-        renderEndnotes: true,
+      // File input
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files[0]) setFile(fileInput.files[0]);
       });
 
-      setProgress(55, 'Capturing pages…', true);
+      // Drag-drop
+      dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+      dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+      });
 
-      // Give the browser a moment to finish rendering
-      await new Promise(r => setTimeout(r, 300));
+      removeBtn.addEventListener('click', clearFile);
 
-      const { jsPDF } = window.jspdf;
+      // ── CONVERT ──────────────────────────────────────────────────────────────────
+      convertBtn.addEventListener('click', async () => {
+        if (!selectedFile) return;
 
-      // A4 dimensions in mm
-      const A4_W = 210;
-      const A4_H = 297;
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        // Safety check: ensure docx-preview loaded correctly
+        if (typeof docx === 'undefined' || typeof docx.renderAsync !== 'function') {
+          showStatus('error', '❌ Library failed to load. Please refresh the page and try again.');
+          return;
+        }
 
-      // Find all rendered pages inside the preview
-      const pages = preview.querySelectorAll('.docx-wrapper > section');
+        convertBtn.disabled = true;
+        clearStatus();
+        showStatus('info', '⏳ Converting… This may take a moment for large files.');
+        setProgress(10, 'Reading document…', true);
 
-      if (pages.length === 0) {
-        // Fallback: capture the whole container as one big image
-        await captureFull(pdf, preview, A4_W, A4_H);
-      } else {
-        for (let i = 0; i < pages.length; i++) {
-          const pct = 55 + Math.round(((i + 1) / pages.length) * 35);
-          setProgress(pct, `Exporting page ${i + 1} of ${pages.length}…`, true);
+        try {
+          const arrayBuffer = await selectedFile.arrayBuffer();
 
-          if (i > 0) pdf.addPage();
-          await capturePage(pdf, pages[i], A4_W, A4_H);
-          // Small pause to let the browser breathe on large docs
-          if (i % 5 === 4) await new Promise(r => setTimeout(r, 50));
+          setProgress(30, 'Rendering document…', true);
+
+          // Render the DOCX into the hidden div using docx-preview
+          preview.innerHTML = '';
+          await docx.renderAsync(arrayBuffer, preview, null, {
+            className: 'docx-preview',
+            inWrapper: true,
+            ignoreWidth: false,
+            ignoreHeight: false,
+            ignoreFonts: false,
+            breakPages: true,
+            useBase64URL: true,
+            useMathMLPolyfill: false,
+            renderChanges: false,
+            renderHeaders: true,
+            renderFooters: true,
+            renderFootnotes: true,
+            renderEndnotes: true,
+          });
+
+          setProgress(55, 'Capturing pages…', true);
+
+          // Give the browser a moment to finish rendering
+          await new Promise(r => setTimeout(r, 300));
+
+          const { jsPDF } = window.jspdf;
+
+          // A4 dimensions in mm
+          const A4_W = 210;
+          const A4_H = 297;
+          const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+          // Find all rendered pages inside the preview
+          const pages = preview.querySelectorAll('.docx-wrapper > section');
+
+          if (pages.length === 0) {
+            // Fallback: capture the whole container as one big image
+            await captureFull(pdf, preview, A4_W, A4_H);
+          } else {
+            for (let i = 0; i < pages.length; i++) {
+              const pct = 55 + Math.round(((i + 1) / pages.length) * 35);
+              setProgress(pct, `Exporting page ${i + 1} of ${pages.length}…`, true);
+
+              if (i > 0) pdf.addPage();
+              await capturePage(pdf, pages[i], A4_W, A4_H);
+              // Small pause to let the browser breathe on large docs
+              if (i % 5 === 4) await new Promise(r => setTimeout(r, 50));
+            }
+          }
+
+          setProgress(95, 'Saving PDF…', true);
+          const outName = selectedFile.name.replace(/\.docx$/i, '') + '.pdf';
+          pdf.save(outName);
+
+          setProgress(100, 'Done!', true);
+          showStatus('success', `✅ "${outName}" downloaded successfully!`);
+
+        } catch (err) {
+          console.error(err);
+          showStatus('error', '❌ Conversion failed: ' + (err.message || 'Unknown error'));
+          setProgress(0, '', false);
+        } finally {
+          convertBtn.disabled = false;
+          preview.innerHTML = '';
+        }
+      });
+
+      async function capturePage(pdf, el, pdfW, pdfH) {
+        const canvas = await html2canvas(el, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.92);
+        const ratio   = canvas.width / canvas.height;
+        const imgH    = pdfW / ratio;
+
+        if (imgH <= pdfH) {
+          // Fits on one page
+          pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, imgH);
+        } else {
+          // Tall section: slice into page-height chunks
+          const scaleFactor = canvas.width / pdfW; // px per mm
+          let sliceTop = 0;
+          let firstSlice = true;
+
+          while (sliceTop < canvas.height) {
+            const sliceHeightPx = Math.min(pdfH * scaleFactor, canvas.height - sliceTop);
+            const sliceCanvas   = document.createElement('canvas');
+            sliceCanvas.width   = canvas.width;
+            sliceCanvas.height  = sliceHeightPx;
+            sliceCanvas.getContext('2d').drawImage(
+              canvas, 0, sliceTop, canvas.width, sliceHeightPx,
+              0, 0, canvas.width, sliceHeightPx
+            );
+            const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
+            const sliceH    = sliceHeightPx / scaleFactor;
+
+            if (!firstSlice) pdf.addPage();
+            pdf.addImage(sliceData, 'JPEG', 0, 0, pdfW, sliceH);
+            sliceTop += sliceHeightPx;
+            firstSlice = false;
+          }
         }
       }
 
-      setProgress(95, 'Saving PDF…', true);
-      const outName = selectedFile.name.replace(/\.docx$/i, '') + '.pdf';
-      pdf.save(outName);
-
-      setProgress(100, 'Done!', true);
-      showStatus('success', `✅ "${outName}" downloaded successfully!`);
-
-    } catch (err) {
-      console.error(err);
-      showStatus('error', '❌ Conversion failed: ' + (err.message || 'Unknown error'));
-      setProgress(0, '', false);
-    } finally {
-      convertBtn.disabled = false;
-      preview.innerHTML = '';
-    }
-  });
-
-  async function capturePage(pdf, el, pdfW, pdfH) {
-    const canvas = await html2canvas(el, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.92);
-    const ratio   = canvas.width / canvas.height;
-    const imgH    = pdfW / ratio;
-
-    if (imgH <= pdfH) {
-      // Fits on one page
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, imgH);
-    } else {
-      // Tall section: slice into page-height chunks
-      const scaleFactor = canvas.width / pdfW; // px per mm
-      let sliceTop = 0;
-      let firstSlice = true;
-
-      while (sliceTop < canvas.height) {
-        const sliceHeightPx = Math.min(pdfH * scaleFactor, canvas.height - sliceTop);
-        const sliceCanvas   = document.createElement('canvas');
-        sliceCanvas.width   = canvas.width;
-        sliceCanvas.height  = sliceHeightPx;
-        sliceCanvas.getContext('2d').drawImage(
-          canvas, 0, sliceTop, canvas.width, sliceHeightPx,
-          0, 0, canvas.width, sliceHeightPx
-        );
-        const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
-        const sliceH    = sliceHeightPx / scaleFactor;
-
-        if (!firstSlice) pdf.addPage();
-        pdf.addImage(sliceData, 'JPEG', 0, 0, pdfW, sliceH);
-        sliceTop += sliceHeightPx;
-        firstSlice = false;
+      async function captureFull(pdf, el, pdfW, pdfH) {
+        await capturePage(pdf, el, pdfW, pdfH);
       }
     }
-  }
-
-  async function captureFull(pdf, el, pdfW, pdfH) {
-    await capturePage(pdf, el, pdfW, pdfH);
-  }
+  })();
 </script>
 </body>
 </html>
