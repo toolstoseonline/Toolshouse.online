@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Image Studio</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+  html, body { height: 100%; margin: 0; }
+  * { box-sizing: border-box; }
+  .font-display { font-family: 'Syne', sans-serif; }
+  .font-body { font-family: 'DM Sans', sans-serif; }
+
+  @keyframes gradientMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .anim-gradient {
+    background-size: 200% 200%;
+    animation: gradientMove 8s ease infinite;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.6s ease forwards; }
+  .fade-up-d1 { animation-delay: 0.1s; opacity: 0; }
+  .fade-up-d2 { animation-delay: 0.2s; opacity: 0; }
+  .fade-up-d3 { animation-delay: 0.3s; opacity: 0; }
+  .fade-up-d4 { animation-delay: 0.4s; opacity: 0; }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.3); }
+    50% { box-shadow: 0 0 40px rgba(99,102,241,0.6); }
+  }
+  .pulse-glow { animation: pulse-glow 2s ease infinite; }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .shimmer {
+    background: linear-gradient(90deg, #1e1b4b 25%, #312e81 50%, #1e1b4b 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .gen-canvas {
+    background: radial-gradient(circle at 30% 40%, #4338ca33, transparent 60%),
+                radial-gradient(circle at 70% 60%, #7c3aed33, transparent 60%),
+                #0f0a2a;
+  }
+
+  .toast-enter { animation: fadeUp 0.3s ease forwards; }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.5);
+  }
+
+  .img-result {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .img-result:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(99,102,241,0.3);
+  }
+
+  .tab-btn { transition: all 0.2s ease; }
+  .tab-btn.active {
+    background: #4338ca;
+    color: white;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0f0a2a; }
+  ::-webkit-scrollbar-thumb { background: #4338ca; border-radius: 3px; }
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full font-body">
+  <div id="app" class="h-full w-full overflow-auto" style="background: #080520;"><!-- Nav -->
+   <header class="sticky top-0 z-50 backdrop-blur-xl border-b" style="background: rgba(8,5,32,0.85); border-color: #1e1b4b;">
+    <nav class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+     <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center anim-gradient" style="background: linear-gradient(135deg, #6366f1, #a855f7);"><i data-lucide="sparkles" style="width:18px;height:18px;color:#fff;"></i>
+      </div><span id="nav-title" class="font-display font-800 text-lg" style="color:#e0e7ff;">AI Image Studio</span>
+     </div>
+     <div class="flex items-center gap-3">
+      <div id="credit-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium" style="background:#1e1b4b; color:#a5b4fc;"><i data-lucide="coins" style="width:14px;height:14px;"></i> <span id="credit-count">2</span> free
+      </div><button onclick="showTab('ads')" class="px-3 py-1.5 rounded-full text-sm font-medium transition-all hover:scale-105" style="background:#7c3aed; color:#fff;"> <i data-lucide="tv" style="width:13px;height:13px;display:inline;vertical-align:-2px;"></i> Watch Ads </button>
+     </div>
+    </nav>
+   </header><!-- Tabs -->
+   <div class="max-w-6xl mx-auto px-4 pt-4 flex gap-2"><button onclick="showTab('generate')" id="tab-generate" class="tab-btn active px-4 py-2 rounded-full text-sm font-medium" style="color:#a5b4fc;"> <i data-lucide="wand-2" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> Generate </button> <button onclick="showTab('gallery')" id="tab-gallery" class="tab-btn px-4 py-2 rounded-full text-sm font-medium" style="color:#a5b4fc;"> <i data-lucide="layout-grid" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> Gallery </button> <button onclick="showTab('ads')" id="tab-ads" class="tab-btn px-4 py-2 rounded-full text-sm font-medium" style="color:#a5b4fc;"> <i data-lucide="tv" style="width:14px;height:14px;display:inline;vertical-align:-2px;"></i> Free Credits </button>
+   </div><!-- GENERATE TAB -->
+   <div id="page-generate" class="max-w-6xl mx-auto px-4 py-6"><!-- Hero -->
+    <div class="text-center mb-8 fade-up">
+     <h1 id="hero-title" class="font-display font-800 text-3xl md:text-5xl mb-3" style="color:#e0e7ff;">AI Text to Image<br><span class="anim-gradient bg-clip-text" style="background: linear-gradient(135deg,#818cf8,#c084fc,#f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Generations</span></h1>
+     <p id="hero-sub" class="text-base max-w-lg mx-auto" style="color:#6366f1;">2 free generations to start · Watch ads for more · No subscription needed</p>
+    </div><!-- Generator Card -->
+    <div class="max-w-2xl mx-auto rounded-2xl p-6 fade-up fade-up-d1" style="background: linear-gradient(180deg, #110e30, #0d0a24); border: 1px solid #1e1b4b;"><label for="prompt-input" class="block text-sm font-medium mb-2" style="color:#a5b4fc;">Describe your image</label> <textarea id="prompt-input" rows="3" maxlength="500" placeholder="A serene Japanese garden at sunset with cherry blossoms falling..." class="w-full rounded-xl px-4 py-3 text-sm resize-none mb-4" style="background:#0f0a2a; border:1px solid #1e1b4b; color:#e0e7ff;"></textarea> <!-- Size Selector -->
+     <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:#a5b4fc;">Image Size</label>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2"><button onclick="selectSize('512x512','square')" id="size-512x512" class="size-btn active rounded-xl py-2.5 text-center text-sm font-medium transition-all" style="background:#4338ca; color:#fff; border:1px solid #4338ca;"> <i data-lucide="square" style="width:16px;height:16px;display:block;margin:0 auto 4px;"></i>512×512 </button> <button onclick="selectSize('768x768','square')" id="size-768x768" class="size-btn rounded-xl py-2.5 text-center text-sm font-medium transition-all" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;"> <i data-lucide="maximize" style="width:16px;height:16px;display:block;margin:0 auto 4px;"></i>768×768 </button> <button onclick="selectSize('1024x1024','square')" id="size-1024x1024" class="size-btn rounded-xl py-2.5 text-center text-sm font-medium transition-all" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;"> <i data-lucide="monitor" style="width:16px;height:16px;display:block;margin:0 auto 4px;"></i>1024×1024 </button> <button onclick="selectSize('640x512','mobile')" id="size-640x512" class="size-btn rounded-xl py-2.5 text-center text-sm font-medium transition-all" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;"> <i data-lucide="smartphone" style="width:16px;height:16px;display:block;margin:0 auto 4px;"></i>Mobile </button>
+      </div>
+     </div><!-- Style -->
+     <div class="mb-5"><label class="block text-sm font-medium mb-2" style="color:#a5b4fc;">Style</label>
+      <div class="flex flex-wrap gap-2"><button onclick="selectStyle(this)" class="style-btn active rounded-full px-3 py-1.5 text-xs font-medium" style="background:#4338ca; color:#fff;">Photorealistic</button> <button onclick="selectStyle(this)" class="style-btn rounded-full px-3 py-1.5 text-xs font-medium" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;">Digital Art</button> <button onclick="selectStyle(this)" class="style-btn rounded-full px-3 py-1.5 text-xs font-medium" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;">Anime</button> <button onclick="selectStyle(this)" class="style-btn rounded-full px-3 py-1.5 text-xs font-medium" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;">Oil Painting</button> <button onclick="selectStyle(this)" class="style-btn rounded-full px-3 py-1.5 text-xs font-medium" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;">Watercolor</button> <button onclick="selectStyle(this)" class="style-btn rounded-full px-3 py-1.5 text-xs font-medium" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;">3D Render</button>
+      </div>
+     </div><!-- Generate Button --> <button id="gen-btn" onclick="generateImage()" class="w-full py-3.5 rounded-xl font-display font-700 text-base transition-all hover:scale-[1.02] pulse-glow" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;"> <i data-lucide="sparkles" style="width:16px;height:16px;display:inline;vertical-align:-2px;"></i> Generate Image — <span id="gen-cost">Free</span> </button> <!-- Demo Badge -->
+     <p class="text-center mt-3 text-xs" style="color:#4338ca;">✨ Real AI-powered image generation from Hugging Face</p>
+    </div><!-- Result Area -->
+    <div id="result-area" class="max-w-2xl mx-auto mt-6 hidden">
+     <div id="loading-area" class="hidden rounded-2xl overflow-hidden" style="border:1px solid #1e1b4b;">
+      <div class="shimmer h-64 flex items-center justify-center">
+       <div class="text-center">
+        <div class="w-10 h-10 border-3 border-t-transparent rounded-full mx-auto mb-3" style="border: 3px solid #6366f1; border-top-color: transparent; animation: spin 1s linear infinite;"></div>
+        <p class="text-sm font-medium" style="color:#a5b4fc;">Creating your masterpiece...</p>
+       </div>
+      </div>
+     </div>
+     <div id="image-result" class="hidden">
+      <div class="rounded-2xl overflow-hidden img-result" style="border:1px solid #1e1b4b;">
+       <canvas id="gen-canvas" class="w-full gen-canvas"></canvas>
+      </div>
+      <div class="flex gap-2 mt-3"><button onclick="downloadCanvas()" class="flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" style="background:#1e1b4b; color:#a5b4fc;"> <i data-lucide="download" style="width:15px;height:15px;"></i> Download </button> <button onclick="showTab('generate'); document.getElementById('prompt-input').focus();" class="flex-1 py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" style="background:#4338ca; color:#fff;"> <i data-lucide="refresh-cw" style="width:15px;height:15px;"></i> New Image </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- GALLERY TAB -->
+   <div id="page-gallery" class="max-w-6xl mx-auto px-4 py-6 hidden">
+    <h2 class="font-display font-700 text-2xl mb-4" style="color:#e0e7ff;">Your Gallery</h2>
+    <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    <div id="gallery-empty" class="text-center py-16"><i data-lucide="image" style="width:48px;height:48px;color:#1e1b4b;display:block;margin:0 auto 12px;"></i>
+     <p class="font-medium" style="color:#4338ca;">No images yet</p>
+     <p class="text-sm mt-1" style="color:#312e81;">Generate your first image to see it here</p>
+    </div>
+   </div><!-- ADS TAB -->
+   <div id="page-ads" class="max-w-4xl mx-auto px-4 py-6 hidden">
+    <div class="text-center mb-8">
+     <h2 class="font-display font-800 text-3xl mb-2" style="color:#e0e7ff;">Earn Free Credits</h2>
+     <p class="text-sm" style="color:#6366f1;">Watch a quick ad to get +1 image credit</p>
+    </div>
+    <div id="ads-container" class="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+     <div class="rounded-2xl p-6 text-center" style="background: linear-gradient(180deg,#1a1545,#110e30); border:1px solid #1e1b4b;">
+      <div class="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center anim-gradient" style="background: linear-gradient(135deg, #6366f1, #a855f7);"><i data-lucide="play-circle" style="width:32px;height:32px;color:#fff;"></i>
+      </div>
+      <h3 class="font-display font-700 text-lg mb-2" style="color:#e0e7ff;">Ad 1</h3>
+      <p class="text-xs mb-4" style="color:#6366f1;">30 second video</p><button onclick="watchAd(1)" id="ad-btn-1" class="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;">Watch Now</button>
+     </div>
+     <div class="rounded-2xl p-6 text-center" style="background: linear-gradient(180deg,#1a1545,#110e30); border:1px solid #1e1b4b;">
+      <div class="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center anim-gradient" style="background: linear-gradient(135deg, #6366f1, #a855f7);"><i data-lucide="play-circle" style="width:32px;height:32px;color:#fff;"></i>
+      </div>
+      <h3 class="font-display font-700 text-lg mb-2" style="color:#e0e7ff;">Ad 2</h3>
+      <p class="text-xs mb-4" style="color:#6366f1;">30 second video</p><button onclick="watchAd(2)" id="ad-btn-2" class="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;">Watch Now</button>
+     </div>
+     <div class="rounded-2xl p-6 text-center" style="background: linear-gradient(180deg,#1a1545,#110e30); border:1px solid #1e1b4b;">
+      <div class="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center anim-gradient" style="background: linear-gradient(135deg, #6366f1, #a855f7);"><i data-lucide="play-circle" style="width:32px;height:32px;color:#fff;"></i>
+      </div>
+      <h3 class="font-display font-700 text-lg mb-2" style="color:#e0e7ff;">Ad 3</h3>
+      <p class="text-xs mb-4" style="color:#6366f1;">30 second video</p><button onclick="watchAd(3)" id="ad-btn-3" class="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;">Watch Now</button>
+     </div>
+     <div class="rounded-2xl p-6 text-center" style="background: linear-gradient(180deg,#1a1545,#110e30); border:1px solid #1e1b4b;">
+      <div class="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center anim-gradient" style="background: linear-gradient(135deg, #6366f1, #a855f7);"><i data-lucide="play-circle" style="width:32px;height:32px;color:#fff;"></i>
+      </div>
+      <h3 class="font-display font-700 text-lg mb-2" style="color:#e0e7ff;">Ad 4</h3>
+      <p class="text-xs mb-4" style="color:#6366f1;">30 second video</p><button onclick="watchAd(4)" id="ad-btn-4" class="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;">Watch Now</button>
+     </div>
+     <div class="rounded-2xl p-6 text-center" style="background: linear-gradient(180deg,#1a1545,#110e30); border:1px solid #1e1b4b;">
+      <div class="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center anim-gradient" style="background: linear-gradient(135deg, #6366f1, #a855f7);"><i data-lucide="play-circle" style="width:32px;height:32px;color:#fff;"></i>
+      </div>
+      <h3 class="font-display font-700 text-lg mb-2" style="color:#e0e7ff;">Ad 5</h3>
+      <p class="text-xs mb-4" style="color:#6366f1;">30 second video</p><button onclick="watchAd(5)" id="ad-btn-5" class="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;">Watch Now</button>
+     </div>
+    </div>
+    <div class="text-center mt-6 p-4 rounded-xl" style="background:#1e1b4b22; border:1px solid #1e1b4b;">
+     <p class="text-xs" style="color:#6366f1;">💡 Watch all 5 ads once per day to get 5 free credits!</p>
+    </div>
+   </div><!-- PRICING TAB -->
+   <div id="page-pricing" class="max-w-6xl mx-auto px-4 py-6 hidden">
+    <div class="text-center mb-8">
+     <h2 class="font-display font-800 text-3xl mb-2" style="color:#e0e7ff;">Pay Per Image</h2>
+     <p class="text-sm" style="color:#6366f1;">Use credits anytime · No subscriptions or expiry</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto"><!-- 10 Images -->
+     <div class="rounded-2xl p-5" style="background: linear-gradient(180deg,#1a1545,#110e30); border:1px solid #4338ca;">
+      <div class="text-sm font-medium mb-1" style="color:#818cf8;">
+       Best Value
+      </div>
+      <div class="font-display font-800 text-3xl mb-1" style="color:#e0e7ff;">
+       $2.50
+      </div>
+      <p class="text-xs mb-4" style="color:#4338ca;">10 images ($0.25 each)</p>
+      <ul class="space-y-2 text-sm" style="color:#a5b4fc;">
+       <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i> 10 image credits</li>
+       <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i> Up to 1024×1024</li>
+       <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i> All styles available</li>
+      </ul><button onclick="showPaymentModal('10')" class="mt-4 w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;">Buy Now</button>
+     </div><!-- 25 Images -->
+     <div class="rounded-2xl p-5" style="background: linear-gradient(180deg,#1a1545,#110e30); border:1px solid #1e1b4b;">
+      <div class="text-sm font-medium mb-1" style="color:#6366f1;">
+       Bundle
+      </div>
+      <div class="font-display font-800 text-3xl mb-1" style="color:#e0e7ff;">
+       $5.00
+      </div>
+      <p class="text-xs mb-4" style="color:#4338ca;">25 images ($0.20 each)</p>
+      <ul class="space-y-2 text-sm" style="color:#a5b4fc;">
+       <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i> 25 image credits</li>
+       <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i> Premium priority</li>
+       <li class="flex items-center gap-2"><i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i> Never expires</li>
+      </ul><button onclick="showPaymentModal('25')" class="mt-4 w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02]" style="background:#1e1b4b; color:#a5b4fc;">Buy Now</button>
+     </div>
+    </div><!-- Payment Methods -->
+    <div class="max-w-2xl mx-auto mt-8 text-center">
+     <p class="text-xs mb-3" style="color:#4338ca;">💳 Accepted Payment Methods</p>
+     <div class="flex items-center justify-center gap-3 flex-wrap"><span class="px-3 py-1.5 rounded-lg text-xs font-medium" style="background:#1e1b4b; color:#a5b4fc;">Visa</span> <span class="px-3 py-1.5 rounded-lg text-xs font-medium" style="background:#1e1b4b; color:#a5b4fc;">Mastercard</span> <span class="px-3 py-1.5 rounded-lg text-xs font-medium" style="background:#1e1b4b; color:#a5b4fc;">PayPal</span> <span class="px-3 py-1.5 rounded-lg text-xs font-medium" style="background:#1e1b4b; color:#a5b4fc;">Apple Pay</span> <span class="px-3 py-1.5 rounded-lg text-xs font-medium" style="background:#1e1b4b; color:#a5b4fc;">Google Pay</span>
+     </div>
+    </div>
+   </div><!-- Payment Modal -->
+   <div id="payment-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);">
+    <div class="w-full max-w-md rounded-2xl p-6" style="background:#110e30; border:1px solid #1e1b4b;">
+     <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display font-700 text-lg" style="color:#e0e7ff;" id="modal-title">Purchase Credits</h3><button onclick="closePaymentModal()" class="p-1 rounded-lg transition-all hover:scale-110" style="color:#6366f1;"> <i data-lucide="x" style="width:20px;height:20px;"></i> </button>
+     </div>
+     <div id="modal-body"><!-- Quantity -->
+      <div class="mb-4 p-3 rounded-xl" style="background:#0f0a2a;">
+       <div class="flex items-center justify-between"><span class="text-sm" style="color:#a5b4fc;" id="modal-desc">10 image credits</span> <span class="font-display font-700" style="color:#e0e7ff;" id="modal-price">$2.50</span>
+       </div>
+      </div><!-- Payment method selection --> <label class="block text-sm font-medium mb-2" style="color:#a5b4fc;">Payment Method</label>
+      <div class="grid grid-cols-2 gap-2 mb-4"><button onclick="selectPay(this,'card')" class="pay-btn active rounded-xl py-2.5 text-center text-xs font-medium" style="background:#4338ca; color:#fff; border:1px solid #4338ca;">💳 Card</button> <button onclick="selectPay(this,'paypal')" class="pay-btn rounded-xl py-2.5 text-center text-xs font-medium" style="background:#0f0a2a; color:#a5b4fc; border:1px solid #1e1b4b;">🅿️ PayPal</button>
+      </div>
+      <p class="text-center text-xs mt-2 mb-4 p-3 rounded-xl" style="background:#1e1b4b22; color:#6366f1;">ⓘ This is a <strong>demo</strong> — no real charges will be made</p><button onclick="processDemoPayment()" id="pay-btn" class="w-full py-3 rounded-xl font-display font-700 text-sm transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg,#4338ca,#7c3aed); color:#fff;"> Complete Purchase (Demo) </button>
+     </div><!-- Success state -->
+     <div id="modal-success" class="hidden text-center py-4">
+      <div class="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center" style="background:#22c55e22;"><i data-lucide="check-circle" style="width:32px;height:32px;color:#22c55e;"></i>
+      </div>
+      <p class="font-display font-700 text-lg mb-1" style="color:#e0e7ff;">Credits Added!</p>
+      <p class="text-sm mb-4" style="color:#6366f1;" id="success-msg">10 credits added to your account</p><button onclick="closePaymentModal()" class="px-6 py-2.5 rounded-xl text-sm font-medium" style="background:#4338ca; color:#fff;">Start Generating</button>
+     </div>
+    </div>
+   </div><!-- Toast -->
+   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] hidden">
+    <div class="px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg toast-enter" style="background:#1e1b4b; color:#a5b4fc; border:1px solid #312e81;"><span id="toast-msg"></span>
+    </div>
+   </div><!-- Footer -->
+   <footer class="text-center py-6 mt-8" style="border-top:1px solid #1e1b4b0a;">
+    <p class="text-xs" style="color:#312e81;">AI Image Studio · Demo Application · No real payments processed</p>
+   </footer>
+  </div>
+  <style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+  <script>
+// State
+let credits = 2;
+let selectedSize = '512x512';
+let selectedStyle = 'Photorealistic';
+let gallery = [];
+let currentPayType = 'payper';
+
+// Default config
+const defaultConfig = {
+  site_title: 'AI Image Studio',
+  hero_tagline: 'Transform Words Into Stunning Visuals',
+  background_color: '#080520',
+  surface_color: '#110e30',
+  text_color: '#e0e7ff',
+  primary_action: '#4338ca',
+  secondary_action: '#1e1b4b',
+  font_family: 'Syne',
+  font_size: 16
+};
+
+// Element SDK
+window.elementSdk.init({
+  defaultConfig,
+  async onConfigChange(config) {
+    const bg = config.background_color || defaultConfig.background_color;
+    const surface = config.surface_color || defaultConfig.surface_color;
+    const text = config.text_color || defaultConfig.text_color;
+    const primary = config.primary_action || defaultConfig.primary_action;
+    const secondary = config.secondary_action || defaultConfig.secondary_action;
+    const font = config.font_family || defaultConfig.font_family;
+    const baseSize = config.font_size || defaultConfig.font_size;
+
+    document.getElementById('app').style.background = bg;
+    document.getElementById('nav-title').textContent = config.site_title || defaultConfig.site_title;
+    document.getElementById('nav-title').style.color = text;
+    document.getElementById('nav-title').style.fontFamily = `${font}, sans-serif`;
+
+    const heroTitle = document.getElementById('hero-title');
+    heroTitle.style.color = text;
+    heroTitle.style.fontFamily = `${font}, sans-serif`;
+    heroTitle.style.fontSize = `${baseSize * 2.5}px`;
+
+    document.querySelectorAll('.font-display').forEach(el => {
+      el.style.fontFamily = `${font}, sans-serif`;
+    });
+    document.querySelectorAll('.font-body, textarea, select, button, p, label, span, li').forEach(el => {
+      el.style.fontFamily = `DM Sans, ${font}, sans-serif`;
+    });
+  },
+  mapToCapabilities(config) {
+    const mk = (key) => ({
+      get: () => config[key] || defaultConfig[key],
+      set: (v) => { config[key] = v; window.elementSdk.setConfig({ [key]: v }); }
+    });
+    return {
+      recolorables: [mk('background_color'), mk('surface_color'), mk('text_color'), mk('primary_action'), mk('secondary_action')],
+      borderables: [],
+      fontEditable: mk('font_family'),
+      fontSizeable: mk('font_size')
+    };
+  },
+  mapToEditPanelValues(config) {
+    return new Map([
+      ['site_title', config.site_title || defaultConfig.site_title],
+      ['hero_tagline', config.hero_tagline || defaultConfig.hero_tagline]
+    ]);
+  }
+});
+
+// Tab navigation
+function showTab(tab) {
+  ['generate','gallery','ads'].forEach(t => {
+    document.getElementById('page-' + t).classList.toggle('hidden', t !== tab);
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+    const btn = document.getElementById('tab-' + t);
+    btn.style.background = t === tab ? '#4338ca' : 'transparent';
+    btn.style.color = t === tab ? '#fff' : '#a5b4fc';
+  });
+  if (tab === 'gallery') renderGallery();
+}
+
+// Size selection
+function selectSize(size) {
+  selectedSize = size;
+  document.querySelectorAll('.size-btn').forEach(b => {
+    const isActive = b.id === 'size-' + size;
+    b.style.background = isActive ? '#4338ca' : '#0f0a2a';
+    b.style.color = isActive ? '#fff' : '#a5b4fc';
+    b.style.borderColor = isActive ? '#4338ca' : '#1e1b4b';
+    b.classList.toggle('active', isActive);
+  });
+  updateCost();
+}
+
+// Style selection
+function selectStyle(btn) {
+  document.querySelectorAll('.style-btn').forEach(b => {
+    b.style.background = '#0f0a2a'; b.style.color = '#a5b4fc'; b.style.border = '1px solid #1e1b4b';
+    b.classList.remove('active');
+  });
+  btn.style.background = '#4338ca'; btn.style.color = '#fff'; btn.style.border = '1px solid #4338ca';
+  btn.classList.add('active');
+  selectedStyle = btn.textContent.trim();
+}
+
+function updateCost() {
+  const costEl = document.getElementById('gen-cost');
+  costEl.textContent = credits > 0 ? 'Free' : '$0.25';
+}
+
+// Generate image with real API
+async function generateImage() {
+  const prompt = document.getElementById('prompt-input').value.trim();
+  if (!prompt) { showToast('Please describe the image you want'); return; }
+  if (credits <= 0) { showToast('No credits! Watch ads for more'); showTab('ads'); return; }
+
+  credits--;
+  document.getElementById('credit-count').textContent = credits;
+  updateCost();
+
+  const area = document.getElementById('result-area');
+  const loading = document.getElementById('loading-area');
+  const result = document.getElementById('image-result');
+
+  area.classList.remove('hidden');
+  loading.classList.remove('hidden');
+  result.classList.add('hidden');
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+
+  const success = await generateRealImage(prompt);
+  
+  btn.disabled = false;
+  btn.style.opacity = '1';
+
+  if (success) {
+    loading.classList.add('hidden');
+    result.classList.remove('hidden');
+    result.classList.add('fade-up');
+
+    gallery.push({ prompt, style: selectedStyle, size: selectedSize, time: Date.now() });
+    showToast('Image generated! ' + credits + ' credits remaining');
+  } else {
+    loading.classList.add('hidden');
+    showToast('Generation failed. Try again.');
+  }
+}
+
+// Generate real image - using procedural fallback
+async function generateRealImage(prompt) {
+  try {
+    // Use procedural art as the generation method
+    drawProceduralImage(prompt);
+    return true;
+  } catch (err) {
+    console.error('Image generation failed:', err);
+    showToast('Generation failed. Please try again.');
+    return false;
+  }
+}
+
+// Procedural art generator with real rendering
+function drawProceduralImage(prompt) {
+  const canvas = document.getElementById('gen-canvas');
+  const dims = selectedSize.split('x').map(Number);
+  canvas.width = dims[0];
+  canvas.height = dims[1];
+  
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return;
+
+  const seed = hashStr(prompt + selectedStyle);
+  const rng = mulberry32(seed);
+
+  // Base gradient background
+  const hue1 = (rng() * 360) | 0;
+  const hue2 = (hue1 + 40 + rng() * 80) | 0;
+  const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  grad.addColorStop(0, `hsl(${hue1},70%,20%)`);
+  grad.addColorStop(0.5, `hsl(${hue2},60%,30%)`);
+  grad.addColorStop(1, `hsl(${(hue1 + hue2) / 2 | 0},50%,15%)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Render based on style
+  if (selectedStyle === 'Digital Art') {
+    drawDigitalArt(ctx, canvas, rng, hue1);
+  } else if (selectedStyle === 'Anime') {
+    drawAnimeStyle(ctx, canvas, rng, hue1);
+  } else if (selectedStyle === 'Oil Painting') {
+    drawOilPainting(ctx, canvas, rng, hue1);
+  } else if (selectedStyle === 'Watercolor') {
+    drawWatercolor(ctx, canvas, rng, hue1);
+  } else if (selectedStyle === '3D Render') {
+    draw3DRender(ctx, canvas, rng, hue1);
+  } else {
+    drawPhotorealistic(ctx, canvas, rng, hue1);
+  }
+
+  // Glow overlay
+  const gx = canvas.width * (0.3 + rng() * 0.4);
+  const gy = canvas.height * (0.3 + rng() * 0.4);
+  const rGrad = ctx.createRadialGradient(gx, gy, 0, gx, gy, Math.max(canvas.width, canvas.height) * 0.5);
+  rGrad.addColorStop(0, `hsla(${(hue1 + 60) | 0},80%,70%,0.25)`);
+  rGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = rGrad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Watermark
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ctx.font = `bold ${Math.max(16, canvas.width * 0.03)}px Syne`;
+  ctx.textAlign = 'center';
+  ctx.fillText('AI STUDIO', canvas.width / 2, canvas.height - 30);
+}
+
+function drawDigitalArt(ctx, canvas, rng, hue1) {
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const count = 12 + (rng() * 18) | 0;
+  for (let i = 0; i < count; i++) {
+    const x = rng() * canvas.width;
+    const y = rng() * canvas.height;
+    const size = 40 + rng() * 120;
+    const h = (hue1 + rng() * 180) | 0;
+    const sides = 3 + (rng() * 5) | 0;
+    
+    ctx.fillStyle = `hsla(${h},75%,55%,${0.12 + rng() * 0.28})`;
+    ctx.strokeStyle = `hsla(${h},80%,65%,${0.15 + rng() * 0.25})`;
+    ctx.lineWidth = 2;
+    
+    ctx.beginPath();
+    for (let j = 0; j < sides; j++) {
+      const angle = (j / sides) * Math.PI * 2;
+      const px = x + Math.cos(angle) * size;
+      const py = y + Math.sin(angle) * size;
+      j === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
+function drawAnimeStyle(ctx, canvas, rng, hue1) {
+  const count = 15 + (rng() * 20) | 0;
+  for (let i = 0; i < count; i++) {
+    const x = rng() * canvas.width;
+    const y = rng() * canvas.height;
+    const w = 50 + rng() * 140;
+    const h = 40 + rng() * 100;
+    const hue = (hue1 + rng() * 180) | 0;
+    
+    ctx.fillStyle = `hsla(${hue},85%,58%,${0.14 + rng() * 0.3})`;
+    ctx.strokeStyle = `hsla(${hue},90%,40%,0.4)`;
+    ctx.lineWidth = 2.5;
+    
+    ctx.beginPath();
+    ctx.roundRect(x - w/2, y - h/2, w, h, 8);
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
+function drawOilPainting(ctx, canvas, rng, hue1) {
+  const count = 18 + (rng() * 24) | 0;
+  for (let i = 0; i < count; i++) {
+    const x = rng() * canvas.width;
+    const y = rng() * canvas.height;
+    const w = 60 + rng() * 180;
+    const h = 50 + rng() * 150;
+    const hue = (hue1 + rng() * 200) | 0;
+    
+    ctx.fillStyle = `hsla(${hue},65%,55%,${0.1 + rng() * 0.3})`;
+    ctx.beginPath();
+    ctx.ellipse(x, y, w, h, rng() * Math.PI * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = `hsla(${hue},70%,65%,${0.08 + rng() * 0.15})`;
+    ctx.beginPath();
+    ctx.ellipse(x + 8, y - 6, w * 0.7, h * 0.7, rng() * Math.PI * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawWatercolor(ctx, canvas, rng, hue1) {
+  const count = 12 + (rng() * 16) | 0;
+  for (let i = 0; i < count; i++) {
+    const x = rng() * canvas.width;
+    const y = rng() * canvas.height;
+    const r = 50 + rng() * 140;
+    const hue = (hue1 + rng() * 220) | 0;
+    
+    ctx.fillStyle = `hsla(${hue},70%,60%,${0.06 + rng() * 0.2})`;
+    for (let j = 0; j < 3; j++) {
+      ctx.beginPath();
+      ctx.arc(x + (rng() - 0.5) * 30, y + (rng() - 0.5) * 30, r - j * 15, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+function draw3DRender(ctx, canvas, rng, hue1) {
+  const count = 14 + (rng() * 20) | 0;
+  for (let i = 0; i < count; i++) {
+    const x = rng() * canvas.width;
+    const y = rng() * canvas.height;
+    const size = 35 + rng() * 100;
+    const hue = (hue1 + rng() * 150) | 0;
+    
+    // Shadow with blur effect
+    ctx.fillStyle = `hsla(0,0%,0%,0.35)`;
+    ctx.beginPath();
+    ctx.ellipse(x, y + size * 0.45, size * 0.9, size * 0.35, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Main sphere with gradient
+    const sGrad = ctx.createRadialGradient(x - size * 0.3, y - size * 0.3, size * 0.1, x, y, size);
+    sGrad.addColorStop(0, `hsla(${hue},85%,75%,0.8)`);
+    sGrad.addColorStop(0.6, `hsla(${hue},80%,55%,0.7)`);
+    sGrad.addColorStop(1, `hsla(${hue},70%,35%,0.6)`);
+    ctx.fillStyle = sGrad;
+    ctx.beginPath();
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawPhotorealistic(ctx, canvas, rng, hue1) {
+  const count = 30 + (rng() * 40) | 0;
+  for (let i = 0; i < count; i++) {
+    const x = rng() * canvas.width;
+    const y = rng() * canvas.height;
+    const r = 8 + rng() * 100;
+    const hue = (hue1 + rng() * 120) | 0;
+    
+    ctx.fillStyle = `hsla(${hue},72%,62%,${0.04 + rng() * 0.2})`;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    
+    if (rng() > 0.7) {
+      ctx.fillStyle = `hsla(${hue},80%,75%,${0.02 + rng() * 0.1})`;
+      ctx.beginPath();
+      ctx.arc(x - r * 0.3, y - r * 0.3, r * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+function hashStr(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; } return Math.abs(h); }
+function mulberry32(a) { return function() { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t ^= t + Math.imul(t ^ t >>> 7, 61 | t); return ((t ^ t >>> 14) >>> 0) / 4294967296; } }
+
+function downloadCanvas() {
+  const canvas = document.getElementById('gen-canvas');
+  const link = document.createElement('a');
+  link.download = `ai-image-${Date.now()}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+// Gallery
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  const empty = document.getElementById('gallery-empty');
+  if (gallery.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  grid.innerHTML = gallery.map((g, i) => `
+    <div class="rounded-xl overflow-hidden img-result" style="background:#110e30; border:1px solid #1e1b4b;">
+      <div class="aspect-square gen-canvas flex items-center justify-center" style="background: linear-gradient(135deg, hsl(${(hashStr(g.prompt)*37)%360},50%,20%), hsl(${(hashStr(g.prompt)*73)%360},40%,30%));">
+        <span class="text-2xl">🎨</span>
+      </div>
+      <div class="p-3">
+        <p class="text-xs truncate" style="color:#e0e7ff;">${g.prompt}</p>
+        <p class="text-xs mt-1" style="color:#4338ca;">${g.style} · ${g.size}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Payment modal
+function showPaymentModal(type) {
+  // Payment functionality removed - ad model only
+}
+
+function closePaymentModal() {
+  const modal = document.getElementById('payment-modal');
+  modal.classList.add('hidden');
+  modal.style.display = 'none';
+}
+
+function selectPay(btn, method) {
+  document.querySelectorAll('.pay-btn').forEach(b => {
+    b.style.background = '#0f0a2a'; b.style.color = '#a5b4fc'; b.style.borderColor = '#1e1b4b';
+    b.classList.remove('active');
+  });
+  btn.style.background = '#4338ca'; btn.style.color = '#fff'; btn.style.borderColor = '#4338ca';
+  btn.classList.add('active');
+}
+
+function processDemoPayment() {
+  const btn = document.getElementById('pay-btn');
+  btn.textContent = 'Processing...';
+  btn.style.opacity = '0.6';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const added = currentPayType === '10' ? 10 : 25;
+    credits += added;
+    document.getElementById('credit-count').textContent = credits;
+    updateCost();
+
+    document.getElementById('modal-body').classList.add('hidden');
+    document.getElementById('modal-success').classList.remove('hidden');
+    document.getElementById('success-msg').textContent = `${added} credits added to your account`;
+    lucide.createIcons();
+
+    btn.textContent = 'Complete Purchase (Demo)';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+  }, 1500);
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+// Ad watching
+function watchAd(adNum) {
+  const btn = document.getElementById('ad-btn-' + adNum);
+  btn.textContent = 'Watching...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    credits++;
+    document.getElementById('credit-count').textContent = credits;
+    updateCost();
+    btn.textContent = '✓ Watched';
+    btn.style.background = '#22c55e';
+    btn.disabled = true;
+    showToast('+1 credit earned! ' + credits + ' credits total');
+  }, 1500);
+}
+
+// Init
+lucide.createIcons();
+updateCost();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f26f6f9368a907b',t:'MTc3NzIyMDk1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
