@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Simple, elegant, and fully functional calculator web app. Perform basic arithmetic operations with a clean interface. Perfect for everyday calculations.">
+  <meta name="keywords" content="calculator, simple calculator, HTML calculator, CSS calculator, JavaScript calculator, web calculator, arithmetic, math tool">
+  <meta name="author" content="Your Name">
+  <!-- Google Indexing & Search Console Verification Hint -->
+  <!-- 
+    =======================================================
+    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
+    =======================================================
+    To verify ownership and enable indexing for this calculator:
+    1. Go to Google Search Console (https://search.google.com/search-console/)
+    2. Add your website property (URL where this page is hosted).
+    3. Choose verification method: HTML tag (meta tag recommended).
+    4. Copy the unique 'content' value provided by Google.
+    5. Replace the 'content' value below with your Google-provided code.
+    6. Keep the name="google-site-verification" attribute exactly as shown.
+    7. Upload this file to your server, then click 'Verify' in Search Console.
+    =======================================================
+  -->
+  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+  <!-- Additional SEO / indexing friendly: ensure robots can crawl -->
+  <meta name="robots" content="index, follow">
+  <title>Simple Calculator | Clean & Fast Web Calculator</title>
+  <style>
+    /* CSS Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* avoid accidental text selection while tapping buttons */
+    }
+
+    body {
+      background: linear-gradient(145deg, #2c3e50 0%, #1a2632 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      padding: 20px;
+      margin: 0;
+    }
+
+    /* main calculator card */
+    .calculator {
+      background: #1e2a36;
+      border-radius: 48px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      padding: 24px 20px 30px 20px;
+      width: 100%;
+      max-width: 400px;
+      transition: transform 0.2s ease;
+    }
+
+    .calculator:hover {
+      transform: scale(1.01);
+    }
+
+    /* display screen area */
+    .display {
+      background: #0f1720;
+      border-radius: 32px;
+      padding: 20px 20px;
+      margin-bottom: 28px;
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.08);
+      text-align: right;
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+
+    .previous-operand {
+      min-height: 32px;
+      font-size: 1.2rem;
+      color: #9aaebf;
+      letter-spacing: 0.5px;
+      font-weight: 400;
+    }
+
+    .current-operand {
+      font-size: 2.8rem;
+      font-weight: 600;
+      color: #f0f9ff;
+      line-height: 1.2;
+      margin-top: 8px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    /* buttons grid layout */
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    /* common button styles */
+    .btn {
+      background: #2d3e4b;
+      border: none;
+      border-radius: 36px;
+      padding: 18px 0;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #ecf5f9;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      box-shadow: 0 5px 0 #121b22;
+      font-family: inherit;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #121b22;
+    }
+
+    /* special button styles */
+    .operator {
+      background: #f39c12;
+      color: #1e2a2f;
+      box-shadow: 0 5px 0 #b46f0b;
+      font-size: 1.9rem;
+      font-weight: 700;
+    }
+
+    .equals {
+      background: #2ecc71;
+      color: #1e2a2f;
+      box-shadow: 0 5px 0 #1f8f4b;
+      font-size: 1.8rem;
+    }
+
+    .clear {
+      background: #e67e22;
+      color: white;
+      box-shadow: 0 5px 0 #b45f1b;
+    }
+
+    .delete {
+      background: #c0392b;
+      color: white;
+      box-shadow: 0 5px 0 #8e2a1f;
+      font-size: 1.4rem;
+    }
+
+    /* utility / number buttons */
+    .number {
+      background: #2c4b5c;
+      font-weight: 600;
+    }
+
+    .decimal {
+      background: #2c4b5c;
+      font-weight: 700;
+    }
+
+    /* responsive: on small screens reduce gap and padding */
+    @media (max-width: 450px) {
+      .buttons {
+        gap: 10px;
+      }
+      .btn {
+        padding: 14px 0;
+        font-size: 1.4rem;
+      }
+      .current-operand {
+        font-size: 2.2rem;
+      }
+      .calculator {
+        padding: 20px 16px 24px;
+      }
+    }
+
+    /* footer / author subtle */
+    .credit {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.7rem;
+      color: #6f8e9e;
+      letter-spacing: 0.5px;
+    }
+
+    .credit a {
+      color: #bdd4df;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <div class="display">
+    <div class="previous-operand" id="previousDisplay"></div>
+    <div class="current-operand" id="currentDisplay">0</div>
+  </div>
+  <div class="buttons">
+    <!-- Row 1 -->
+    <button class="btn clear" data-action="clear">AC</button>
+    <button class="btn delete" data-action="delete">⌫</button>
+    <button class="btn operator" data-operator="%">%</button>
+    <button class="btn operator" data-operator="/">÷</button>
+    
+    <!-- Row 2 -->
+    <button class="btn number" data-number="7">7</button>
+    <button class="btn number" data-number="8">8</button>
+    <button class="btn number" data-number="9">9</button>
+    <button class="btn operator" data-operator="*">×</button>
+    
+    <!-- Row 3 -->
+    <button class="btn number" data-number="4">4</button>
+    <button class="btn number" data-number="5">5</button>
+    <button class="btn number" data-number="6">6</button>
+    <button class="btn operator" data-operator="-">−</button>
+    
+    <!-- Row 4 -->
+    <button class="btn number" data-number="1">1</button>
+    <button class="btn number" data-number="2">2</button>
+    <button class="btn number" data-number="3">3</button>
+    <button class="btn operator" data-operator="+">+</button>
+    
+    <!-- Row 5 -->
+    <button class="btn number" data-number="0">0</button>
+    <button class="btn decimal" data-action="decimal">.</button>
+    <button class="btn equals" data-action="equals">=</button>
+    <!-- extra placeholder for symmetry (empty but we use % already) but we keep functional layout -->
+    <button class="btn operator" data-operator="^" style="background:#e67e22;">^</button>
+  </div>
+  <div class="credit">
+    ⚡ Simple Calculator | Clean & Fast
+  </div>
+</div>
+
+<script>
+  // ========================
+  // SIMPLE CALCULATOR LOGIC
+  // ========================
+  // This class manages all arithmetic operations and display updates.
+  class Calculator {
+    constructor(previousOperandText, currentOperandText) {
+      this.previousOperandText = previousOperandText;
+      this.currentOperandText = currentOperandText;
+      this.clear();
+    }
+
+    clear() {
+      this.currentOperand = '0';
+      this.previousOperand = '';
+      this.operation = undefined;
+      this.shouldResetDisplay = false;
+      this.updateDisplay();
+    }
+
+    delete() {
+      if (this.shouldResetDisplay) return;
+      // if currentOperand is a single digit or '0' then reset to 0
+      let curr = this.currentOperand.toString();
+      if (curr.length === 1 || (curr.length === 2 && curr.startsWith('-'))) {
+        this.currentOperand = '0';
+      } else {
+        this.currentOperand = curr.slice(0, -1);
+        if (this.currentOperand === '' || this.currentOperand === '-') this.currentOperand = '0';
+      }
+      this.updateDisplay();
+    }
+
+    appendNumber(number) {
+      if (this.shouldResetDisplay) {
+        this.currentOperand = '';
+        this.shouldResetDisplay = false;
+      }
+      // prevent multiple leading zeros
+      if (number === '.' && this.currentOperand.includes('.')) return;
+      if (this.currentOperand === '0' && number !== '.') {
+        this.currentOperand = number;
+      } else {
+        this.currentOperand = this.currentOperand.toString() + number;
+      }
+      this.updateDisplay();
+    }
+
+    chooseOperation(operation) {
+      if (this.currentOperand === '' && this.previousOperand === '') return;
+      // if we have current and no previous, store operation and move current to previous
+      if (this.previousOperand === '') {
+        if (this.currentOperand === '') return;
+        this.previousOperand = this.currentOperand;
+        this.operation = operation;
+        this.currentOperand = '';
+        this.shouldResetDisplay = false;
+        this.updateDisplay();
+        return;
+      }
+      
+      // If previous exists and current is valid: compute intermediate result
+      if (this.previousOperand !== '' && this.currentOperand !== '' && !this.shouldResetDisplay) {
+        this.compute();
+        // After compute, previous becomes result, operation updated, current empty
+        this.operation = operation;
+        this.currentOperand = '';
+        this.shouldResetDisplay = false;
+        this.updateDisplay();
+      } else {
+        // when current is empty just update operation
+        this.operation = operation;
+        this.updateDisplay();
+      }
+    }
+
+    compute() {
+      let computation;
+      const prev = parseFloat(this.previousOperand);
+      const current = parseFloat(this.currentOperand);
+      if (isNaN(prev) || isNaN(current)) return;
+      
+      switch (this.operation) {
+        case '+':
+          computation = prev + current;
+          break;
+        case '-':
+          computation = prev - current;
+          break;
+        case '*':
+          computation = prev * current;
+          break;
+        case '/':
+          if (current === 0) {
+            alert("Cannot divide by zero");
+            return;
+          }
+          computation = prev / current;
+          break;
+        case '%':
+          computation = prev % current;
+          break;
+        case '^':
+          computation = Math.pow(prev, current);
+          break;
+        default:
+          return;
+      }
+      
+      // handle floating point rounding
+      this.currentOperand = this.roundResult(computation).toString();
+      this.operation = undefined;
+      this.previousOperand = '';
+      this.shouldResetDisplay = true; // after equals, next number starts fresh
+      this.updateDisplay();
+    }
+    
+    roundResult(num) {
+      // to avoid long decimals, round to 8 decimal places if needed.
+      return parseFloat(num.toFixed(8));
+    }
+
+    updateDisplay() {
+      // show current operand (if empty, show 0)
+      let currDisplay = this.currentOperand === '' ? '0' : this.currentOperand;
+      // Format nicely: if it's a number with many decimals but keep clean
+      if (typeof currDisplay === 'string' && !isNaN(parseFloat(currDisplay))) {
+        let num = parseFloat(currDisplay);
+        if (!isNaN(num) && currDisplay.includes('.')) {
+          // keep up to 8 decimal digits without trailing zeros, unless it's user typed.
+          currDisplay = num.toString();
+        }
+      }
+      this.currentOperandText.innerText = currDisplay;
+      
+      if (this.operation != null) {
+        let opSymbol = this.operation;
+        if (opSymbol === '*') opSymbol = '×';
+        if (opSymbol === '/') opSymbol = '÷';
+        this.previousOperandText.innerText = `${this.previousOperand} ${opSymbol}`;
+      } else {
+        this.previousOperandText.innerText = '';
+      }
+    }
+    
+    // For equals action
+    evaluate() {
+      if (this.operation === undefined || this.previousOperand === '' || this.currentOperand === '') {
+        // if just click equals with full numbers: nothing to compute
+        if (this.currentOperand !== '' && this.previousOperand !== '' && this.operation) {
+          this.compute();
+        }
+        return;
+      }
+      this.compute();
+    }
+
+    // handle percentage of current value as a standalone operation (optional but intuitive)
+    percentOfCurrent() {
+      let currentVal = parseFloat(this.currentOperand);
+      if (isNaN(currentVal)) return;
+      let percentVal = currentVal / 100;
+      this.currentOperand = percentVal.toString();
+      this.shouldResetDisplay = false;
+      this.updateDisplay();
+    }
+  }
+
+  // DOM elements
+  const previousDisplay = document.getElementById('previousDisplay');
+  const currentDisplay = document.getElementById('currentDisplay');
+  const calculator = new Calculator(previousDisplay, currentDisplay);
+
+  // Add all button event listeners with delegation
+  const buttonsContainer = document.querySelector('.buttons');
+  
+  buttonsContainer.addEventListener('click', (e) => {
+    const btn = e.target;
+    if (!btn.classList.contains('btn')) return;
+    
+    // Number button
+    if (btn.classList.contains('number') && btn.dataset.number !== undefined) {
+      calculator.appendNumber(btn.dataset.number);
+    }
+    
+    // Decimal point
+    else if (btn.classList.contains('decimal') || (btn.dataset.action === 'decimal')) {
+      calculator.appendNumber('.');
+    }
+    
+    // Operator (+, -, *, /, %, ^)
+    else if (btn.classList.contains('operator') && btn.dataset.operator) {
+      let op = btn.dataset.operator;
+      // map display division and multiplication symbols to actual operators
+      if (op === '÷') op = '/';
+      if (op === '×') op = '*';
+      // exponent
+      if (op === '^') op = '^';
+      calculator.chooseOperation(op);
+    }
+    
+    // Clear AC
+    else if (btn.classList.contains('clear') || (btn.dataset.action === 'clear')) {
+      calculator.clear();
+    }
+    
+    // Delete (backspace)
+    else if (btn.classList.contains('delete') || (btn.dataset.action === 'delete')) {
+      calculator.delete();
+    }
+    
+    // Equals
+    else if (btn.classList.contains('equals') || (btn.dataset.action === 'equals')) {
+      calculator.evaluate();
+    }
+    
+    // Special extra: if user taps on % operator we also treat as operation but we already added. 
+    // But we also include a separate percent quick action (if needed):
+    if (btn.dataset.operator === '%') {
+      // Already handled by chooseOperation, but also we could allow direct percent of current? 
+      // for better UX, we have it as proper binary operator (prev % current). Good!
+    }
+    
+    // prevent accidental bubbling and default
+    e.stopPropagation();
+  });
+  
+  // Keyboard Support: enhance accessibility and user convenience
+  window.addEventListener('keydown', (e) => {
+    const key = e.key;
+    // numbers and decimal
+    if (/^[0-9]$/.test(key)) {
+      calculator.appendNumber(key);
+      e.preventDefault();
+    } else if (key === '.') {
+      calculator.appendNumber('.');
+      e.preventDefault();
+    } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+      let mappedOp = key;
+      if (key === '*') mappedOp = '*';
+      if (key === '/') mappedOp = '/';
+      calculator.chooseOperation(mappedOp);
+      e.preventDefault();
+    } else if (key === '%') {
+      calculator.chooseOperation('%');
+      e.preventDefault();
+    } else if (key === '^') {
+      calculator.chooseOperation('^');
+      e.preventDefault();
+    } else if (key === 'Enter' || key === '=') {
+      calculator.evaluate();
+      e.preventDefault();
+    } else if (key === 'Backspace') {
+      calculator.delete();
+      e.preventDefault();
+    } else if (key === 'Escape' || key === 'Delete') {
+      calculator.clear();
+      e.preventDefault();
+    }
+  });
+  
+  // to avoid accidental double touch in mobile, pass
+  console.log("Calculator loaded — ready for indexing and search console verification");
+</script>
+
+<!-- ============================================= -->
+<!-- ADDITIONAL GOOGLE INDEXING & STRUCTURED DATA  -->
+<!-- ============================================= -->
+<!-- 
+  To improve Google indexing and rich snippet potential:
+  1. Replace the 'content' in google-site-verification meta with your actual 
+     verification code from Google Search Console after you deploy this file.
+  2. Submit the sitemap (if any) or request indexing via URL inspection tool.
+  3. This page includes semantic HTML, responsive design, and clear content.
+  
+  RECOMMENDATION: after hosting, use Google Search Console > URL Inspection > 
+  "Request Indexing" to speed up crawling.
+-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Simple Calculator",
+  "description": "A clean, fully functional calculator for basic arithmetic: addition, subtraction, multiplication, division, percentage, and exponent. Responsive design with keyboard support.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "browserRequirements": "Requires JavaScript. Works on modern browsers.",
+  "screenshot": "https://via.placeholder.com/400x500?text=Calculator+Preview"
+}
+</script>
+<!-- END OF SEO/INDEXING HELPER -->
+</body>
+</html>
