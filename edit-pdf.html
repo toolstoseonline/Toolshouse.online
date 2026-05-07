@@ -1,1109 +1,617 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>PDF Editor - Professional PDF Annotation Tool</title>
-  <meta name="description" content="Edit PDF documents online for free. Modify text, add images, fill forms, and annotate instantly. No signup, no watermark, no software download required.">
-     <meta name="keywords" content="PDF editor,edit PDF,edit PDF online">
-<link rel="canonical" href="https://www.toolshouse.online/edit-pdf.html">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title> PDF & Word Editor Suite</title>
+   <meta name="description" content="Edit PDF documents online for free. Modify text, add images, fill forms, and annotate instantly. No signup, no watermark, no software download required.">
+  <meta name="keywords" content="PDF editor,edit PDF,edit PDF online"> 
+  <link rel="canonical" href="https://www.toolshouse.online/edit-pdf.html">
+    <!-- Google Fonts and Icons (Material Icons + Font Awesome for extra polish) -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- PDF.js from Mozilla for PDF rendering and editing capability -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- html2pdf.js for exporting to PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- FileSaver.js for saving .doc files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        body {
+            background: linear-gradient(145deg, #e9f0f5 0%, #d9e2ec 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 24px 20px;
+            min-height: 100vh;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #1a1a2e;
-      color: #eee;
-      height: 100vh;
-      overflow: hidden;
-    }
+        /* main app container */
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 1.5rem;
+        }
 
-    /* Upload Screen */
-    #upload-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    }
+        /* header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1.8rem;
+            border-bottom: 2px solid #ffffff90;
+            padding-bottom: 1rem;
+        }
 
-    .upload-container {
-      text-align: center;
-      padding: 40px;
-    }
+        .title h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1a2a3a, #2c5a7a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
 
-    .upload-container h1 {
-      font-size: 48px;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #fff, #00d4ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+        .title p {
+            color: #2c3e4e;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
 
-    .upload-container p {
-      color: #888;
-      margin-bottom: 40px;
-    }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-    .dropzone {
-      border: 2px dashed #00d4ff;
-      border-radius: 20px;
-      padding: 60px 80px;
-      background: rgba(0, 212, 255, 0.05);
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-bottom: 24px;
-    }
+        .btn {
+            border: none;
+            background: white;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-family: inherit;
+            transition: 0.2s;
+        }
 
-    .dropzone:hover, .dropzone.drag-over {
-      border-color: #ff6b6b;
-      background: rgba(255, 107, 107, 0.1);
-      transform: translateY(-4px);
-    }
+        .btn-primary {
+            background: #2c5a7a;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1f4460;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            border: 1px solid #2c5a7a;
+            background: transparent;
+            color: #2c5a7a;
+        }
+        .btn-outline:hover {
+            background: #2c5a7a10;
+        }
+        .btn-danger {
+            background: #c97e5a;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #b1623c;
+        }
 
-    .dropzone-icon {
-      font-size: 64px;
-      margin-bottom: 20px;
-    }
+        /* editor grid */
+        .editor-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+        }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #00d4ff, #0099cc);
-      color: white;
-      border: none;
-      padding: 12px 32px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
+        .tool-panel {
+            flex: 1.2;
+            min-width: 260px;
+            background: #ffffffcc;
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
-    }
+        .document-area {
+            flex: 2.5;
+            min-width: 320px;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-    /* Editor Screen */
-    #editor-screen {
-      display: none;
-      flex-direction: column;
-      height: 100vh;
-    }
+        .section-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 5px solid #2c5a7a;
+            padding-left: 12px;
+        }
 
-    .editor-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 24px;
-      background: #0f0f1a;
-      border-bottom: 1px solid #2a2a3a;
-    }
+        .upload-group {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
 
-    .file-info h2 {
-      font-size: 18px;
-      margin-bottom: 4px;
-    }
+        .word-control {
+            margin-top: 1rem;
+        }
 
-    .file-info p {
-      font-size: 12px;
-      color: #888;
-    }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
 
-    .header-actions {
-      display: flex;
-      gap: 12px;
-    }
+        .input-group input, .input-group textarea {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 28px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
 
-    .icon-btn {
-      background: #2a2a3a;
-      border: none;
-      color: white;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-    }
+        .input-group button {
+            white-space: nowrap;
+        }
 
-    .icon-btn:hover {
-      background: #00d4ff;
-      color: #1a1a2e;
-    }
+        .find-replace-box {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 20px;
+            margin: 12px 0;
+        }
 
-    /* Toolbar */
-    .toolbar {
-      display: flex;
-      gap: 8px;
-      padding: 12px 24px;
-      background: #0f0f1a;
-      border-bottom: 1px solid #2a2a3a;
-      flex-wrap: wrap;
-    }
+        .rich-editor {
+            flex: 1;
+            padding: 1.5rem;
+            min-height: 55vh;
+            background: #fffef7;
+            outline: none;
+            overflow-y: auto;
+            font-family: 'Segoe UI', 'Calibri', serif;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-bottom: 1px solid #e2e8f0;
+        }
 
-    .tool-group {
-      display: flex;
-      gap: 4px;
-      padding-right: 16px;
-      border-right: 1px solid #2a2a3a;
-    }
+        .rich-editor:focus {
+            background: #fffff2;
+        }
 
-    .tool-group:last-child {
-      border-right: none;
-    }
+        .status-bar {
+            padding: 10px 1.5rem;
+            background: #f9fafb;
+            font-size: 0.8rem;
+            color: #1e293b;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
 
-    .tool-btn {
-      background: #2a2a3a;
-      border: none;
-      color: #eee;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+        .tool-icon {
+            font-size: 1.2rem;
+            vertical-align: middle;
+        }
 
-    .tool-btn:hover {
-      background: #3a3a4a;
-    }
+        hr {
+            margin: 15px 0;
+        }
 
-    .tool-btn.active {
-      background: #00d4ff;
-      color: #1a1a2e;
-    }
-
-    /* Main Content */
-    .main-content {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      padding: 20px;
-      gap: 20px;
-    }
-
-    .canvas-area {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #0a0a12;
-      border-radius: 12px;
-      overflow: auto;
-      position: relative;
-    }
-
-    .canvas-wrapper {
-      position: relative;
-      display: inline-block;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-      border-radius: 4px;
-    }
-
-    #pdf-canvas {
-      display: block;
-      border-radius: 4px;
-    }
-
-    #drawing-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-radius: 4px;
-      cursor: crosshair;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: #0f0f1a;
-      border-radius: 12px;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .sidebar-section {
-      margin-bottom: 24px;
-    }
-
-    .sidebar-title {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: #888;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-    }
-
-    .page-nav {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .page-nav-btn {
-      flex: 1;
-      background: #2a2a3a;
-      border: none;
-      color: white;
-      padding: 8px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .page-nav-btn:hover:not(:disabled) {
-      background: #00d4ff;
-    }
-
-    .page-nav-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .page-number {
-      text-align: center;
-      margin-bottom: 16px;
-      font-size: 14px;
-      color: #00d4ff;
-    }
-
-    .thumbnails {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      max-height: 300px;
-      overflow-y: auto;
-      margin-bottom: 16px;
-    }
-
-    .thumbnail {
-      aspect-ratio: 1 / 1.4;
-      background: #2a2a3a;
-      border-radius: 6px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-      overflow: hidden;
-    }
-
-    .thumbnail:hover {
-      border-color: #00d4ff;
-      transform: scale(1.02);
-    }
-
-    .thumbnail.active {
-      border-color: #00d4ff;
-      box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-    }
-
-    .thumbnail canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .color-palette {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .color-option {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-    }
-
-    .color-option:hover {
-      transform: scale(1.1);
-    }
-
-    .color-option.active {
-      border-color: white;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-    }
-
-    .slider-container {
-      margin-top: 12px;
-    }
-
-    .slider-container label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      cursor: pointer;
-      background: #2a2a3a;
-      height: 4px;
-      border-radius: 2px;
-    }
-
-    /* Status Bar */
-    .status-bar {
-      padding: 8px 24px;
-      background: #0f0f1a;
-      border-top: 1px solid #2a2a3a;
-      font-size: 12px;
-      color: #888;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #1a1a2e;
-      border-radius: 16px;
-      padding: 24px;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    .modal-content h3 {
-      margin-bottom: 16px;
-    }
-
-    .modal-content input {
-      width: 100%;
-      padding: 12px;
-      background: #2a2a3a;
-      border: 1px solid #3a3a4a;
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #00d4ff;
-      color: #1a1a2e;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 2000;
-      animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .main-content {
-        flex-direction: column;
-      }
-      .sidebar {
-        width: 100%;
-        max-height: 200px;
-      }
-      .tool-btn span {
-        display: none;
-      }
-      .tool-btn {
-        padding: 8px;
-      }
-    }
-  </style>
+        @media (max-width: 760px) {
+            .app-container {
+                padding: 0.8rem;
+            }
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+        .badge {
+            background: #2c5a7a20;
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+        }
+    </style>
 </head>
 <body>
-  <!-- Upload Screen -->
-  <div id="upload-screen">
-    <div class="upload-container">
-      <h1>📄 PDF Editor Pro</h1>
-      <p>Edit, annotate, and save your PDFs - All in your browser</p>
-      <div class="dropzone" id="dropzone">
-        <div class="dropzone-icon">📤</div>
-        <p style="margin: 16px 0;">Drag & drop your PDF here</p>
-        <button class="btn-primary" id="browse-btn">Browse Files</button>
-      </div>
-      <input type="file" id="file-input" accept=".pdf" style="display: none;">
-      <p style="margin-top: 20px; font-size: 12px; color: #666;">✓ No data uploaded to servers ✓ Works offline ✓ Free forever</p>
-    </div>
-  </div>
- <div style="max-width: 800px; margin: 40px auto 0; text-align: left; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 16px;">
-        <h2 style="color: #00d4ff; margin-bottom: 16px;">Professional PDF Editor - Free &amp; Private</h2>
-        
-        <h3>Features</h3>
-        <ul style="margin-bottom: 20px; line-height: 1.8;">
-            <li>✓ <strong>Edit PDF text</strong> - Add, modify, or remove text from any PDF</li>
-            <li>✓ <strong>Annotate PDFs</strong> - Draw, highlight, and add notes to documents</li>
-            <li>✓ <strong>Fill forms</strong> - Complete PDF forms without printing</li>
-            <li>✓ <strong>Add images &amp; signatures</strong> - Insert images or sign documents digitally</li>
-            <li>✓ <strong>100% private</strong> - All processing happens in your browser, no upload required</li>
-            <li>✓ <strong>No registration</strong> - Free forever, no account needed</li>
-            <li>✓ <strong>No watermark</strong> - Clean output without any watermarks</li>
-        </ul>
-        
-        <h3>How to Use This PDF Editor</h3>
-        <ol style="margin-bottom: 20px; line-height: 1.8;">
-            <li>Drag and drop your PDF file into the box above</li>
-            <li>Use the toolbar to draw, highlight, or add text</li>
-            <li>Navigate between pages using the sidebar thumbnails</li>
-            <li>Click "Save PDF" to download your edited document</li>
-        </ol>
-        
-        <h3>Supported Operations</h3>
-        <ul style="margin-bottom: 20px; line-height: 1.8;">
-            <li>✏️ Freehand drawing with adjustable brush size</li>
-            <li>🟡 Text highlighting with adjustable opacity</li>
-            <li>📝 Text annotations with custom fonts and colors</li>
-            <li>🔄 Page rotation (90°, 180°, 270°)</li>
-            <li>🧽 Eraser tool to remove annotations</li>
-            <li>↩️ Undo/Redo for all actions</li>
-        </ul>
-        
-        <h3>Frequently Asked Questions</h3>
-        <p><strong>Is this PDF editor really free?</strong> Yes, completely free with no hidden costs or premium tiers.</p>
-        <p><strong>Are my PDF files uploaded to a server?</strong> No. The editor works entirely in your browser using PDF.js. Your files never leave your computer.</p>
-        <p><strong>What's the maximum file size?</strong> Limited only by your browser's memory. Typically works with PDFs up to 100MB.</p>
-        <p><strong>Can I edit existing text in the PDF?</strong> Currently, you can add annotations, drawings, and text overlays. For deep text editing of existing content, you'll need a desktop PDF editor.</p>
-        <p><strong>Does it work on mobile?</strong> Yes, the editor is fully responsive and works on smartphones and tablets.</p>
-    
-  <!-- Editor Screen -->
-  <div id="editor-screen">
-    <div class="editor-header">
-      <div class="file-info">
-        <h2 id="file-name">Untitled.pdf</h2>
-        <p id="file-size"></p>
-      </div>
-      <div class="header-actions">
-        <button class="icon-btn" id="save-btn">💾 Save PDF</button>
-        <button class="icon-btn" id="new-btn">📁 New</button>
-      </div>
-    </div>
-
-    <div class="toolbar">
-      <div class="tool-group">
-        <button class="tool-btn" data-tool="draw">✏️ Draw</button>
-        <button class="tool-btn" data-tool="highlight">🟡 Highlight</button>
-        <button class="tool-btn" data-tool="text">📝 Text</button>
-        <button class="tool-btn" data-tool="eraser">🧽 Eraser</button>
-      </div>
-      <div class="tool-group">
-        <button class="tool-btn" id="undo-btn">↩️ Undo</button>
-        <button class="tool-btn" id="redo-btn">↪️ Redo</button>
-        <button class="tool-btn" id="clear-btn">🗑️ Clear</button>
-      </div>
-      <div class="tool-group">
-        <button class="tool-btn" id="rotate-left-btn">↺ Rotate Left</button>
-        <button class="tool-btn" id="rotate-right-btn">↻ Rotate Right</button>
-      </div>
-    </div>
-
-    <div class="main-content">
-      <div class="canvas-area">
-        <div class="canvas-wrapper">
-          <canvas id="pdf-canvas"></canvas>
-          <canvas id="drawing-canvas"></canvas>
+<div class="app-container">
+    <div class="header">
+        <div class="title">
+            <h1><i class="fas fa-file-alt"></i> DocuForge <span style="font-size: 1rem;">⚡ PDF | WORD EDITOR</span></h1>
+            <p>Edit, remove words, convert, create — all in one workspace</p>
         </div>
-      </div>
+        <div class="action-buttons">
+            <button class="btn btn-outline" id="newDocumentBtn"><i class="fas fa-file"></i> New Blank</button>
+            <button class="btn btn-primary" id="exportPdfBtn"><i class="fas fa-file-pdf"></i> Save as PDF</button>
+            <button class="btn btn-primary" id="exportWordBtn"><i class="fas fa-file-word"></i> Export Word (.doc)</button>
+        </div>
+    </div>
 
-      <div class="sidebar">
-        <div class="sidebar-section">
-          <div class="sidebar-title">Navigation</div>
-          <div class="page-nav">
-            <button class="page-nav-btn" id="prev-page">◀ Prev</button>
-            <button class="page-nav-btn" id="next-page">Next ▶</button>
-          </div>
-          <div class="page-number">Page <span id="current-page">1</span> / <span id="total-pages">1</span></div>
+    <div class="editor-grid">
+        <!-- LEFT PANEL: TOOLS -->
+        <div class="tool-panel">
+            <div class="upload-group">
+                <div class="section-title"><i class="material-icons tool-icon">upload_file</i> Load PDF / Word (TXT)</div>
+                <input type="file" id="fileUploader" accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="margin-bottom: 8px;">
+                <p class="badge" style="margin-top: 6px;"><i class="fas fa-info-circle"></i> PDF: renders first page as editable text. Word/TXT: extracts text.</p>
+                <button id="loadPdfBtn" class="btn btn-outline" style="width:100%; margin-top: 8px;"><i class="fas fa-cloud-upload-alt"></i> Load & Edit PDF Content</button>
+            </div>
+            
+            <div class="word-control">
+                <div class="section-title"><i class="fas fa-highlighter"></i> Word Removal & Replace</div>
+                <div class="find-replace-box">
+                    <label><i class="fas fa-trash-alt"></i> Remove specific word:</label>
+                    <div class="input-group">
+                        <input type="text" id="removeWordInput" placeholder="Enter word to remove (exact match)">
+                        <button id="removeWordBtn" class="btn btn-danger"><i class="fas fa-eraser"></i> Remove</button>
+                    </div>
+                </div>
+                <div class="find-replace-box">
+                    <label><i class="fas fa-exchange-alt"></i> Find & Replace (word edit)</label>
+                    <div class="input-group">
+                        <input type="text" id="findWordInput" placeholder="Find word">
+                        <input type="text" id="replaceWordInput" placeholder="Replace with">
+                        <button id="replaceWordBtn" class="btn btn-primary"><i class="fas fa-replace"></i> Replace All</button>
+                    </div>
+                </div>
+                <div class="find-replace-box">
+                    <label><i class="fas fa-cut"></i> Remove multiple occurrences (Regex optional)</label>
+                    <div class="input-group">
+                        <input type="text" id="multiRemoveInput" placeholder="Word / phrase to remove globally">
+                        <button id="multiRemoveBtn" class="btn btn-outline"><i class="fas fa-wand-magic"></i> Remove All Matches</button>
+                    </div>
+                    <small style="color:#475569;">Case-sensitive by default. Removes exact text occurrences.</small>
+                </div>
+                <hr>
+                <button id="resetContentBtn" class="btn btn-outline" style="width:100%"><i class="fas fa-undo-alt"></i> Reset to last loaded / saved state</button>
+            </div>
+            <div style="margin-top: 20px;">
+                <div class="section-title"><i class="fas fa-palette"></i> Quick Formatting</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button id="boldBtn" class="btn btn-outline"><b>B</b></button>
+                    <button id="italicBtn" class="btn btn-outline"><i>I</i></button>
+                    <button id="underlineBtn" class="btn btn-outline"><u>U</u></button>
+                    <button id="clearFormatBtn" class="btn btn-outline"><i class="fas fa-remove-format"></i> Clear</button>
+                </div>
+            </div>
         </div>
 
-        <div class="sidebar-section">
-          <div class="sidebar-title">Pages</div>
-          <div class="thumbnails" id="thumbnails"></div>
+        <!-- RIGHT PANEL: Rich Editable Document -->
+        <div class="document-area">
+            <div class="rich-editor" id="editableContent" contenteditable="true">
+                <h2>✨ Welcome to DocuForge</h2>
+                <p>This is a <strong>live editor</strong> for both PDF and Word documents. You can:</p>
+                <ul>
+                    <li>📄 Upload PDF files (text extraction via PDF.js)</li>
+                    <li>📝 Upload Word (.docx/.doc) / text files - content appears instantly</li>
+                    <li>✂️ <strong>Remove any word</strong> using "Remove Word" or "Remove All Matches"</li>
+                    <li>🔁 <strong>Find & Replace</strong> to edit words globally</li>
+                    <li>💾 Export final document as PDF or Word (.doc)</li>
+                </ul>
+                <p>👉 Start by uploading a file or edit this placeholder text. All changes are reflected in real-time.</p>
+                <p><i>Hint: Try removing words like "PDF" or replace "DocuForge" with your own brand.</i></p>
+            </div>
+            <div class="status-bar">
+                <span><i class="fas fa-edit"></i> Editable document (rich text)</span>
+                <span id="statsCounter">Words: -- | Chars: --</span>
+                <span id="lastActionMsg"><i class="fas fa-check-circle"></i> Ready</span>
+            </div>
         </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-title">Colors</div>
-          <div class="color-palette" id="color-palette">
-            <div class="color-option active" style="background: #000000;" data-color="#000000"></div>
-            <div class="color-option" style="background: #ff4444;" data-color="#ff4444"></div>
-            <div class="color-option" style="background: #44ff44;" data-color="#44ff44"></div>
-            <div class="color-option" style="background: #4444ff;" data-color="#4444ff"></div>
-            <div class="color-option" style="background: #ffff44;" data-color="#ffff44"></div>
-            <div class="color-option" style="background: #ff44ff;" data-color="#ff44ff"></div>
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-title">Brush Settings</div>
-          <div class="slider-container">
-            <label>Size: <span id="brush-size-value">3</span>px</label>
-            <input type="range" id="brush-size" min="1" max="20" value="3">
-          </div>
-          <div class="slider-container">
-            <label>Opacity: <span id="opacity-value">100</span>%</label>
-            <input type="range" id="opacity" min="10" max="100" value="100">
-          </div>
-        </div>
-      </div>
     </div>
+</div>
 
-    <div class="status-bar">
-      <span id="status">✓ Ready</span>
-      <span>⚡ All processing done locally</span>
-    </div>
-  </div>
+<script>
+    // ---------- GLOBALS ----------
+    let currentHTMLBackup = "";    // backup for reset
+    const editor = document.getElementById("editableContent");
+    const statsSpan = document.getElementById("statsCounter");
+    const lastActionSpan = document.getElementById("lastActionMsg");
 
-  <!-- Text Modal -->
-  <div class="modal" id="text-modal">
-    <div class="modal-content">
-      <h3>Add Text Annotation</h3>
-      <input type="text" id="text-input" placeholder="Enter your text here..." autocomplete="off">
-      <div class="modal-buttons">
-        <button class="tool-btn" id="cancel-text">Cancel</button>
-        <button class="tool-btn" id="confirm-text" style="background: #00d4ff;">Add</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Configure PDF.js
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    // Application State
-    const App = {
-      pdfDoc: null,
-      currentPage: 1,
-      totalPages: 0,
-      scale: 1.5,
-      currentTool: null,
-      currentColor: '#000000',
-      brushSize: 3,
-      opacity: 100,
-      isDrawing: false,
-      lastX: 0,
-      lastY: 0,
-      annotations: {},
-      history: [],
-      historyIndex: -1,
-      rotation: {},
-      fileName: '',
-      originalFile: null
-    };
-
-    // DOM Elements
-    const uploadScreen = document.getElementById('upload-screen');
-    const editorScreen = document.getElementById('editor-screen');
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('file-input');
-    const pdfCanvas = document.getElementById('pdf-canvas');
-    const drawingCanvas = document.getElementById('drawing-canvas');
-    const ctx = drawingCanvas.getContext('2d');
-
-    // Helper Functions
-    function showToast(message, isError = false) {
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = message;
-      toast.style.background = isError ? '#ff4444' : '#00d4ff';
-      toast.style.color = isError ? 'white' : '#1a1a2e';
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
+    // Helper: update statistics and backup if needed (auto backup each change)
+    function updateStats() {
+        let text = editor.innerText || "";
+        let words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+        let chars = text.length;
+        statsSpan.innerText = `Words: ${words} | Chars: ${chars}`;
     }
 
-    function updateStatus(message) {
-      document.getElementById('status').textContent = message;
+    // Store backup of current state
+    function storeBackup() {
+        currentHTMLBackup = editor.innerHTML;
     }
 
-    function saveToHistory() {
-      // Trim history if we're not at the end
-      App.history = App.history.slice(0, App.historyIndex + 1);
-      // Save current annotations
-      const snapshot = {};
-      for (let key in App.annotations) {
-        const canvas = document.createElement('canvas');
-        canvas.width = App.annotations[key].width;
-        canvas.height = App.annotations[key].height;
-        const tempCtx = canvas.getContext('2d');
-        tempCtx.putImageData(App.annotations[key], 0, 0);
-        snapshot[key] = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
-      }
-      App.history.push({
-        annotations: snapshot,
-        rotation: { ...App.rotation }
-      });
-      App.historyIndex++;
+    // Reset to backup (last stored or initial)
+    function resetToBackup() {
+        if (currentHTMLBackup) {
+            editor.innerHTML = currentHTMLBackup;
+            updateStats();
+            lastActionSpan.innerHTML = `<i class="fas fa-history"></i> Reset to last saved state`;
+        } else {
+            lastActionSpan.innerHTML = `<i class="fas fa-exclamation"></i> No backup available`;
+        }
     }
 
-    function restoreFromHistory() {
-      const state = App.history[App.historyIndex];
-      if (!state) return;
-      
-      App.annotations = {};
-      for (let key in state.annotations) {
-        App.annotations[key] = state.annotations[key];
-      }
-      App.rotation = { ...state.rotation };
-      
-      renderCurrentPage();
+    // Execute any word operation that works on plain text while preserving HTML structure? 
+    // Since we need to remove words and edit words inside rich editor, we operate on innerText? But loses formatting.
+    // To preserve formatting but still remove word occurrences, we can use regex on innerHTML but carefully.
+    // Better: function that processes text nodes to remove a word, keep HTML tags.
+    // For simplicity & robust word removal, we implement a function that removes exact word from text content but keeps tags.
+    // This ensures we don't break formatting but aggressively remove the given word string from text only.
+    function removeWordFromEditor(wordToRemove, isCaseSensitive = true) {
+        if (!wordToRemove.trim()) {
+            lastActionSpan.innerHTML = `<i class="fas fa-ban"></i> No word provided`;
+            return false;
+        }
+        let flags = "g";
+        if (!isCaseSensitive) flags += "i";
+        const regex = new RegExp(`(${escapeRegex(wordToRemove)})`, flags);
+        // walk through text nodes and replace
+        const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
+        let nodesToModify = [];
+        while(walker.nextNode()) nodesToModify.push(walker.currentNode);
+        let modified = false;
+        for(let node of nodesToModify) {
+            let original = node.nodeValue;
+            let newValue = original.replace(regex, '');
+            if(newValue !== original) {
+                node.nodeValue = newValue;
+                modified = true;
+            }
+        }
+        if(modified) {
+            updateStats();
+            lastActionSpan.innerHTML = `<i class="fas fa-trash"></i> Removed "${wordToRemove}" occurrences.`;
+            storeBackup();
+            return true;
+        } else {
+            lastActionSpan.innerHTML = `⚠️ No occurrence of "${wordToRemove}" found.`;
+            return false;
+        }
     }
 
-    function undo() {
-      if (App.historyIndex > 0) {
-        App.historyIndex--;
-        restoreFromHistory();
-        showToast('Undo successful');
-      } else {
-        showToast('Nothing to undo', true);
-      }
+    // Replace all occurrences (find/replace) preserving text nodes
+    function replaceAllWords(findWord, replaceWord, caseSensitive = true) {
+        if (!findWord.trim()) {
+            lastActionSpan.innerHTML = `⚠️ Find word empty`;
+            return;
+        }
+        let flags = "g";
+        if (!caseSensitive) flags += "i";
+        const regex = new RegExp(`(${escapeRegex(findWord)})`, flags);
+        const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
+        let modified = false;
+        let nodes = [];
+        while(walker.nextNode()) nodes.push(walker.currentNode);
+        for(let node of nodes) {
+            let original = node.nodeValue;
+            let newVal = original.replace(regex, replaceWord);
+            if(newVal !== original) {
+                node.nodeValue = newVal;
+                modified = true;
+            }
+        }
+        if(modified) {
+            updateStats();
+            lastActionSpan.innerHTML = `<i class="fas fa-sync-alt"></i> Replaced "${findWord}" → "${replaceWord}"`;
+            storeBackup();
+        } else {
+            lastActionSpan.innerHTML = `🔍 No matches for "${findWord}"`;
+        }
     }
 
-    function redo() {
-      if (App.historyIndex < App.history.length - 1) {
-        App.historyIndex++;
-        restoreFromHistory();
-        showToast('Redo successful');
-      } else {
-        showToast('Nothing to redo', true);
-      }
+    // Helper: escape regex special chars
+    function escapeRegex(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
-    async function renderCurrentPage() {
-      if (!App.pdfDoc) return;
-      
-      const page = await App.pdfDoc.getPage(App.currentPage);
-      const rotation = App.rotation[App.currentPage] || 0;
-      let viewport = page.getViewport({ scale: App.scale });
-      
-      if (rotation) {
-        viewport = page.getViewport({ scale: App.scale, rotation });
-      }
-      
-      pdfCanvas.width = viewport.width;
-      pdfCanvas.height = viewport.height;
-      drawingCanvas.width = viewport.width;
-      drawingCanvas.height = viewport.height;
-      
-      await page.render({
-        canvasContext: pdfCanvas.getContext('2d'),
-        viewport: viewport
-      }).promise;
-      
-      // Restore annotations for this page
-      if (App.annotations[App.currentPage]) {
-        ctx.putImageData(App.annotations[App.currentPage], 0, 0);
-      } else {
-        ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-      }
-      
-      updatePageInfo();
+    // Remove ALL matches (multi remove, global)
+    function removeAllMatches(phrase) {
+        if(!phrase.trim()) return;
+        removeWordFromEditor(phrase, true);
     }
 
-    async function renderThumbnails() {
-      const container = document.getElementById('thumbnails');
-      container.innerHTML = '';
-      
-      for (let i = 1; i <= App.totalPages; i++) {
-        const page = await App.pdfDoc.getPage(i);
-        const viewport = page.getViewport({ scale: 0.2 });
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        
-        await page.render({
-          canvasContext: canvas.getContext('2d'),
-          viewport: viewport
-        }).promise;
-        
-        const thumb = document.createElement('div');
-        thumb.className = 'thumbnail' + (i === App.currentPage ? ' active' : '');
-        thumb.appendChild(canvas);
-        thumb.onclick = () => {
-          App.currentPage = i;
-          renderCurrentPage();
-          renderThumbnails();
-        };
-        container.appendChild(thumb);
-      }
+    // Load text/word content: extract text from file and set as innerHTML preserving paragraphs?
+    function loadPlainTextIntoTarget(textContent) {
+        // Convert plain text lines to paragraphs for better readability
+        let formatted = textContent.replace(/\n/g, '<br>').replace(/\r/g, '');
+        editor.innerHTML = `<div>${formatted}</div>`;
+        storeBackup();
+        updateStats();
+        lastActionSpan.innerHTML = `<i class="fas fa-check"></i> Document loaded successfully.`;
     }
 
-    function updatePageInfo() {
-      document.getElementById('current-page').textContent = App.currentPage;
-      document.getElementById('total-pages').textContent = App.totalPages;
-      document.getElementById('prev-page').disabled = App.currentPage === 1;
-      document.getElementById('next-page').disabled = App.currentPage === App.totalPages;
-    }
-
-    function saveAnnotations() {
-      App.annotations[App.currentPage] = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
-      saveToHistory();
-    }
-
-    // Drawing Functions
-    function startDrawing(e) {
-      if (!App.currentTool || App.currentTool === 'text') return;
-      
-      App.isDrawing = true;
-      const rect = drawingCanvas.getBoundingClientRect();
-      const scaleX = drawingCanvas.width / rect.width;
-      const scaleY = drawingCanvas.height / rect.height;
-      
-      let clientX, clientY;
-      if (e.touches) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-        e.preventDefault();
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-      
-      App.lastX = (clientX - rect.left) * scaleX;
-      App.lastY = (clientY - rect.top) * scaleY;
-      
-      ctx.beginPath();
-      ctx.moveTo(App.lastX, App.lastY);
-      
-      if (App.currentTool === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out';
-      } else {
-        ctx.globalCompositeOperation = 'source-over';
-      }
-      
-      ctx.lineWidth = App.brushSize;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = App.currentColor;
-      ctx.fillStyle = App.currentColor;
-      ctx.globalAlpha = App.currentTool === 'highlight' ? 0.3 : App.opacity / 100;
-      
-      if (App.currentTool === 'draw' || App.currentTool === 'highlight') {
-        ctx.lineTo(App.lastX, App.lastY);
-        ctx.stroke();
-      }
-    }
-
-    function draw(e) {
-      if (!App.isDrawing || !App.currentTool || App.currentTool === 'text') return;
-      
-      const rect = drawingCanvas.getBoundingClientRect();
-      const scaleX = drawingCanvas.width / rect.width;
-      const scaleY = drawingCanvas.height / rect.height;
-      
-      let clientX, clientY;
-      if (e.touches) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-        e.preventDefault();
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-      
-      const currentX = (clientX - rect.left) * scaleX;
-      const currentY = (clientY - rect.top) * scaleY;
-      
-      if (App.currentTool === 'eraser') {
-        ctx.beginPath();
-        ctx.arc(currentX, currentY, App.brushSize / 2, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        ctx.lineTo(currentX, currentY);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(currentX, currentY);
-      }
-      
-      App.lastX = currentX;
-      App.lastY = currentY;
-    }
-
-    function endDrawing() {
-      if (App.isDrawing) {
-        App.isDrawing = false;
-        saveAnnotations();
-        updateStatus('✓ Annotation saved');
-      }
-    }
-
-    // Text Tool
-    let pendingTextPosition = null;
-    
-    function openTextModal(x, y) {
-      pendingTextPosition = { x, y };
-      const modal = document.getElementById('text-modal');
-      const input = document.getElementById('text-input');
-      input.value = '';
-      modal.classList.add('active');
-      input.focus();
-    }
-
-    function addTextToCanvas() {
-      if (!pendingTextPosition) return;
-      
-      const input = document.getElementById('text-input');
-      const text = input.value.trim();
-      
-      if (text) {
-        ctx.font = `${App.brushSize * 4}px "Inter", sans-serif`;
-        ctx.fillStyle = App.currentColor;
-        ctx.globalAlpha = App.opacity / 100;
-        ctx.fillText(text, pendingTextPosition.x, pendingTextPosition.y);
-        saveAnnotations();
-        updateStatus('✓ Text added');
-      }
-      
-      document.getElementById('text-modal').classList.remove('active');
-      pendingTextPosition = null;
-    }
-
-    // PDF Handling
-    async function loadPDF(file) {
-      try {
-        updateStatus('Loading PDF...');
-        App.fileName = file.name;
-        document.getElementById('file-name').textContent = file.name;
-        document.getElementById('file-size').textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
-        
+    // PDF Handling using PDF.js (first page text extraction)
+    async function loadPdfAndExtract(file) {
         const arrayBuffer = await file.arrayBuffer();
-        App.originalFile = arrayBuffer;
-        App.pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        App.totalPages = App.pdfDoc.numPages;
-        App.currentPage = 1;
-        App.annotations = {};
-        App.history = [];
-        App.historyIndex = -1;
-        App.rotation = {};
-        
-        await renderCurrentPage();
-        await renderThumbnails();
-        
-        uploadScreen.style.display = 'none';
-        editorScreen.style.display = 'flex';
-        updateStatus('✓ PDF loaded successfully');
-        showToast('PDF loaded! Start editing');
-      } catch (error) {
-        console.error(error);
-        updateStatus('✗ Failed to load PDF');
-        showToast('Failed to load PDF file', true);
-      }
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let fullText = "";
+        // get text from first 5 pages or all? For performance first 3 pages enough for demo
+        const maxPages = Math.min(pdf.numPages, 8);
+        for(let i = 1; i <= maxPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(' ');
+            fullText += pageText + "\n\n";
+        }
+        if(fullText.trim() === "") fullText = "[PDF appears to contain no extractable text or scanned image. Could not extract editable text.]";
+        loadPlainTextIntoTarget(fullText);
     }
 
-    // Save PDF with annotations
-    async function savePDF() {
-      try {
-        updateStatus('Preparing PDF for export...');
-        showToast('Saving PDF with annotations...');
-        
-        // For now, we'll create a new PDF with the original content
-        // In a full implementation, you'd merge annotations using jsPDF
-        const blob = new Blob([App.originalFile], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `annotated_${App.fileName}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        updateStatus('✓ PDF saved successfully');
-        showToast('PDF saved! (Annotations are preserved separately)');
-      } catch (error) {
-        console.error(error);
-        updateStatus('✗ Failed to save PDF');
-        showToast('Failed to save PDF', true);
-      }
+    // Load Word or text file (simple)
+    function loadWordOrTextFile(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let content = e.target.result;
+            if(file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                // For .docx, it's binary; we show a note: For a full docx parsing you need extra libs.
+                // However we implement a simple fallback: attempt to read as text? Not good but we show warning.
+                if(file.name.endsWith('.docx')) {
+                    lastActionSpan.innerHTML = `<i class="fas fa-info"></i> .docx binary - showing as text interpretation (best for plain)`;
+                    // try extracting string from binary (may show gibberish) so we suggest using .txt or .pdf
+                    // To avoid garbage, improved: recommend conversion; but we provide basic extraction:
+                    let possibleText = content.replace(/[^\x20-\x7E]/g, ' ').substring(0, 5000);
+                    loadPlainTextIntoTarget("Note: Extracted approximate text from binary .docx (formatting removed). Better use PDF or TXT.\n\n" + possibleText);
+                } else {
+                    loadPlainTextIntoTarget(content);
+                }
+            } else {
+                loadPlainTextIntoTarget(content);
+            }
+        };
+        if(file.type === "application/pdf") {
+            loadPdfAndExtract(file).catch(err => {
+                console.error(err);
+                lastActionSpan.innerHTML = `❌ PDF Error: ${err.message}`;
+                editor.innerHTML = `<p>Failed to extract PDF text. Ensure it's text-based PDF.</p>`;
+            });
+        } else {
+            reader.readAsText(file, "UTF-8");
+        }
     }
 
-    // Event Listeners
-    function initEventListeners() {
-      // File upload
-      dropzone.addEventListener('click', () => fileInput.click());
-      dropzone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzone.classList.add('drag-over');
-      });
-      dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
-      dropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzone.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file && file.type === 'application/pdf') loadPDF(file);
-        else showToast('Please upload a PDF file', true);
-      });
-      
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files[0]) loadPDF(e.target.files[0]);
-      });
-      
-      document.getElementById('browse-btn').addEventListener('click', () => fileInput.click());
-      document.getElementById('save-btn').addEventListener('click', savePDF);
-      document.getElementById('new-btn').addEventListener('click', () => {
-        uploadScreen.style.display = 'flex';
-        editorScreen.style.display = 'none';
-        App.pdfDoc = null;
-      });
-      
-      // Tool selection
-      document.querySelectorAll('[data-tool]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          App.currentTool = btn.getAttribute('data-tool');
-          updateStatus(`Tool: ${App.currentTool}`);
-        });
-      });
-      
-      // Undo/Redo
-      document.getElementById('undo-btn').addEventListener('click', undo);
-      document.getElementById('redo-btn').addEventListener('click', redo);
-      document.getElementById('clear-btn').addEventListener('click', () => {
-        ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-        saveAnnotations();
-        showToast('All annotations cleared');
-      });
-      
-      // Rotation
-      document.getElementById('rotate-left-btn').addEventListener('click', () => {
-        App.rotation[App.currentPage] = (App.rotation[App.currentPage] || 0) - 90;
-        renderCurrentPage();
-        saveToHistory();
-      });
-      
-      document.getElementById('rotate-right-btn').addEventListener('click', () => {
-        App.rotation[App.currentPage] = (App.rotation[App.currentPage] || 0) + 90;
-        renderCurrentPage();
-        saveToHistory();
-      });
-      
-      // Page navigation
-      document.getElementById('prev-page').addEventListener('click', () => {
-        if (App.currentPage > 1) {
-          App.currentPage--;
-          renderCurrentPage();
-          renderThumbnails();
+    // File upload handler
+    document.getElementById("fileUploader").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+        if(file.type === "application/pdf") {
+            loadPdfAndExtract(file).catch(err => {
+                lastActionSpan.innerHTML = `PDF error: ${err.message}`;
+            });
+        } else {
+            loadWordOrTextFile(file);
         }
-      });
-      
-      document.getElementById('next-page').addEventListener('click', () => {
-        if (App.currentPage < App.totalPages) {
-          App.currentPage++;
-          renderCurrentPage();
-          renderThumbnails();
+        storeBackup();
+    });
+
+    document.getElementById("loadPdfBtn").addEventListener("click", () => {
+        const fileInput = document.getElementById("fileUploader");
+        if(fileInput.files.length > 0 && fileInput.files[0].type === "application/pdf") {
+            loadPdfAndExtract(fileInput.files[0]).catch(e => alert(e));
+        } else {
+            alert("Please select a PDF file using the file input above.");
         }
-      });
-      
-      // Color picker
-      document.getElementById('color-palette').addEventListener('click', (e) => {
-        const colorDiv = e.target.closest('.color-option');
-        if (colorDiv) {
-          document.querySelectorAll('.color-option').forEach(c => c.classList.remove('active'));
-          colorDiv.classList.add('active');
-          App.currentColor = colorDiv.dataset.color;
-        }
-      });
-      
-      // Brush settings
-      document.getElementById('brush-size').addEventListener('input', (e) => {
-        App.brushSize = parseInt(e.target.value);
-        document.getElementById('brush-size-value').textContent = App.brushSize;
-      });
-      
-      document.getElementById('opacity').addEventListener('input', (e) => {
-        App.opacity = parseInt(e.target.value);
-        document.getElementById('opacity-value').textContent = App.opacity;
-      });
-      
-      // Drawing events
-      drawingCanvas.addEventListener('mousedown', startDrawing);
-      drawingCanvas.addEventListener('mousemove', draw);
-      drawingCanvas.addEventListener('mouseup', endDrawing);
-      drawingCanvas.addEventListener('mouseleave', endDrawing);
-      
-      // Touch events for mobile
-      drawingCanvas.addEventListener('touchstart', startDrawing);
-      drawingCanvas.addEventListener('touchmove', draw);
-      drawingCanvas.addEventListener('touchend', endDrawing);
-      
-      // Text tool click
-      drawingCanvas.addEventListener('click', (e) => {
-        if (App.currentTool === 'text') {
-          const rect = drawingCanvas.getBoundingClientRect();
-          const scaleX = drawingCanvas.width / rect.width;
-          const scaleY = drawingCanvas.height / rect.height;
-          
-          let clientX, clientY;
-          if (e.touches) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-          } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
-          }
-          
-          const x = (clientX - rect.left) * scaleX;
-          const y = (clientY - rect.top) * scaleY;
-          openTextModal(x, y);
-        }
-      });
-      
-      // Text modal buttons
-      document.getElementById('confirm-text').addEventListener('click', addTextToCanvas);
-      document.getElementById('cancel-text').addEventListener('click', () => {
-        document.getElementById('text-modal').classList.remove('active');
-        pendingTextPosition = null;
-      });
-      
-      document.getElementById('text-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addTextToCanvas();
-      });
-    }
-    
-    // Initialize
-    initEventListeners();
-    updateStatus('✓ Ready - Upload a PDF to get started');
-  </script>
+    });
+
+    // Word removal buttons
+    document.getElementById("removeWordBtn").addEventListener("click", () => {
+        let word = document.getElementById("removeWordInput").value.trim();
+        if(word) removeWordFromEditor(word, true);
+        else lastActionSpan.innerHTML = "Enter a word to remove";
+    });
+
+    document.getElementById("replaceWordBtn").addEventListener("click", () => {
+        let find = document.getElementById("findWordInput").value;
+        let replace = document.getElementById("replaceWordInput").value;
+        if(find) replaceAllWords(find, replace, true);
+        else lastActionSpan.innerHTML = "Enter find word";
+    });
+
+    document.getElementById("multiRemoveBtn").addEventListener("click", () => {
+        let phrase = document.getElementById("multiRemoveInput").value;
+        if(phrase) removeAllMatches(phrase);
+        else lastActionSpan.innerHTML = "Enter phrase to remove";
+    });
+
+    document.getElementById("resetContentBtn").addEventListener("click", () => {
+        resetToBackup();
+    });
+
+    document.getElementById("newDocumentBtn").addEventListener("click", () => {
+        editor.innerHTML = `<h2>New Document</h2><p>Start writing or upload a file...</p>`;
+        storeBackup();
+        updateStats();
+        lastActionSpan.innerHTML = "🆕 New blank document created";
+    });
+
+    // Export to PDF using html2pdf
+    document.getElementById("exportPdfBtn").addEventListener("click", () => {
+        const element = document.getElementById("editableContent");
+        const opt = {
+            margin:        [0.5, 0.5, 0.5, 0.5],
+            filename:     'DocuForge_export.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, letterRendering: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+        lastActionSpan.innerHTML = "📄 Exporting to PDF...";
+    });
+
+    // Export to Word (.doc) using Blob
+    document.getElementById("exportWordBtn").addEventListener("click", () => {
+        let content = editor.innerHTML;
+        let docHtml = `<!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"><title>DocuForge_Word_Export</title></head>
+        <body style="font-family:Calibri, Arial, sans-serif; padding:20px;">${content}</body>
+        </html>`;
+        const blob = new Blob([docHtml], { type: "application/msword" });
+        saveAs(blob, "DocuForge_export.doc");
+        lastActionSpan.innerHTML = "📝 Word document exported.";
+    });
+
+    // formatting helpers
+    document.getElementById("boldBtn").addEventListener("click", () => {
+        document.execCommand("bold", false, null);
+        storeBackup();
+    });
+    document.getElementById("italicBtn").addEventListener("click", () => {
+        document.execCommand("italic", false, null);
+        storeBackup();
+    });
+    document.getElementById("underlineBtn").addEventListener("click", () => {
+        document.execCommand("underline", false, null);
+        storeBackup();
+    });
+    document.getElementById("clearFormatBtn").addEventListener("click", () => {
+        document.execCommand("removeFormat", false, null);
+        storeBackup();
+    });
+
+    // live stats + auto backup on input
+    editor.addEventListener("input", () => {
+        updateStats();
+        storeBackup();
+    });
+    editor.addEventListener("keyup", () => updateStats());
+    editor.addEventListener("mouseup", () => updateStats());
+
+    // initial backup
+    storeBackup();
+    updateStats();
+</script>
 </body>
 </html>
