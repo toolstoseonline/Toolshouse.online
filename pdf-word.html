@@ -3,35 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-   <title>PDF to Word Converter</title>
-   <meta name="description" content="Convert PDF to Word online for free. Transform PDFs into editable DOCX files while preserving layout, fonts, images, and tables. OCR for scanned documents included. No signup.">
-    <meta name="keywords" content="PDF to Word,convert PDF to Word,PDF to DOCX">
+    <title>PDF to Word Converter | Free Online DOCX Tool</title>
+    <meta name="description" content="Convert PDF to Word online for free. Transform PDFs into editable DOCX files while preserving layout, fonts, images, and tables. OCR for scanned documents included. No signup.">
+    <meta name="keywords" content="PDF to Word,convert PDF to Word,PDF to DOCX,free PDF converter,online PDF to Word">
     <link rel="canonical" href="https://www.toolshouse.online/pdf-word.html">
     <meta name="robots" content="index, follow">
-  <meta property="og:title" content="PDF to Word Converter | Mobile-Friendly Tool">
-<meta property="og:description" content="Convert PDF to Word online for free. Transform PDFs into editable DOCX files while preserving layout, fonts, images, and tables. OCR for scanned documents included. No signup.">
-<meta property="og:url" content="https://www.toolshouse.online/pdf-word.html">
-<meta property="og:type" content="website">
+    <meta property="og:title" content="PDF to Word Converter | Free & Mobile-Friendly">
+    <meta property="og:description" content="Convert PDF to Word online for free. Transform PDFs into editable DOCX files while preserving layout, fonts, images, and tables. No signup required.">
+    <meta property="og:url" content="https://www.toolshouse.online/pdf-word.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.toolshouse.online/og-pdf-word.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PDF to Word Converter | Free Online Tool">
+    <meta name="twitter:description" content="Convert PDF to Word online for free. Preserve formatting, tables, and images.">
     <!-- PDF.js core library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <!-- FileSaver.js for reliable .doc download -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
+    <!-- 
     =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
+    GOOGLE SEARCH CONSOLE INTEGRATION - FIXED
     =======================================================
-    To verify ownership and enable indexing for this PDF to Word Converter:
+    To verify ownership and enable indexing:
     1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
+    2. Add your property (https://www.toolshouse.online/ or full URL)
+    3. Select "HTML tag" verification method
+    4. Copy the entire meta tag provided by Google
+    5. Replace the content value below with YOUR unique code
+    6. IMPORTANT: Do NOT change name="google-site-verification"
+    7. Upload this file to your server root or correct path
+    8. Click "Verify" in Search Console
+    9. Submit sitemap for faster indexing
     =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+    -->
+    <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+    <!-- Additional SEO: structured data for tool -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "PDF to Word Converter",
+      "description": "Free online PDF to Word converter that preserves formatting, tables, and images.",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "url": "https://www.toolshouse.online/pdf-word.html"
+    }
+    </script>
     <style>
         * {
             margin: 0;
@@ -326,7 +348,6 @@
             margin-top: 0.8rem;
             font-size: 0.75rem;
         }
-        /* touch optimizations */
         button, .dropzone {
             cursor: pointer;
             touch-action: manipulation;
@@ -352,10 +373,9 @@
 <div class="converter-card">
     <div class="hero">
         <h1>PDF to Word Converter <span class="badge">✨ LAYOUT PRESERVED</span></h1>
-        <p>Upload any PDF — intelligent extraction keeps fonts, bold, italic, tables & lists. Full validation + mobile ready.</p>
+        <p>Upload any PDF — intelligent extraction keeps fonts, bold, italic, tables & lists. Full validation + mobile ready. Free & No signup.</p>
     </div>
     <div class="workflow">
-        <!-- LEFT PANEL: Upload + Handling Check + Download -->
         <div class="upload-area">
             <div id="dropzone" class="dropzone">
                 <div class="file-icon">📂📄</div>
@@ -364,7 +384,6 @@
                 <input type="file" id="fileInput" accept="application/pdf" style="display: none;" />
             </div>
             
-            <!-- HANDLING CHECK SECTION - FULL VALIDATION -->
             <div class="check-section" id="checkSection">
                 <div class="check-title">
                     🔍 HANDLING CHECK & VALIDATION
@@ -388,7 +407,6 @@
             <div id="messageArea"></div>
         </div>
 
-        <!-- RIGHT PANEL: Live Preview - mobile scroll -->
         <div class="preview-area">
             <div class="preview-header">
                 <span class="preview-title">📖 Live Preview (Word style)</span>
@@ -402,7 +420,7 @@
         </div>
     </div>
     <footer>
-        ⚡ PDF.js engine | Preserves headings, paragraphs, lists & tables | Mobile optimized with validation
+        ⚡ PDF.js engine | Preserves headings, paragraphs, lists & tables | Mobile optimized with validation | Free PDF to Word Converter
     </footer>
 </div>
 
@@ -434,8 +452,7 @@
     let isPdfLoaded = false;
     let hasValidContent = false;
     
-    // Helper: update check status
-    function updateCheckItem(element, status, statusText = '') {
+    function updateCheckItem(element, status) {
         const statusSpan = element.querySelector('.check-status');
         if (status === 'pass') {
             statusSpan.innerHTML = '✅';
@@ -444,9 +461,6 @@
             statusSpan.innerHTML = '❌';
         } else {
             statusSpan.innerHTML = '⚪';
-        }
-        if (statusText && element.querySelector('span:first-child')) {
-            // optionally keep text
         }
     }
     
@@ -467,12 +481,11 @@
         messageArea.innerHTML = isError ? `<div class="error-txt">⚠️ ${msg}</div>` : `<div class="success-txt">✓ ${msg}</div>`;
         setTimeout(() => {
             if (messageArea.innerHTML.includes(msg)) {
-                // auto clear after 4 sec
                 setTimeout(() => {
                     if (messageArea.innerHTML.includes(msg)) messageArea.innerHTML = '';
                 }, 1000);
             }
-        }, 3500);
+        }, 4000);
     }
     
     function escapeHtml(str) {
@@ -485,7 +498,6 @@
         });
     }
     
-    // Advanced PDF to HTML with formatting (preserve bold, italic, spacing, lists)
     async function generateHtmlFromPdf(pdfData) {
         try {
             const loadingTask = pdfjsLib.getDocument({ data: pdfData, useSystemFonts: true, cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/', cMapPacked: true });
@@ -499,7 +511,6 @@
                 const textContent = await page.getTextContent({ includeMarkedContent: true });
                 const items = textContent.items;
                 
-                // Group by Y coordinate (line grouping)
                 let linesMap = new Map();
                 for (let item of items) {
                     let transform = item.transform;
@@ -538,7 +549,6 @@
                     if (lineFragments.length) {
                         let combinedLine = lineFragments.join('');
                         let rawText = lineItems.map(i=>i.str).join('').trim();
-                        // detect bullet or numbered list
                         if (/^[•\-\*]\s/.test(rawText) || /^\d+\.\s/.test(rawText)) {
                             pageHtml.push(`<div style="margin:0.2em 0 0.2em 1.5rem;">${combinedLine}</div>`);
                         } else {
@@ -558,7 +568,6 @@
         }
     }
     
-    // MAIN LOAD & VALIDATION with full handling check
     async function loadAndValidatePdf(file) {
         resetChecks();
         convertBtn.disabled = true;
@@ -567,7 +576,6 @@
         extractedHtmlContent = "";
         currentPdfData = null;
         
-        // CHECK 1: File selection
         if (!file) {
             updateCheckItem(checkFileEl, 'fail');
             showMessage("No file selected. Please choose a PDF.", true);
@@ -576,7 +584,6 @@
         updateCheckItem(checkFileEl, 'pass');
         checkFileEl.querySelector('span:first-child').innerHTML = `📄 ${file.name.length > 25 ? file.name.slice(0,22)+'...' : file.name}`;
         
-        // CHECK 2: PDF format validation
         if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
             updateCheckItem(checkFormatEl, 'fail');
             showMessage("Invalid file format: please upload a PDF.", true);
@@ -591,7 +598,6 @@
             currentFileName = file.name.replace(/\.pdf$/i, '');
             fileInfoSpan.innerHTML = `<span>✅ ${file.name} (${(file.size/1024).toFixed(1)} KB) loaded</span>`;
             
-            // EXTRACT & CHECK pages
             updateCheckItem(checkPagesEl, 'pending');
             const generatedHtml = await generateHtmlFromPdf(arrayBuffer);
             extractedHtmlContent = generatedHtml;
@@ -603,11 +609,10 @@
                 updateCheckItem(checkPagesEl, 'fail');
             }
             
-            // CHECK TEXT & FORMATTING
             const plainTextLen = extractedHtmlContent.replace(/<[^>]*>/g, '').trim().length;
             if (plainTextLen > 10 && totalPages > 0) {
                 updateCheckItem(checkTextEl, 'pass');
-                checkTextEl.querySelector('span:first-child').innerHTML = `✍️ Text & formatting (${Math.min(plainTextLen, 500)} chars extracted)`;
+                checkTextEl.querySelector('span:first-child').innerHTML = `✍️ Text & formatting (${Math.min(plainTextLen, 500)} chars)`;
                 hasValidContent = true;
             } else if (totalPages > 0 && plainTextLen > 0) {
                 updateCheckItem(checkTextEl, 'pass');
@@ -618,12 +623,10 @@
                 showMessage("Low text content - PDF might be image-based. Conversion may be limited.", true);
             }
             
-            // Preview update
             previewContainer.innerHTML = `<div class="word-preview" style="max-width:100%;">${extractedHtmlContent}</div>`;
             pageStatusSpan.innerText = `✓ ${totalPages} pages · ready`;
             isPdfLoaded = true;
             
-            // FINAL CHECK
             if (isPdfLoaded && totalPages > 0 && hasValidContent) {
                 updateCheckItem(checkReadyEl, 'pass');
                 checkReadyEl.querySelector('span:first-child').innerHTML = '✅ Ready for conversion — download available';
@@ -653,7 +656,6 @@
         }
     }
     
-    // DOWNLOAD WORD DOCUMENT
     function downloadWordDoc() {
         if (!currentPdfData || !extractedHtmlContent || extractedHtmlContent.length < 15) {
             showMessage("No valid content. Please upload a PDF first.", true);
@@ -670,11 +672,9 @@
             div { margin:0.2em 0; }
             b,strong { font-weight:bold; }
             i,em { font-style:italic; }
-            table { border-collapse:collapse; margin:10pt 0; }
-            td,th { border:1px solid #8a8a8a; padding:4px 6px; }
         </style>
         </head>
-        <body>${extractedHtmlContent}<p style="text-align:center; font-size:9pt; color:#777; margin-top:30pt;">— Converted by Prefect PDF to Word —</p></body>
+        <body>${extractedHtmlContent}<p style="text-align:center; font-size:9pt; color:#777; margin-top:30pt;">— Converted by PDF to Word Tool —</p></body>
         </html>`;
         const blob = new Blob([fullDocHtml], { type: 'application/msword' });
         saveAs(blob, `${safeName}_converted.doc`);
@@ -685,7 +685,6 @@
         }, 2500);
     }
     
-    // EVENT HANDLERS (touch + mouse)
     dropzone.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
         if (fileInput.files && fileInput.files.length) loadAndValidatePdf(fileInput.files[0]);
@@ -714,8 +713,5 @@
     resetChecks();
     convertBtn.disabled = true;
 </script>
-    <script src="https://www.highperformanceformat.com/5bf95675e8631e5c8cb36a1e39c51cba/invoke.js"></script>
-<script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
 </body>
 </html>
