@@ -1,12 +1,189 @@
-# Allow all search engines to crawl the site
+# ============================================
+# ROBOTS.TXT - Tools House Online
+# Domain: https://www.toolshouse.online
+# Last Updated: 2026-05-17
+# ============================================
+
+# Allow all major search engines to crawl everything
 User-agent: *
 Allow: /
 
-# Sitemap location
+# ============================================
+# SITEMAP LOCATIONS
+# ============================================
 Sitemap: https://www.toolshouse.online/sitemap.xml
+Sitemap: https://www.toolshouse.online/sitemap-index.xml
 
-# Block crawling of unnecessary or system files
-Disallow: /app-install.html
+# ============================================
+# CRAWL DELAY - Be respectful to server
+# ============================================
+# Recommended crawl delay for bots
+User-agent: Googlebot
+Crawl-delay: 1
+
+User-agent: Bingbot
+Crawl-delay: 1
+
+User-agent: Slurp
+Crawl-delay: 1
+
+User-agent: DuckDuckBot
+Crawl-delay: 1
+
+User-agent: Baiduspider
+Crawl-delay: 2
+
+User-agent: Yandex
+Crawl-delay: 1
+
+# ============================================
+# BLOCK MALICIOUS BOTS (Known bad bots)
+# ============================================
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: rogerbot
+Disallow: /
+
+User-agent: Exabot
+Disallow: /
+
+User-agent: spbot
+Disallow: /
+
+User-agent: Yeti
+Disallow: /
+
+User-agent: MauiBot
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /temp/
+Disallow: /cache/
+
+# ============================================
+# BLOCK ADMIN & SYSTEM PATHS
+# ============================================
+User-agent: *
+Disallow: /admin/
 Disallow: /cgi-bin/
 Disallow: /wp-admin/
 Disallow: /wp-includes/
+Disallow: /tmp/
+Disallow: /temp/
+Disallow: /cache/
+Disallow: /backup/
+Disallow: /backups/
+Disallow: /logs/
+Disallow: /error_log
+Disallow: /php.ini
+Disallow: /.htaccess
+Disallow: /.env
+Disallow: /config/
+Disallow: /includes/
+Disallow: /lib/
+Disallow: /classes/
+
+# ============================================
+# BLOCK DUPLICATE & PARAMETER PAGES
+# ============================================
+User-agent: *
+Disallow: /*?*
+Disallow: /*.pdf$
+Disallow: /*.zip$
+Disallow: /*.rar$
+Disallow: /*.tmp$
+Disallow: /*.log$
+Disallow: /*.sql$
+Disallow: /*.bak$
+Disallow: /print/*
+
+# ============================================
+# BLOCK SPECIFIC FILE TYPES
+# ============================================
+User-agent: *
+Disallow: /*.css$
+Disallow: /*.js$
+Disallow: /*.json$
+Disallow: /*.xml$ (except sitemap)
+Disallow: /*.inc$
+Disallow: /*.conf$
+
+# ============================================
+# SEO - Prevent duplicate content
+# ============================================
+User-agent: *
+Disallow: /*/page/
+Disallow: /*/category/
+Disallow: /*/tag/
+Disallow: /*?sort=
+Disallow: /*?order=
+Disallow: /*?filter=
+Disallow: /*?utm_source=
+Disallow: /*?utm_medium=
+Disallow: /*?utm_campaign=
+Disallow: /*?ref=
+Disallow: /*?source=
+
+# ============================================
+# MOBILE & IMAGE BOTS (Allow images)
+# ============================================
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /img/
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.webp
+Disallow: /admin/
+
+User-agent: Mediapartners-Google
+Allow: /
+
+# ============================================
+# SOCIAL MEDIA BOTS
+# ============================================
+User-agent: Twitterbot
+Allow: /
+
+User-agent: Facebookbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Pinterestbot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+# ============================================
+# CRAWL RATE OPTIMIZATION
+# ============================================
+# Maximum crawl rate for Google
+User-agent: Googlebot
+Host: https://www.toolshouse.online
+
+# ============================================
+# HOST DIRECTIVE (For Yandex)
+# ============================================
+Host: https://www.toolshouse.online
+
+# ============================================
+# CLEAN PARAMETERS
+# ============================================
+# Tell Google which parameters to ignore
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
+Clean-param: ref&source&from
+Clean-param: session_id&sid
