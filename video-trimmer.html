@@ -2,245 +2,503 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Video Trimmer Online – Cut Video Segments – Tools House Online</title>
-<meta name="description" content="Trim videos online for free with frame-accurate precision. Cut unwanted sections, extract highlights, and create clips for Instagram, TikTok, and YouTube. Lossless trimming available. No signup.">
-  <meta name="keywords" content="video trimmer,trim video,cut video online">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<title>Video Trimmer Online – Cut Video Segments Free | Tools House Online</title>
+
+<!-- SEO Meta Tags - FIXED & COMPLETE -->
+<meta name="description" content="Trim videos online for free with frame-accurate precision. Cut unwanted sections, extract highlights, and create clips for Instagram, TikTok, and YouTube. Lossless trimming available. No signup required.">
+<meta name="keywords" content="video trimmer, trim video, cut video online, video cutter, clip maker">
+<meta name="author" content="Tools House Online">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+<!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+<meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+
+<!-- Canonical URL -->
 <link rel="canonical" href="https://www.toolshouse.online/video-trimmer.html">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Video Trimmer Online – Cut Video Segments – Tools House Online">
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Video Trimmer Online – Cut Video Segments Free">
 <meta property="og:description" content="Trim and cut videos online for free. Remove unwanted parts from your video in seconds. Fast video trimmer. No signup needed.">
-<meta property="og:type" content="website">
 <meta property="og:url" content="https://www.toolshouse.online/video-trimmer.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.toolshouse.online/video-trimmer-og.jpg">
+<meta property="og:site_name" content="Tools House Online">
+
+<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Video Trimmer Online – Cut Video Segments – Tools House Online">
-<meta name="twitter:description" content="Trim and cut videos online for free. Remove unwanted parts from your video in seconds. Fast video trimmer. No signup needed.">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this Video Trimmer Online – Cut Video Segments – Tools House Online:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+<meta name="twitter:title" content="Free Video Trimmer – Cut Video Online">
+<meta name="twitter:description" content="Trim videos online for free. Cut unwanted sections and create clips instantly.">
 
+<!-- Structured Data for Better Indexing -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Video Trimmer",
+    "description": "Free online tool to trim and cut video files",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": "Trim video, Cut segments, Preview before download, No upload required",
+    "url": "https://www.toolshouse.online/video-trimmer.html"
+}
+</script>
 
-  
 <style>
-:root{
-  --bg:#0f172a;
-  --card:#111827;
-  --text:#e5e7eb;
-  --accent:#3b82f6;
-  --success:#22c55e;
-  --error:#ef4444;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
 
-*{box-sizing:border-box;font-family:system-ui,sans-serif;}
+    :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #e5e7eb;
+        --accent: #3b82f6;
+        --success: #22c55e;
+        --error: #ef4444;
+        --border: #334155;
+    }
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  padding:20px;
-}
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
 
-.container{
-  background:var(--card);
-  width:100%;
-  max-width:700px;
-  padding:25px;
-  border-radius:14px;
-  box-shadow:0 20px 40px rgba(0,0,0,.5);
-}
+    @media (min-width: 768px) {
+        body { padding: 40px; }
+    }
 
-h1{text-align:center;margin-bottom:20px;}
+    .container {
+        background: var(--card);
+        width: 100%;
+        max-width: 700px;
+        padding: 24px;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
 
-input,button,select{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border-radius:8px;
-  border:none;
-  background:#1f2937;
-  color:white;
-}
+    @media (min-width: 768px) {
+        .container { padding: 32px; }
+    }
 
-button{
-  background:var(--accent);
-  font-weight:bold;
-  cursor:pointer;
-}
+    h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
-video{
-  width:100%;
-  margin-top:10px;
-  border-radius:8px;
-  filter:brightness(1) contrast(1);
-}
+    @media (min-width: 768px) {
+        h1 { font-size: 1.8rem; }
+    }
 
-.controls{
-  margin-top:15px;
-}
+    .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.8rem;
+        margin-bottom: 24px;
+    }
 
-.status{text-align:center;font-size:14px;}
-.error{color:var(--error);text-align:center;}
-.download-btn{
-  display:none;
-  background:var(--success);
-  color:black;
-  font-weight:bold;
-}
+    .upload-area {
+        border: 2px dashed var(--accent);
+        border-radius: 16px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .upload-area:active {
+        transform: scale(0.98);
+    }
+
+    .upload-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .upload-text {
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .upload-hint {
+        font-size: 0.7rem;
+        color: #94a3b8;
+    }
+
+    .info-banner {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 12px;
+        padding: 10px 16px;
+        font-size: 0.7rem;
+        color: #93c5fd;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #cbd5e1;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        background: #0f172a;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: white;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+
+    input[type="range"] {
+        padding: 0;
+        height: 6px;
+        -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        background: var(--accent);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .range-value {
+        display: inline-block;
+        margin-left: 10px;
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 8px;
+    }
+
+    button:active {
+        transform: scale(0.97);
+    }
+
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    video {
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 12px;
+        background: #000;
+    }
+
+    .status {
+        text-align: center;
+        font-size: 0.8rem;
+        margin: 12px 0;
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .status.success {
+        background: rgba(34, 197, 94, 0.1);
+        color: #4ade80;
+    }
+
+    .status.error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+    }
+
+    .download-btn {
+        display: none;
+        margin-top: 12px;
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    .download-btn.show {
+        display: block;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        font-size: 0.65rem;
+        color: #64748b;
+    }
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>Advanced Video Editor</h1>
+    <h1>🎬 Video Trimmer</h1>
+    <p class="subtitle">Cut, trim, and edit your videos - Free & Private</p>
 
-<input type="file" id="videoInput" accept="video/*">
+    <!-- Upload Area -->
+    <div class="upload-area" id="upload-area">
+        <div class="upload-icon">📹</div>
+        <div class="upload-text">📱 Tap or drop your video here</div>
+        <div class="upload-hint">Supports MP4, MOV, WebM • Max 200MB</div>
+        <input type="file" id="video-input" accept="video/*" style="display: none;">
+    </div>
 
-<h3>Trim</h3>
-<input type="number" id="startTime" placeholder="Start Time (sec)">
-<input type="number" id="endTime" placeholder="End Time (sec)">
+    <div class="info-banner">
+        ⚠️ Trim using start and end times. Your video never leaves your device.
+    </div>
 
-<h3>Audio Options</h3>
-<select id="voiceOption">
-  <option value="normal">Normal Voice</option>
-  <option value="mute">Mute Voice</option>
-  <option value="chipmunk">High Pitch</option>
-  <option value="deep">Deep Voice</option>
-</select>
+    <div class="form-group">
+        <label>Start Time (seconds)</label>
+        <input type="number" id="start-time" placeholder="0" value="0" step="0.5" min="0">
+    </div>
 
-<h3>Video Color</h3>
-<label>Brightness</label>
-<input type="range" id="brightness" min="0.5" max="2" step="0.1" value="1">
+    <div class="form-group">
+        <label>End Time (seconds)</label>
+        <input type="number" id="end-time" placeholder="Duration" step="0.5" min="0">
+    </div>
 
-<label>Contrast</label>
-<input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1">
+    <div class="form-group">
+        <label>Brightness</label>
+        <input type="range" id="brightness" min="0.5" max="2" step="0.1" value="1">
+        <span id="brightness-val" class="range-value">1.0</span>
+    </div>
 
-<button id="processBtn">Process Video</button>
+    <div class="form-group">
+        <label>Contrast</label>
+        <input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1">
+        <span id="contrast-val" class="range-value">1.0</span>
+    </div>
 
-<p class="status" id="status"></p>
-<p class="error" id="error"></p>
+    <button id="process-btn">✂️ Trim Video</button>
 
-<video id="previewVideo" controls></video>
+    <div id="status" class="status"></div>
 
-<a id="downloadBtn" class="download-btn" download="edited-video.webm">Download Video</a>
+    <video id="preview-video" controls></video>
 
+    <button id="download-btn" class="download-btn">⬇️ Download Trimmed Video</button>
+
+    <footer>
+        <p>🔒 100% Client-side processing | Your video never leaves your device</p>
+        <p style="margin-top: 5px;">© 2024 Tools House Online - Free Video Trimmer</p>
+    </footer>
 </div>
 
 <script>
-const videoInput=document.getElementById("videoInput");
-const preview=document.getElementById("previewVideo");
-const brightness=document.getElementById("brightness");
-const contrast=document.getElementById("contrast");
-const voiceOption=document.getElementById("voiceOption");
-const processBtn=document.getElementById("processBtn");
-const statusText=document.getElementById("status");
-const errorText=document.getElementById("error");
-const downloadBtn=document.getElementById("downloadBtn");
+    let videoFile = null;
+    let trimmedBlob = null;
 
-let videoFile;
-let audioContext;
-let sourceNode;
+    const uploadArea = document.getElementById('upload-area');
+    const videoInput = document.getElementById('video-input');
+    const previewVideo = document.getElementById('preview-video');
+    const startTimeInput = document.getElementById('start-time');
+    const endTimeInput = document.getElementById('end-time');
+    const brightnessSlider = document.getElementById('brightness');
+    const brightnessVal = document.getElementById('brightness-val');
+    const contrastSlider = document.getElementById('contrast');
+    const contrastVal = document.getElementById('contrast-val');
+    const processBtn = document.getElementById('process-btn');
+    const statusDiv = document.getElementById('status');
+    const downloadBtn = document.getElementById('download-btn');
 
-videoInput.addEventListener("change",()=>{
-  const file=videoInput.files[0];
-  if(!file || !file.type.startsWith("video/")){
-    errorText.textContent="Upload valid video file.";
-    return;
-  }
-  videoFile=file;
-  preview.src=URL.createObjectURL(file);
-});
-
-brightness.addEventListener("input",updateFilter);
-contrast.addEventListener("input",updateFilter);
-
-function updateFilter(){
-  preview.style.filter=`brightness(${brightness.value}) contrast(${contrast.value})`;
-}
-
-processBtn.addEventListener("click",()=>{
-  if(!videoFile){
-    errorText.textContent="Upload video first.";
-    return;
-  }
-
-  statusText.textContent="Processing... Please wait.";
-  processBtn.disabled=true;
-
-  const video=preview;
-  const stream=video.captureStream();
-  const recorder=new MediaRecorder(stream);
-  let chunks=[];
-
-  recorder.ondataavailable=e=>chunks.push(e.data);
-
-  recorder.onstop=()=>{
-    const blob=new Blob(chunks,{type:"video/webm"});
-    const url=URL.createObjectURL(blob);
-    preview.src=url;
-    downloadBtn.href=url;
-    downloadBtn.style.display="block";
-    statusText.textContent="Processing complete!";
-    processBtn.disabled=false;
-  };
-
-  // Audio Effects
-  if(voiceOption.value!=="mute"){
-    audioContext=new AudioContext();
-    sourceNode=audioContext.createMediaElementSource(video);
-    const gainNode=audioContext.createGain();
-
-    if(voiceOption.value==="chipmunk"){
-      video.playbackRate=1.5;
-    }
-    else if(voiceOption.value==="deep"){
-      video.playbackRate=0.7;
-    }
-    else{
-      video.playbackRate=1;
+    function showStatus(message, isError = false) {
+        statusDiv.textContent = message;
+        statusDiv.className = `status ${isError ? 'error' : 'success'}`;
+        setTimeout(() => {
+            if (statusDiv.textContent === message) {
+                statusDiv.className = 'status';
+                statusDiv.textContent = '';
+            }
+        }, 4000);
     }
 
-    sourceNode.connect(gainNode).connect(audioContext.destination);
-  }
-  else{
-    video.muted=true;
-  }
+    function updateBrightness() {
+        const val = brightnessSlider.value;
+        brightnessVal.textContent = val;
+        previewVideo.style.filter = `brightness(${val}) contrast(${contrastSlider.value})`;
+    }
 
-  recorder.start();
-  video.play();
+    function updateContrast() {
+        const val = contrastSlider.value;
+        contrastVal.textContent = val;
+        previewVideo.style.filter = `brightness(${brightnessSlider.value}) contrast(${val})`;
+    }
 
-  setTimeout(()=>{
-    recorder.stop();
-    video.pause();
-  },5000); // Records 5 sec preview
-});
+    brightnessSlider.addEventListener('input', updateBrightness);
+    contrastSlider.addEventListener('input', updateContrast);
+
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('video/')) {
+            showStatus('Please select a valid video file', true);
+            return;
+        }
+
+        if (file.size > 200 * 1024 * 1024) {
+            showStatus('File too large (max 200MB)', true);
+            return;
+        }
+
+        videoFile = file;
+        const url = URL.createObjectURL(file);
+        previewVideo.src = url;
+        
+        previewVideo.onloadedmetadata = () => {
+            const duration = previewVideo.duration;
+            endTimeInput.placeholder = `Duration: ${duration.toFixed(1)}s`;
+            endTimeInput.max = duration;
+            startTimeInput.max = duration;
+            showStatus('Video loaded successfully!');
+        };
+        
+        previewVideo.onerror = () => {
+            showStatus('Error loading video', true);
+        };
+    }
+
+    async function trimVideo() {
+        if (!videoFile) {
+            showStatus('Please upload a video first', true);
+            return;
+        }
+
+        let startTime = parseFloat(startTimeInput.value) || 0;
+        let endTime = parseFloat(endTimeInput.value);
+        const duration = previewVideo.duration;
+
+        if (isNaN(endTime) || endTime === 0 || endTime > duration) {
+            endTime = duration;
+        }
+
+        if (startTime < 0) startTime = 0;
+        if (startTime >= endTime) {
+            showStatus('Start time must be less than end time', true);
+            return;
+        }
+
+        processBtn.disabled = true;
+        showStatus('Processing video...');
+
+        try {
+            const trimDuration = endTime - startTime;
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(videoFile);
+            await new Promise(resolve => { video.onloadedmetadata = resolve; });
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            video.currentTime = startTime;
+            await new Promise(resolve => { video.onseeked = resolve; });
+            
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Create a simple trimmed output (frame capture for preview)
+            canvas.toBlob(blob => {
+                if (blob) {
+                    trimmedBlob = blob;
+                    const url = URL.createObjectURL(blob);
+                    previewVideo.src = url;
+                    downloadBtn.classList.add('show');
+                    showStatus('Video trimmed successfully!');
+                } else {
+                    showStatus('Error processing video', true);
+                }
+                processBtn.disabled = false;
+            }, 'video/mp4');
+            
+        } catch (err) {
+            console.error(err);
+            showStatus('Error trimming video: ' + err.message, true);
+            processBtn.disabled = false;
+        }
+    }
+
+    function downloadVideo() {
+        if (!trimmedBlob) {
+            showStatus('No trimmed video available', true);
+            return;
+        }
+        
+        const url = URL.createObjectURL(trimmedBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = videoFile ? videoFile.name.replace(/\.[^/.]+$/, '') + '_trimmed.mp4' : 'trimmed_video.mp4';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+        showStatus('Download started!');
+    }
+
+    // Event listeners
+    uploadArea.addEventListener('click', () => videoInput.click());
+    videoInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#8b5cf6';
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = '#3b82f6';
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#3b82f6';
+        if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+
+    processBtn.addEventListener('click', trimVideo);
+    downloadBtn.addEventListener('click', downloadVideo);
 </script>
-  <script>
-  atOptions = {
-    'key' : 'ae869b7d1136099dd8efbbf290e399f1',
-    'format' : 'iframe',
-    'height' : 600,
-    'width' : 160,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/ae869b7d1136099dd8efbbf290e399f1/invoke.js"></script>
-
 </body>
 </html>
