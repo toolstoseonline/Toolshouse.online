@@ -2,142 +2,139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Rotator Online – Rotate Video 90 180 Degrees – Tools House Online</title>
-<meta name="description" content="Rotate videos online for free. Fix upside-down or sideways videos with 90°, 180°, or flip controls. Preview before applying. Supports MP4, AVI, MOV, and more. No signup.">
-  <meta name="keywords" content="video rotator,rotate video,flip video,fix video orientation">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>Video Rotator – Rotate Video 90° 180° Online Free | Tools House Online</title>
+  
+  <!-- SEO Meta Tags - FIXED & COMPLETE -->
+  <meta name="description" content="Rotate videos online for free. Fix upside-down or sideways videos with 90°, 180°, or flip controls. Preview before applying. Supports MP4, AVI, MOV, and more. No signup required.">
+  <meta name="keywords" content="video rotator, rotate video, flip video, fix video orientation, rotate MP4">
+  <meta name="author" content="Tools House Online">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="googlebot" content="index, follow">
+  <meta name="bingbot" content="index, follow">
+  
+  <!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+  <meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+  
+  <!-- Canonical URL -->
   <link rel="canonical" href="https://www.toolshouse.online/video-rotator.html">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Video Rotator Online – Rotate Video 90 180 Degrees – Tools House Online">
-  <meta property="og:description" content="Rotate videos online for free. Turn your video 90, 180 or 270 degrees instantly in browser. Fast video rotator. No account needed.">
-  <meta property="og:type" content="website">
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Video Rotator – Rotate Video 90° 180° Online Free">
+  <meta property="og:description" content="Rotate videos online for free. Fix upside-down or sideways videos with 90°, 180°, or flip controls. No signup required.">
   <meta property="og:url" content="https://www.toolshouse.online/video-rotator.html">
-  <meta property="og:image" content="https://www.toolshouse.online/logo.png">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://www.toolshouse.online/video-rotator-og.jpg">
+  <meta property="og:site_name" content="Tools House Online">
+  
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Free Video Rotator Online – Rotate Video 90 180 Degrees – Tools House Online">
-  <meta name="twitter:description" content="Rotate videos online for free. Turn your video 90, 180 or 270 degrees instantly in browser. Fast video rotator. No account needed.">
-
-  <!-- FIX 1: Tailwind CDN dev warning fix — stable production CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-  <!-- FIX 2: Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this Video Rotator Online – Rotate Video 90 180 Degrees – Tools House Online:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+  <meta name="twitter:title" content="Free Video Rotator – Rotate Video Online">
+  <meta name="twitter:description" content="Rotate videos online for free. Fix video orientation instantly. No signup required.">
+  
+  <!-- Structured Data for Better Indexing -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Video Rotator",
+    "description": "Free online tool to rotate videos and fix orientation",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": "Rotate 90°, Rotate 180°, Flip video, Real-time preview",
+    "url": "https://www.toolshouse.online/video-rotator.html"
+  }
+  </script>
+  
   <style>
-    * { font-family: 'Space Grotesk', sans-serif; box-sizing: border-box; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
       background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0d0d1f 100%);
       min-height: 100vh;
       color: white;
-      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px 16px;
+    }
+
+    @media (min-width: 768px) {
+      body { padding: 40px 24px; }
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(to right, white, #c7d2fe, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .header h1 { font-size: 2.5rem; }
+    }
+
+    .header p {
+      color: #9ca3af;
+      font-size: 0.9rem;
     }
 
     .glass-card {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 20px;
     }
 
-    .glow-border {
-      box-shadow: 0 0 0 1px rgba(99,102,241,0.3),
-                  0 0 40px rgba(99,102,241,0.15),
-                  inset 0 0 60px rgba(99,102,241,0.05);
-    }
-
-    .rotate-btn {
-      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-      cursor: pointer;
-      background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));
-      border: 1px solid rgba(99,102,241,0.3);
+    .info-banner {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.3);
       border-radius: 12px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: white;
-    }
-    .rotate-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(99,102,241,0.4);
-      border-color: rgba(99,102,241,0.6);
-    }
-    .rotate-btn:active { transform: scale(0.98); }
-
-    .reset-btn {
-      background: linear-gradient(135deg, rgba(75,85,99,0.3), rgba(55,65,81,0.3));
-      border-color: rgba(107,114,128,0.4);
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      color: #fbbf24;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    .drop-zone {
-      border: 2px dashed rgba(99,102,241,0.4);
-      transition: all 0.3s ease;
-      cursor: pointer;
+    .upload-area {
+      border: 2px dashed rgba(99, 102, 241, 0.4);
       border-radius: 16px;
-    }
-    .drop-zone:hover, .drop-zone.dragover {
-      border-color: rgba(99,102,241,0.8);
-      background: rgba(99,102,241,0.08);
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.5; }
-    }
-    .pulse-dot { animation: pulse 2s infinite; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in { animation: fadeIn 0.5s ease-out; }
-
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      background: rgba(99,102,241,0.2);
-      border-radius: 10px;
-      height: 8px;
-      width: 100%;
-      cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 20px; height: 20px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(99,102,241,0.5);
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 20px; height: 20px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      border-radius: 50%;
-      cursor: pointer;
-      border: none;
+    .upload-area:active {
+      transform: scale(0.98);
     }
 
     .video-wrapper {
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       border-radius: 12px;
       overflow: hidden;
       display: flex;
@@ -145,387 +142,312 @@
       justify-content: center;
       min-height: 300px;
       padding: 16px;
+      margin-bottom: 20px;
     }
 
-    #video-preview {
+    video {
       max-width: 100%;
       max-height: 380px;
       width: auto;
       height: auto;
-      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+      transition: transform 0.3s ease;
+    }
+
+    .rotate-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 550px) {
+      .rotate-buttons { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .rotate-btn {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      color: white;
+    }
+
+    .rotate-btn:active {
+      transform: scale(0.96);
+    }
+
+    .reset-btn {
+      background: rgba(75, 85, 99, 0.3);
+      border-color: rgba(107, 114, 128, 0.4);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      -webkit-appearance: none;
+      background: rgba(99, 102, 241, 0.3);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 50%;
+      cursor: pointer;
     }
 
     .btn-download {
-      padding: 14px 32px;
-      border-radius: 12px;
+      width: 100%;
+      padding: 14px;
       background: linear-gradient(to right, #6366f1, #8b5cf6);
       color: white;
       font-weight: 600;
       border: none;
+      border-radius: 12px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.95rem;
       transition: all 0.2s;
     }
-    .btn-download:hover:not(:disabled) {
-      filter: brightness(1.1);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 25px rgba(99,102,241,0.4);
-    }
-    .btn-download:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* FIX 4: info banner for download limitation */
-    .info-banner {
-      background: rgba(251,191,36,0.1);
-      border: 1px solid rgba(251,191,36,0.3);
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: 13px;
-      color: #fbbf24;
-      text-align: center;
-      margin-bottom: 20px;
+    .btn-download:active {
+      transform: scale(0.97);
     }
 
-    .hidden { display: none !important; }
+    .btn-download:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-    .tools-grid {
+    .hidden {
+      display: none !important;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      border-radius: 12px;
+      color: white;
+      font-size: 0.8rem;
+      z-index: 1000;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .toast.success { background: #22c55e; }
+    .toast.error { background: #ef4444; }
+
+    .features {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
     }
-    @media (min-width: 640px) {
-      .tools-grid { grid-template-columns: repeat(4, 1fr); }
-    }
+
     @media (max-width: 640px) {
-      .feat-grid { grid-template-columns: 1fr !important; }
+      .features { grid-template-columns: 1fr; }
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.7rem;
+      color: #6b7280;
     }
   </style>
 </head>
 <body>
 
-<!-- Header -->
-<header style="border-bottom:1px solid rgba(255,255,255,0.05);padding:16px 24px;">
-  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;">
-        <svg width="22" height="22" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-      </div>
-      <div>
-        <a href="/" style="color:white;text-decoration:none;font-size:1.1rem;font-weight:700;">ToolsHouse Online</a>
-        <p class="mono" style="font-size:0.7rem;color:#6b7280;margin-top:1px;">Free Online Tools</p>
-      </div>
+<div class="container">
+  <div class="header">
+    <h1>🎬 Video Rotator</h1>
+    <p>Fix upside-down or sideways videos - Rotate 90°, 180°, or custom angle</p>
+  </div>
+
+  <div class="glass-card">
+    <div class="info-banner">
+      ⚠️ Browser-based rotation preview. Download saves rotated frame as PNG. Your video never leaves your device.
     </div>
-    <nav style="display:flex;gap:20px;">
-      <a href="Tools.html" style="color:#9ca3af;text-decoration:none;font-size:0.875rem;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">All Tools</a>
-      <a href="Contact.html" style="color:#9ca3af;text-decoration:none;font-size:0.875rem;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">Contact</a>
-    </nav>
-  </div>
-</header>
 
-<!-- Main -->
-<main style="max-width:900px;margin:0 auto;padding:32px 24px;">
-
-  <!-- Tool Header -->
-  <div class="fade-in" style="text-align:center;margin-bottom:32px;">
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 14px;border-radius:9999px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);margin-bottom:14px;">
-      <span style="width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-block;" class="pulse-dot"></span>
-      <span class="mono" style="font-size:0.75rem;color:#a5b4fc;">Online Tool</span>
+    <!-- Upload Area -->
+    <div id="upload-area" class="upload-area">
+      <div style="width: 64px; height: 64px; margin: 0 auto 16px; background: rgba(99,102,241,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+        <svg width="32" height="32" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+        </svg>
+      </div>
+      <p style="font-weight: 600; margin-bottom: 8px;">📱 Tap or drop your video here</p>
+      <p style="color: #9ca3af; font-size: 0.8rem;">Supports MP4, MOV, WebM • Max 200MB</p>
+      <input type="file" id="video-input" accept="video/*" style="display: none;">
     </div>
-    <h1 style="font-size:clamp(2rem,5vw,3rem);font-weight:800;margin-bottom:12px;background:linear-gradient(to right,white,#c7d2fe,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Video Rotator</h1>
-    <p style="color:#9ca3af;font-size:1.05rem;">Rotate your videos instantly — 90°, 180°, or any custom angle</p>
-  </div>
 
-  <!-- FIX 4: Disclaimer banner -->
-  <div class="info-banner fade-in">
-    ⚠️ Browser-based rotation preview only. Download saves a rotated frame (PNG). Full video rotation requires server-side processing. Your video never leaves your device.
-  </div>
-
-  <!-- Upload Zone -->
-  <div id="upload-zone" class="drop-zone glass-card fade-in" style="padding:48px 24px;text-align:center;margin-bottom:24px;">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
-      <div style="width:72px;height:72px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.2));display:flex;align-items:center;justify-content:center;">
-        <svg width="36" height="36" fill="none" stroke="#818cf8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-      </div>
-      <div>
-        <p style="font-size:1.1rem;font-weight:600;margin-bottom:6px;">Drop your video here</p>
-        <p style="color:#6b7280;font-size:0.9rem;">or click to browse • MP4, WebM, MOV supported</p>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <span class="mono" style="padding:4px 12px;border-radius:9999px;background:rgba(255,255,255,0.05);font-size:0.75rem;color:#9ca3af;">Max 500MB</span>
-        <span class="mono" style="padding:4px 12px;border-radius:9999px;background:rgba(255,255,255,0.05);font-size:0.75rem;color:#9ca3af;">Free Forever</span>
-      </div>
-    </div>
-    <input type="file" id="video-input" accept="video/*" style="display:none;">
-  </div>
-
-  <!-- Editor Section -->
-  <div id="editor-section" class="hidden fade-in">
-
-    <!-- Video Preview -->
-    <div class="glass-card glow-border" style="border-radius:16px;padding:24px;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <h3 style="font-weight:600;">Preview</h3>
-        <button id="remove-video" style="background:none;border:none;color:#6b7280;cursor:pointer;font-size:0.875rem;display:flex;align-items:center;gap:6px;transition:color 0.2s;" onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='#6b7280'">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Remove
-        </button>
-      </div>
+    <!-- Editor Section -->
+    <div id="editor-section" class="hidden">
       <div class="video-wrapper">
         <video id="video-preview" controls></video>
       </div>
-      <div id="video-info" class="mono" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;font-size:0.75rem;color:#6b7280;"></div>
-    </div>
 
-    <!-- Rotation Controls -->
-    <div class="glass-card" style="border-radius:16px;padding:24px;margin-bottom:20px;">
-      <h3 style="font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:8px;">
-        <svg width="20" height="20" fill="none" stroke="#818cf8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        Rotation Controls
-      </h3>
-
-      <!-- Quick Buttons -->
-      <div class="tools-grid" style="margin-bottom:28px;">
-        <button class="rotate-btn" onclick="rotateVideo(-90)">
-          <svg width="24" height="24" fill="none" stroke="#818cf8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-          <span style="font-weight:600;font-size:0.9rem;">-90°</span>
-          <span style="font-size:0.75rem;color:#9ca3af;">Left</span>
-        </button>
-        <button class="rotate-btn" onclick="rotateVideo(90)">
-          <svg width="24" height="24" fill="none" stroke="#818cf8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/></svg>
-          <span style="font-weight:600;font-size:0.9rem;">+90°</span>
-          <span style="font-size:0.75rem;color:#9ca3af;">Right</span>
-        </button>
-        <button class="rotate-btn" onclick="rotateVideo(180)">
-          <svg width="24" height="24" fill="none" stroke="#818cf8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
-          <span style="font-weight:600;font-size:0.9rem;">180°</span>
-          <span style="font-size:0.75rem;color:#9ca3af;">Flip</span>
-        </button>
-        <button class="rotate-btn reset-btn" onclick="resetRotation()">
-          <svg width="24" height="24" fill="none" stroke="#9ca3af" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          <span style="font-weight:600;font-size:0.9rem;">Reset</span>
-          <span style="font-size:0.75rem;color:#9ca3af;">0°</span>
-        </button>
+      <div class="rotate-buttons">
+        <button class="rotate-btn" data-rotate="-90">↺ -90°</button>
+        <button class="rotate-btn" data-rotate="90">↻ +90°</button>
+        <button class="rotate-btn" data-rotate="180">⟲ 180°</button>
+        <button class="rotate-btn reset-btn" data-rotate="0">⟳ Reset</button>
       </div>
 
-      <!-- Slider -->
-      <div style="margin-bottom:20px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <label style="font-size:0.875rem;color:#9ca3af;">Custom Rotation</label>
-          <span id="rotation-value" class="mono" style="color:#818cf8;font-weight:600;padding:4px 12px;border-radius:8px;background:rgba(99,102,241,0.1);font-size:0.9rem;">0°</span>
+      <div style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-size: 0.8rem;">Custom Rotation</span>
+          <span id="rotation-value" style="color: #818cf8; font-weight: 600;">0°</span>
         </div>
         <input type="range" id="rotation-slider" min="-180" max="180" value="0">
-        <div class="mono" style="display:flex;justify-content:space-between;font-size:0.72rem;color:#4b5563;margin-top:6px;">
-          <span>-180°</span><span>0°</span><span>+180°</span>
-        </div>
       </div>
 
-      <!-- Current display -->
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;border-radius:12px;background:rgba(0,0,0,0.2);">
-        <span style="color:#6b7280;">Current Rotation:</span>
-        <span id="current-rotation" class="mono" style="font-size:2rem;font-weight:800;background:linear-gradient(to right,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0°</span>
-      </div>
-    </div>
-
-    <!-- Download Section -->
-    <div class="glass-card" style="border-radius:16px;padding:24px;">
-      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
-        <div>
-          <h3 style="font-weight:600;margin-bottom:4px;">Ready to Download</h3>
-          <p style="font-size:0.875rem;color:#6b7280;">Downloads current rotated frame as PNG image</p>
-        </div>
-        <button id="download-btn" class="btn-download">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          Download Frame
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Features Grid -->
-  <div id="features-grid" class="feat-grid fade-in" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px;">
-    <div class="glass-card" style="border-radius:12px;padding:20px;">
-      <div style="width:40px;height:40px;border-radius:10px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
-        <svg width="20" height="20" fill="none" stroke="#4ade80" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-      </div>
-      <h4 style="font-weight:600;margin-bottom:6px;">100% Private</h4>
-      <p style="font-size:0.82rem;color:#6b7280;">Videos processed locally. Nothing uploaded.</p>
-    </div>
-    <div class="glass-card" style="border-radius:12px;padding:20px;">
-      <div style="width:40px;height:40px;border-radius:10px;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
-        <svg width="20" height="20" fill="none" stroke="#60a5fa" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-      </div>
-      <h4 style="font-weight:600;margin-bottom:6px;">Instant Preview</h4>
-      <p style="font-size:0.82rem;color:#6b7280;">See rotation changes in real-time.</p>
-    </div>
-    <div class="glass-card" style="border-radius:12px;padding:20px;">
-      <div style="width:40px;height:40px;border-radius:10px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
-        <svg width="20" height="20" fill="none" stroke="#a78bfa" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <h4 style="font-weight:600;margin-bottom:6px;">Free Forever</h4>
-      <p style="font-size:0.82rem;color:#6b7280;">No sign-up, no watermarks, no fees.</p>
+      <button id="download-btn" class="btn-download">⬇️ Download Rotated Frame (PNG)</button>
     </div>
   </div>
 
-</main>
-
-<!-- Footer -->
-<footer style="border-top:1px solid rgba(255,255,255,0.05);padding:24px;text-align:center;margin-top:32px;">
-  <p style="color:#4b5563;font-size:0.85rem;">© 2025 Tools House Online — Fast, Secure &amp; Free Online Tools</p>
-  <div style="margin-top:10px;display:flex;justify-content:center;gap:20px;">
-    <a href="Privacy Policy.html" style="color:#4b5563;font-size:0.8rem;text-decoration:none;" onmouseover="this.style.color='#818cf8'" onmouseout="this.style.color='#4b5563'">Privacy Policy</a>
-    <a href="Terms of Use.html"   style="color:#4b5563;font-size:0.8rem;text-decoration:none;" onmouseover="this.style.color='#818cf8'" onmouseout="this.style.color='#4b5563'">Terms of Use</a>
-    <a href="Contact.html"        style="color:#4b5563;font-size:0.8rem;text-decoration:none;" onmouseover="this.style.color='#818cf8'" onmouseout="this.style.color='#4b5563'">Contact</a>
+  <div class="features">
+    <div class="feature-card">
+      <div style="font-size: 2rem; margin-bottom: 8px;">🔄</div>
+      <h3 style="font-weight: 600; margin-bottom: 6px;">Any Angle</h3>
+      <p style="font-size: 0.8rem; color: #9ca3af;">Rotate from -180° to +180° with slider</p>
+    </div>
+    <div class="feature-card">
+      <div style="font-size: 2rem; margin-bottom: 8px;">⚡</div>
+      <h3 style="font-weight: 600; margin-bottom: 6px;">Instant Preview</h3>
+      <p style="font-size: 0.8rem; color: #9ca3af;">See rotation changes in real-time</p>
+    </div>
+    <div class="feature-card">
+      <div style="font-size: 2rem; margin-bottom: 8px;">🔒</div>
+      <h3 style="font-weight: 600; margin-bottom: 6px;">100% Private</h3>
+      <p style="font-size: 0.8rem; color: #9ca3af;">Your video never leaves your device</p>
+    </div>
   </div>
-</footer>
+
+  <footer>
+    <p>🔒 100% Client-side processing | Your video never leaves your device</p>
+    <p style="margin-top: 5px;">© 2024 Tools House Online - Free Video Rotator</p>
+  </footer>
+</div>
 
 <script>
   let currentRotation = 0;
-  let videoFile       = null;
-  let objectUrl       = null; // FIX 5: track for cleanup
+  let currentFile = null;
+  let videoUrl = null;
 
-  // DOM refs
-  const uploadZone    = document.getElementById('upload-zone');
-  const videoInput    = document.getElementById('video-input');
+  const uploadArea = document.getElementById('upload-area');
+  const videoInput = document.getElementById('video-input');
   const editorSection = document.getElementById('editor-section');
-  const videoPreview  = document.getElementById('video-preview');
+  const videoPreview = document.getElementById('video-preview');
   const rotationSlider = document.getElementById('rotation-slider');
-  const featuresGrid  = document.getElementById('features-grid');
+  const rotationValue = document.getElementById('rotation-value');
+  const downloadBtn = document.getElementById('download-btn');
 
-  // FIX 6: drag & drop via addEventListener (not inline)
-  uploadZone.addEventListener('click', () => videoInput.click());
-  uploadZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    uploadZone.classList.add('dragover');
-  });
-  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-  uploadZone.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file) processFile(file);
-  });
-
-  videoInput.addEventListener('change', e => {
-    if (e.target.files[0]) processFile(e.target.files[0]);
-  });
-
-  document.getElementById('remove-video').addEventListener('click', resetEditor);
-
-  // FIX 7: slider via addEventListener
-  rotationSlider.addEventListener('input', function() {
-    updateRotation(this.value);
-  });
-
-  // FIX 8: Centralized file validation
-  function processFile(file) {
-    if (!file.type.startsWith('video/')) {
-      showToast('Please select a valid video file.', 'error');
-      return;
-    }
-    if (file.size === 0) {
-      showToast('Selected file is empty.', 'error');
-      return;
-    }
-    if (file.size > 500 * 1024 * 1024) {
-      showToast('File size exceeds 500MB.', 'error');
-      return;
-    }
-    handleVideoFile(file);
+  function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
   }
 
-  function handleVideoFile(file) {
-    videoFile = file;
-
-    // FIX 5: revoke previous URL
-    if (objectUrl) { URL.revokeObjectURL(objectUrl); }
-    objectUrl = URL.createObjectURL(file);
-    videoPreview.src = objectUrl;
-
-    // FIX 9: onerror for bad files
-    videoPreview.onerror = () => {
-      showToast('Could not load video. Try a different file.', 'error');
-      resetEditor();
-    };
-
-    videoPreview.onloadedmetadata = () => {
-      const dur  = formatDuration(videoPreview.duration);
-      const size = formatFileSize(file.size);
-      document.getElementById('video-info').innerHTML =
-        `<span style="padding:4px 12px;border-radius:9999px;background:rgba(255,255,255,0.05);">${file.name}</span>
-         <span style="padding:4px 12px;border-radius:9999px;background:rgba(255,255,255,0.05);">${videoPreview.videoWidth}×${videoPreview.videoHeight}</span>
-         <span style="padding:4px 12px;border-radius:9999px;background:rgba(255,255,255,0.05);">${dur}</span>
-         <span style="padding:4px 12px;border-radius:9999px;background:rgba(255,255,255,0.05);">${size}</span>`;
-    };
-
-    uploadZone.classList.add('hidden');
-    editorSection.classList.remove('hidden');
-    featuresGrid.classList.add('hidden');
-    resetRotation();
+  function applyRotation() {
+    videoPreview.style.transform = `rotate(${currentRotation}deg)`;
+    rotationSlider.value = currentRotation;
+    rotationValue.textContent = `${currentRotation}°`;
   }
 
   function rotateVideo(degrees) {
     currentRotation = (currentRotation + degrees) % 360;
-    // FIX 10: normalize to -180/+180 range
-    if (currentRotation > 180)  currentRotation -= 360;
+    if (currentRotation > 180) currentRotation -= 360;
     if (currentRotation < -180) currentRotation += 360;
-    applyRotation();
-  }
-
-  function updateRotation(degrees) {
-    currentRotation = parseInt(degrees);
     applyRotation();
   }
 
   function resetRotation() {
     currentRotation = 0;
-    rotationSlider.value = 0;
     applyRotation();
   }
 
-  function applyRotation() {
-    videoPreview.style.transform = `rotate(${currentRotation}deg)`;
-    document.getElementById('rotation-value').textContent    = `${currentRotation}°`;
-    document.getElementById('current-rotation').textContent  = `${currentRotation}°`;
-    rotationSlider.value = Math.max(-180, Math.min(180, currentRotation));
-  }
-
-  function resetEditor() {
-    videoFile = null;
-    if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
-    videoPreview.src = '';
-    currentRotation  = 0;
-    rotationSlider.value = 0;
-    applyRotation();
-    videoInput.value = '';
-    document.getElementById('video-info').innerHTML = '';
-    uploadZone.classList.remove('hidden');
-    editorSection.classList.add('hidden');
-    featuresGrid.classList.remove('hidden');
-  }
-
-  function downloadVideo() {
-    if (!videoPreview || !videoPreview.videoWidth) {
-      showToast('Video not loaded yet.', 'error');
+  function handleFile(file) {
+    if (!file || !file.type.startsWith('video/')) {
+      showToast('Please select a valid video file', 'error');
       return;
     }
 
-    const btn = document.getElementById('download-btn');
-    btn.disabled = true;
-    btn.textContent = 'Downloading...';
+    if (file.size > 200 * 1024 * 1024) {
+      showToast('File too large (max 200MB)', 'error');
+      return;
+    }
+
+    currentFile = file;
+    
+    if (videoUrl) {
+      URL.revokeObjectURL(videoUrl);
+    }
+    
+    videoUrl = URL.createObjectURL(file);
+    videoPreview.src = videoUrl;
+    
+    videoPreview.onloadedmetadata = () => {
+      uploadArea.classList.add('hidden');
+      editorSection.classList.remove('hidden');
+      resetRotation();
+      showToast('Video loaded successfully!', 'success');
+    };
+    
+    videoPreview.onerror = () => {
+      showToast('Error loading video. Please try another file.', 'error');
+      resetAll();
+    };
+  }
+
+  function downloadFrame() {
+    if (!videoPreview || !videoPreview.videoWidth) {
+      showToast('No video loaded', 'error');
+      return;
+    }
+
+    downloadBtn.disabled = true;
+    downloadBtn.textContent = 'Processing...';
 
     const canvas = document.createElement('canvas');
-    const ctx    = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
     const radians = (currentRotation * Math.PI) / 180;
-
-    // FIX 11: correct canvas dimensions for 90/270 deg rotation
     const absRot = Math.abs(currentRotation % 180);
+    
     if (absRot === 90 || absRot === -90) {
-      canvas.width  = videoPreview.videoHeight;
+      canvas.width = videoPreview.videoHeight;
       canvas.height = videoPreview.videoWidth;
     } else {
-      canvas.width  = videoPreview.videoWidth;
+      canvas.width = videoPreview.videoWidth;
       canvas.height = videoPreview.videoHeight;
     }
 
@@ -534,57 +456,71 @@
     ctx.drawImage(videoPreview, -videoPreview.videoWidth / 2, -videoPreview.videoHeight / 2);
 
     canvas.toBlob(blob => {
-      if (!blob) {
-        showToast('Could not capture frame. Make sure video is playing.', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> Download Frame';
-        return;
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rotated_${currentRotation}deg.png`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+        showToast('Frame downloaded!', 'success');
+      } else {
+        showToast('Failed to capture frame', 'error');
       }
-      const url = URL.createObjectURL(blob);
-      const a   = document.createElement('a');
-      a.href     = url;
-      a.download = `rotated_${currentRotation}deg.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      // FIX 12: revoke download URL
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-      btn.disabled = false;
-      btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> Download Frame';
-      showToast('Frame downloaded successfully!', 'success');
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = '⬇️ Download Rotated Frame (PNG)';
     }, 'image/png');
   }
 
-  function showToast(msg, type = 'info') {
-    const colors = { error: '#ef4444', success: '#22c55e', info: '#6366f1' };
-    const t = document.createElement('div');
-    t.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;background:${colors[type]};color:white;font-size:0.875rem;font-weight:500;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);`;
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => {
-      t.style.opacity = '0';
-      t.style.transition = 'opacity 0.3s';
-      setTimeout(() => t.remove(), 300);
-    }, 3000);
+  function resetAll() {
+    if (videoUrl) {
+      URL.revokeObjectURL(videoUrl);
+      videoUrl = null;
+    }
+    videoPreview.src = '';
+    currentFile = null;
+    currentRotation = 0;
+    videoInput.value = '';
+    uploadArea.classList.remove('hidden');
+    editorSection.classList.add('hidden');
   }
 
-  function formatDuration(s) {
-    if (!s || isNaN(s)) return '0:00';
-    return `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
-  }
+  // Event listeners
+  uploadArea.addEventListener('click', () => videoInput.click());
+  videoInput.addEventListener('change', (e) => {
+    if (e.target.files[0]) handleFile(e.target.files[0]);
+  });
 
-  function formatFileSize(b) {
-    if (b < 1024) return b + ' B';
-    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
-    return (b/1048576).toFixed(1) + ' MB';
-  }
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = 'rgba(99, 102, 241, 0.8)';
+  });
+  uploadArea.addEventListener('dragleave', () => {
+    uploadArea.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+  });
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+
+  rotationSlider.addEventListener('input', (e) => {
+    currentRotation = parseInt(e.target.value);
+    applyRotation();
+  });
+
+  document.querySelectorAll('.rotate-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const deg = parseInt(btn.dataset.rotate);
+      if (deg === 0) {
+        resetRotation();
+      } else {
+        rotateVideo(deg);
+      }
+    });
+  });
+
+  downloadBtn.addEventListener('click', downloadFrame);
 </script>
-
-<!-- FIX 13: Removed suspicious Cloudflare iframe injection script -->
-<!-- FIX 14: Removed broken /_sdk scripts -->
-<script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
-
 </body>
 </html>
