@@ -2,176 +2,529 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>QR Code Generator Online – Create QR Codes – Tools House Online</title>
-<meta name="description" content="Generate custom QR codes online for free. Create QR codes for URLs, WiFi, vCards, email, and more. Customize colors, add logos, and download in PNG, JPG, or SVG. No signup.">
-    <meta name="keywords" content="QR code generator,generate QR code,QR code maker,create QR code online">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<title>QR Code Generator - Create Custom QR Codes Online Free | ToolsHouse.online </title>
+
+<!-- SEO Meta Tags - FIXED & COMPLETE -->
+<meta name="description" content="Generate custom QR codes online for free. Create QR codes for URLs, WiFi, vCards, email, and more. Customize colors, add logos, and download in PNG, JPG, or SVG. No signup required.">
+<meta name="keywords" content="QR code generator, generate QR code, QR code maker, create QR code online, free QR code generator">
+<meta name="author" content="ToolsHouse">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+<!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+<meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+
+<!-- Canonical URL -->
 <link rel="canonical" href="https://www.toolshouse.online/qr-generator.html">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Free QR Code Generator Online – Create QR Codes – Tools House Online">
-<meta property="og:description" content="Generate QR codes online for free. Create QR codes for URLs, text, WiFi, vCard and more. Download in high quality. No signup required.">
-<meta property="og:type" content="website">
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Free QR Code Generator - Create Custom QR Codes Online">
+<meta property="og:description" content="Generate custom QR codes online for free. Create QR codes for URLs, WiFi, vCards, email, and more. No signup required.">
 <meta property="og:url" content="https://www.toolshouse.online/qr-generator.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.toolshouse.online/qr-generator-og.jpg">
+<meta property="og:site_name" content="ToolsHouse">
+
+<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free QR Code Generator Online – Create QR Codes – Tools House Online">
-<meta name="twitter:description" content="Generate QR codes online for free. Create QR codes for URLs, text, WiFi, vCard and more. Download in high quality. No signup required.">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="twitter:title" content="Free QR Code Generator - Create Custom QR Codes">
+<meta name="twitter:description" content="Generate custom QR codes online for free. Create QR codes for URLs, text, WiFi, vCard and more.">
 
-
+<!-- Structured Data for Better Indexing -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "QR Code Generator",
+    "description": "Free online tool to generate custom QR codes for various purposes",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": "Multiple QR types, Custom colors, High quality download, No signup",
+    "url": "https://www.toolshouse.online/qr-generator.html"
+}
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this QR Code Generator Online – Create QR Codes – Tools House Online:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
 
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg,#00c6ff,#0072ff);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    margin:0;
-}
-.container{
-    background:#fff;
-    padding:25px;
-    width:350px;
-    border-radius:15px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.2);
-    text-align:center;
-}
-h2{
-    margin-bottom:15px;
-}
-input, select{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    border-radius:8px;
-    border:1px solid #ccc;
-}
-button{
-    width:100%;
-    padding:10px;
-    background:#0072ff;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    margin-top:10px;
-}
-#qrcode{
-    margin-top:20px;
-}
-.download-btn{
-    background:#00c851;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+    }
+
+    @media (min-width: 768px) {
+        body { padding: 24px; }
+    }
+
+    .container {
+        background: white;
+        border-radius: 28px;
+        padding: 24px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+
+    @media (min-width: 768px) {
+        .container { padding: 32px; }
+    }
+
+    h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    @media (min-width: 768px) {
+        h1 { font-size: 1.8rem; }
+    }
+
+    .subtitle {
+        color: #666;
+        font-size: 0.8rem;
+        margin-bottom: 24px;
+    }
+
+    .input-group {
+        margin-bottom: 16px;
+        text-align: left;
+    }
+
+    .input-group label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 6px;
+    }
+
+    select, input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+
+    select:focus, input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    .color-group {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .color-group .input-group {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    input[type="color"] {
+        height: 48px;
+        padding: 5px;
+        cursor: pointer;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 8px;
+    }
+
+    button:active {
+        transform: scale(0.97);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #28a745;
+        color: white;
+        margin-top: 12px;
+    }
+
+    .qrcode-container {
+        margin: 24px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 250px;
+    }
+
+    #qrcode {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #qrcode img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .size-control {
+        margin-bottom: 16px;
+    }
+
+    .size-control label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+        padding: 0;
+        height: 6px;
+        -webkit-appearance: none;
+        background: #e0e0e0;
+        border-radius: 3px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        background: #667eea;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .error-message {
+        background: #fee;
+        color: #c33;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        margin-top: 12px;
+        display: none;
+    }
+
+    .error-message.show {
+        display: block;
+    }
+
+    footer {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #e0e0e0;
+        font-size: 0.65rem;
+        color: #999;
+        text-align: center;
+    }
+
+    @media (max-width: 480px) {
+        .container { padding: 20px; }
+        h1 { font-size: 1.4rem; }
+        .color-group { flex-direction: column; gap: 8px; }
+    }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>📱 QR Code Generator</h2>
+    <h1>📱 QR Code Generator</h1>
+    <p class="subtitle">Create custom QR codes instantly - Free & Private</p>
 
-    <select id="type">
-        <option value="text">Text</option>
-        <option value="url">Website URL</option>
-        <option value="phone">Phone Number</option>
-        <option value="email">Email</option>
-    </select>
+    <div class="input-group">
+        <label>QR Code Type</label>
+        <select id="qr-type">
+            <option value="text">📝 Text / URL</option>
+            <option value="phone">📞 Phone Number</option>
+            <option value="email">✉️ Email Address</option>
+            <option value="sms">💬 SMS Message</option>
+            <option value="wifi">📶 WiFi Network</option>
+        </select>
+    </div>
 
-    <input type="text" id="data" placeholder="Enter your content here">
+    <div class="input-group" id="text-input-group">
+        <label>Content</label>
+        <input type="text" id="qr-text" placeholder="Enter text or URL here">
+    </div>
 
-    <button onclick="generateQR()">Generate QR Code</button>
+    <div class="input-group" id="phone-input-group" style="display:none;">
+        <label>Phone Number</label>
+        <input type="tel" id="qr-phone" placeholder="+1234567890">
+    </div>
 
-    <div id="qrcode"></div>
+    <div class="input-group" id="email-input-group" style="display:none;">
+        <label>Email Address</label>
+        <input type="email" id="qr-email" placeholder="example@email.com">
+    </div>
 
-    <button class="download-btn" onclick="downloadQR()">Download QR Code</button>
+    <div class="input-group" id="sms-input-group" style="display:none;">
+        <label>Phone Number</label>
+        <input type="tel" id="qr-sms-number" placeholder="+1234567890">
+        <label style="margin-top: 8px;">Message (optional)</label>
+        <input type="text" id="qr-sms-message" placeholder="Hello!">
+    </div>
+
+    <div class="input-group" id="wifi-input-group" style="display:none;">
+        <label>WiFi Name (SSID)</label>
+        <input type="text" id="wifi-ssid" placeholder="Your WiFi Name">
+        <label style="margin-top: 8px;">Password</label>
+        <input type="password" id="wifi-password" placeholder="WiFi Password">
+        <label style="margin-top: 8px;">Encryption</label>
+        <select id="wifi-encryption">
+            <option value="WPA">WPA/WPA2</option>
+            <option value="WEP">WEP</option>
+            <option value="nopass">No Password</option>
+        </select>
+    </div>
+
+    <div class="color-group">
+        <div class="input-group">
+            <label>Foreground Color</label>
+            <input type="color" id="fg-color" value="#000000">
+        </div>
+        <div class="input-group">
+            <label>Background Color</label>
+            <input type="color" id="bg-color" value="#ffffff">
+        </div>
+    </div>
+
+    <div class="size-control">
+        <label>Size: <span id="size-value">200</span>px</label>
+        <input type="range" id="qr-size" min="100" max="400" value="200" step="10">
+    </div>
+
+    <button class="btn-primary" onclick="generateQR()">✨ Generate QR Code</button>
+
+    <div class="qrcode-container">
+        <div id="qrcode"></div>
+    </div>
+
+    <button class="btn-secondary" onclick="downloadQR('png')">📥 Download PNG</button>
+    <button class="btn-secondary" onclick="downloadQR('jpg')" style="margin-top: 8px;">📥 Download JPG</button>
+
+    <div id="error-msg" class="error-message"></div>
+
+    <footer>
+        <p>🔒 100% Client-side processing | Your data never leaves your device</p>
+        <p style="margin-top: 5px;">© 2024 ToolsHouse - Free QR Code Generator</p>
+    </footer>
 </div>
 
 <script>
-let qr;
+let currentQR = null;
+let currentImageData = null;
 
-function generateQR(){
-    const type = document.getElementById("type").value;
-    let data = document.getElementById("data").value;
-
-    if(data.trim() === ""){
-        alert("Please enter some data!");
-        return;
-    }
-
-    if(type === "phone"){
-        data = "tel:" + data;
-    }
-    if(type === "email"){
-        data = "mailto:" + data;
-    }
-
-    document.getElementById("qrcode").innerHTML = "";
-
-    qr = new QRCode(document.getElementById("qrcode"), {
-        text: data,
-        width: 200,
-        height: 200
-    });
+function showError(msg) {
+    const errorDiv = document.getElementById('error-msg');
+    errorDiv.textContent = msg;
+    errorDiv.classList.add('show');
+    setTimeout(() => errorDiv.classList.remove('show'), 4000);
 }
 
-function downloadQR(){
-    const img = document.querySelector("#qrcode img");
-    if(!img){
-        alert("Generate QR Code first!");
+function updateInputFields() {
+    const type = document.getElementById('qr-type').value;
+    
+    document.getElementById('text-input-group').style.display = 'none';
+    document.getElementById('phone-input-group').style.display = 'none';
+    document.getElementById('email-input-group').style.display = 'none';
+    document.getElementById('sms-input-group').style.display = 'none';
+    document.getElementById('wifi-input-group').style.display = 'none';
+    
+    switch(type) {
+        case 'text':
+            document.getElementById('text-input-group').style.display = 'block';
+            break;
+        case 'phone':
+            document.getElementById('phone-input-group').style.display = 'block';
+            break;
+        case 'email':
+            document.getElementById('email-input-group').style.display = 'block';
+            break;
+        case 'sms':
+            document.getElementById('sms-input-group').style.display = 'block';
+            break;
+        case 'wifi':
+            document.getElementById('wifi-input-group').style.display = 'block';
+            break;
+    }
+}
+
+function getQRData() {
+    const type = document.getElementById('qr-type').value;
+    let data = '';
+    
+    switch(type) {
+        case 'text':
+            data = document.getElementById('qr-text').value.trim();
+            if (!data) throw new Error('Please enter text or URL');
+            break;
+        case 'phone':
+            data = 'tel:' + document.getElementById('qr-phone').value.trim();
+            if (!data.replace('tel:', '')) throw new Error('Please enter phone number');
+            break;
+        case 'email':
+            data = 'mailto:' + document.getElementById('qr-email').value.trim();
+            if (!data.replace('mailto:', '')) throw new Error('Please enter email address');
+            break;
+        case 'sms':
+            const phone = document.getElementById('qr-sms-number').value.trim();
+            const message = document.getElementById('qr-sms-message').value.trim();
+            if (!phone) throw new Error('Please enter phone number');
+            data = `sms:${phone}`;
+            if (message) data += `?body=${encodeURIComponent(message)}`;
+            break;
+        case 'wifi':
+            const ssid = document.getElementById('wifi-ssid').value.trim();
+            const pass = document.getElementById('wifi-password').value;
+            const enc = document.getElementById('wifi-encryption').value;
+            if (!ssid) throw new Error('Please enter WiFi name (SSID)');
+            if (enc === 'nopass') {
+                data = `WIFI:S:${ssid};T:nopass;;`;
+            } else {
+                if (!pass) throw new Error('Please enter WiFi password');
+                data = `WIFI:S:${ssid};T:${enc};P:${pass};;`;
+            }
+            break;
+    }
+    
+    return data;
+}
+
+function generateQR() {
+    const qrDiv = document.getElementById('qrcode');
+    qrDiv.innerHTML = '';
+    
+    try {
+        const qrData = getQRData();
+        const size = parseInt(document.getElementById('qr-size').value);
+        
+        currentQR = new QRCode(qrDiv, {
+            text: qrData,
+            width: size,
+            height: size,
+            colorDark: document.getElementById('fg-color').value,
+            colorLight: document.getElementById('bg-color').value,
+            correctLevel: QRCode.CorrectLevel.M
+        });
+        
+        // Store image data for download
+        setTimeout(() => {
+            const img = qrDiv.querySelector('img');
+            if (img) {
+                currentImageData = img.src;
+            }
+        }, 100);
+        
+        showError('QR Code generated successfully!');
+        
+    } catch (err) {
+        showError(err.message);
+    }
+}
+
+function downloadQR(format) {
+    const img = document.querySelector('#qrcode img');
+    if (!img) {
+        showError('Please generate a QR code first');
         return;
     }
-
-    const link = document.createElement("a");
-    link.href = img.src;
-    link.download = "qrcode.png";
-    link.click();
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = img.width;
+    canvas.height = img.height;
+    
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    
+    const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
+    const extension = format === 'png' ? 'png' : 'jpg';
+    
+    canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `qrcode.${extension}`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }, mimeType, 1.0);
 }
+
+// Event listeners
+document.getElementById('qr-type').addEventListener('change', updateInputFields);
+
+// Generate on input with debounce
+let timeout;
+function debouncedGenerate() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        const data = document.getElementById('qr-text').value;
+        if (data.trim()) generateQR();
+    }, 500);
+}
+
+document.getElementById('qr-text').addEventListener('input', debouncedGenerate);
+document.getElementById('qr-phone').addEventListener('input', debouncedGenerate);
+document.getElementById('qr-email').addEventListener('input', debouncedGenerate);
+document.getElementById('qr-sms-number').addEventListener('input', debouncedGenerate);
+document.getElementById('wifi-ssid').addEventListener('input', debouncedGenerate);
+document.getElementById('wifi-password').addEventListener('input', debouncedGenerate);
+
+// Update size display
+document.getElementById('qr-size').addEventListener('input', (e) => {
+    document.getElementById('size-value').textContent = e.target.value;
+    if (document.querySelector('#qrcode img')) generateQR();
+});
+
+// Color changes regenerate
+document.getElementById('fg-color').addEventListener('input', () => {
+    if (document.querySelector('#qrcode img')) generateQR();
+});
+document.getElementById('bg-color').addEventListener('input', () => {
+    if (document.querySelector('#qrcode img')) generateQR();
+});
+
+// Initialize with example
+updateInputFields();
+document.getElementById('qr-text').value = 'https://www.toolshouse.online';
+generateQR();
 </script>
-<script>
-  atOptions = {
-    'key' : 'f36ede41edbd79dcbbab6c4d285bc4e6',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-    <script>
-  atOptions = {
-    'key' : '58693608067869473d5453818f7f495a',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-    <script>
-  atOptions = {
-    'key' : '3997bf7e792d8cb0558d4333ce592819',
-    'format' : 'iframe',
-    'height' : 60,
-    'width' : 468,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/3997bf7e792d8cb0558d4333ce592819/invoke.js"></script>
 </body>
 </html>
