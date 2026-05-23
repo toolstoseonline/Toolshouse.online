@@ -1,41 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free PDF Splitter Online – Split & Extract PDF Pages – Tools House Online</title>
-<meta name="description" content="Split PDF files online for free. Extract specific pages, split by page ranges, or divide every page into separate PDFs. Perfect for ebooks and invoices. No signup.">
-    <meta name="keywords" content="PDF splitter,split PDF,divide PDF">
-<link rel="canonical" href="https://www.toolshouse.online/pdf-splitter.html">
-    <meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<title>Free PDF Splitter Online – Split & Extract PDF Pages | Tools House Online</title>
 
-<!-- PDF.js for rendering previews -->
+<!-- SEO Meta Tags - FIXED -->
+<meta name="description" content="Split PDF files online for free. Extract specific pages, split by page ranges, or divide every page into separate PDFs. Perfect for ebooks and invoices. No signup required.">
+<meta name="keywords" content="PDF splitter, split PDF, divide PDF, extract PDF pages, PDF page extractor">
+<meta name="author" content="Tools House Online">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+<!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+<meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://www.toolshouse.online/pdf-splitter.html">
+
+<!-- Open Graph Tags - FIXED (single set) -->
+<meta property="og:title" content="Free PDF Splitter Online – Split & Extract PDF Pages">
+<meta property="og:description" content="Split PDF files online for free. Extract specific pages or split by ranges. Perfect for ebooks and invoices. No signup required.">
+<meta property="og:url" content="https://www.toolshouse.online/pdf-splitter.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.toolshouse.online/pdf-splitter-og.jpg">
+<meta property="og:site_name" content="Tools House Online">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free PDF Splitter Online – Split & Extract PDF Pages">
+<meta name="twitter:description" content="Free online tool to split PDF files and extract specific pages.">
+
+<!-- Structured Data for Better Indexing -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Splitter",
+    "description": "Free online tool to split PDF files and extract specific pages",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": "Split PDF, Extract pages, Page selection, No registration",
+    "url": "https://www.toolshouse.online/pdf-splitter.html"
+}
+</script>
+
+<!-- PDF.js Core Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<!-- pdf-lib for creating new PDF -->
-<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this calculator:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+<!-- pdf-lib -->
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
 <style>
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -44,197 +70,171 @@ body {
     justify-content: center;
     align-items: center;
     background: linear-gradient(145deg, #2b2d42 0%, #1e1f2e 100%);
-    padding: 1rem;
+    padding: 16px;
+}
+
+@media (min-width: 768px) {
+    body { padding: 20px; }
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(2px);
     width: 100%;
     max-width: 1000px;
-    padding: 2rem 1.8rem;
-    border-radius: 2.5rem;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    padding: 24px 20px;
+    border-radius: 32px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
     text-align: center;
 }
 
+@media (min-width: 768px) {
+    .card { padding: 32px 28px; }
+}
+
 h2 {
-    font-weight: 600;
+    font-weight: 700;
     color: #1e1f2e;
-    margin-bottom: 1.4rem;
+    margin-bottom: 20px;
     letter-spacing: -0.5px;
-    font-size: 2rem;
+    font-size: 1.6rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 8px;
 }
+
+@media (min-width: 768px) {
+    h2 { font-size: 2rem; margin-bottom: 24px; }
+}
+
 h2::after {
     content: '📄';
-    font-size: 1.8rem;
-    filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2));
+    font-size: 1.6rem;
 }
 
 .drop-area {
     border: 3px dashed #4a4e8f;
     background: #f0f2fe;
-    padding: 2.2rem 1rem;
-    border-radius: 2rem;
+    padding: 32px 16px;
+    border-radius: 28px;
     cursor: pointer;
-    margin-bottom: 1.5rem;
-    font-size: 1.3rem;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
     font-weight: 500;
     color: #2b2d42;
     transition: all 0.2s ease;
-    box-shadow: 0 8px 0 rgba(0,0,0,0.05);
 }
 
-.drop-area:hover {
-    background: #e5e9ff;
-    border-color: #764ba2;
-    transform: scale(1.01);
+@media (min-width: 768px) {
+    .drop-area { padding: 40px 20px; font-size: 1.2rem; }
+}
+
+.drop-area:active {
+    transform: scale(0.98);
+}
+
+.small-note {
+    margin-top: 8px;
+    color: #4f4370;
+    font-weight: 400;
+    background: #dbd0ee;
+    padding: 6px 16px;
+    border-radius: 40px;
+    display: inline-block;
+    font-size: 0.75rem;
 }
 
 .preview-container {
-    margin-top: 1.8rem;
+    margin-top: 24px;
     display: flex;
     flex-wrap: wrap;
-    gap: 1.2rem;
+    gap: 12px;
     justify-content: center;
     max-height: 420px;
     overflow-y: auto;
-    padding: 0.8rem 0.4rem;
+    padding: 12px 6px;
     background: rgba(230, 230, 250, 0.3);
-    border-radius: 2rem;
-    scrollbar-width: thin;
-    scrollbar-color: #9b87c5 #e0daf0;
-}
-
-.preview-container::-webkit-scrollbar {
-    width: 8px;
-}
-.preview-container::-webkit-scrollbar-track {
-    background: #e0daf0;
-    border-radius: 10px;
-}
-.preview-container::-webkit-scrollbar-thumb {
-    background: #6b4e9e;
-    border-radius: 10px;
+    border-radius: 28px;
 }
 
 .page-box {
     background: white;
-    padding: 0.8rem 0.5rem 0.7rem 0.5rem;
-    border-radius: 1.8rem;
-    box-shadow: 0 10px 18px rgba(78, 40, 120, 0.25);
-    transition: transform 0.15s;
-    border: 1px solid rgba(255,255,255,0.7);
-    width: 170px;
+    padding: 12px 8px 10px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(78, 40, 120, 0.2);
+    width: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.page-box:hover {
-    transform: translateY(-4px);
+@media (min-width: 768px) {
+    .page-box { width: 170px; padding: 14px 10px 12px; }
 }
 
-canvas {
-    width: 150px;
+.page-box canvas {
+    width: 130px;
     height: auto;
-    border-radius: 1rem;
-    box-shadow: 0 5px 12px rgba(88, 47, 130, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(88, 47, 130, 0.3);
     background: #faf9ff;
-    border: 1px solid white;
 }
 
-.page-box br {
-    display: none;
+@media (min-width: 768px) {
+    .page-box canvas { width: 150px; }
+}
+
+.page-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1f1a2e;
+    background: #e3d9ff;
+    padding: 4px 12px;
+    border-radius: 40px;
+    margin: 8px 0 6px;
+    display: inline-block;
 }
 
 .page-box input[type="checkbox"] {
-    margin-top: 6px;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     accent-color: #6b3fa0;
     cursor: pointer;
-    transform: scale(1.1);
-    border-radius: 6px;
-}
-
-.page-box span {  /* for page label */
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: #1f1a2e;
-    background: #e3d9ff;
-    padding: 0.2rem 0.8rem;
-    border-radius: 40px;
-    margin: 4px 0 2px 0;
-    display: inline-block;
-}
-
-/* restructure text nodes via JS is messy — we'll generate clean inside js */
-/* but we keep style for manually created elements */
-.page-box .page-label {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: #1f1a2e;
-    background: #e3d9ff;
-    padding: 0.2rem 0.8rem;
-    border-radius: 40px;
-    margin: 6px 0 4px 0;
-    display: inline-block;
 }
 
 button {
-    margin-top: 2rem;
-    padding: 1rem 1.5rem;
+    margin-top: 24px;
+    padding: 14px 24px;
     width: 100%;
     border: none;
-    border-radius: 3rem;
+    border-radius: 48px;
     background: linear-gradient(135deg, #4a4e8f, #764ba2);
     color: white;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 10px 20px rgba(98, 54, 155, 0.5);
-    transition: 0.15s;
-    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.2s ease;
+    box-shadow: 0 8px 20px rgba(98, 54, 155, 0.4);
 }
 
-button:hover {
-    background: linear-gradient(135deg, #5b61b5, #8e5fc9);
-    transform: scale(1.01);
-    box-shadow: 0 15px 25px rgba(98, 54, 155, 0.7);
+@media (min-width: 768px) {
+    button { font-size: 1.2rem; padding: 16px 28px; }
 }
 
 button:active {
-    transform: translateY(2px);
-    box-shadow: 0 5px 12px #5f3b8c;
+    transform: scale(0.97);
 }
 
-/* file hint */
-.small-note {
-    margin-top: 0.5rem;
-    color: #4f4370;
-    font-weight: 400;
-    background: #dbd0ee;
-    padding: 0.3rem 1rem;
-    border-radius: 40px;
-    display: inline-block;
-    font-size: 0.85rem;
+footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 0.7rem;
+    color: #6b6b80;
 }
 </style>
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Free PDF Splitter Online – Split & Extract PDF Pages – Tools House Online">
-<meta property="og:description" content="Split PDF files online for free. Extract pages or divide large PDFs instantly. Fast, secure PDF splitter. No account needed.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.toolshouse.online/pdf-splitter.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free PDF Splitter Online – Split & Extract PDF Pages – Tools House Online">
-<meta name="twitter:description" content="Split PDF files online for free. Extract pages or divide large PDFs instantly. Fast, secure PDF splitter. No account needed.">
 </head>
 <body>
 
@@ -242,50 +242,173 @@ button:active {
     <h2>PDF Splitter</h2>
 
     <div class="drop-area" id="dropArea">
-        📂 Click or drag PDF here
+        📂 Tap or drag PDF here
         <input type="file" id="fileInput" hidden accept="application/pdf">
     </div>
-    <div class="small-note">✨ select pages, then download</div>
+    <div class="small-note">✨ Select pages below, then download as new PDF</div>
 
     <div class="preview-container" id="previewContainer"></div>
 
-    <button id="downloadBtn">⬇ Download selected pages</button>
+    <button id="downloadBtn">⬇ Download Selected Pages</button>
+    
+    <footer>
+        <p>🔒 100% Client-side processing | Your PDF never leaves your device</p>
+        <p style="margin-top: 5px;">© 2024 Tools House Online - Free PDF Splitter</p>
+    </footer>
 </div>
 
 <script>
-(function() {
+    // Configure PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
     const dropArea = document.getElementById("dropArea");
     const fileInput = document.getElementById("fileInput");
     const previewContainer = document.getElementById("previewContainer");
     const downloadBtn = document.getElementById("downloadBtn");
 
-    let pdfFile = null;            // raw File object
-    let pdfDocument = null;        // pdf.js doc (for page count & previews)
+    let pdfFile = null;
+    let pdfDocument = null;
 
-    // ---------- trigger file picker ----------
-    dropArea.addEventListener("click", (e) => {
-        // avoid if clicking on hyperlink or inside preview (but preview is separate)
-        fileInput.click();
-    });
+    function showError(message) {
+        alert(message);
+    }
 
-    fileInput.addEventListener("change", (e) => {
-        if (e.target.files && e.target.files[0]) {
-            handleFile(e.target.files[0]);
+    async function handleFile(file) {
+        if (!file || file.type !== "application/pdf") {
+            showError("Please upload a valid PDF file.");
+            return;
         }
-        // reset input so selecting same file again triggers change
-        fileInput.value = '';
+
+        if (file.size > 50 * 1024 * 1024) {
+            showError("File too large (max 50MB). Please upload a smaller PDF.");
+            return;
+        }
+
+        pdfFile = file;
+        previewContainer.innerHTML = '<div style="padding:20px; color:#666;">Loading previews...</div>';
+
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            pdfDocument = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const totalPages = pdfDocument.numPages;
+
+            previewContainer.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                await renderPagePreview(pdfDocument, i);
+            }
+
+        } catch (err) {
+            console.error("PDF load error:", err);
+            previewContainer.innerHTML = '<div style="padding:20px; color:#d32f2f;">Failed to load PDF. File may be corrupted.</div>';
+            showError("Failed to load PDF. Please try another file.");
+        }
+    }
+
+    async function renderPagePreview(pdf, pageNumber) {
+        try {
+            const page = await pdf.getPage(pageNumber);
+            const viewport = page.getViewport({ scale: 0.4 });
+
+            const pageBox = document.createElement("div");
+            pageBox.className = "page-box";
+
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.style.width = "100%";
+            canvas.style.height = "auto";
+
+            const labelSpan = document.createElement("span");
+            labelSpan.className = "page-label";
+            labelSpan.textContent = `Page ${pageNumber}`;
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = pageNumber - 1;
+            checkbox.setAttribute("data-pagenum", pageNumber);
+
+            pageBox.appendChild(canvas);
+            pageBox.appendChild(labelSpan);
+            pageBox.appendChild(checkbox);
+            previewContainer.appendChild(pageBox);
+
+            await page.render({
+                canvasContext: ctx,
+                viewport: viewport
+            }).promise;
+
+        } catch (err) {
+            console.warn(`Preview error on page ${pageNumber}:`, err);
+        }
+    }
+
+    downloadBtn.addEventListener("click", async function() {
+        if (!pdfFile) {
+            showError("Please upload a PDF file first.");
+            return;
+        }
+
+        const checkboxes = document.querySelectorAll("#previewContainer input[type='checkbox']");
+        const checked = Array.from(checkboxes).filter(cb => cb.checked);
+
+        if (checked.length === 0) {
+            showError("Please select at least one page to download.");
+            return;
+        }
+
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = "⏳ Processing...";
+
+        try {
+            const arrayBuffer = await pdfFile.arrayBuffer();
+            const { PDFDocument } = PDFLib;
+            const originalPdf = await PDFDocument.load(arrayBuffer);
+            const newPdf = await PDFDocument.create();
+
+            for (const cb of checked) {
+                const pageIndex = parseInt(cb.value, 10);
+                const [copiedPage] = await newPdf.copyPages(originalPdf, [pageIndex]);
+                newPdf.addPage(copiedPage);
+            }
+
+            const pdfBytes = await newPdf.save();
+            const blob = new Blob([pdfBytes], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = pdfFile.name.replace('.pdf', '_selected_pages.pdf');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+
+            alert(`✅ Success! Downloaded ${checked.length} page(s).`);
+
+        } catch (err) {
+            console.error("Split error:", err);
+            showError("Error splitting PDF: " + err.message);
+        } finally {
+            downloadBtn.disabled = false;
+            downloadBtn.textContent = "⬇ Download Selected Pages";
+        }
     });
 
-    // drag & drop
+    // File upload handlers
+    dropArea.addEventListener("click", () => fileInput.click());
+
     dropArea.addEventListener("dragover", (e) => {
         e.preventDefault();
         dropArea.style.background = "#dcd9f0";
         dropArea.style.borderColor = "#9f7aea";
     });
+
     dropArea.addEventListener("dragleave", () => {
         dropArea.style.background = "#f0f2fe";
         dropArea.style.borderColor = "#4a4e8f";
     });
+
     dropArea.addEventListener("drop", (e) => {
         e.preventDefault();
         dropArea.style.background = "#f0f2fe";
@@ -295,145 +418,12 @@ button:active {
         }
     });
 
-    // ---------- core handler ----------
-    function handleFile(file) {
-        if (!file || file.type !== "application/pdf") {
-            alert("❌ Please upload a valid PDF file.");
-            return;
+    fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+            handleFile(e.target.files[0]);
         }
-
-        pdfFile = file;
-        previewContainer.innerHTML = ""; // clear previous previews
-
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            const typedArray = new Uint8Array(evt.target.result);
-
-            // load with pdf.js to get page count and render previews
-            pdfjsLib.getDocument(typedArray).promise.then(pdf => {
-                pdfDocument = pdf;     // store reference (not strictly needed later but handy)
-                const totalPages = pdf.numPages;
-
-                // generate previews page by page (preserve order)
-                for (let i = 1; i <= totalPages; i++) {
-                    renderPagePreview(pdf, i, typedArray); // pass typedArray only if needed? we have pdf obj
-                }
-            }).catch(err => {
-                alert("Failed to load PDF: " + err.message);
-            });
-        };
-        reader.readAsArrayBuffer(file);
-    }
-
-    function renderPagePreview(pdf, pageNumber, optionalArrayBuffer) {
-        pdf.getPage(pageNumber).then(page => {
-            const viewport = page.getViewport({ scale: 0.4 }); // nice thumbnail size
-
-            // create elements
-            const pageBox = document.createElement("div");
-            pageBox.className = "page-box";
-
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-
-            // page label
-            const labelSpan = document.createElement("span");
-            labelSpan.className = "page-label";
-            labelSpan.textContent = `Page ${pageNumber}`;
-
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            // we store the zero-based page index (for pdf-lib)
-            checkbox.value = pageNumber - 1;   // page index
-            // optionally add attribute for debugging
-            checkbox.setAttribute("data-pagenum", pageNumber);
-
-            // build structure
-            pageBox.appendChild(canvas);
-            pageBox.appendChild(labelSpan);
-            pageBox.appendChild(checkbox);
-
-            previewContainer.appendChild(pageBox);
-
-            // render PDF page into canvas
-            const renderTask = page.render({
-                canvasContext: ctx,
-                viewport: viewport
-            });
-            renderTask.catch(err => {
-                console.warn("Preview render error page " + pageNumber, err);
-            });
-        }).catch(err => {
-            console.warn("Could not load page " + pageNumber, err);
-        });
-    }
-
-    // ---------- split & download using pdf-lib ----------
-    downloadBtn.addEventListener("click", async function() {
-        if (!pdfFile) {
-            alert("📌 Please upload a PDF first.");
-            return;
-        }
-
-        const checkboxes = document.querySelectorAll("#previewContainer input[type='checkbox']");
-        const checked = Array.from(checkboxes).filter(cb => cb.checked);
-
-        if (checked.length === 0) {
-            alert("✋ Select at least one page to download.");
-            return;
-        }
-
-        try {
-            // read file as arrayBuffer for pdf-lib
-            const arrayBuffer = await pdfFile.arrayBuffer();
-
-            const { PDFDocument } = PDFLib; // from global PDFLib (loaded via umd)
-            const originalPdf = await PDFDocument.load(arrayBuffer);
-            const newPdf = await PDFDocument.create();
-
-            // copy selected pages (by index stored in value)
-            for (const cb of checked) {
-                const pageIndex = parseInt(cb.value, 10); // 0-based
-                // copyPages expects array of page indices
-                const [copiedPage] = await newPdf.copyPages(originalPdf, [pageIndex]);
-                newPdf.addPage(copiedPage);
-            }
-
-            // save and trigger download
-            const pdfBytes = await newPdf.save();
-            const blob = new Blob([pdfBytes], { type: "application/pdf" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "selected-pages.pdf";   // you can modify filename
-            link.click();
-
-            // cleanup object URL
-            setTimeout(() => URL.revokeObjectURL(link.href), 200);
-
-        } catch (err) {
-            console.error(err);
-            alert("Something went wrong: " + err.message);
-        }
+        fileInput.value = '';
     });
-
-    // optional: reset preview if needed. Keep it simple.
-})();
 </script>
-
-<!-- one more small improvement: ensure page numbers are visible & checkboxes -->
-<!-- also add some extra info: total pages etc -->
-    <script>
-  atOptions = {
-    'key' : 'ae869b7d1136099dd8efbbf290e399f1',
-    'format' : 'iframe',
-    'height' : 600,
-    'width' : 160,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/ae869b7d1136099dd8efbbf290e399f1/invoke.js"></script>
-
 </body>
 </html>
