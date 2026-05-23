@@ -1,136 +1,703 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Redact PDF Online Free - Remove Sensitive Data Securely</title>
-<meta name="description" content="Redact PDF documents online for free. Permanently blackout sensitive information like SSN, bank details, and addresses. Search and redact automatically. Complete privacy. No signup.">
-<meta name="keywords" content="redact pdf online, remove text pdf, hide sensitive data pdf, pdf redaction tool,blackout PDF text">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<title>Redact PDF Online Free - Remove Sensitive Data Securely | PDF Redaction Tool</title>
+
+<!-- SEO Meta Tags - FIXED -->
+<meta name="description" content="Redact PDF documents online for free. Permanently blackout sensitive information like SSN, bank details, and addresses. Search and redact automatically. Complete privacy. No signup required.">
+<meta name="keywords" content="redact pdf online, remove text pdf, hide sensitive data pdf, pdf redaction tool, blackout PDF text, PDF redactor">
+<meta name="author" content="ToolsHouse">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+<!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+<meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+
+<!-- Canonical URL -->
 <link rel="canonical" href="https://www.toolshouse.online/pdf-redact.html">
-    <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Redact PDF Online Free - Remove Sensitive Data Securely">
-<meta property="og:description" content="Redact PDF documents online for free. Permanently blackout sensitive information like SSN, bank details, and addresses. Search and redact automatically. Complete privacy. No signup.">
+
+<!-- Open Graph Tags - FIXED -->
+<meta property="og:title" content="Redact PDF Online Free - Remove Sensitive Data Securely">
+<meta property="og:description" content="Redact PDF documents online for free. Permanently blackout sensitive information like SSN, bank details, and addresses. No signup required.">
 <meta property="og:url" content="https://www.toolshouse.online/pdf-redact.html">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://www.toolshouse.online/pdf-redact-og.jpg">
+<meta property="og:site_name" content="ToolsHouse">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Redact PDF Online Free - PDF Redaction Tool">
+<meta name="twitter:description" content="Free online tool to redact sensitive information from PDF documents">
+
+<!-- Structured Data for Better Indexing -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Redaction Tool",
+    "description": "Free online tool to permanently remove sensitive information from PDF documents",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": "Draw redaction boxes, Remove sensitive data, Permanent blackout, Privacy focused",
+    "url": "https://www.toolshouse.online/pdf-redact.html"
+}
+</script>
 
 <!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-
 <!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this Redact PDF Online:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
 
 <style>
-body {
-    font-family: Arial;
-    text-align: center;
-    background: #f4f9ff;
-}
-canvas {
-    border: 1px solid #ccc;
-    margin-top: 10px;
-}
-button {
-    padding: 10px 15px;
-    margin: 10px;
-    cursor: pointer;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 16px;
+    }
+
+    @media (min-width: 768px) {
+        body { padding: 24px; }
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    @media (min-width: 768px) {
+        .container { padding: 32px; }
+    }
+
+    h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    @media (min-width: 768px) {
+        h1 { font-size: 2rem; }
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 24px;
+        font-size: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+        .subtitle { font-size: 1rem; }
+    }
+
+    .upload-area {
+        border: 3px dashed #667eea;
+        border-radius: 16px;
+        padding: 30px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9ff;
+        margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+        .upload-area { padding: 40px; }
+    }
+
+    .upload-area:active {
+        transform: scale(0.98);
+    }
+
+    .upload-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    @media (min-width: 768px) {
+        .upload-icon { font-size: 3rem; }
+    }
+
+    .upload-text {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .upload-hint {
+        color: #666;
+        font-size: 0.75rem;
+    }
+
+    #fileInput {
+        display: none;
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    @media (min-width: 768px) {
+        .btn { padding: 14px 28px; font-size: 1rem; }
+    }
+
+    .btn:active {
+        transform: scale(0.96);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-warning {
+        background: #ffc107;
+        color: #333;
+    }
+
+    .pdf-container {
+        background: #e9eef3;
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+        text-align: center;
+        min-height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    canvas {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        border-radius: 8px;
+        background: white;
+        cursor: crosshair;
+        max-width: 100%;
+        height: auto;
+    }
+
+    .info-text {
+        background: #e8f0fe;
+        border-radius: 12px;
+        padding: 12px;
+        margin: 16px 0;
+        font-size: 0.85rem;
+        color: #1a56db;
+        text-align: center;
+    }
+
+    .redaction-instruction {
+        background: #fff3cd;
+        border: 1px solid #ffecb5;
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 16px;
+        font-size: 0.85rem;
+        color: #856404;
+        text-align: center;
+    }
+
+    .status-msg {
+        background: #d1e7dd;
+        border-radius: 12px;
+        padding: 10px;
+        margin-top: 12px;
+        font-size: 0.8rem;
+        text-align: center;
+        display: none;
+    }
+
+    .status-msg.show {
+        display: block;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+        font-size: 0.7rem;
+        color: #666;
+    }
+
+    @media (max-width: 600px) {
+        .btn { padding: 10px 16px; font-size: 0.8rem; }
+        .controls { gap: 8px; }
+    }
 </style>
 </head>
 <body>
 
-<h2>PDF Redaction Tool</h2>
+<div class="container">
+    <h1>🔒 PDF Redaction Tool</h1>
+    <p class="subtitle">Permanently remove sensitive information from your PDF documents</p>
 
-<input type="file" id="upload" accept="application/pdf"><br>
+    <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📄</div>
+        <div class="upload-text">📱 Tap or drag & drop PDF here</div>
+        <div class="upload-hint">Supports PDF files up to 50MB</div>
+        <input type="file" id="fileInput" accept=".pdf">
+    </div>
 
-<canvas id="pdfCanvas"></canvas><br>
+    <div class="controls">
+        <button class="btn btn-secondary" id="clearRedactionsBtn" disabled>🗑️ Clear All Redactions</button>
+        <button class="btn btn-primary" id="downloadBtn" disabled>⬇️ Download Redacted PDF</button>
+        <button class="btn btn-danger" id="resetBtn">🔄 Reset / New PDF</button>
+    </div>
 
-<button onclick="downloadPDF()">Download Redacted PDF</button>
+    <div class="info-text">
+        💡 <strong>How to redact:</strong> Click and drag on the PDF preview to draw black boxes over sensitive information
+    </div>
+
+    <div class="pdf-container">
+        <canvas id="pdfCanvas"></canvas>
+        <div id="noPdfMsg" style="color:#666; text-align:center; display:none;">No PDF loaded. Upload a PDF to start redacting.</div>
+    </div>
+
+    <div class="redaction-instruction">
+        ⚠️ <strong>Important:</strong> Redactions are permanent and cannot be undone after downloading. The redacted areas will be completely blacked out.
+    </div>
+
+    <div id="statusMsg" class="status-msg"></div>
+
+    <footer>
+        <p>🔒 100% Client-side processing - Your PDF never leaves your device</p>
+        <p style="margin-top: 5px;">© 2024 ToolsHouse - Free PDF Redaction Tool</p>
+    </footer>
+</div>
 
 <script>
-let pdfDoc = null;
-let canvas = document.getElementById('pdfCanvas');
-let ctx = canvas.getContext('2d');
+    // Configure PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-let rectangles = [];
-let startX, startY, isDrawing = false;
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 0;
+    let pdfData = null;
+    let redactions = []; // Store {x, y, w, h}
+    let canvas = document.getElementById('pdfCanvas');
+    let ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let startX, startY;
+    let currentScale = 1.5;
+    let originalImageData = null; // Store original canvas image data
 
-document.getElementById('upload').addEventListener('change', function(e) {
-    let file = e.target.files[0];
-    let reader = new FileReader();
+    // DOM elements
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const clearRedactionsBtn = document.getElementById('clearRedactionsBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const statusMsgDiv = document.getElementById('statusMsg');
+    const noPdfMsg = document.getElementById('noPdfMsg');
 
-    reader.onload = function() {
-        let typedarray = new Uint8Array(this.result);
+    function showStatus(message, isError = false) {
+        statusMsgDiv.textContent = message;
+        statusMsgDiv.style.background = isError ? '#f8d7da' : '#d1e7dd';
+        statusMsgDiv.style.color = isError ? '#721c24' : '#0f5132';
+        statusMsgDiv.classList.add('show');
+        setTimeout(() => {
+            statusMsgDiv.classList.remove('show');
+        }, 4000);
+    }
 
-        pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
-            pdfDoc = pdf;
-            renderPage(1);
-        });
-    };
-    reader.readAsArrayBuffer(file);
-});
+    // Load PDF from file
+    async function loadPDF(file) {
+        if (!file || file.type !== 'application/pdf') {
+            showStatus('Please select a valid PDF file', true);
+            return false;
+        }
 
-function renderPage(num) {
-    pdfDoc.getPage(num).then(function(page) {
-        let viewport = page.getViewport({ scale: 1.5 });
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+        if (file.size > 50 * 1024 * 1024) {
+            showStatus('File too large (max 50MB)', true);
+            return false;
+        }
 
-        let renderContext = {
-            canvasContext: ctx,
-            viewport: viewport
-        };
-        page.render(renderContext);
+        showStatus(`Loading "${file.name}"...`);
+        
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            pdfData = arrayBuffer;
+            pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            totalPages = pdfDoc.numPages;
+            currentPage = 1;
+            redactions = [];
+            
+            await renderPage(currentPage);
+            
+            downloadBtn.disabled = false;
+            clearRedactionsBtn.disabled = false;
+            showStatus(`✅ Loaded: ${file.name} (${totalPages} page${totalPages !== 1 ? 's' : ''})`);
+            return true;
+        } catch (err) {
+            console.error('PDF load error:', err);
+            showStatus('Failed to load PDF. File may be corrupted.', true);
+            return false;
+        }
+    }
+
+    // Render current page
+    async function renderPage(pageNum) {
+        if (!pdfDoc) {
+            canvas.style.display = 'none';
+            noPdfMsg.style.display = 'block';
+            return;
+        }
+        
+        canvas.style.display = 'block';
+        noPdfMsg.style.display = 'none';
+        
+        try {
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale: currentScale });
+            
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport,
+                background: 'white'
+            };
+            
+            await page.render(renderContext).promise;
+            
+            // Save original image data for redraw
+            originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            // Redraw existing redactions
+            redrawRedactions();
+            
+        } catch (err) {
+            console.error('Render error:', err);
+            showStatus('Error rendering PDF page', true);
+        }
+    }
+
+    // Redraw all redaction boxes
+    function redrawRedactions() {
+        if (!originalImageData) return;
+        
+        // Restore original image
+        ctx.putImageData(originalImageData, 0, 0);
+        
+        // Draw all redaction boxes
+        ctx.fillStyle = 'black';
+        for (const rect of redactions) {
+            ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+        }
+    }
+
+    // Handle mouse/touch drawing
+    function getCanvasCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        let clientX, clientY;
+        
+        if (e.touches) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        
+        let canvasX = (clientX - rect.left) * scaleX;
+        let canvasY = (clientY - rect.top) * scaleY;
+        
+        canvasX = Math.max(0, Math.min(canvasX, canvas.width));
+        canvasY = Math.max(0, Math.min(canvasY, canvas.height));
+        
+        return { x: canvasX, y: canvasY };
+    }
+
+    function startRedaction(e) {
+        e.preventDefault();
+        if (!pdfDoc) {
+            showStatus('Please load a PDF first', true);
+            return;
+        }
+        
+        const coords = getCanvasCoords(e);
+        startX = coords.x;
+        startY = coords.y;
+        isDrawing = true;
+    }
+
+    function drawRedaction(e) {
+        if (!isDrawing || !pdfDoc) return;
+        e.preventDefault();
+        
+        const coords = getCanvasCoords(e);
+        const currentX = coords.x;
+        const currentY = coords.y;
+        
+        // Redraw original and show preview
+        if (originalImageData) {
+            ctx.putImageData(originalImageData, 0, 0);
+        }
+        
+        const width = currentX - startX;
+        const height = currentY - startY;
+        
+        // Draw temporary rectangle
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(startX, startY, width, height);
+        
+        // Draw existing redactions
+        for (const rect of redactions) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+        }
+    }
+
+    function endRedaction(e) {
+        if (!isDrawing || !pdfDoc) {
+            isDrawing = false;
+            return;
+        }
+        e.preventDefault();
+        
+        const coords = getCanvasCoords(e);
+        const endX = coords.x;
+        const endY = coords.y;
+        
+        const width = endX - startX;
+        const height = endY - startY;
+        
+        if (Math.abs(width) > 5 && Math.abs(height) > 5) {
+            const rect = {
+                x: width > 0 ? startX : endX,
+                y: height > 0 ? startY : endY,
+                w: Math.abs(width),
+                h: Math.abs(height)
+            };
+            redactions.push(rect);
+            
+            // Redraw with all redactions
+            if (originalImageData) {
+                ctx.putImageData(originalImageData, 0, 0);
+            }
+            for (const r of redactions) {
+                ctx.fillStyle = 'black';
+                ctx.fillRect(r.x, r.y, r.w, r.h);
+            }
+            
+            showStatus(`✓ Redaction box added (${redactions.length} total)`);
+        }
+        
+        isDrawing = false;
+    }
+
+    // Clear all redactions
+    function clearRedactions() {
+        if (!pdfDoc) return;
+        
+        if (confirm('Are you sure you want to clear all redaction boxes?')) {
+            redactions = [];
+            if (originalImageData) {
+                ctx.putImageData(originalImageData, 0, 0);
+            }
+            showStatus('All redactions cleared');
+        }
+    }
+
+    // Download redacted PDF
+    async function downloadRedactedPDF() {
+        if (!pdfDoc || !pdfData) {
+            showStatus('No PDF loaded', true);
+            return;
+        }
+        
+        if (redactions.length === 0) {
+            if (!confirm('No redactions added. Download original PDF?')) {
+                return;
+            }
+        }
+        
+        showStatus('Generating redacted PDF...');
+        downloadBtn.disabled = true;
+        
+        try {
+            const { jsPDF } = window.jspdf;
+            
+            // Create canvas for final redacted image
+            const redactedCanvas = document.createElement('canvas');
+            const redactedCtx = redactedCanvas.getContext('2d');
+            
+            // Get current canvas dimensions
+            redactedCanvas.width = canvas.width;
+            redactedCanvas.height = canvas.height;
+            
+            // Draw current canvas state (with redactions)
+            redactedCtx.drawImage(canvas, 0, 0);
+            
+            // Create PDF from canvas
+            const imgData = redactedCanvas.toDataURL('image/png');
+            
+            // Calculate dimensions for PDF (A4 size)
+            const pdfWidth = 210; // mm
+            const pdfHeight = (canvas.height / canvas.width) * pdfWidth;
+            
+            const pdf = new jsPDF({
+                unit: 'mm',
+                format: 'a4',
+                orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape'
+            });
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            
+            // Download
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            pdf.save(`redacted_${timestamp}.pdf`);
+            
+            showStatus(`✅ Redacted PDF downloaded! ${redactions.length} area(s) redacted.`);
+        } catch (err) {
+            console.error('PDF generation error:', err);
+            showStatus('Error generating PDF. Please try again.', true);
+        } finally {
+            downloadBtn.disabled = false;
+        }
+    }
+
+    // Reset everything
+    function resetAll() {
+        if (pdfDoc && redactions.length > 0) {
+            if (!confirm('Reset will clear all redactions. Continue?')) {
+                return;
+            }
+        }
+        
+        pdfDoc = null;
+        pdfData = null;
+        redactions = [];
+        currentPage = 1;
+        totalPages = 0;
+        
+        canvas.width = 0;
+        canvas.height = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'none';
+        noPdfMsg.style.display = 'block';
+        
+        fileInput.value = '';
+        downloadBtn.disabled = true;
+        clearRedactionsBtn.disabled = true;
+        
+        showStatus('Reset complete. Upload a new PDF to start.');
+    }
+
+    // Event listeners
+    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', async (e) => {
+        if (e.target.files.length > 0) {
+            await loadPDF(e.target.files[0]);
+        }
     });
-}
-
-// Draw rectangle (redaction)
-canvas.addEventListener('mousedown', function(e) {
-    startX = e.offsetX;
-    startY = e.offsetY;
-    isDrawing = true;
-});
-
-canvas.addEventListener('mouseup', function(e) {
-    if (!isDrawing) return;
-    isDrawing = false;
-
-    let width = e.offsetX - startX;
-    let height = e.offsetY - startY;
-
-    rectangles.push({x: startX, y: startY, w: width, h: height});
-
-    ctx.fillStyle = "black";
-    ctx.fillRect(startX, startY, width, height);
-});
-
-// Download PDF
-function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    let pdf = new jsPDF();
-
-    let imgData = canvas.toDataURL("image/png");
-
-    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-    pdf.save("redacted.pdf");
-}
+    
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#764ba2';
+        uploadArea.style.background = '#f0f0ff';
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = '#667eea';
+        uploadArea.style.background = '#f8f9ff';
+    });
+    
+    uploadArea.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#667eea';
+        uploadArea.style.background = '#f8f9ff';
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            await loadPDF(files[0]);
+        }
+    });
+    
+    // Canvas drawing events (mouse)
+    canvas.addEventListener('mousedown', startRedaction);
+    canvas.addEventListener('mousemove', drawRedaction);
+    canvas.addEventListener('mouseup', endRedaction);
+    
+    // Canvas drawing events (touch for mobile)
+    canvas.addEventListener('touchstart', startRedaction);
+    canvas.addEventListener('touchmove', drawRedaction);
+    canvas.addEventListener('touchend', endRedaction);
+    canvas.addEventListener('touchcancel', endRedaction);
+    
+    // Prevent context menu on canvas
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    
+    // Button events
+    clearRedactionsBtn.addEventListener('click', clearRedactions);
+    downloadBtn.addEventListener('click', downloadRedactedPDF);
+    resetBtn.addEventListener('click', resetAll);
+    
+    // Initialize
+    canvas.style.display = 'none';
+    noPdfMsg.style.display = 'block';
 </script>
-    <script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
-
 </body>
 </html>
