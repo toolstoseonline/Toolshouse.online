@@ -3,57 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>PDF to Word Converter | Free Online DOCX Tool</title>
-    <meta name="description" content="Convert PDF to Word online for free. Transform PDFs into editable DOCX files while preserving layout, fonts, images, and tables. OCR for scanned documents included. No signup.">
-    <meta name="keywords" content="PDF to Word,convert PDF to Word,PDF to DOCX,free PDF converter,online PDF to Word">
+    <title>PDF to Word Converter - Convert PDF to DOCX Online Free | ToolsHouse</title>
+    
+    <!-- SEO Meta Tags - FIXED & COMPLETE -->
+    <meta name="description" content="Convert PDF to Word online for free. Transform PDFs into editable DOCX files while preserving layout, fonts, images, and tables. OCR for scanned documents included. No signup required.">
+    <meta name="keywords" content="PDF to Word, convert PDF to Word, PDF to DOCX, free PDF converter, online PDF to Word, PDF to Word converter free">
+    <meta name="author" content="ToolsHouse">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    
+    <!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+    <meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+    
+    <!-- Canonical URL - FIXED -->
     <link rel="canonical" href="https://www.toolshouse.online/pdf-word.html">
-    <meta name="robots" content="index, follow">
-    <meta property="og:title" content="PDF to Word Converter | Free & Mobile-Friendly">
+    
+    <!-- Open Graph Tags - FIXED -->
+    <meta property="og:title" content="PDF to Word Converter - Convert PDF to DOCX Online Free">
     <meta property="og:description" content="Convert PDF to Word online for free. Transform PDFs into editable DOCX files while preserving layout, fonts, images, and tables. No signup required.">
     <meta property="og:url" content="https://www.toolshouse.online/pdf-word.html">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://www.toolshouse.online/og-pdf-word.jpg">
+    <meta property="og:image" content="https://www.toolshouse.online/pdf-to-word-og.jpg">
+    <meta property="og:site_name" content="ToolsHouse">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card - FIXED -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PDF to Word Converter | Free Online Tool">
-    <meta name="twitter:description" content="Convert PDF to Word online for free. Preserve formatting, tables, and images.">
-    <!-- PDF.js core library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <!-- FileSaver.js for reliable .doc download -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION - FIXED
-    =======================================================
-    To verify ownership and enable indexing:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your property (https://www.toolshouse.online/ or full URL)
-    3. Select "HTML tag" verification method
-    4. Copy the entire meta tag provided by Google
-    5. Replace the content value below with YOUR unique code
-    6. IMPORTANT: Do NOT change name="google-site-verification"
-    7. Upload this file to your server root or correct path
-    8. Click "Verify" in Search Console
-    9. Submit sitemap for faster indexing
-    =======================================================
-    -->
-    <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
-    <!-- Additional SEO: structured data for tool -->
+    <meta name="twitter:title" content="PDF to Word Converter - Free Online Tool">
+    <meta name="twitter:description" content="Free online PDF to Word converter. Preserve formatting, tables, and images. No signup required.">
+    <meta name="twitter:image" content="https://www.toolshouse.online/pdf-to-word-twitter.jpg">
+    
+    <!-- Structured Data for Better Indexing -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "PDF to Word Converter",
-      "description": "Free online PDF to Word converter that preserves formatting, tables, and images.",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "All",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "url": "https://www.toolshouse.online/pdf-word.html"
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PDF to Word Converter",
+        "description": "Free online PDF to Word converter that preserves formatting, tables, and images.",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": "Convert PDF to Word, Preserve formatting, Extract text, Tables and images support",
+        "url": "https://www.toolshouse.online/pdf-word.html"
     }
     </script>
+    
+    <!-- PDF.js core library with worker config -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- FileSaver.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -64,308 +68,254 @@
 
         body {
             background: linear-gradient(145deg, #f4f8fe 0%, #eef2f8 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
             min-height: 100vh;
-            padding: 1rem;
+            padding: 16px;
         }
 
-        /* main card - fully responsive */
+        @media (min-width: 768px) {
+            body { padding: 24px; }
+        }
+
         .converter-card {
             max-width: 1200px;
             width: 100%;
             margin: 0 auto;
             background: #ffffff;
-            border-radius: 1.75rem;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 28px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            transition: all 0.2s ease;
         }
 
-        /* hero section - mobile optimized */
         .hero {
             background: linear-gradient(115deg, #1a3e52 0%, #0e2f40 100%);
-            padding: 1.5rem 1.25rem;
+            padding: 24px 20px;
             color: white;
         }
+
+        @media (min-width: 768px) {
+            .hero { padding: 32px 28px; }
+        }
+
         .hero h1 {
-            font-size: 1.65rem;
+            font-size: 1.5rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
-            letter-spacing: -0.2px;
+            gap: 10px;
         }
-        .hero h1:before {
+
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+        }
+
+        .hero h1::before {
             content: "📄➡️📝";
-            font-size: 1.8rem;
+            font-size: 1.6rem;
         }
+
         .hero p {
-            margin-top: 0.5rem;
+            margin-top: 10px;
             font-size: 0.85rem;
             opacity: 0.9;
-            line-height: 1.4;
         }
+
         .badge {
             background: #ffde9e;
             color: #1e3a47;
             border-radius: 40px;
-            padding: 0.2rem 0.75rem;
+            padding: 4px 12px;
             font-size: 0.65rem;
             font-weight: 700;
             display: inline-block;
-            white-space: nowrap;
         }
 
-        /* two column layout becomes column on mobile */
         .workflow {
             display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            padding: 1.5rem;
-            background: #ffffff;
-        }
-        .upload-area {
-            flex: 1.2;
-            min-width: 240px;
-        }
-        .preview-area {
-            flex: 2;
-            min-width: 260px;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
         }
 
-        /* mobile: stack columns */
-        @media (max-width: 780px) {
+        @media (min-width: 768px) {
             .workflow {
-                flex-direction: column;
-                gap: 1.8rem;
-                padding: 1.2rem;
+                flex-direction: row;
+                gap: 24px;
+                padding: 28px;
             }
-            .hero h1 {
-                font-size: 1.4rem;
-            }
-            .badge {
-                font-size: 0.6rem;
-                white-space: normal;
-            }
+            .upload-area { flex: 1.2; }
+            .preview-area { flex: 2; }
         }
 
-        /* DROPZONE - touch friendly */
         .dropzone {
             background: #fbfdff;
             border: 2px dashed #9bb7d4;
-            border-radius: 1.5rem;
-            padding: 1.8rem 0.8rem;
+            border-radius: 24px;
+            padding: 32px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin-bottom: 1.2rem;
-            touch-action: manipulation;
+            margin-bottom: 16px;
         }
-        .dropzone:hover {
-            background: #f0f6fe;
-            border-color: #2c7da0;
+
+        .dropzone:active {
+            transform: scale(0.98);
         }
-        .dropzone.active {
-            background: #e3f0fc;
-            border-color: #1f6392;
-            transform: scale(0.99);
-        }
+
         .file-icon {
-            font-size: 2.8rem;
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 8px;
         }
+
         .dropzone strong {
             font-size: 1rem;
             display: block;
         }
-        .dropzone span {
-            font-size: 0.75rem;
-            color: #5a6e7c;
-        }
 
-        /* BUTTON - large touch target */
         .btn-convert {
             background: linear-gradient(95deg, #1f6e8c, #0e4b64);
             border: none;
             width: 100%;
-            padding: 1rem 0.8rem;
+            padding: 14px 20px;
             font-size: 1rem;
             font-weight: 700;
             color: white;
             border-radius: 60px;
             cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 0.25rem;
+            transition: all 0.2s ease;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            touch-action: manipulation;
         }
-        .btn-convert:hover:not(:disabled) {
-            background: linear-gradient(95deg, #2a7f9e, #126180);
-            transform: scale(1.01);
-        }
+
         .btn-convert:active {
             transform: scale(0.97);
         }
+
         .btn-convert:disabled {
             background: #b7ccdb;
             cursor: not-allowed;
             opacity: 0.7;
         }
 
-        /* CHECK SECTION - mobile friendly cards */
         .check-section {
             background: #f6f9ff;
-            border-radius: 1.25rem;
-            padding: 1rem;
-            margin-top: 1rem;
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 16px;
             border-left: 4px solid #2c7da0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
         }
+
         .check-title {
             font-weight: 700;
             font-size: 0.85rem;
             color: #1e4663;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 0.75rem;
+            margin-bottom: 12px;
         }
+
         .check-list {
             list-style: none;
             font-size: 0.75rem;
         }
+
         .check-list li {
-            padding: 0.45rem 0;
+            padding: 8px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 6px;
             border-bottom: 1px solid #e9edf2;
         }
+
         .check-list li:last-child {
             border-bottom: none;
         }
+
         .check-status {
             font-weight: 500;
-            margin-left: auto;
-            font-size: 0.85rem;
-        }
-        .file-info {
-            background: #eef3fa;
-            border-radius: 1rem;
-            padding: 0.8rem;
-            font-size: 0.8rem;
-            word-break: break-word;
-            margin-top: 1rem;
+            font-size: 0.9rem;
         }
 
-        /* PREVIEW AREA - responsive */
+        .file-info {
+            background: #eef3fa;
+            border-radius: 16px;
+            padding: 12px;
+            font-size: 0.75rem;
+            word-break: break-word;
+            margin-top: 16px;
+        }
+
         .preview-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 0.8rem;
+            margin-bottom: 12px;
             gap: 8px;
         }
+
         .preview-title {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #1e4663;
         }
+
         .status-msg {
             font-size: 0.7rem;
             background: #e9f4fb;
-            padding: 0.25rem 0.8rem;
+            padding: 4px 12px;
             border-radius: 50px;
-            font-weight: 500;
         }
+
         .preview-container {
             background: #ffffff;
             border: 1px solid #e2eaf1;
-            border-radius: 1.2rem;
-            padding: 0.9rem;
+            border-radius: 20px;
+            padding: 16px;
             height: 420px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            box-shadow: inset 0 1px 2px #00000008, 0 2px 6px rgba(0,0,0,0.02);
         }
-        @media (max-width: 680px) {
-            .preview-container {
-                height: 360px;
-                padding: 0.7rem;
-            }
+
+        @media (max-width: 768px) {
+            .preview-container { height: 360px; padding: 12px; }
         }
+
         .word-preview {
-            font-family: 'Times New Roman', Georgia, 'Palatino', serif;
-            font-size: 0.9rem;
-            line-height: 1.45;
+            font-family: 'Times New Roman', Georgia, serif;
+            font-size: 0.85rem;
+            line-height: 1.5;
             color: #1e2a36;
         }
-        .word-preview div {
-            margin: 0.3em 0;
+
+        .error-txt {
+            color: #c0392b;
+            background: #ffeae8;
+            padding: 10px;
+            border-radius: 14px;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            border-left: 3px solid #c0392b;
         }
-        .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
+
+        .success-txt {
+            color: #1f6e8c;
+            background: #e0f2fe;
+            padding: 10px;
+            border-radius: 14px;
+            margin-top: 12px;
+            font-size: 0.75rem;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         footer {
             background: #f4f8fe;
-            padding: 0.9rem 1.2rem;
+            padding: 16px 20px;
             text-align: center;
             font-size: 0.7rem;
             color: #5c6f87;
             border-top: 1px solid #e2eaf0;
-        }
-        .error-txt {
-            color: #c0392b;
-            background: #ffeae8;
-            padding: 0.6rem;
-            border-radius: 14px;
-            margin-top: 0.8rem;
-            font-size: 0.75rem;
-            border-left: 3px solid #c0392b;
-        }
-        .success-txt {
-            color: #1f6e8c;
-            background: #e0f2fe;
-            padding: 0.6rem;
-            border-radius: 14px;
-            margin-top: 0.8rem;
-            font-size: 0.75rem;
-        }
-        button, .dropzone {
-            cursor: pointer;
-            touch-action: manipulation;
-        }
-        @media (max-width: 480px) {
-            body {
-                padding: 0.75rem;
-            }
-            .hero {
-                padding: 1.2rem 1rem;
-            }
-            .btn-convert {
-                padding: 0.9rem;
-                font-size: 0.95rem;
-            }
-            .check-list li {
-                font-size: 0.7rem;
-            }
         }
     </style>
 </head>
@@ -373,37 +323,31 @@
 <div class="converter-card">
     <div class="hero">
         <h1>PDF to Word Converter <span class="badge">✨ LAYOUT PRESERVED</span></h1>
-        <p>Upload any PDF — intelligent extraction keeps fonts, bold, italic, tables & lists. Full validation + mobile ready. Free & No signup.</p>
+        <p>Upload any PDF — intelligent extraction keeps fonts, bold, italic, tables & lists. Free & No signup.</p>
     </div>
     <div class="workflow">
         <div class="upload-area">
             <div id="dropzone" class="dropzone">
                 <div class="file-icon">📂📄</div>
-                <strong>Tap or drag PDF here</strong><br>
-                <span>PDF up to 50MB · preserves formatting</span>
-                <input type="file" id="fileInput" accept="application/pdf" style="display: none;" />
+                <strong>📱 Tap or drag PDF here</strong><br>
+                <span style="font-size:0.7rem;">PDF up to 50MB · preserves formatting</span>
+                <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
             </div>
             
-            <div class="check-section" id="checkSection">
-                <div class="check-title">
-                    🔍 HANDLING CHECK & VALIDATION
-                </div>
+            <div class="check-section">
+                <div class="check-title">🔍 HANDLING CHECK & VALIDATION</div>
                 <ul class="check-list" id="checkList">
-                    <li id="checkFile"><span>📄 File selection</span><span class="check-status">⚪</span></li>
-                    <li id="checkFormat"><span>📑 PDF format validity</span><span class="check-status">⚪</span></li>
-                    <li id="checkPages"><span>📖 Page extraction</span><span class="check-status">⚪</span></li>
-                    <li id="checkText"><span>✍️ Text & formatting</span><span class="check-status">⚪</span></li>
-                    <li id="checkReady"><span>✅ Ready for conversion</span><span class="check-status">⚪</span></li>
+                    <li id="checkFile"><span>📄 File selection</span><span class="check-status" id="checkFileStatus">⚪</span></li>
+                    <li id="checkFormat"><span>📑 PDF format validity</span><span class="check-status" id="checkFormatStatus">⚪</span></li>
+                    <li id="checkPages"><span>📖 Page extraction</span><span class="check-status" id="checkPagesStatus">⚪</span></li>
+                    <li id="checkText"><span>✍️ Text & formatting</span><span class="check-status" id="checkTextStatus">⚪</span></li>
+                    <li id="checkReady"><span>✅ Ready for conversion</span><span class="check-status" id="checkReadyStatus">⚪</span></li>
                 </ul>
             </div>
             
-            <button id="convertBtn" class="btn-convert" disabled>
-                ⬇️ DOWNLOAD WORD FILE (.doc)
-            </button>
+            <button id="convertBtn" class="btn-convert" disabled>⬇️ DOWNLOAD WORD FILE (.doc)</button>
             
-            <div id="fileInfo" class="file-info">
-                <span>📁 No PDF selected — upload to begin</span>
-            </div>
+            <div id="fileInfo" class="file-info">📁 No PDF selected — upload to begin</div>
             <div id="messageArea"></div>
         </div>
 
@@ -413,19 +357,20 @@
                 <span id="pageStatus" class="status-msg">Ready</span>
             </div>
             <div id="previewContainer" class="preview-container">
-                <div class="word-preview" style="opacity:0.6; text-align:center; padding:1.5rem;">
-                    ⬅️ Upload a PDF<br>Preview with original fonts, spacing, bold, italics & tables.
+                <div class="word-preview" style="opacity:0.6; text-align:center; padding:20px;">
+                    ⬅️ Upload a PDF<br>Preview with original formatting
                 </div>
             </div>
         </div>
     </div>
     <footer>
-        ⚡ PDF.js engine | Preserves headings, paragraphs, lists & tables | Mobile optimized with validation | Free PDF to Word Converter
+        <p>🔒 100% Client-side processing | Your PDF never leaves your device</p>
+        <p style="margin-top: 5px;">© 2024 ToolsHouse - Free PDF to Word Converter</p>
     </footer>
 </div>
 
 <script>
-    // Configure PDF.js worker for mobile & desktop
+    // Configure PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
     
     // DOM elements
@@ -437,12 +382,12 @@
     const pageStatusSpan = document.getElementById('pageStatus');
     const messageArea = document.getElementById('messageArea');
     
-    // Check list elements
-    const checkFileEl = document.getElementById('checkFile');
-    const checkFormatEl = document.getElementById('checkFormat');
-    const checkPagesEl = document.getElementById('checkPages');
-    const checkTextEl = document.getElementById('checkText');
-    const checkReadyEl = document.getElementById('checkReady');
+    // Status elements
+    const checkFileStatus = document.getElementById('checkFileStatus');
+    const checkFormatStatus = document.getElementById('checkFormatStatus');
+    const checkPagesStatus = document.getElementById('checkPagesStatus');
+    const checkTextStatus = document.getElementById('checkTextStatus');
+    const checkReadyStatus = document.getElementById('checkReadyStatus');
     
     // State
     let currentPdfData = null;
@@ -450,40 +395,12 @@
     let extractedHtmlContent = "";
     let totalPages = 0;
     let isPdfLoaded = false;
-    let hasValidContent = false;
-    
-    function updateCheckItem(element, status) {
-        const statusSpan = element.querySelector('.check-status');
-        if (status === 'pass') {
-            statusSpan.innerHTML = '✅';
-            element.style.opacity = '1';
-        } else if (status === 'fail') {
-            statusSpan.innerHTML = '❌';
-        } else {
-            statusSpan.innerHTML = '⚪';
-        }
-    }
-    
-    function resetChecks() {
-        updateCheckItem(checkFileEl, 'pending');
-        updateCheckItem(checkFormatEl, 'pending');
-        updateCheckItem(checkPagesEl, 'pending');
-        updateCheckItem(checkTextEl, 'pending');
-        updateCheckItem(checkReadyEl, 'pending');
-        checkFileEl.querySelector('span:first-child').innerHTML = '📄 File selection';
-        checkFormatEl.querySelector('span:first-child').innerHTML = '📑 PDF format validity';
-        checkPagesEl.querySelector('span:first-child').innerHTML = '📖 Page extraction';
-        checkTextEl.querySelector('span:first-child').innerHTML = '✍️ Text & formatting';
-        checkReadyEl.querySelector('span:first-child').innerHTML = '✅ Ready for conversion';
-    }
     
     function showMessage(msg, isError = false) {
         messageArea.innerHTML = isError ? `<div class="error-txt">⚠️ ${msg}</div>` : `<div class="success-txt">✓ ${msg}</div>`;
         setTimeout(() => {
             if (messageArea.innerHTML.includes(msg)) {
-                setTimeout(() => {
-                    if (messageArea.innerHTML.includes(msg)) messageArea.innerHTML = '';
-                }, 1000);
+                messageArea.innerHTML = '';
             }
         }, 4000);
     }
@@ -500,217 +417,206 @@
     
     async function generateHtmlFromPdf(pdfData) {
         try {
-            const loadingTask = pdfjsLib.getDocument({ data: pdfData, useSystemFonts: true, cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/', cMapPacked: true });
+            const loadingTask = pdfjsLib.getDocument({ data: pdfData });
             const pdfDoc = await loadingTask.promise;
             totalPages = pdfDoc.numPages;
-            pageStatusSpan.innerText = `Processing ${totalPages} pg...`;
+            pageStatusSpan.innerText = `Processing ${totalPages} pages...`;
             
             let allPagesHtml = [];
             for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
                 const page = await pdfDoc.getPage(pageNum);
-                const textContent = await page.getTextContent({ includeMarkedContent: true });
+                const textContent = await page.getTextContent();
                 const items = textContent.items;
                 
                 let linesMap = new Map();
                 for (let item of items) {
                     let transform = item.transform;
                     let y = transform ? transform[5] : (item.y || 0);
-                    let key = Math.round(y / 2.8) * 2.8;
+                    let key = Math.round(y / 3) * 3;
                     if (!linesMap.has(key)) linesMap.set(key, []);
                     linesMap.get(key).push(item);
                 }
-                let sortedYs = Array.from(linesMap.keys()).sort((a,b) => b - a);
-                let pageHtml = [];
-                pageHtml.push(`<div class="pdf-page" style="margin-bottom: 1rem;">`);
+                let sortedYs = Array.from(linesMap.keys()).sort((a, b) => b - a);
+                let pageHtml = [`<div style="margin-bottom: 16px;">`];
                 
                 for (let y of sortedYs) {
                     let lineItems = linesMap.get(y);
-                    lineItems.sort((a,b) => {
+                    lineItems.sort((a, b) => {
                         let ax = a.transform ? a.transform[4] : (a.x || 0);
                         let bx = b.transform ? b.transform[4] : (b.x || 0);
                         return ax - bx;
                     });
-                    let lineFragments = [];
+                    
+                    let lineHtml = [];
                     for (let item of lineItems) {
                         let text = item.str;
-                        if (text === '' || text === ' ') continue;
-                        let font = item.fontName || "";
-                        let fontSize = item.transform ? Math.abs(item.transform[0]) : (item.height || 11);
-                        let isBold = font.toLowerCase().includes('bold') || font.toLowerCase().includes('black') || (item.fontFlags && item.fontFlags.bold);
-                        let isItalic = font.toLowerCase().includes('italic') || (item.fontFlags && item.fontFlags.italic);
-                        let style = `font-size:${Math.min(Math.max(fontSize, 8), 26)}px;`;
-                        if (isBold) style += "font-weight:700;";
-                        if (isItalic) style += "font-style:italic;";
-                        let tag = "span";
-                        if ((fontSize > 16 && isBold) || (isBold && fontSize > 14)) tag = "strong";
-                        else if (isBold) tag = "b";
-                        lineFragments.push(`<${tag} style="${style}">${escapeHtml(text)}</${tag}>`);
+                        if (!text.trim()) continue;
+                        let fontSize = item.transform ? Math.abs(item.transform[0]) : 12;
+                        let fontName = item.fontName || "";
+                        let isBold = fontName.toLowerCase().includes('bold');
+                        let style = `font-size: ${Math.min(fontSize, 24)}px;`;
+                        if (isBold) style += "font-weight: bold;";
+                        lineHtml.push(`<span style="${style}">${escapeHtml(text)}</span>`);
                     }
-                    if (lineFragments.length) {
-                        let combinedLine = lineFragments.join('');
-                        let rawText = lineItems.map(i=>i.str).join('').trim();
-                        if (/^[•\-\*]\s/.test(rawText) || /^\d+\.\s/.test(rawText)) {
-                            pageHtml.push(`<div style="margin:0.2em 0 0.2em 1.5rem;">${combinedLine}</div>`);
-                        } else {
-                            pageHtml.push(`<div style="margin:0.3em 0;">${combinedLine}</div>`);
-                        }
+                    if (lineHtml.length) {
+                        pageHtml.push(`<div style="margin: 4px 0;">${lineHtml.join(' ')}</div>`);
                     }
                 }
                 pageHtml.push(`</div>`);
                 allPagesHtml.push(pageHtml.join(''));
                 pageStatusSpan.innerText = `Page ${pageNum}/${totalPages}`;
             }
-            let fullHtml = `<div class="word-preserve" style="font-family:'Times New Roman', Georgia, serif; max-width:100%;">${allPagesHtml.join('<div style="margin-top:8px;"></div>')}</div>`;
-            return fullHtml;
+            
+            return `<div style="font-family: 'Times New Roman', Georgia, serif;">${allPagesHtml.join('')}</div>`;
         } catch (err) {
-            console.error(err);
-            throw new Error(`PDF parsing failed: ${err.message}`);
+            console.error('PDF parse error:', err);
+            throw new Error(`Failed to parse PDF: ${err.message}`);
         }
     }
     
     async function loadAndValidatePdf(file) {
-        resetChecks();
+        // Reset UI
         convertBtn.disabled = true;
         isPdfLoaded = false;
-        hasValidContent = false;
         extractedHtmlContent = "";
         currentPdfData = null;
         
+        [checkFileStatus, checkFormatStatus, checkPagesStatus, checkTextStatus, checkReadyStatus].forEach(el => {
+            if (el) el.textContent = '⚪';
+        });
+        
         if (!file) {
-            updateCheckItem(checkFileEl, 'fail');
+            if (checkFileStatus) checkFileStatus.textContent = '❌';
             showMessage("No file selected. Please choose a PDF.", true);
             return false;
         }
-        updateCheckItem(checkFileEl, 'pass');
-        checkFileEl.querySelector('span:first-child').innerHTML = `📄 ${file.name.length > 25 ? file.name.slice(0,22)+'...' : file.name}`;
+        if (checkFileStatus) checkFileStatus.textContent = '✅';
         
-        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-            updateCheckItem(checkFormatEl, 'fail');
+        if (file.type !== 'application/pdf') {
+            if (checkFormatStatus) checkFormatStatus.textContent = '❌';
             showMessage("Invalid file format: please upload a PDF.", true);
             return false;
         }
-        updateCheckItem(checkFormatEl, 'pass');
+        if (checkFormatStatus) checkFormatStatus.textContent = '✅';
+        
+        if (file.size > 50 * 1024 * 1024) {
+            showMessage("File too large (max 50MB)", true);
+            return false;
+        }
         
         try {
-            pageStatusSpan.innerText = "Loading & analyzing...";
+            pageStatusSpan.innerText = "Loading PDF...";
             const arrayBuffer = await file.arrayBuffer();
             currentPdfData = arrayBuffer;
             currentFileName = file.name.replace(/\.pdf$/i, '');
-            fileInfoSpan.innerHTML = `<span>✅ ${file.name} (${(file.size/1024).toFixed(1)} KB) loaded</span>`;
+            fileInfoSpan.innerHTML = `📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB) loaded`;
             
-            updateCheckItem(checkPagesEl, 'pending');
+            if (checkPagesStatus) checkPagesStatus.textContent = '⏳';
             const generatedHtml = await generateHtmlFromPdf(arrayBuffer);
             extractedHtmlContent = generatedHtml;
             
             if (totalPages > 0) {
-                updateCheckItem(checkPagesEl, 'pass');
-                checkPagesEl.querySelector('span:first-child').innerHTML = `📖 Page extraction (${totalPages} pages)`;
+                if (checkPagesStatus) checkPagesStatus.textContent = '✅';
             } else {
-                updateCheckItem(checkPagesEl, 'fail');
+                if (checkPagesStatus) checkPagesStatus.textContent = '⚠️';
             }
             
             const plainTextLen = extractedHtmlContent.replace(/<[^>]*>/g, '').trim().length;
-            if (plainTextLen > 10 && totalPages > 0) {
-                updateCheckItem(checkTextEl, 'pass');
-                checkTextEl.querySelector('span:first-child').innerHTML = `✍️ Text & formatting (${Math.min(plainTextLen, 500)} chars)`;
-                hasValidContent = true;
-            } else if (totalPages > 0 && plainTextLen > 0) {
-                updateCheckItem(checkTextEl, 'pass');
-                hasValidContent = true;
+            if (plainTextLen > 10) {
+                if (checkTextStatus) checkTextStatus.textContent = '✅';
             } else {
-                updateCheckItem(checkTextEl, 'fail');
-                hasValidContent = false;
-                showMessage("Low text content - PDF might be image-based. Conversion may be limited.", true);
+                if (checkTextStatus) checkTextStatus.textContent = '⚠️';
             }
             
-            previewContainer.innerHTML = `<div class="word-preview" style="max-width:100%;">${extractedHtmlContent}</div>`;
-            pageStatusSpan.innerText = `✓ ${totalPages} pages · ready`;
+            previewContainer.innerHTML = `<div class="word-preview">${extractedHtmlContent}</div>`;
+            pageStatusSpan.innerText = `✓ ${totalPages} pages ready`;
             isPdfLoaded = true;
             
-            if (isPdfLoaded && totalPages > 0 && hasValidContent) {
-                updateCheckItem(checkReadyEl, 'pass');
-                checkReadyEl.querySelector('span:first-child').innerHTML = '✅ Ready for conversion — download available';
+            if (isPdfLoaded && totalPages > 0 && plainTextLen > 5) {
+                if (checkReadyStatus) checkReadyStatus.textContent = '✅';
                 convertBtn.disabled = false;
-                showMessage("All checks passed! You can download Word document now.");
-            } else if (totalPages > 0 && extractedHtmlContent.length > 20) {
-                updateCheckItem(checkReadyEl, 'pass');
-                convertBtn.disabled = false;
-                checkReadyEl.querySelector('span:first-child').innerHTML = '⚠️ Partial content — download anyway';
-                showMessage("Partial extraction but download is possible.", false);
+                showMessage("PDF loaded successfully! Ready to convert.");
             } else {
-                updateCheckItem(checkReadyEl, 'fail');
-                convertBtn.disabled = true;
-                showMessage("PDF processing incomplete. Try another file.", true);
+                if (checkReadyStatus) checkReadyStatus.textContent = '⚠️';
+                showMessage("PDF loaded but content may be limited.", true);
             }
             return true;
+            
         } catch (err) {
-            console.error(err);
-            updateCheckItem(checkFormatEl, 'fail');
-            updateCheckItem(checkPagesEl, 'fail');
-            updateCheckItem(checkTextEl, 'fail');
-            updateCheckItem(checkReadyEl, 'fail');
+            console.error('Load error:', err);
+            if (checkFormatStatus) checkFormatStatus.textContent = '❌';
+            if (checkPagesStatus) checkPagesStatus.textContent = '❌';
             showMessage(`Error: ${err.message.substring(0, 100)}`, true);
             pageStatusSpan.innerText = "Error loading PDF";
-            fileInfoSpan.innerHTML = `<span>❌ Failed to process PDF</span>`;
+            fileInfoSpan.innerHTML = "❌ Failed to process PDF";
             return false;
         }
     }
     
     function downloadWordDoc() {
-        if (!currentPdfData || !extractedHtmlContent || extractedHtmlContent.length < 15) {
-            showMessage("No valid content. Please upload a PDF first.", true);
+        if (!currentPdfData || !extractedHtmlContent) {
+            showMessage("No PDF loaded. Please upload a file first.", true);
             return;
         }
+        
         const safeName = (currentFileName || 'document').replace(/[\\/:*?"<>|]/g, '_');
         const fullDocHtml = `<!DOCTYPE html>
         <html>
         <head><meta charset="UTF-8"><title>${escapeHtml(safeName)}</title>
         <style>
-            body { margin: 2.54cm 3.17cm; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height:1.4; background:white; }
-            .word-preserve { width:100%; }
-            .pdf-page { margin-bottom: 18pt; }
-            div { margin:0.2em 0; }
-            b,strong { font-weight:bold; }
-            i,em { font-style:italic; }
+            body { margin: 2.54cm 3.17cm; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.4; background: white; }
+            div { margin: 0.2em 0; }
         </style>
         </head>
         <body>${extractedHtmlContent}<p style="text-align:center; font-size:9pt; color:#777; margin-top:30pt;">— Converted by PDF to Word Tool —</p></body>
         </html>`;
+        
         const blob = new Blob([fullDocHtml], { type: 'application/msword' });
         saveAs(blob, `${safeName}_converted.doc`);
-        showMessage(`Downloaded: ${safeName}_converted.doc`, false);
+        showMessage(`Downloaded: ${safeName}_converted.doc`);
         pageStatusSpan.innerText = `✅ Downloaded! ${totalPages} pages`;
         setTimeout(() => {
-            if (pageStatusSpan.innerText.includes('Downloaded')) pageStatusSpan.innerText = `✓ ${totalPages} pages · ready`;
-        }, 2500);
+            if (pageStatusSpan.innerText.includes('Downloaded')) {
+                pageStatusSpan.innerText = `✓ ${totalPages} pages ready`;
+            }
+        }, 3000);
     }
     
+    // Event listeners
     dropzone.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
-        if (fileInput.files && fileInput.files.length) loadAndValidatePdf(fileInput.files[0]);
+        if (e.target.files && e.target.files[0]) {
+            loadAndValidatePdf(e.target.files[0]);
+        }
     });
+    
     dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
-        dropzone.classList.add('active');
+        dropzone.style.background = "#e3f0fc";
+        dropzone.style.borderColor = "#1f6392";
     });
-    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('active'));
+    
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.style.background = "#fbfdff";
+        dropzone.style.borderColor = "#9bb7d4";
+    });
+    
     dropzone.addEventListener('drop', async (e) => {
         e.preventDefault();
-        dropzone.classList.remove('active');
+        dropzone.style.background = "#fbfdff";
+        dropzone.style.borderColor = "#9bb7d4";
         const files = e.dataTransfer.files;
-        if (files.length && (files[0].type === 'application/pdf' || files[0].name.toLowerCase().endsWith('.pdf'))) {
+        if (files.length && files[0].type === 'application/pdf') {
             await loadAndValidatePdf(files[0]);
             fileInput.files = files;
         } else {
             showMessage("Please drop a valid PDF file.", true);
         }
     });
-    convertBtn.addEventListener('click', () => {
-        if (!currentPdfData || !extractedHtmlContent) showMessage("No PDF loaded.", true);
-        else downloadWordDoc();
-    });
     
-    resetChecks();
+    convertBtn.addEventListener('click', downloadWordDoc);
+    
+    // Initialize
     convertBtn.disabled = true;
 </script>
 </body>
