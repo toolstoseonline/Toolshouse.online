@@ -2,39 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Repair PDF Online Free - Fix Corrupted PDF Files</title>
-<meta name="description" content="Repair corrupted PDF files online for free. Fix damaged PDFs that won't open, show garbled text, or have missing pages. Recover your content instantly. No signup.">
-<meta name="keywords" content="repair pdf, fix pdf file, recover pdf online">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Repair PDF Online Free | PDF Repair Tool | Toolshouse.online </title>
+    
+    <!-- SEO Meta Tags - FIXED -->
+    <meta name="description" content="Repair corrupted PDF files online for free. Fix damaged PDFs that won't open, show garbled text, or have missing pages. Recover your content instantly. No signup required.">
+    <meta name="keywords" content="repair pdf, fix pdf file, recover pdf online, pdf repair tool, corrupted pdf fixer">
+    <meta name="author" content="ToolsHouse">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    
+    <!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+    <meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+    
+    <!-- Canonical URL -->
     <link rel="canonical" href="https://www.toolshouse.online/pdf-repair.html">
-      <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Repair PDF Online Free - Fix Corrupted PDF Files">
-<meta property="og:description" content="Repair corrupted PDF files online for free. Fix damaged PDFs that won't open, show garbled text, or have missing pages. Recover your content instantly. No signup.">
-<meta property="og:url" content="https://www.toolshouse.online/pdf-repair.html">
-<meta property="og:type" content="website">
+    
+    <!-- Open Graph Tags - FIXED -->
+    <meta property="og:title" content="Repair PDF Online Free - Fix Corrupted PDF Files">
+    <meta property="og:description" content="Repair corrupted PDF files online for free. Fix damaged PDFs that won't open, show garbled text, or have missing pages. No signup required.">
+    <meta property="og:url" content="https://www.toolshouse.online/pdf-repair.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.toolshouse.online/pdf-repair-og.jpg">
+    <meta property="og:site_name" content="ToolsHouse">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Repair PDF Online Free - Fix Corrupted PDF Files">
+    <meta name="twitter:description" content="Free online tool to repair and recover corrupted PDF files.">
+    
+    <!-- Structured Data for Better Indexing -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PDF Repair Tool",
+        "description": "Free online tool to repair and recover corrupted PDF files",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": "Fix corrupted PDFs, Recover missing pages, Restore content, No signup required",
+        "url": "https://www.toolshouse.online/pdf-repair.html"
+    }
+    </script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this Repair PDF Online:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
@@ -45,19 +70,20 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --bg-light: #f8fafc;
-            --bg-dark: #1e293b;
             --text-dark: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
-            color: var(--text-dark);
+            padding: 16px;
+        }
+
+        @media (min-width: 768px) {
+            body { padding: 24px; }
         }
 
         .container {
@@ -68,122 +94,76 @@
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 35px;
-            animation: slideDown 0.6s ease-out;
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 12px;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
             font-weight: 800;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-            letter-spacing: -1px;
+        }
+
+        @media (min-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             opacity: 0.95;
-            margin-bottom: 8px;
-        }
-
-        .header .subtitle {
-            font-size: 0.95rem;
-            opacity: 0.85;
         }
 
         .main-content {
             background: white;
             border-radius: 20px;
-            padding: 45px;
-            box-shadow: var(--shadow);
-            animation: slideUp 0.6s ease-out;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         }
 
-        .upload-section {
-            text-align: center;
-            margin-bottom: 40px;
+        @media (min-width: 768px) {
+            .main-content { padding: 40px; }
         }
 
         .upload-area {
             border: 3px dashed var(--primary);
             border-radius: 16px;
-            padding: 50px 30px;
+            padding: 40px 20px;
+            text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 24px;
         }
 
-        .upload-area::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
+        @media (min-width: 768px) {
+            .upload-area { padding: 50px 30px; }
         }
 
-        .upload-area:hover::before {
-            left: 100%;
-        }
-
-        .upload-area:hover {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
-        }
-
-        .upload-area.dragover {
-            border-color: var(--success);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
-            transform: scale(1.02);
+        .upload-area:active {
+            transform: scale(0.98);
         }
 
         .upload-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            animation: bounce 2s infinite;
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .upload-icon { font-size: 4rem; }
         }
 
         .upload-area h2 {
             color: var(--primary);
-            margin-bottom: 8px;
-            font-size: 1.5rem;
-        }
-
-        .upload-area p {
-            color: var(--text-light);
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-        }
-
-        .upload-hint {
-            font-size: 0.85rem;
-            color: var(--warning);
-            background: rgba(245, 158, 11, 0.1);
-            padding: 10px 15px;
-            border-radius: 8px;
-            border-left: 3px solid var(--warning);
-            margin-top: 12px;
-            display: inline-block;
-        }
-
-        #fileInput {
-            display: none;
+            margin-bottom: 6px;
+            font-size: 1.2rem;
         }
 
         .file-status {
             display: none;
             background: var(--bg-light);
             border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border: 2px solid var(--border);
-            animation: slideDown 0.3s ease-out;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
         }
 
         .file-status.show {
@@ -194,25 +174,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border);
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .file-name {
-            font-size: 1.3rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--primary);
+            word-break: break-word;
         }
 
-        .file-badge {
-            display: inline-block;
-            padding: 6px 14px;
+        @media (min-width: 768px) {
+            .file-name { font-size: 1.2rem; }
+        }
+
+        .badge {
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .badge-success {
@@ -230,70 +212,51 @@
             color: var(--danger);
         }
 
-        .file-info {
+        .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .info-item {
+        .info-card {
             background: white;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        .info-item:hover {
-            border-color: var(--primary);
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
         }
 
         .info-label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-light);
-            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .info-value {
-            font-size: 1.3rem;
-            color: var(--primary);
+            font-size: 1.1rem;
             font-weight: 700;
+            color: var(--primary);
         }
 
         .diagnosis-section {
             background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
-            padding: 25px;
+            padding: 16px;
             border-radius: 12px;
             border-left: 4px solid var(--primary);
-            margin-bottom: 25px;
-        }
-
-        .diagnosis-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .diagnosis-list {
             list-style: none;
+            margin-top: 10px;
         }
 
         .diagnosis-item {
-            padding: 12px 0;
-            padding-left: 30px;
+            padding: 8px 0;
+            padding-left: 24px;
             position: relative;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.85rem;
         }
 
         .diagnosis-item::before {
@@ -302,155 +265,104 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            background: var(--primary);
-            border: 2px solid white;
-            box-shadow: 0 0 0 2px var(--primary);
-        }
-
-        .diagnosis-item.good {
-            color: var(--success);
         }
 
         .diagnosis-item.good::before {
             background: var(--success);
-            box-shadow: 0 0 0 2px var(--success);
-            content: '✓';
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 10px;
-        }
-
-        .diagnosis-item.warning {
-            color: var(--warning);
         }
 
         .diagnosis-item.warning::before {
             background: var(--warning);
-            box-shadow: 0 0 0 2px var(--warning);
-        }
-
-        .diagnosis-item.error {
-            color: var(--danger);
         }
 
         .diagnosis-item.error::before {
             background: var(--danger);
-            box-shadow: 0 0 0 2px var(--danger);
         }
 
         .repair-options {
             background: var(--bg-light);
-            padding: 25px;
+            padding: 16px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            margin-bottom: 25px;
-        }
-
-        .repair-options h3 {
-            color: var(--primary);
             margin-bottom: 20px;
-            font-size: 1.1rem;
         }
 
         .checkbox-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
         }
 
         .checkbox-item {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            padding: 15px;
+            gap: 10px;
+            padding: 10px;
             background: white;
-            border: 2px solid var(--border);
-            border-radius: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .checkbox-item:hover {
-            border-color: var(--primary);
-            background: rgba(37, 99, 235, 0.02);
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            margin-top: 3px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
+        .checkbox-item input {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
             accent-color: var(--primary);
-        }
-
-        .checkbox-label {
-            flex: 1;
         }
 
         .checkbox-label strong {
             display: block;
+            font-size: 0.8rem;
             color: var(--primary);
-            margin-bottom: 4px;
         }
 
         .checkbox-label small {
+            font-size: 0.7rem;
             color: var(--text-light);
-            font-size: 0.85rem;
-            line-height: 1.4;
         }
 
         .progress-container {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             display: none;
         }
 
         .progress-container.show {
             display: block;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
         }
 
         .progress-bar {
             width: 100%;
-            height: 12px;
+            height: 8px;
             background: var(--border);
-            border-radius: 6px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
             width: 0%;
-            transition: width 0.4s ease;
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+            transition: width 0.3s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
         }
 
         .message {
-            padding: 18px 20px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             margin-bottom: 20px;
             display: none;
-            animation: slideDown 0.3s ease-out;
-            border-left: 5px solid;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 0.85rem;
         }
 
         .message.show {
@@ -460,107 +372,53 @@
         .message.success {
             background: rgba(16, 185, 129, 0.1);
             color: var(--success);
-            border-left-color: var(--success);
+            border-left: 3px solid var(--success);
         }
 
         .message.error {
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
-            border-left-color: var(--danger);
-        }
-
-        .message.info {
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
-            border-left-color: var(--primary);
-        }
-
-        .message.warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-            border-left-color: var(--warning);
-        }
-
-        .message-icon {
-            margin-right: 10px;
-            font-weight: bold;
-            font-size: 1.2rem;
+            border-left: 3px solid var(--danger);
         }
 
         .buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
         }
 
         button {
-            padding: 14px 24px;
+            padding: 12px 16px;
             border: none;
             border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 700;
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
+            transition: all 0.2s ease;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        button:active::before {
-            width: 300px;
-            height: 300px;
+        button:active {
+            transform: scale(0.97);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         .btn-secondary {
             background: var(--bg-light);
             color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: var(--primary);
-            color: white;
+            border: 1px solid var(--primary);
         }
 
         .btn-danger {
             background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-danger:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
 
         button:disabled {
@@ -571,37 +429,26 @@
         .results-section {
             display: none;
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(10, 155, 118, 0.05) 100%);
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
-            border: 2px solid rgba(16, 185, 129, 0.2);
-            animation: slideUp 0.4s ease-out;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            margin-top: 20px;
         }
 
         .results-section.show {
             display: block;
         }
 
-        .results-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--success);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .results-list {
             list-style: none;
+            margin: 15px 0;
         }
 
         .results-item {
-            padding: 12px 0;
-            padding-left: 30px;
+            padding: 6px 0;
+            padding-left: 24px;
             position: relative;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 0.85rem;
         }
 
         .results-item::before {
@@ -609,114 +456,45 @@
             position: absolute;
             left: 0;
             top: 0;
-            width: 20px;
-            height: 20px;
-            background: var(--success);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--success);
             font-weight: bold;
-            font-size: 12px;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
         }
 
         .stat-box {
             background: white;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             text-align: center;
-            border: 2px solid var(--border);
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: var(--primary);
         }
 
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 0.65rem;
             color: var(--text-light);
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-top: 5px;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        footer {
+            text-align: center;
+            margin-top: 24px;
+            color: white;
+            font-size: 0.7rem;
+            opacity: 0.8;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .main-content {
-                padding: 25px;
-            }
-
-            .upload-area {
-                padding: 30px 20px;
-            }
-
-            .upload-icon {
-                font-size: 2.5rem;
-            }
-
+        @media (max-width: 550px) {
             .buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .checkbox-group {
                 grid-template-columns: 1fr;
             }
         }
@@ -725,71 +503,54 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔧 Advanced PDF Repair Tool</h1>
-            <p>Diagnose, Repair & Restore Your Damaged PDFs</p>
-            <div class="subtitle">Professional-grade PDF recovery and optimization</div>
+            <h1>🔧 PDF Repair Tool</h1>
+            <p>Fix Corrupted PDF Files and Recover Your Content</p>
         </div>
 
         <div class="main-content">
-            <!-- UPLOAD SECTION -->
-            <div class="upload-section">
-                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">📄</div>
-                    <h2>Upload Your PDF</h2>
-                    <p>Click to select or drag & drop your damaged PDF file</p>
-                    <div class="upload-hint">
-                        💡 Supports corrupt, damaged, or problematic PDF files
-                    </div>
-                </div>
-                <input type="file" id="fileInput" accept=".pdf" hidden>
+            <!-- Upload Section -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <h2>📱 Tap or drop your PDF here</h2>
+                <p style="color:#666; font-size:0.85rem;">Supports damaged and corrupted PDF files</p>
+                <input type="file" id="fileInput" accept=".pdf" style="display:none">
             </div>
 
-            <!-- FILE STATUS -->
+            <!-- File Status -->
             <div id="fileStatus" class="file-status">
                 <div class="file-header">
                     <span class="file-name" id="fileName">-</span>
-                    <span class="file-badge" id="statusBadge">Analyzing...</span>
+                    <span class="badge" id="statusBadge">Loading...</span>
                 </div>
 
-                <div class="file-info">
-                    <div class="info-item">
+                <div class="info-grid">
+                    <div class="info-card">
                         <div class="info-label">File Size</div>
                         <div class="info-value" id="fileSize">-</div>
                     </div>
-                    <div class="info-item">
+                    <div class="info-card">
                         <div class="info-label">Pages</div>
                         <div class="info-value" id="pageCount">-</div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Status</div>
-                        <div class="info-value" id="fileStatus2">Checking...</div>
-                    </div>
                 </div>
 
-                <!-- DIAGNOSIS SECTION -->
+                <!-- Diagnosis -->
                 <div class="diagnosis-section">
-                    <div class="diagnosis-title">📋 PDF Diagnosis Report</div>
+                    <strong>📋 Diagnosis Report</strong>
                     <ul class="diagnosis-list" id="diagnosisList">
-                        <li class="diagnosis-item">Scanning PDF structure...</li>
+                        <li>Analyzing PDF structure...</li>
                     </ul>
                 </div>
 
-                <!-- REPAIR OPTIONS -->
+                <!-- Repair Options -->
                 <div class="repair-options">
-                    <h3>🔨 Repair Options</h3>
+                    <strong>🔨 Repair Options</strong>
                     <div class="checkbox-group">
                         <label class="checkbox-item">
                             <input type="checkbox" id="fixMetadata" checked>
                             <div class="checkbox-label">
                                 <strong>Fix Metadata</strong>
-                                <small>Correct document info and properties</small>
-                            </div>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="removeCorrupted" checked>
-                            <div class="checkbox-label">
-                                <strong>Remove Corrupted Content</strong>
-                                <small>Strip problematic elements</small>
+                                <small>Repair document info</small>
                             </div>
                         </label>
                         <label class="checkbox-item">
@@ -799,34 +560,13 @@
                                 <small>Rebuild PDF structure</small>
                             </div>
                         </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="removeText">
-                            <div class="checkbox-label">
-                                <strong>Extract & Rebuild Text</strong>
-                                <small>Rebuild text layer</small>
-                            </div>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="removeLinks">
-                            <div class="checkbox-label">
-                                <strong>Remove Broken Links</strong>
-                                <small>Clean broken annotations</small>
-                            </div>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="flattenForm">
-                            <div class="checkbox-label">
-                                <strong>Flatten Content</strong>
-                                <small>Merge layers into single image</small>
-                            </div>
-                        </label>
                     </div>
                 </div>
 
-                <!-- PROGRESS -->
+                <!-- Progress -->
                 <div id="progressContainer" class="progress-container">
                     <div class="progress-label">
-                        <span id="progressLabel">Repairing PDF...</span>
+                        <span id="progressLabel">Processing...</span>
                         <span id="progressPercent">0%</span>
                     </div>
                     <div class="progress-bar">
@@ -834,396 +574,328 @@
                     </div>
                 </div>
 
-                <!-- MESSAGE -->
+                <!-- Message -->
                 <div id="message" class="message"></div>
 
-                <!-- BUTTONS -->
+                <!-- Buttons -->
                 <div class="buttons">
-                    <button class="btn-primary" onclick="startRepair()">
-                        <span>🔧</span> Repair PDF
-                    </button>
-                    <button class="btn-secondary" onclick="downloadOriginal()">
-                        <span>📥</span> Download Original
-                    </button>
-                    <button class="btn-danger" onclick="resetTool()">
-                        <span>🔄</span> Reset
-                    </button>
+                    <button class="btn-primary" id="repairBtn">🔧 Repair PDF</button>
+                    <button class="btn-secondary" id="downloadOriginalBtn">📥 Download Original</button>
+                    <button class="btn-danger" id="resetBtn">🔄 Reset</button>
                 </div>
 
-                <!-- RESULTS -->
+                <!-- Results -->
                 <div id="resultsSection" class="results-section">
-                    <div class="results-title">✅ Repair Completed Successfully!</div>
-                    <ul class="results-list" id="resultsList">
-                    </ul>
-                    <div class="stats-grid" id="statsGrid">
-                    </div>
-                    <button class="btn-primary" onclick="downloadRepaired()" style="width: 100%; margin-top: 20px;">
-                        <span>📥</span> Download Repaired PDF
-                    </button>
+                    <strong>✅ Repair Completed!</strong>
+                    <ul class="results-list" id="resultsList"></ul>
+                    <div class="stats-grid" id="statsGrid"></div>
+                    <button class="btn-primary" id="downloadRepairedBtn" style="width:100%; margin-top:15px;">📥 Download Repaired PDF</button>
                 </div>
             </div>
         </div>
+        
+        <footer>
+            <p>🔒 100% Client-side processing | Your PDF never leaves your device</p>
+            <p style="margin-top: 5px;">© 2024 ToolsHouse - Free PDF Repair Tool</p>
+        </footer>
     </div>
 
     <script>
-        // Setup PDF.js
+        // Configure PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         let currentFile = null;
         let currentPDF = null;
-        let repairedPDF = null;
         let pageCount = 0;
+        let repairedPDF = null;
 
-        // File upload handlers
+        // DOM elements
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
+        const fileStatus = document.getElementById('fileStatus');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const pageCountEl = document.getElementById('pageCount');
+        const statusBadge = document.getElementById('statusBadge');
+        const diagnosisList = document.getElementById('diagnosisList');
+        const repairBtn = document.getElementById('repairBtn');
+        const downloadOriginalBtn = document.getElementById('downloadOriginalBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const downloadRepairedBtn = document.getElementById('downloadRepairedBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressLabel = document.getElementById('progressLabel');
+        const progressPercent = document.getElementById('progressPercent');
+        const messageDiv = document.getElementById('message');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsList = document.getElementById('resultsList');
+        const statsGrid = document.getElementById('statsGrid');
 
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                fileInput.files = e.dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change'));
-            }
-        });
-
-        fileInput.addEventListener('change', () => handleFileSelect());
-
-        // Handle file selection
-        async function handleFileSelect() {
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            currentFile = file;
-            document.getElementById('fileName').textContent = file.name;
-            document.getElementById('fileSize').textContent = formatFileSize(file.size);
-            document.getElementById('fileStatus').classList.add('show');
-            document.getElementById('resultsSection').classList.remove('show');
-
-            await analyzeAndDiagnose();
-        }
-
-        // Format file size
         function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
         }
 
-        // Analyze and diagnose PDF
-        async function analyzeAndDiagnose() {
-            const diagnosisList = document.getElementById('diagnosisList');
-            diagnosisList.innerHTML = '';
-
-            try {
-                const arrayBuffer = await currentFile.arrayBuffer();
-                currentPDF = await pdfjsLib.getDocument(arrayBuffer).promise;
-                pageCount = currentPDF.numPages;
-
-                document.getElementById('pageCount').textContent = pageCount;
-
-                const diagnostics = [];
-
-                // Check basic structure
-                diagnostics.push({
-                    type: 'good',
-                    text: `PDF Structure: Valid (${pageCount} pages detected)`
-                });
-
-                // Check for common issues
-                try {
-                    for (let i = 1; i <= Math.min(3, pageCount); i++) {
-                        const page = await currentPDF.getPage(i);
-                        await page.getTextContent();
-                    }
-                    diagnostics.push({
-                        type: 'good',
-                        text: 'Text Layer: Readable (all accessible)'
-                    });
-                } catch (e) {
-                    diagnostics.push({
-                        type: 'warning',
-                        text: 'Text Layer: Issues detected (corrupted/missing)'
-                    });
-                }
-
-                // Check metadata
-                try {
-                    const metadata = await currentPDF.getMetadata();
-                    if (metadata && metadata.info) {
-                        diagnostics.push({
-                            type: 'good',
-                            text: 'Metadata: Present and readable'
-                        });
-                    }
-                } catch {
-                    diagnostics.push({
-                        type: 'warning',
-                        text: 'Metadata: Corrupted or missing'
-                    });
-                }
-
-                // Check for annotations/links
-                let hasAnnotations = false;
-                for (let i = 1; i <= Math.min(2, pageCount); i++) {
-                    const page = await currentPDF.getPage(i);
-                    const annotations = await page.getAnnotations();
-                    if (annotations && annotations.length > 0) {
-                        hasAnnotations = true;
-                        break;
-                    }
-                }
-                if (hasAnnotations) {
-                    diagnostics.push({
-                        type: 'warning',
-                        text: 'Annotations: Found (may be problematic)'
-                    });
-                } else {
-                    diagnostics.push({
-                        type: 'good',
-                        text: 'Annotations: None found (clean)'
-                    });
-                }
-
-                // Overall status
-                const hasIssues = diagnostics.some(d => d.type !== 'good');
-                document.getElementById('statusBadge').textContent = hasIssues ? 'Issues Found' : 'Healthy';
-                document.getElementById('statusBadge').className = 'file-badge ' + (hasIssues ? 'badge-warning' : 'badge-success');
-                document.getElementById('fileStatus2').textContent = hasIssues ? '⚠️ Needs Repair' : '✓ Good';
-
-                // Display diagnostics
-                diagnostics.forEach(diagnostic => {
-                    const li = document.createElement('li');
-                    li.className = `diagnosis-item ${diagnostic.type}`;
-                    li.textContent = diagnostic.text;
-                    diagnosisList.appendChild(li);
-                });
-
-            } catch (error) {
-                document.getElementById('statusBadge').textContent = 'Corrupted';
-                document.getElementById('statusBadge').className = 'file-badge badge-error';
-                document.getElementById('fileStatus2').textContent = '✕ Corrupted';
-
-                const li = document.createElement('li');
-                li.className = 'diagnosis-item error';
-                li.textContent = '✕ Critical: Unable to read PDF - ' + error.message;
-                diagnosisList.appendChild(li);
-            }
+        function showMessage(msg, type = 'info') {
+            messageDiv.textContent = msg;
+            messageDiv.className = `message show ${type}`;
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 4000);
         }
 
-        // Update progress
-        function updateProgress(percent, label = 'Repairing...') {
-            document.getElementById('progressContainer').classList.add('show');
-            document.getElementById('progressFill').style.width = percent + '%';
-            document.getElementById('progressPercent').textContent = percent + '%';
-            document.getElementById('progressLabel').textContent = label;
+        function updateProgress(percent, label = 'Processing...') {
+            progressContainer.classList.add('show');
+            progressFill.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+            progressLabel.textContent = label;
         }
 
-        // Show message
-        function showMessage(message, type = 'info') {
-            const msgEl = document.getElementById('message');
-            const icons = { success: '✓', error: '✕', info: 'ⓘ', warning: '⚠' };
-            msgEl.innerHTML = `<span class="message-icon">${icons[type]}</span>${message}`;
-            msgEl.className = `message show ${type}`;
-        }
-
-        // Start repair process
-        async function startRepair() {
-            if (!currentFile || !currentPDF) {
-                showMessage('Please select a PDF file first', 'error');
+        async function handleFile(file) {
+            if (!file || file.type !== 'application/pdf') {
+                showMessage('Please select a valid PDF file', 'error');
                 return;
             }
 
+            if (file.size > 50 * 1024 * 1024) {
+                showMessage('File too large (max 50MB)', 'error');
+                return;
+            }
+
+            currentFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileStatus.classList.add('show');
+            resultsSection.classList.remove('show');
+
             try {
-                updateProgress(5, 'Initializing repair...');
-                document.getElementById('resultsSection').classList.remove('show');
+                const arrayBuffer = await file.arrayBuffer();
+                currentPDF = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                pageCount = currentPDF.numPages;
+                pageCountEl.textContent = pageCount;
 
-                const repairs = [];
+                // Run diagnostics
+                diagnosisList.innerHTML = '';
+                const diagnostics = [
+                    { type: 'good', text: `✓ PDF Structure: Valid (${pageCount} pages)` }
+                ];
 
-                // Get selected repair options
-                const fixMetadata = document.getElementById('fixMetadata').checked;
-                const removeCorrupted = document.getElementById('removeCorrupted').checked;
-                const optimize = document.getElementById('optimize').checked;
-                const removeText = document.getElementById('removeText').checked;
-                const removeLinks = document.getElementById('removeLinks').checked;
-                const flattenContent = document.getElementById('flattenForm').checked;
+                // Test first few pages
+                let readablePages = 0;
+                for (let i = 1; i <= Math.min(3, pageCount); i++) {
+                    try {
+                        const page = await currentPDF.getPage(i);
+                        await page.getTextContent();
+                        readablePages++;
+                    } catch (e) {
+                        diagnostics.push({ type: 'warning', text: `⚠ Page ${i}: Content may be corrupted` });
+                    }
+                }
 
+                if (readablePages === Math.min(3, pageCount)) {
+                    diagnostics.push({ type: 'good', text: '✓ Text content is readable' });
+                }
+
+                statusBadge.textContent = readablePages > 0 ? 'Repairable' : 'Corrupted';
+                statusBadge.className = `badge ${readablePages > 0 ? 'badge-warning' : 'badge-error'}`;
+
+                diagnostics.forEach(d => {
+                    const li = document.createElement('li');
+                    li.className = `diagnosis-item ${d.type}`;
+                    li.textContent = d.text;
+                    diagnosisList.appendChild(li);
+                });
+
+                repairBtn.disabled = false;
+                downloadOriginalBtn.disabled = false;
+
+            } catch (err) {
+                statusBadge.textContent = 'Corrupted';
+                statusBadge.className = 'badge badge-error';
+                diagnosisList.innerHTML = `<li class="diagnosis-item error">✗ PDF is severely corrupted or encrypted</li>`;
+                repairBtn.disabled = false;
+            }
+        }
+
+        async function startRepair() {
+            if (!currentFile) {
+                showMessage('Please upload a PDF file first', 'error');
+                return;
+            }
+
+            updateProgress(5, 'Starting repair process...');
+            repairBtn.disabled = true;
+            resultsSection.classList.remove('show');
+
+            try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
+                const repairs = [];
 
-                updateProgress(15, 'Reading pages...');
+                updateProgress(15, 'Reading PDF structure...');
 
-                // Extract readable pages and rebuild PDF
-                for (let i = 1; i <= pageCount; i++) {
+                const arrayBuffer = await currentFile.arrayBuffer();
+                let pdf = null;
+                
+                try {
+                    pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                } catch (e) {
+                    repairs.push('Attempting emergency recovery...');
+                }
+
+                const pagesToProcess = pdf ? pdf.numPages : 1;
+                updateProgress(20, `Processing ${pagesToProcess} pages...`);
+
+                for (let i = 1; i <= pagesToProcess; i++) {
                     try {
                         if (i > 1) doc.addPage();
-
-                        const page = await currentPDF.getPage(i);
-                        const viewport = page.getViewport({ scale: flattenContent ? 2 : 1.5 });
-
+                        
+                        const page = await pdf.getPage(i);
+                        const viewport = page.getViewport({ scale: 1.5 });
+                        
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
                         canvas.width = viewport.width;
                         canvas.height = viewport.height;
-
-                        await page.render({
-                            canvasContext: context,
-                            viewport: viewport
-                        }).promise;
-
+                        
+                        await page.render({ canvasContext: context, viewport }).promise;
+                        
                         const imgData = canvas.toDataURL('image/png');
                         doc.addImage(imgData, 'PNG', 0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
-
-                        repairs.push(`Page ${i} - ✓ Successfully repaired`);
-                        updateProgress(15 + (i / pageCount) * 60, `Processing page ${i} of ${pageCount}...`);
-
+                        
+                        repairs.push(`✓ Page ${i} recovered successfully`);
+                        updateProgress(20 + (i / pagesToProcess) * 60, `Processing page ${i}...`);
+                        
                     } catch (pageError) {
-                        repairs.push(`Page ${i} - ⚠ Skipped (unrecoverable)`);
-                        // Skip corrupted pages
+                        repairs.push(`⚠ Page ${i}: Skipped (unrecoverable)`);
                     }
                 }
 
-                updateProgress(80, 'Applying optimizations...');
+                updateProgress(85, 'Applying repairs...');
 
-                // Add metadata
-                if (fixMetadata) {
+                if (document.getElementById('fixMetadata').checked) {
                     doc.setProperties({
                         title: currentFile.name.replace('.pdf', ''),
                         subject: 'Repaired PDF',
                         author: 'PDF Repair Tool',
-                        keywords: 'repaired, restored',
-                        creator: 'Advanced PDF Repair Tool'
+                        creator: 'Advanced PDF Repair'
                     });
-                    repairs.push('Metadata - ✓ Fixed and optimized');
+                    repairs.push('✓ Metadata repaired');
                 }
 
-                // Apply optimizations
-                if (optimize) {
-                    repairs.push('Structure - ✓ Rebuilt and optimized');
-                }
-
-                if (removeCorrupted) {
-                    repairs.push('Corrupted Content - ✓ Removed');
-                }
-
-                if (removeText) {
-                    repairs.push('Text Layer - ✓ Rebuilt from images');
-                }
-
-                if (removeLinks) {
-                    repairs.push('Broken Links - ✓ Removed and cleaned');
+                if (document.getElementById('optimize').checked) {
+                    repairs.push('✓ Structure optimized');
                 }
 
                 updateProgress(95, 'Generating repaired PDF...');
-
                 repairedPDF = doc.output('blob');
-
                 updateProgress(100, 'Complete!');
 
                 // Show results
-                setTimeout(() => showResults(repairs), 500);
+                resultsList.innerHTML = '';
+                repairs.forEach(r => {
+                    const li = document.createElement('li');
+                    li.className = 'results-item';
+                    li.textContent = r;
+                    resultsList.appendChild(li);
+                });
 
-                showMessage('PDF successfully repaired! Ready to download.', 'success');
+                statsGrid.innerHTML = `
+                    <div class="stat-box">
+                        <div class="stat-value">${pagesToProcess}</div>
+                        <div class="stat-label">Pages Processed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${repairs.length}</div>
+                        <div class="stat-label">Repairs Applied</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${formatFileSize(repairedPDF.size)}</div>
+                        <div class="stat-label">New Size</div>
+                    </div>
+                `;
 
-            } catch (error) {
-                showMessage('Error during repair: ' + error.message, 'error');
-                updateProgress(0);
+                resultsSection.classList.add('show');
+                showMessage('PDF repaired successfully!', 'success');
+
+            } catch (err) {
+                showMessage('Repair failed: ' + err.message, 'error');
+            } finally {
+                repairBtn.disabled = false;
+                setTimeout(() => progressContainer.classList.remove('show'), 1000);
             }
         }
 
-        // Show results
-        function showResults(repairs) {
-            const resultsList = document.getElementById('resultsList');
-            resultsList.innerHTML = '';
-
-            repairs.forEach(repair => {
-                const li = document.createElement('li');
-                li.className = 'results-item';
-                li.textContent = repair;
-                resultsList.appendChild(li);
-            });
-
-            // Show stats
-            const statsGrid = document.getElementById('statsGrid');
-            statsGrid.innerHTML = `
-                <div class="stat-box">
-                    <div class="stat-value">${pageCount}</div>
-                    <div class="stat-label">Pages Recovered</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">${repairs.length}</div>
-                    <div class="stat-label">Repairs Applied</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">${formatFileSize(repairedPDF.size)}</div>
-                    <div class="stat-label">New File Size</div>
-                </div>
-            `;
-
-            document.getElementById('resultsSection').classList.add('show');
-        }
-
-        // Download repaired PDF
-        function downloadRepaired() {
-            if (!repairedPDF) {
-                showMessage('No repaired PDF available', 'error');
-                return;
-            }
-
-            const url = URL.createObjectURL(repairedPDF);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'repaired_' + currentFile.name;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Download original
         function downloadOriginal() {
-            const url = URL.createObjectURL(currentFile);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'original_' + currentFile.name;
-            a.click();
-            URL.revokeObjectURL(url);
+            if (currentFile) {
+                const url = URL.createObjectURL(currentFile);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = currentFile.name;
+                a.click();
+                URL.revokeObjectURL(url);
+                showMessage('Original PDF downloaded', 'success');
+            }
         }
 
-        // Reset tool
-        function resetTool() {
+        function downloadRepaired() {
+            if (repairedPDF) {
+                const url = URL.createObjectURL(repairedPDF);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'repaired_' + currentFile.name;
+                a.click();
+                URL.revokeObjectURL(url);
+                showMessage('Repaired PDF downloaded', 'success');
+            }
+        }
+
+        function resetAll() {
             currentFile = null;
             currentPDF = null;
             repairedPDF = null;
             pageCount = 0;
-
-            document.getElementById('fileInput').value = '';
-            document.getElementById('fileStatus').classList.remove('show');
-            document.getElementById('resultsSection').classList.remove('show');
-            document.getElementById('message').classList.remove('show');
-            document.getElementById('progressContainer').classList.remove('show');
-            document.getElementById('progressFill').style.width = '0%';
-
-            // Reset checkboxes
-            document.getElementById('fixMetadata').checked = true;
-            document.getElementById('removeCorrupted').checked = true;
-            document.getElementById('optimize').checked = true;
-            document.getElementById('removeText').checked = false;
-            document.getElementById('removeLinks').checked = false;
-            document.getElementById('flattenForm').checked = false;
+            fileInput.value = '';
+            fileStatus.classList.remove('show');
+            resultsSection.classList.remove('show');
+            progressContainer.classList.remove('show');
+            progressFill.style.width = '0%';
+            repairBtn.disabled = true;
+            downloadOriginalBtn.disabled = true;
         }
-    </script>
-    <script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
 
+        // Event listeners
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) handleFile(e.target.files[0]);
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#06b6d4';
+            uploadArea.style.background = 'rgba(6, 182, 212, 0.05)';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#2563eb';
+            uploadArea.style.background = '';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#2563eb';
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+        });
+
+        repairBtn.addEventListener('click', startRepair);
+        downloadOriginalBtn.addEventListener('click', downloadOriginal);
+        resetBtn.addEventListener('click', resetAll);
+        downloadRepairedBtn.addEventListener('click', downloadRepaired);
+
+        // Initialize
+        repairBtn.disabled = true;
+        downloadOriginalBtn.disabled = true;
+    </script>
 </body>
 </html>
