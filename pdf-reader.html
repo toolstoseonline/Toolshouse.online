@@ -2,34 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>PDF Reader Pro | Mobile Gallery & Zoom Reader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>PDF Reader Pro | Free Online PDF Reader - Read PDFs in Browser</title>
+    
+    <!-- SEO Meta Tags - FIXED -->
     <meta name="description" content="Read PDF files online for free with PDF Reader Pro. View, search, navigate, and print PDFs directly in your browser. No software download, no signup, completely private.">
-    <meta name="keywords" content="PDF reader,PDF reader pro, read PDF online">
-<link rel="canonical" href="https://www.toolshouse.online/pdf-reader.html">
-    <meta name="robots" content="index, follow">
-  <meta property="og:title" content="PDF Reader Pro | Mobile Gallery & Zoom Reader">
-<meta property="og:description" content="Read PDF files online for free with PDF Reader Pro. View, search, navigate, and print PDFs directly in your browser. No software download, no signup, completely private.">
-<meta property="og:url" content="https://www.toolshouse.online/pdf-reader.html">
-<meta property="og:type" content="website"
+    <meta name="keywords" content="PDF reader, PDF reader pro, read PDF online, free PDF viewer, PDF viewer online">
+    <meta name="author" content="ToolsHouse">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    
+    <!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+    <meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.toolshouse.online/pdf-reader.html">
+    
+    <!-- Open Graph Tags - FIXED -->
+    <meta property="og:title" content="PDF Reader Pro | Free Online PDF Reader">
+    <meta property="og:description" content="Read PDF files online for free with PDF Reader Pro. View, search, navigate, and print PDFs directly in your browser. No software download required.">
+    <meta property="og:url" content="https://www.toolshouse.online/pdf-reader.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.toolshouse.online/pdf-reader-og.jpg">
+    <meta property="og:site_name" content="ToolsHouse">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PDF Reader Pro - Free Online PDF Reader">
+    <meta name="twitter:description" content="Free online PDF reader. View PDF files directly in your browser with zoom and navigation features.">
+    
+    <!-- Structured Data for Better Indexing -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PDF Reader Pro",
+        "description": "Free online PDF reader with zoom, navigation, and gallery features",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": "PDF viewing, Zoom controls, Page navigation, Gallery storage",
+        "url": "https://www.toolshouse.online/pdf-reader.html"
+    }
+    </script>
+    
     <!-- PDF.js Core Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this calculator:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+    
     <style>
         * {
             margin: 0;
@@ -45,87 +69,81 @@
             min-height: 100vh;
         }
 
-        /* Main App Container */
+        @media (min-width: 768px) {
+            body { padding: 24px; }
+        }
+
         .app-container {
             max-width: 700px;
             margin: 0 auto;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(2px);
             border-radius: 44px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
             overflow: hidden;
             padding: 20px 18px 28px;
-            transition: all 0.2s ease;
         }
 
-        /* Header */
+        @media (min-width: 768px) {
+            .app-container { padding: 28px 24px 32px; }
+        }
+
         .header {
             text-align: center;
             margin-bottom: 22px;
         }
         .header h1 {
-            font-size: 1.85rem;
+            font-size: 1.6rem;
             font-weight: 700;
             background: linear-gradient(135deg, #1e2b6e, #2c3e8f);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.3px;
+        }
+        @media (min-width: 768px) {
+            .header h1 { font-size: 1.85rem; }
         }
         .header p {
             color: #5a687c;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-top: 6px;
-            font-weight: 500;
         }
 
-        /* Toolbar */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 10px;
+            margin-bottom: 20px;
             justify-content: center;
         }
         .btn {
             background: white;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 18px;
             border-radius: 60px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            transition: all 0.2s;
             cursor: pointer;
-            backdrop-filter: blur(4px);
             background: rgba(255,255,255,0.95);
             border: 1px solid rgba(0,0,0,0.05);
         }
+        @media (min-width: 768px) {
+            .btn { padding: 12px 20px; font-size: 0.9rem; }
+        }
+        .btn:active { transform: scale(0.97); }
         .btn-primary {
             background: #1e3a8a;
             color: white;
             border: none;
-            box-shadow: 0 6px 14px rgba(30,58,138,0.25);
         }
-        .btn-primary:active { transform: scale(0.96); background: #0f2b6d; }
-        .btn-outline {
-            background: rgba(255,255,255,0.9);
-            border: 1px solid #cbd5e1;
-            color: #1f2937;
-        }
-        .btn-outline:active { transform: scale(0.96); background: #f1f5f9; }
-        .icon-emoj {
-            font-size: 1.2rem;
-        }
-
-        /* Zoom Controls */
         .zoom-panel {
             display: flex;
             justify-content: center;
-            gap: 16px;
+            gap: 12px;
             margin-bottom: 18px;
             background: #ffffffcc;
             padding: 8px 12px;
@@ -133,69 +151,60 @@
             width: fit-content;
             margin-left: auto;
             margin-right: auto;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .zoom-btn {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 40px;
-            width: 44px;
-            height: 44px;
-            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #0f172a;
             cursor: pointer;
-            transition: 0.1s linear;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .zoom-btn:active { transform: scale(0.92); background: #eef2ff; }
+        @media (min-width: 768px) {
+            .zoom-btn { width: 44px; height: 44px; font-size: 1.5rem; }
+        }
+        .zoom-btn:active { transform: scale(0.94); background: #eef2ff; }
         .zoom-level {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.9rem;
             background: #eef2ff;
-            padding: 0 18px;
+            padding: 0 16px;
             border-radius: 40px;
             display: inline-flex;
             align-items: center;
             color: #1e3a8a;
         }
-
-        /* PDF Canvas Container with overflow for zoom */
         .pdf-viewer {
             background: #e9eef3;
-            border-radius: 32px;
-            padding: 20px 12px;
+            border-radius: 28px;
+            padding: 16px 12px;
             margin: 8px 0 16px;
-            box-shadow: inset 0 1px 4px #00000010, 0 8px 20px rgba(0,0,0,0.05);
+            min-height: 380px;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 380px;
-            transition: all 0.2s;
         }
         .canvas-wrapper {
             overflow-x: auto;
             overflow-y: auto;
             max-width: 100%;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            transition: all 0.2s;
             -webkit-overflow-scrolling: touch;
         }
         canvas {
-            box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             border-radius: 12px;
             background: white;
             display: block;
-            transition: transform 0.1s ease;
-            max-width: none;
+            max-width: 100%;
+            height: auto;
         }
-        /* Page navigation */
         .nav-controls {
             display: flex;
             align-items: center;
@@ -206,21 +215,19 @@
         }
         .page-indicator {
             background: #eef2ff;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 48px;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #0c4a6e;
         }
         .file-info {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #475569;
             text-align: center;
             margin-top: 12px;
             word-break: break-word;
         }
-
-        /* Gallery Detection / PDF list section */
         .gallery-section {
             margin-top: 24px;
             border-top: 2px dashed #cbd5e1;
@@ -228,8 +235,8 @@
         }
         .section-title {
             font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 14px;
+            font-size: 1rem;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -238,42 +245,30 @@
         .pdf-gallery {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            justify-content: flex-start;
+            gap: 10px;
             max-height: 260px;
             overflow-y: auto;
             padding: 4px 2px;
         }
         .gallery-card {
             background: white;
-            border-radius: 24px;
-            padding: 12px 14px;
-            width: calc(33% - 8px);
-            min-width: 100px;
+            border-radius: 20px;
+            padding: 10px;
+            width: calc(33% - 7px);
+            min-width: 90px;
             flex: 1 0 auto;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             border: 1px solid #e2edff;
             cursor: pointer;
-            transition: all 0.15s;
             text-align: center;
         }
         .gallery-card:active { transform: scale(0.97); background: #f8fafd; }
-        .pdf-icon {
-            font-size: 2rem;
-            margin-bottom: 6px;
-        }
-        .pdf-name {
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #1f3a6b;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .pdf-icon { font-size: 1.8rem; margin-bottom: 4px; }
+        .pdf-name { font-size: 0.65rem; font-weight: 500; color: #1f3a6b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .detect-badge {
             background: #dbeafe;
             border-radius: 20px;
-            padding: 8px 12px;
+            padding: 6px 12px;
             font-size: 0.7rem;
             color: #1e40af;
             margin-bottom: 12px;
@@ -282,30 +277,25 @@
         .clear-btn {
             background: #fee2e2;
             color: #b91c1c;
-            border: none;
-        }
-        @media (max-width: 520px) {
-            .app-container { padding: 16px; }
-            .btn { padding: 10px 16px; font-size: 0.8rem; }
-            .gallery-card { padding: 8px 6px; }
-            .pdf-name { font-size: 0.65rem; }
         }
         footer {
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #6c7a91;
             margin-top: 20px;
         }
-        input[type="file"] {
-            display: none;
-        }
+        input[type="file"] { display: none; }
         .status-msg {
             background: #e6f0ff;
             border-radius: 28px;
             padding: 8px 12px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-align: center;
             margin-top: 10px;
+        }
+        @media (max-width: 480px) {
+            .gallery-card { padding: 8px 6px; }
+            .pdf-name { font-size: 0.6rem; }
         }
     </style>
 </head>
@@ -314,80 +304,74 @@
 <div class="app-container">
     <div class="header">
         <h1>📖 PDF Reader Pro</h1>
-        <p>Gallery detect • Smooth Zoom • Clear read</p>
+        <p>Free • Private • No signup • Read PDFs instantly</p>
     </div>
 
-    <!-- Primary action row -->
     <div class="toolbar">
         <label class="btn btn-primary" for="pdfUpload">
-            <span class="icon-emoj">📂</span> Open PDF
+            <span>📂</span> Open PDF
         </label>
-        <button class="btn btn-outline" id="galleryDetectBtn">
-            <span class="icon-emoj">🖼️</span> Detect Gallery
+        <button class="btn" id="galleryDetectBtn">
+            <span>🖼️</span> Detect Gallery
         </button>
         <button class="btn clear-btn" id="clearPdfBtn">
-            <span class="icon-emoj">🗑️</span> Clear Reader
+            <span>🗑️</span> Clear
         </button>
         <input type="file" id="pdfUpload" accept=".pdf">
     </div>
 
-    <!-- Zoom friendly controls -->
     <div class="zoom-panel">
-        <button class="zoom-btn" id="zoomOutBtn" aria-label="Zoom Out">−</button>
+        <button class="zoom-btn" id="zoomOutBtn">−</button>
         <span class="zoom-level" id="zoomLevelDisplay">100%</span>
-        <button class="zoom-btn" id="zoomInBtn" aria-label="Zoom In">+</button>
-        <button class="zoom-btn" id="resetZoomBtn" aria-label="Reset Zoom">⟳</button>
+        <button class="zoom-btn" id="zoomInBtn">+</button>
+        <button class="zoom-btn" id="resetZoomBtn">⟳</button>
     </div>
 
-    <!-- PDF Canvas Viewer (scrollable wrapper for zoom) -->
     <div class="pdf-viewer">
         <div class="canvas-wrapper" id="canvasWrapper">
             <canvas id="pdfCanvas" style="display: none;"></canvas>
-            <div id="noPdfMsg" style="color:#64748b; text-align:center; padding:40px;">✨ No PDF loaded.<br>Upload or pick from gallery ✨</div>
+            <div id="noPdfMsg" style="color:#64748b; text-align:center; padding:40px;">✨ No PDF loaded.<br>Upload or select from gallery ✨</div>
         </div>
     </div>
 
-    <!-- Page navigation -->
     <div class="nav-controls">
-        <button class="btn btn-outline" id="prevPageBtn" style="padding:8px 18px;">◀ Prev</button>
+        <button class="btn" id="prevPageBtn" style="padding:6px 16px;">◀ Prev</button>
         <div class="page-indicator" id="pageInfo">Page 0 / 0</div>
-        <button class="btn btn-outline" id="nextPageBtn" style="padding:8px 18px;">Next ▶</button>
+        <button class="btn" id="nextPageBtn" style="padding:6px 16px;">Next ▶</button>
     </div>
 
-    <!-- Gallery section: detected PDFs from mobile gallery / local PDFs -->
     <div class="gallery-section">
         <div class="section-title">
             <span>📚 PDF Gallery</span>
-            <span style="font-size:12px;">(tap to read instantly)</span>
         </div>
         <div id="detectHint" class="detect-badge">
-            💡 Use "Detect Gallery" to scan & store recent PDFs from your device uploads.
+            💡 Upload PDFs to add them to your gallery for quick access
         </div>
         <div id="pdfGalleryList" class="pdf-gallery">
-            <div style="color:#94a3b8; text-align:center; width:100%;">No PDFs in gallery yet. Upload or detect.</div>
+            <div style="color:#94a3b8; text-align:center; width:100%;">No PDFs in gallery. Upload a PDF.</div>
         </div>
     </div>
+    
     <div class="file-info" id="fileNameDisplay"></div>
     <div id="statusMsg" class="status-msg"></div>
-    <footer>📱 Mobile-friendly • Pinch-to-zoom inside canvas wrapper • Smooth reading</footer>
+    <footer>
+        <p>🔒 100% Client-side processing | Your PDFs never leave your device</p>
+        <p style="margin-top: 5px;">© 2024 ToolsHouse - Free PDF Reader Pro</p>
+    </footer>
 </div>
 
 <script>
     // Configure PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-    // ---------- GLOBALS ----------
-    let pdfDoc = null;          // PDF document proxy
+    let pdfDoc = null;
     let currentPageNum = 1;
     let totalPages = 0;
-    let currentZoom = 1.0;     // scale factor (1.0 = 100%)
-    let currentPdfFile = null;  // store file object for re-render
-    
-    // Gallery storage: array of objects { name, dataURL, fileObj? optional, id }
-    let pdfGallery = [];        // we store base64 dataUrl for preview/loading
+    let currentZoom = 1.0;
+    let currentPdfFile = null;
+    let pdfGallery = [];
     let galleryIdCounter = 0;
 
-    // DOM elements
     const canvas = document.getElementById('pdfCanvas');
     const ctx = canvas.getContext('2d');
     const canvasWrapper = document.getElementById('canvasWrapper');
@@ -406,12 +390,10 @@
     const pdfGalleryContainer = document.getElementById('pdfGalleryList');
     const statusMsgDiv = document.getElementById('statusMsg');
 
-    // Helper: update zoom display
     function updateZoomUI() {
         zoomLevelSpan.innerText = `${Math.round(currentZoom * 100)}%`;
     }
 
-    // Render current page using pdfDoc and zoom
     async function renderPage() {
         if (!pdfDoc) {
             canvas.style.display = 'none';
@@ -428,21 +410,23 @@
             canvas.width = viewport.width;
             canvas.height = viewport.height;
             
-            const renderContext = {
+            await page.render({
                 canvasContext: ctx,
                 viewport: viewport,
                 background: 'white'
-            };
+            }).promise;
             
-            await page.render(renderContext).promise;
             pageInfoSpan.innerText = `Page ${currentPageNum} / ${totalPages}`;
+            if(canvasWrapper) {
+                canvasWrapper.scrollTop = 0;
+                canvasWrapper.scrollLeft = 0;
+            }
         } catch (err) {
-            console.warn("render error", err);
+            console.warn("Render error", err);
             statusMsgDiv.innerText = "⚠️ Render error, try zoom reset.";
         }
     }
 
-    // Load PDF from ArrayBuffer or Blob
     async function loadPdfFromData(data, fileName = "document.pdf") {
         try {
             const typedArray = new Uint8Array(data);
@@ -454,7 +438,6 @@
             await renderPage();
             fileNameSpan.innerText = `📄 ${fileName}`;
             statusMsgDiv.innerText = `✅ Loaded: ${fileName} (${totalPages} pages)`;
-            // Also store current file ref for potential gallery update
             return true;
         } catch (err) {
             console.error(err);
@@ -468,7 +451,6 @@
         }
     }
 
-    // Helper to read file as ArrayBuffer
     function readFileAsArrayBuffer(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -478,11 +460,14 @@
         });
     }
 
-    // Upload handler
     pdfUploadInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file || file.type !== 'application/pdf') {
             statusMsgDiv.innerText = "⚠️ Please select a valid PDF file.";
+            return;
+        }
+        if (file.size > 50 * 1024 * 1024) {
+            statusMsgDiv.innerText = "⚠️ File too large (max 50MB)";
             return;
         }
         statusMsgDiv.innerText = `📥 Loading "${file.name}" ...`;
@@ -490,34 +475,31 @@
         const success = await loadPdfFromData(buffer, file.name);
         if (success) {
             currentPdfFile = file;
-            // optionally auto add to gallery if not exists (avoid duplicates by name + size)
-            addPdfToGallery(file.name, buffer);
+            await addPdfToGallery(file.name, buffer);
         }
-        pdfUploadInput.value = ''; // allow re-upload same file
+        pdfUploadInput.value = '';
     });
 
-    // Add PDF to gallery storage (store base64 chunk for quick access)
     async function addPdfToGallery(fileName, arrayBuffer) {
-        // avoid duplicates by name + first few bytes? but simple: check if same name exists
         const exists = pdfGallery.some(item => item.name === fileName);
         if (exists) {
-            statusMsgDiv.innerText = `📁 "${fileName}" already in gallery.`;
             renderGalleryList();
             return;
         }
         const base64 = await arrayBufferToBase64(arrayBuffer);
         const newId = galleryIdCounter++;
-        pdfGallery.push({
+        pdfGallery.unshift({
             id: newId,
             name: fileName,
-            data: base64,   // store base64 string for later loading
+            data: base64,
             timestamp: Date.now()
         });
+        if (pdfGallery.length > 20) pdfGallery.pop();
         renderGalleryList();
+        saveGalleryToLocal();
         statusMsgDiv.innerText = `➕ Added "${fileName}" to gallery.`;
     }
 
-    // Convert ArrayBuffer to base64 string
     function arrayBufferToBase64(buffer) {
         return new Promise((resolve) => {
             const blob = new Blob([buffer], { type: 'application/pdf' });
@@ -527,7 +509,6 @@
         });
     }
 
-    // Load PDF from gallery item by base64 data
     async function loadPdfFromBase64(base64Data, filename) {
         try {
             const binaryString = atob(base64Data);
@@ -542,11 +523,10 @@
         }
     }
 
-    // Render gallery UI cards
     function renderGalleryList() {
         if (!pdfGalleryContainer) return;
         if (pdfGallery.length === 0) {
-            pdfGalleryContainer.innerHTML = `<div style="color:#94a3b8; text-align:center; width:100%;">📭 No PDFs in gallery. Upload or tap "Detect Gallery".</div>`;
+            pdfGalleryContainer.innerHTML = `<div style="color:#94a3b8; text-align:center; width:100%;">📭 No PDFs in gallery. Upload a PDF to get started.</div>`;
             return;
         }
         let html = '';
@@ -554,18 +534,19 @@
             html += `
                 <div class="gallery-card" data-id="${item.id}">
                     <div class="pdf-icon">📄</div>
-                    <div class="pdf-name" title="${item.name}">${truncateName(item.name, 18)}</div>
+                    <div class="pdf-name" title="${escapeHtml(item.name)}">${truncateName(item.name, 20)}</div>
                 </div>
             `;
         });
         pdfGalleryContainer.innerHTML = html;
-        // attach click event listeners
+        
         document.querySelectorAll('.gallery-card').forEach(card => {
             card.addEventListener('click', async (e) => {
+                e.stopPropagation();
                 const id = parseInt(card.getAttribute('data-id'));
                 const galleryItem = pdfGallery.find(g => g.id === id);
                 if (galleryItem && galleryItem.data) {
-                    statusMsgDiv.innerText = `📖 Opening from gallery: ${galleryItem.name}`;
+                    statusMsgDiv.innerText = `📖 Opening: ${galleryItem.name}`;
                     await loadPdfFromBase64(galleryItem.data, galleryItem.name);
                 } else {
                     statusMsgDiv.innerText = "Cannot retrieve PDF data.";
@@ -574,28 +555,30 @@
         });
     }
 
-    function truncateName(name, maxLen) {
-        return name.length > maxLen ? name.substring(0, maxLen-2) + '..' : name;
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
 
-    // Detect gallery: scans all uploaded/added PDFs already in local gallery
-    // plus optional: if user has any PDF recently loaded, we can also promote it. 
-    // But also we simulate detecting any PDF from hidden inputs? For mobile we already have gallery store.
-    // Also we provide a demo: when user clicks "Detect Gallery", we show existing PDFs and also scan if any previous uploaded.
+    function truncateName(name, maxLen) {
+        if (name.length <= maxLen) return name;
+        return name.substring(0, maxLen - 3) + '...';
+    }
+
     galleryDetectBtn.addEventListener('click', () => {
         if (pdfGallery.length > 0) {
             statusMsgDiv.innerText = `📌 Gallery contains ${pdfGallery.length} PDF(s). Tap any to read.`;
             renderGalleryList();
         } else {
-            statusMsgDiv.innerText = `🔍 No PDFs detected in local gallery. Please upload a PDF first to add it.`;
-        }
-        // extra: if current PDF loaded and not in gallery, ask to add?
-        if (pdfDoc && currentPdfFile && !pdfGallery.some(g => g.name === currentPdfFile.name)) {
-            statusMsgDiv.innerText = `➕ Current PDF not in gallery. Use "Open PDF" again to auto-save, or upload again to add.`;
+            statusMsgDiv.innerText = `🔍 No PDFs in gallery. Please upload a PDF first.`;
         }
     });
 
-    // Clear Reader: reset PDF and canvas
     clearPdfBtn.addEventListener('click', () => {
         pdfDoc = null;
         totalPages = 0;
@@ -609,7 +592,6 @@
         statusMsgDiv.innerText = "🧹 Reader cleared. Upload or select from gallery.";
     });
 
-    // Zoom handlers
     zoomInBtn.addEventListener('click', () => {
         if (!pdfDoc) { statusMsgDiv.innerText = "Load PDF first"; return; }
         currentZoom = Math.min(3.0, currentZoom + 0.15);
@@ -629,7 +611,6 @@
         renderPage();
     });
 
-    // Page navigation
     prevBtn.addEventListener('click', () => {
         if (pdfDoc && currentPageNum > 1) {
             currentPageNum--;
@@ -647,59 +628,13 @@
         }
     });
 
-    // Helper to add auto when upload done (on file select we already call addPdfToGallery)
-    // Also touch-friendly: if the canvas wrapper has natural scroll, we allow zoom + scroll.
-    // For better mobile experience we also reset canvasWrapper scroll to top on page change
-    function resetScrollOnPageChange() {
-        if(canvasWrapper) canvasWrapper.scrollTop = 0;
-    }
-    // extend renderPage to reset scroll optionally
-    const originalRender = renderPage;
-    window.renderPage = async function() {
-        await originalRender();
-        if(canvasWrapper) canvasWrapper.scrollLeft = 0;
-        if(canvasWrapper) canvasWrapper.scrollTop = 0;
-    };
-    renderPage = window.renderPage;
-    
-    // Override renderPage binding
-    renderPage = renderPage.bind(this);
-    // fix reference
-    const superRender = renderPage;
-    renderPage = async function() {
-        await superRender();
-        if(canvasWrapper) canvasWrapper.scrollLeft = 0;
-    };
-    
-    // rewire
-    window.renderPage = renderPage;
-    
-    // patch again to ensure consistency
-    const boundRender = renderPage;
-    // final assignment
-    window.renderPage = boundRender;
-    
-    // just to avoid errors, rebind
-    const origFunc = renderPage;
-    renderPage = async function() { await origFunc(); if(canvasWrapper) canvasWrapper.scrollTop = 0; canvasWrapper.scrollLeft = 0; };
-    
-    // one-time set
-    if(typeof window !== 'undefined') {
-        window.renderPage = renderPage;
-    }
-    
-    // Mobile gesture: Since canvas-wrapper overflow:auto, user can pinch-zoom native? We rely on zoom buttons + scroll
-    // Provide better message:
-    statusMsgDiv.innerText = "✨ Ready! Upload PDF or tap Detect Gallery ✨";
-    
-    // add fallback for initial gallery persistence using localStorage?
-    // we can optionally save gallery to localStorage for persistence
     function saveGalleryToLocal() {
         if(pdfGallery.length) {
             const toStore = pdfGallery.map(({id, name, data}) => ({id, name, data}));
             localStorage.setItem('pdf_gallery_mobile', JSON.stringify(toStore));
         }
     }
+
     function loadGalleryFromLocal() {
         const stored = localStorage.getItem('pdf_gallery_mobile');
         if(stored) {
@@ -714,38 +649,9 @@
             } catch(e) {}
         }
     }
-    // whenever gallery changes, save
-    const origRenderGallery = renderGalleryList;
-    renderGalleryList = function() {
-        origRenderGallery();
-        if(pdfGallery.length) saveGalleryToLocal();
-        else if(pdfGallery.length === 0) localStorage.removeItem('pdf_gallery_mobile');
-    };
-    renderGalleryList();
+
     loadGalleryFromLocal();
-    
-    // final re-assign to keep method binding correct
-    window.renderGalleryList = renderGalleryList;
-    
-    // small fix for page navigation scroll
-    const originalPageRender = renderPage;
-    renderPage = async function() {
-        await originalPageRender();
-        if(canvasWrapper) { canvasWrapper.scrollTop = 0; canvasWrapper.scrollLeft = 0; }
-    };
-    window.renderPage = renderPage;
+    statusMsgDiv.innerText = "✨ Ready! Upload PDF or tap Detect Gallery ✨";
 </script>
-    <script>
-  atOptions = {
-    'key' : 'ae869b7d1136099dd8efbbf290e399f1',
-    'format' : 'iframe',
-    'height' : 600,
-    'width' : 160,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/ae869b7d1136099dd8efbbf290e399f1/invoke.js"></script>
-    <script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
 </body>
 </html>
