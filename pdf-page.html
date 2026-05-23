@@ -1,40 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="h-full">
- <head>
+<head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Page Number Marker - Live Preview</title>
-<meta name="description" content="Add page numbers to PDFs online for free. Choose position, format, and style. Skip title pages, customize fonts, and preview before applying. Perfect for reports and ebooks. No signup.">
-<meta name="keywords" content="page number pdf, add page numbers pdf, pdf numbering tool">
-    <link rel="canonical" href="https://www.toolshouse.online/pdf-page.html">
-  <meta name="robots" content="index, follow">
-    <meta property="og:title" content="PDF Page Number Marker">
-<meta property="og:description" content="content="Add page numbers to PDFs online for free. Choose position, format, and style. Skip title pages, customize fonts, and preview before applying. Perfect for reports and ebooks. No signup.">
-<meta property="og:url" content="https://www.toolshouse.online//pdf-page.html">
-<meta property="og:type" content="website">
-     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>PDF Page Number Marker | Toolshouse.online </title>
+  
+  <!-- SEO Meta Tags - FIXED -->
+  <meta name="description" content="Add page numbers to PDFs online for free. Choose position, format, and style. Skip title pages, customize fonts, and preview before applying. Perfect for reports and ebooks. No signup required.">
+  <meta name="keywords" content="page number pdf, add page numbers pdf, pdf numbering tool, add page numbers to PDF, PDF page marker">
+  <meta name="author" content="ToolsHouse">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="googlebot" content="index, follow">
+  <meta name="bingbot" content="index, follow">
+  
+  <!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+  <meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+  
+  <!-- Canonical URL - FIXED (removed double slash) -->
+  <link rel="canonical" href="https://www.toolshouse.online/pdf-page.html">
+  
+  <!-- Open Graph Tags - FIXED -->
+  <meta property="og:title" content="PDF Page Number Marker - Add Page Numbers to PDF Online Free">
+  <meta property="og:description" content="Add page numbers to PDFs online for free. Choose position, format, and style. Customize fonts and preview before applying. No signup required.">
+  <meta property="og:url" content="https://www.toolshouse.online/pdf-page.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://www.toolshouse.online/pdf-page-number-og.jpg">
+  <meta property="og:site_name" content="ToolsHouse">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PDF Page Number Marker - Add Page Numbers to PDF">
+  <meta name="twitter:description" content="Free online tool to add professional page numbers to your PDF documents.">
+  
+  <!-- Structured Data for Better Indexing -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Page Number Marker",
+    "description": "Free online tool to add professional page numbers to PDF documents",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": "Add page numbers, Custom position, Multiple formats, Skip title page, Live preview",
+    "url": "https://www.toolshouse.online/pdf-page.html"
+  }
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this PDF Page Number Marker:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+  
   <style>
     * { font-family: 'Space Grotesk', sans-serif; }
     .drop-zone.dragover { border-color: #6366f1; background-color: rgba(99, 102, 241, 0.1); }
@@ -59,508 +82,509 @@
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full bg-slate-900 text-white overflow-auto">
-  <div class="min-h-full w-full"><!-- Header -->
-   <header class="bg-slate-800 border-b border-slate-700 px-4 py-6 sm:px-6">
-    <div class="max-w-4xl mx-auto text-center">
-     <div class="flex items-center justify-center gap-3 mb-2">
-      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-xl flex items-center justify-center"><i data-lucide="file-text" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-      </div>
-      <h1 id="app-title" class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">PDF Page Number Marker</h1>
-     </div>
-     <p id="subtitle" class="text-slate-400 text-sm sm:text-base">Add professional page numbers to your PDF documents</p>
-    </div>
-   </header>
-   <main class="max-w-4xl mx-auto px-4 py-6 sm:px-6 sm:py-8"><!-- Upload Section -->
-    <div id="upload-section" class="mb-8">
-     <div id="drop-zone" class="drop-zone border-2 border-dashed border-slate-600 rounded-2xl p-8 sm:p-12 text-center cursor-pointer hover:border-indigo-500 transition-all duration-300">
-      <div class="flex flex-col items-center gap-4">
-       <div class="w-16 h-16 sm:w-20 sm:h-20 bg-slate-800 rounded-full flex items-center justify-center"><i data-lucide="upload-cloud" class="w-8 h-8 sm:w-10 sm:h-10 text-indigo-400"></i>
-       </div>
-       <div>
-        <p class="text-lg sm:text-xl font-semibold mb-1">Drop your PDF here</p>
-        <p class="text-slate-400 text-sm sm:text-base">or click to browse files</p>
-       </div><input type="file" id="file-input" accept=".pdf" class="hidden">
-      </div>
-     </div>
-    </div><!-- File Info -->
-    <div id="file-info" class="hidden mb-6 bg-slate-800 rounded-xl p-4 flex items-center justify-between">
-     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center"><i data-lucide="file" class="w-5 h-5 text-indigo-400"></i>
-      </div>
-      <div>
-       <p id="file-name" class="font-medium text-sm sm:text-base truncate max-w-[150px] sm:max-w-none"></p>
-       <p id="file-pages" class="text-slate-400 text-xs sm:text-sm"></p>
-      </div>
-     </div><button id="remove-file" class="p-2 hover:bg-slate-700 rounded-lg transition-colors"> <i data-lucide="x" class="w-5 h-5 text-slate-400"></i> </button>
-    </div><!-- Settings Section -->
-    <div id="settings-section" class="hidden space-y-6"><!-- Position -->
-     <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
-      <h3 class="font-semibold mb-4 flex items-center gap-2"><i data-lucide="layout" class="w-5 h-5 text-indigo-400"></i> Position</h3>
-      <div class="grid grid-cols-3 gap-2 sm:gap-3"><button data-position="top-left" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Top Left</button> <button data-position="top-center" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Top Center</button> <button data-position="top-right" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Top Right</button> <button data-position="bottom-left" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Bottom Left</button> <button data-position="bottom-center" class="position-btn active py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Bottom Center</button> <button data-position="bottom-right" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Bottom Right</button>
-      </div>
-     </div><!-- Format & Style -->
-     <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
-      <h3 class="font-semibold mb-4 flex items-center gap-2"><i data-lucide="type" class="w-5 h-5 text-indigo-400"></i> Format &amp; Style</h3>
-      <div class="space-y-4"><!-- Number Format -->
-       <div><label class="block text-sm text-slate-400 mb-2">Number Format</label> <select id="format-select" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"> <option value="page">1, 2, 3...</option> <option value="page-of-total">1 of 10</option> <option value="page-dash-total">1 - 10</option> <option value="page-prefix">Page 1</option> <option value="page-prefix-total">Page 1 of 10</option> </select>
-       </div><!-- Font Size -->
-       <div><label class="block text-sm text-slate-400 mb-2">Font Size: <span id="font-size-value">12</span>pt</label> <input type="range" id="font-size" min="8" max="24" value="12" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-       </div><!-- Margin -->
-       <div><label class="block text-sm text-slate-400 mb-2">Margin: <span id="margin-value">30</span>pt</label> <input type="range" id="margin" min="10" max="80" value="30" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-       </div><!-- Color -->
-       <div><label class="block text-sm text-slate-400 mb-2">Color</label>
-        <div class="flex gap-2"><button data-color="black" class="color-btn active w-10 h-10 bg-black border-2 border-slate-500 rounded-lg"></button> <button data-color="gray" class="color-btn w-10 h-10 bg-gray-500 border-2 border-transparent rounded-lg"></button> <button data-color="blue" class="color-btn w-10 h-10 bg-blue-600 border-2 border-transparent rounded-lg"></button> <button data-color="red" class="color-btn w-10 h-10 bg-red-600 border-2 border-transparent rounded-lg"></button>
+</head>
+<body class="h-full bg-slate-900 text-white overflow-auto">
+  <div class="min-h-full w-full">
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 px-4 py-6 sm:px-6">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="flex items-center justify-center gap-3 mb-2">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-xl flex items-center justify-center">
+            <i data-lucide="file-text" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
+          </div>
+          <h1 id="app-title" class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">PDF Page Number Marker</h1>
         </div>
-       </div>
+        <p id="subtitle" class="text-slate-400 text-sm sm:text-base">Add professional page numbers to your PDF documents - 100% Free</p>
       </div>
-     </div><!-- Page Range -->
-     <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
-      <h3 class="font-semibold mb-4 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5 text-indigo-400"></i> Page Range</h3>
-      <div class="space-y-3"><label class="flex items-center gap-3 cursor-pointer"> <input type="radio" name="page-range" value="all" checked class="w-4 h-4 accent-indigo-500"> <span class="text-sm">All pages</span> </label> <label class="flex items-center gap-3 cursor-pointer"> <input type="radio" name="page-range" value="custom" class="w-4 h-4 accent-indigo-500"> <span class="text-sm">Custom range</span> </label>
-       <div id="custom-range" class="hidden pl-7 pt-2">
-        <div class="flex items-center gap-2"><input type="number" id="start-page" min="1" value="1" class="w-20 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"> <span class="text-slate-400">to</span> <input type="number" id="end-page" min="1" value="1" class="w-20 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    </header>
+    
+    <main class="max-w-4xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
+      <!-- Upload Section -->
+      <div id="upload-section" class="mb-8">
+        <div id="drop-zone" class="drop-zone border-2 border-dashed border-slate-600 rounded-2xl p-8 sm:p-12 text-center cursor-pointer hover:border-indigo-500 transition-all duration-300">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-slate-800 rounded-full flex items-center justify-center">
+              <i data-lucide="upload-cloud" class="w-8 h-8 sm:w-10 sm:h-10 text-indigo-400"></i>
+            </div>
+            <div>
+              <p class="text-lg sm:text-xl font-semibold mb-1">📱 Tap or drop your PDF here</p>
+              <p class="text-slate-400 text-sm sm:text-base">Supports PDF files up to 50MB</p>
+            </div>
+            <input type="file" id="file-input" accept=".pdf" class="hidden">
+          </div>
         </div>
-       </div><label class="flex items-center gap-3 cursor-pointer"> <input type="checkbox" id="skip-first" class="w-4 h-4 accent-indigo-500 rounded"> <span class="text-sm">Skip first page (title page)</span> </label>
       </div>
-     </div><!-- Preview -->
-     <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
-      <h3 class="font-semibold mb-4 flex items-center gap-2"><i data-lucide="eye" class="w-5 h-5 text-indigo-400"></i> Preview</h3>
-      <div class="flex justify-center">
-       <div id="preview-page" class="preview-page relative bg-white w-40 h-56 sm:w-48 sm:h-64 rounded-lg">
-        <div class="absolute inset-4 flex flex-col gap-2">
-         <div class="h-2 bg-slate-200 rounded w-3/4"></div>
-         <div class="h-2 bg-slate-200 rounded w-full"></div>
-         <div class="h-2 bg-slate-200 rounded w-5/6"></div>
-         <div class="h-2 bg-slate-200 rounded w-full"></div>
-         <div class="h-2 bg-slate-200 rounded w-2/3"></div>
-        </div>
-        <div id="preview-number" class="absolute text-xs font-medium" style="bottom: 8px; left: 50%; transform: translateX(-50%); color: black;">
-         1
-        </div>
-       </div>
-      </div>
-     </div><!-- Action Buttons -->
-     <div class="flex flex-col sm:flex-row gap-3"><button id="process-btn" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"> <i data-lucide="download" class="w-5 h-5"></i> Add Page Numbers &amp; Download </button>
-     </div>
-    </div><!-- Processing State -->
-    <div id="processing" class="hidden text-center py-12">
-     <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-500/20 rounded-full mb-4">
-      <svg class="animate-spin w-8 h-8 text-indigo-400" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-     </div>
-     <p class="text-lg font-medium">Processing your PDF...</p>
-     <p class="text-slate-400 text-sm">This may take a moment</p>
-    </div><!-- Success Message -->
-    <div id="success-message" class="hidden bg-green-500/20 border border-green-500/30 rounded-xl p-4 mb-6">
-     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center"><i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
-      </div>
-      <div>
-       <p class="font-medium text-green-400">Success!</p>
-       <p class="text-sm text-slate-400">Your PDF has been downloaded with page numbers.</p>
-      </div>
-     </div>
-    </div>
-   </main><!-- Footer -->
-   <footer class="border-t border-slate-800 px-4 py-6 text-center">
-    <p class="text-slate-500 text-sm">Your files are processed locally and never uploaded to any server.</p>
-   </footer>
-  </div>
-  <script>
-    // Config and defaults
-    const defaultConfig = {
-      app_title: 'PDF Page Number Marker',
-      subtitle_text: 'Add professional page numbers to your PDF documents',
-      background_color: '#0f172a',
-      surface_color: '#1e293b',
-      text_color: '#ffffff',
-      primary_color: '#6366f1',
-      secondary_color: '#94a3b8'
-    };
-
-    let pdfFile = null;
-    let pdfDoc = null;
-    let totalPages = 0;
-
-    // Settings state
-    let settings = {
-      position: 'bottom-center',
-      format: 'page',
-      fontSize: 12,
-      margin: 30,
-      color: 'black',
-      pageRange: 'all',
-      startPage: 1,
-      endPage: 1,
-      skipFirst: false
-    };
-
-    // Color mapping
-    const colorMap = {
-      black: { r: 0, g: 0, b: 0 },
-      gray: { r: 0.5, g: 0.5, b: 0.5 },
-      blue: { r: 0.23, g: 0.38, b: 0.85 },
-      red: { r: 0.85, g: 0.23, b: 0.23 }
-    };
-
-    // DOM Elements
-    const dropZone = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-input');
-    const fileInfo = document.getElementById('file-info');
-    const fileName = document.getElementById('file-name');
-    const filePages = document.getElementById('file-pages');
-    const removeFileBtn = document.getElementById('remove-file');
-    const settingsSection = document.getElementById('settings-section');
-    const uploadSection = document.getElementById('upload-section');
-    const processBtn = document.getElementById('process-btn');
-    const processing = document.getElementById('processing');
-    const successMessage = document.getElementById('success-message');
-    const previewNumber = document.getElementById('preview-number');
-
-    // File upload handlers
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('dragover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const files = e.dataTransfer.files;
-      if (files.length > 0 && files[0].type === 'application/pdf') {
-        handleFile(files[0]);
-      }
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) {
-        handleFile(e.target.files[0]);
-      }
-    });
-
-    removeFileBtn.addEventListener('click', () => {
-      pdfFile = null;
-      pdfDoc = null;
-      totalPages = 0;
-      fileInput.value = '';
-      fileInfo.classList.add('hidden');
-      settingsSection.classList.add('hidden');
-      uploadSection.classList.remove('hidden');
-      successMessage.classList.add('hidden');
-    });
-
-    async function handleFile(file) {
-      pdfFile = file;
-      fileName.textContent = file.name;
       
-      try {
-        const arrayBuffer = await file.arrayBuffer();
-        pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-        totalPages = pdfDoc.getPageCount();
-        filePages.textContent = `${totalPages} page${totalPages !== 1 ? 's' : ''}`;
-        
-        document.getElementById('end-page').value = totalPages;
-        document.getElementById('end-page').max = totalPages;
-        document.getElementById('start-page').max = totalPages;
-        
-        fileInfo.classList.remove('hidden');
-        settingsSection.classList.remove('hidden');
-        uploadSection.classList.add('hidden');
-        successMessage.classList.add('hidden');
-        
-        updatePreview();
-      } catch (error) {
-        showError('Failed to load PDF. Please try another file.');
-      }
-    }
-
-    // Position buttons
-    document.querySelectorAll('.position-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.position-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        settings.position = btn.dataset.position;
-        updatePreview();
-      });
-    });
-
-    // Color buttons
-    document.querySelectorAll('.color-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.color-btn').forEach(b => {
-          b.classList.remove('active');
-          b.style.borderColor = 'transparent';
-        });
-        btn.classList.add('active');
-        btn.style.borderColor = '#6366f1';
-        settings.color = btn.dataset.color;
-        updatePreview();
-      });
-    });
-
-    // Format select
-    document.getElementById('format-select').addEventListener('change', (e) => {
-      settings.format = e.target.value;
-      updatePreview();
-    });
-
-    // Font size slider
-    document.getElementById('font-size').addEventListener('input', (e) => {
-      settings.fontSize = parseInt(e.target.value);
-      document.getElementById('font-size-value').textContent = settings.fontSize;
-      updatePreview();
-    });
-
-    // Margin slider
-    document.getElementById('margin').addEventListener('input', (e) => {
-      settings.margin = parseInt(e.target.value);
-      document.getElementById('margin-value').textContent = settings.margin;
-      updatePreview();
-    });
-
-    // Page range
-    document.querySelectorAll('input[name="page-range"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        settings.pageRange = e.target.value;
-        document.getElementById('custom-range').classList.toggle('hidden', e.target.value !== 'custom');
-      });
-    });
-
-    document.getElementById('start-page').addEventListener('change', (e) => {
-      settings.startPage = parseInt(e.target.value);
-    });
-
-    document.getElementById('end-page').addEventListener('change', (e) => {
-      settings.endPage = parseInt(e.target.value);
-    });
-
-    document.getElementById('skip-first').addEventListener('change', (e) => {
-      settings.skipFirst = e.target.checked;
-    });
-
-    function getFormattedNumber(pageNum, total) {
-      switch (settings.format) {
-        case 'page': return `${pageNum}`;
-        case 'page-of-total': return `${pageNum} of ${total}`;
-        case 'page-dash-total': return `${pageNum} - ${total}`;
-        case 'page-prefix': return `Page ${pageNum}`;
-        case 'page-prefix-total': return `Page ${pageNum} of ${total}`;
-        default: return `${pageNum}`;
-      }
-    }
-
-    function updatePreview() {
-      const preview = document.getElementById('preview-number');
-      const text = getFormattedNumber(1, totalPages || 10);
-      preview.textContent = text;
-      
-      // Set color
-      const colorHex = {
-        black: '#000000',
-        gray: '#6b7280',
-        blue: '#2563eb',
-        red: '#dc2626'
-      };
-      preview.style.color = colorHex[settings.color];
-      
-      // Set font size (scaled for preview)
-      preview.style.fontSize = `${Math.max(8, settings.fontSize * 0.6)}px`;
-      
-      // Set position
-      const marginScale = settings.margin * 0.15;
-      preview.style.removeProperty('top');
-      preview.style.removeProperty('bottom');
-      preview.style.removeProperty('left');
-      preview.style.removeProperty('right');
-      preview.style.removeProperty('transform');
-      
-      if (settings.position.includes('top')) {
-        preview.style.top = `${marginScale}px`;
-      } else {
-        preview.style.bottom = `${marginScale}px`;
-      }
-      
-      if (settings.position.includes('left')) {
-        preview.style.left = `${marginScale}px`;
-        preview.style.transform = 'none';
-      } else if (settings.position.includes('right')) {
-        preview.style.right = `${marginScale}px`;
-        preview.style.transform = 'none';
-      } else {
-        preview.style.left = '50%';
-        preview.style.transform = 'translateX(-50%)';
-      }
-    }
-
-    // Process PDF
-    processBtn.addEventListener('click', async () => {
-      if (!pdfFile || !pdfDoc) return;
-      
-      settingsSection.classList.add('hidden');
-      processing.classList.remove('hidden');
-      
-      try {
-        const newPdf = await PDFLib.PDFDocument.load(await pdfFile.arrayBuffer());
-        const pages = newPdf.getPages();
-        const font = await newPdf.embedFont(PDFLib.StandardFonts.Helvetica);
-        
-        let startIdx = 0;
-        let endIdx = pages.length;
-        
-        if (settings.pageRange === 'custom') {
-          startIdx = Math.max(0, settings.startPage - 1);
-          endIdx = Math.min(pages.length, settings.endPage);
-        }
-        
-        if (settings.skipFirst) {
-          startIdx = Math.max(startIdx, 1);
-        }
-        
-        const color = colorMap[settings.color];
-        
-        for (let i = startIdx; i < endIdx; i++) {
-          const page = pages[i];
-          const { width, height } = page.getSize();
-          const displayNum = settings.skipFirst ? i : i + 1;
-          const text = getFormattedNumber(displayNum, pages.length);
-          const textWidth = font.widthOfTextAtSize(text, settings.fontSize);
-          
-          let x, y;
-          
-          // Calculate Y position
-          if (settings.position.includes('top')) {
-            y = height - settings.margin;
-          } else {
-            y = settings.margin;
-          }
-          
-          // Calculate X position
-          if (settings.position.includes('left')) {
-            x = settings.margin;
-          } else if (settings.position.includes('right')) {
-            x = width - settings.margin - textWidth;
-          } else {
-            x = (width - textWidth) / 2;
-          }
-          
-          page.drawText(text, {
-            x,
-            y,
-            size: settings.fontSize,
-            font,
-            color: PDFLib.rgb(color.r, color.g, color.b)
-          });
-        }
-        
-        const pdfBytes = await newPdf.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = pdfFile.name.replace('.pdf', '_numbered.pdf');
-        a.click();
-        
-        URL.revokeObjectURL(url);
-        
-        processing.classList.add('hidden');
-        settingsSection.classList.remove('hidden');
-        successMessage.classList.remove('hidden');
-        
-        setTimeout(() => {
-          successMessage.classList.add('hidden');
-        }, 5000);
-        
-      } catch (error) {
-        processing.classList.add('hidden');
-        settingsSection.classList.remove('hidden');
-        showError('Failed to process PDF. Please try again.');
-      }
-    });
-
-    function showError(message) {
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 bg-red-500/20 border border-red-500/30 rounded-xl p-4 z-50';
-      errorDiv.innerHTML = `
+      <!-- File Info -->
+      <div id="file-info" class="hidden mb-6 bg-slate-800 rounded-xl p-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <i data-lucide="alert-circle" class="w-5 h-5 text-red-400"></i>
-          <p class="text-sm text-red-400">${message}</p>
+          <div class="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+            <i data-lucide="file" class="w-5 h-5 text-indigo-400"></i>
+          </div>
+          <div>
+            <p id="file-name" class="font-medium text-sm sm:text-base truncate max-w-[150px] sm:max-w-none"></p>
+            <p id="file-pages" class="text-slate-400 text-xs sm:text-sm"></p>
+          </div>
         </div>
-      `;
-      document.body.appendChild(errorDiv);
-      lucide.createIcons();
+        <button id="remove-file" class="p-2 hover:bg-slate-700 rounded-lg transition-colors">
+          <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
+        </button>
+      </div>
       
-      setTimeout(() => {
-        errorDiv.remove();
-      }, 4000);
-    }
-
-    // Element SDK
-    async function onConfigChange(config) {
-      document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
-      document.getElementById('subtitle').textContent = config.subtitle_text || defaultConfig.subtitle_text;
+      <!-- Settings Section -->
+      <div id="settings-section" class="hidden space-y-6">
+        <!-- Position -->
+        <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
+          <h3 class="font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="layout" class="w-5 h-5 text-indigo-400"></i> Position
+          </h3>
+          <div class="grid grid-cols-3 gap-2 sm:gap-3">
+            <button data-position="top-left" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Top Left</button>
+            <button data-position="top-center" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Top Center</button>
+            <button data-position="top-right" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Top Right</button>
+            <button data-position="bottom-left" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Bottom Left</button>
+            <button data-position="bottom-center" class="position-btn active py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Bottom Center</button>
+            <button data-position="bottom-right" class="position-btn py-3 px-2 sm:px-4 bg-slate-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-600 transition-colors">Bottom Right</button>
+          </div>
+        </div>
+        
+        <!-- Format & Style -->
+        <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
+          <h3 class="font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="type" class="w-5 h-5 text-indigo-400"></i> Format &amp; Style
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm text-slate-400 mb-2">Number Format</label>
+              <select id="format-select" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="page">1, 2, 3...</option>
+                <option value="page-of-total">1 of 10</option>
+                <option value="page-dash-total">1 - 10</option>
+                <option value="page-prefix">Page 1</option>
+                <option value="page-prefix-total">Page 1 of 10</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm text-slate-400 mb-2">Font Size: <span id="font-size-value">12</span>pt</label>
+              <input type="range" id="font-size" min="8" max="24" value="12" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-sm text-slate-400 mb-2">Margin: <span id="margin-value">30</span>pt</label>
+              <input type="range" id="margin" min="10" max="80" value="30" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-sm text-slate-400 mb-2">Color</label>
+              <div class="flex gap-2">
+                <button data-color="black" class="color-btn active w-10 h-10 bg-black border-2 border-indigo-500 rounded-lg"></button>
+                <button data-color="gray" class="color-btn w-10 h-10 bg-gray-500 border-2 border-transparent rounded-lg"></button>
+                <button data-color="blue" class="color-btn w-10 h-10 bg-blue-600 border-2 border-transparent rounded-lg"></button>
+                <button data-color="red" class="color-btn w-10 h-10 bg-red-600 border-2 border-transparent rounded-lg"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Page Range -->
+        <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
+          <h3 class="font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="book-open" class="w-5 h-5 text-indigo-400"></i> Page Range
+          </h3>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="radio" name="page-range" value="all" checked class="w-4 h-4 accent-indigo-500">
+              <span class="text-sm">All pages</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="radio" name="page-range" value="custom" class="w-4 h-4 accent-indigo-500">
+              <span class="text-sm">Custom range</span>
+            </label>
+            <div id="custom-range" class="hidden pl-7 pt-2">
+              <div class="flex items-center gap-2">
+                <input type="number" id="start-page" min="1" value="1" class="w-20 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <span class="text-slate-400">to</span>
+                <input type="number" id="end-page" min="1" value="1" class="w-20 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              </div>
+            </div>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" id="skip-first" class="w-4 h-4 accent-indigo-500 rounded">
+              <span class="text-sm">Skip first page (title page)</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Preview -->
+        <div class="bg-slate-800 rounded-xl p-4 sm:p-6">
+          <h3 class="font-semibold mb-4 flex items-center gap-2">
+            <i data-lucide="eye" class="w-5 h-5 text-indigo-400"></i> Live Preview
+          </h3>
+          <div class="flex justify-center">
+            <div id="preview-page" class="preview-page relative bg-white w-40 h-56 sm:w-48 sm:h-64 rounded-lg">
+              <div class="absolute inset-4 flex flex-col gap-2">
+                <div class="h-2 bg-slate-200 rounded w-3/4"></div>
+                <div class="h-2 bg-slate-200 rounded w-full"></div>
+                <div class="h-2 bg-slate-200 rounded w-5/6"></div>
+                <div class="h-2 bg-slate-200 rounded w-full"></div>
+                <div class="h-2 bg-slate-200 rounded w-2/3"></div>
+              </div>
+              <div id="preview-number" class="absolute text-xs font-medium" style="bottom: 8px; left: 50%; transform: translateX(-50%); color: black;">1</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="process-btn" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="download" class="w-5 h-5"></i> Add Page Numbers &amp; Download
+          </button>
+        </div>
+      </div>
       
-      document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
-      document.querySelector('header').style.backgroundColor = config.surface_color || defaultConfig.surface_color;
-      document.querySelectorAll('.bg-slate-800').forEach(el => {
-        el.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+      <!-- Processing State -->
+      <div id="processing" class="hidden text-center py-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-500/20 rounded-full mb-4">
+          <svg class="animate-spin w-8 h-8 text-indigo-400" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <p class="text-lg font-medium">Processing your PDF...</p>
+        <p class="text-slate-400 text-sm">This may take a moment</p>
+      </div>
+      
+      <!-- Success Message -->
+      <div id="success-message" class="hidden bg-green-500/20 border border-green-500/30 rounded-xl p-4 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+          </div>
+          <div>
+            <p class="font-medium text-green-400">Success!</p>
+            <p class="text-sm text-slate-400">Your PDF has been downloaded with page numbers.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 px-4 py-6 text-center">
+      <p class="text-slate-500 text-sm">🔒 100% Client-side processing - Your files never leave your device</p>
+      <p class="text-slate-500 text-sm mt-2">© 2024 ToolsHouse - Free PDF Page Number Marker</p>
+    </footer>
+  </div>
+  
+  <script>
+    // Wait for DOM to load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+      
+      let pdfFile = null;
+      let pdfDoc = null;
+      let totalPages = 0;
+      
+      // Settings state
+      let settings = {
+        position: 'bottom-center',
+        format: 'page',
+        fontSize: 12,
+        margin: 30,
+        color: 'black',
+        pageRange: 'all',
+        startPage: 1,
+        endPage: 1,
+        skipFirst: false
+      };
+      
+      // Color mapping
+      const colorMap = {
+        black: { r: 0, g: 0, b: 0 },
+        gray: { r: 0.5, g: 0.5, b: 0.5 },
+        blue: { r: 0.23, g: 0.38, b: 0.85 },
+        red: { r: 0.85, g: 0.23, b: 0.23 }
+      };
+      
+      // DOM Elements
+      const dropZone = document.getElementById('drop-zone');
+      const fileInput = document.getElementById('file-input');
+      const fileInfo = document.getElementById('file-info');
+      const fileName = document.getElementById('file-name');
+      const filePages = document.getElementById('file-pages');
+      const removeFileBtn = document.getElementById('remove-file');
+      const settingsSection = document.getElementById('settings-section');
+      const uploadSection = document.getElementById('upload-section');
+      const processBtn = document.getElementById('process-btn');
+      const processing = document.getElementById('processing');
+      const successMessage = document.getElementById('success-message');
+      const previewNumber = document.getElementById('preview-number');
+      
+      function getFormattedNumber(pageNum, total) {
+        switch (settings.format) {
+          case 'page': return `${pageNum}`;
+          case 'page-of-total': return `${pageNum} of ${total}`;
+          case 'page-dash-total': return `${pageNum} - ${total}`;
+          case 'page-prefix': return `Page ${pageNum}`;
+          case 'page-prefix-total': return `Page ${pageNum} of ${total}`;
+          default: return `${pageNum}`;
+        }
+      }
+      
+      function updatePreview() {
+        if (!previewNumber) return;
+        const text = getFormattedNumber(1, totalPages || 10);
+        previewNumber.textContent = text;
+        
+        const colorHex = { black: '#000000', gray: '#6b7280', blue: '#2563eb', red: '#dc2626' };
+        previewNumber.style.color = colorHex[settings.color];
+        previewNumber.style.fontSize = `${Math.max(8, settings.fontSize * 0.6)}px`;
+        
+        const marginScale = settings.margin * 0.15;
+        previewNumber.style.removeProperty('top');
+        previewNumber.style.removeProperty('bottom');
+        previewNumber.style.removeProperty('left');
+        previewNumber.style.removeProperty('right');
+        previewNumber.style.removeProperty('transform');
+        
+        if (settings.position.includes('top')) {
+          previewNumber.style.top = `${marginScale}px`;
+        } else {
+          previewNumber.style.bottom = `${marginScale}px`;
+        }
+        
+        if (settings.position.includes('left')) {
+          previewNumber.style.left = `${marginScale}px`;
+          previewNumber.style.transform = 'none';
+        } else if (settings.position.includes('right')) {
+          previewNumber.style.right = `${marginScale}px`;
+          previewNumber.style.transform = 'none';
+        } else {
+          previewNumber.style.left = '50%';
+          previewNumber.style.transform = 'translateX(-50%)';
+        }
+      }
+      
+      function showError(message) {
+        alert(message);
+      }
+      
+      async function handleFile(file) {
+        if (!file || file.type !== 'application/pdf') {
+          showError('Please select a valid PDF file.');
+          return;
+        }
+        
+        if (file.size > 50 * 1024 * 1024) {
+          showError('File too large (max 50MB).');
+          return;
+        }
+        
+        pdfFile = file;
+        fileName.textContent = file.name;
+        
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+          totalPages = pdfDoc.getPageCount();
+          filePages.textContent = `${totalPages} page${totalPages !== 1 ? 's' : ''}`;
+          
+          document.getElementById('end-page').value = totalPages;
+          document.getElementById('end-page').max = totalPages;
+          document.getElementById('start-page').max = totalPages;
+          
+          fileInfo.classList.remove('hidden');
+          settingsSection.classList.remove('hidden');
+          uploadSection.classList.add('hidden');
+          successMessage.classList.add('hidden');
+          
+          updatePreview();
+        } catch (error) {
+          showError('Failed to load PDF. Please try another file.');
+        }
+      }
+      
+      // Event Listeners
+      dropZone.addEventListener('click', () => fileInput.click());
+      
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
       });
-    }
-
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange,
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            {
-              get: () => config.background_color || defaultConfig.background_color,
-              set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
-            },
-            {
-              get: () => config.surface_color || defaultConfig.surface_color,
-              set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
-            },
-            {
-              get: () => config.text_color || defaultConfig.text_color,
-              set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
-            },
-            {
-              get: () => config.primary_color || defaultConfig.primary_color,
-              set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
-            },
-            {
-              get: () => config.secondary_color || defaultConfig.secondary_color,
-              set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+      
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+      });
+      
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) handleFile(files[0]);
+      });
+      
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) handleFile(e.target.files[0]);
+      });
+      
+      removeFileBtn.addEventListener('click', () => {
+        pdfFile = null;
+        pdfDoc = null;
+        totalPages = 0;
+        fileInput.value = '';
+        fileInfo.classList.add('hidden');
+        settingsSection.classList.add('hidden');
+        uploadSection.classList.remove('hidden');
+        successMessage.classList.add('hidden');
+      });
+      
+      // Position buttons
+      document.querySelectorAll('.position-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.position-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          settings.position = btn.dataset.position;
+          updatePreview();
+        });
+      });
+      
+      // Color buttons
+      document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.color-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.borderColor = 'transparent';
+          });
+          btn.classList.add('active');
+          btn.style.borderColor = '#6366f1';
+          settings.color = btn.dataset.color;
+          updatePreview();
+        });
+      });
+      
+      document.getElementById('format-select').addEventListener('change', (e) => {
+        settings.format = e.target.value;
+        updatePreview();
+      });
+      
+      document.getElementById('font-size').addEventListener('input', (e) => {
+        settings.fontSize = parseInt(e.target.value);
+        document.getElementById('font-size-value').textContent = settings.fontSize;
+        updatePreview();
+      });
+      
+      document.getElementById('margin').addEventListener('input', (e) => {
+        settings.margin = parseInt(e.target.value);
+        document.getElementById('margin-value').textContent = settings.margin;
+        updatePreview();
+      });
+      
+      document.querySelectorAll('input[name="page-range"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          settings.pageRange = e.target.value;
+          document.getElementById('custom-range').classList.toggle('hidden', e.target.value !== 'custom');
+        });
+      });
+      
+      document.getElementById('start-page').addEventListener('change', (e) => {
+        settings.startPage = parseInt(e.target.value);
+      });
+      
+      document.getElementById('end-page').addEventListener('change', (e) => {
+        settings.endPage = parseInt(e.target.value);
+      });
+      
+      document.getElementById('skip-first').addEventListener('change', (e) => {
+        settings.skipFirst = e.target.checked;
+      });
+      
+      // Process PDF
+      processBtn.addEventListener('click', async () => {
+        if (!pdfFile || !pdfDoc) {
+          showError('Please upload a PDF file first.');
+          return;
+        }
+        
+        settingsSection.classList.add('hidden');
+        processing.classList.remove('hidden');
+        
+        try {
+          const newPdf = await PDFLib.PDFDocument.load(await pdfFile.arrayBuffer());
+          const pages = newPdf.getPages();
+          const font = await newPdf.embedFont(PDFLib.StandardFonts.Helvetica);
+          
+          let startIdx = 0;
+          let endIdx = pages.length;
+          
+          if (settings.pageRange === 'custom') {
+            startIdx = Math.max(0, settings.startPage - 1);
+            endIdx = Math.min(pages.length, settings.endPage);
+          }
+          
+          if (settings.skipFirst) {
+            startIdx = Math.max(startIdx, 1);
+          }
+          
+          const color = colorMap[settings.color];
+          
+          for (let i = startIdx; i < endIdx; i++) {
+            const page = pages[i];
+            const { width, height } = page.getSize();
+            const displayNum = settings.skipFirst ? i : i + 1;
+            const text = getFormattedNumber(displayNum, pages.length);
+            const textWidth = font.widthOfTextAtSize(text, settings.fontSize);
+            
+            let x, y;
+            
+            if (settings.position.includes('top')) {
+              y = height - settings.margin;
+            } else {
+              y = settings.margin;
             }
-          ],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['app_title', config.app_title || defaultConfig.app_title],
-          ['subtitle_text', config.subtitle_text || defaultConfig.subtitle_text]
-        ])
+            
+            if (settings.position.includes('left')) {
+              x = settings.margin;
+            } else if (settings.position.includes('right')) {
+              x = width - settings.margin - textWidth;
+            } else {
+              x = (width - textWidth) / 2;
+            }
+            
+            page.drawText(text, {
+              x, y,
+              size: settings.fontSize,
+              font,
+              color: PDFLib.rgb(color.r, color.g, color.b)
+            });
+          }
+          
+          const pdfBytes = await newPdf.save();
+          const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = pdfFile.name.replace('.pdf', '_numbered.pdf');
+          a.click();
+          
+          URL.revokeObjectURL(url);
+          
+          processing.classList.add('hidden');
+          settingsSection.classList.remove('hidden');
+          successMessage.classList.remove('hidden');
+          
+          setTimeout(() => {
+            successMessage.classList.add('hidden');
+          }, 5000);
+          
+        } catch (error) {
+          processing.classList.add('hidden');
+          settingsSection.classList.remove('hidden');
+          showError('Failed to process PDF. Please try again.');
+        }
       });
-    }
-
-    // Initialize
-    lucide.createIcons();
-    updatePreview();
+      
+      updatePreview();
+    });
   </script>
-  <script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
-
-  </body>
+</body>
 </html>
