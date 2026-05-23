@@ -2,203 +2,381 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tools House Online - 100+ Professional Tools</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<title>Tools House Online - 100+ Free Professional Online Tools</title>
+
+<!-- SEO Meta Tags - FIXED & COMPLETE -->
+<meta name="description" content="100+ free professional online tools for PDF, image, video, audio editing, and calculations. Convert, compress, edit files instantly. No signup, no watermark, completely free.">
+<meta name="keywords" content="free online tools, PDF tools, image editor, video compressor, audio cutter, file converter, online utilities">
+<meta name="author" content="Tools House Online">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+<!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+<meta name="google-site-verification" content="YOUR_ACTUAL_CODE_HERE">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://www.toolshouse.online/">
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Tools House Online - 100+ Free Professional Online Tools">
+<meta property="og:description" content="Free online tools for PDF, image, video, audio editing, and calculations. No signup required.">
+<meta property="og:url" content="https://www.toolshouse.online/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://www.toolshouse.online/og-image.jpg">
+<meta property="og:site_name" content="Tools House Online">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tools House Online - Free Professional Tools">
+<meta name="twitter:description" content="100+ free online tools for all your file conversion and editing needs.">
+
+<!-- Structured Data for Better Indexing -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Tools House Online",
+    "url": "https://www.toolshouse.online/",
+    "description": "Free online tools for PDF, image, video, audio editing, and calculations",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.toolshouse.online/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
 
 <style>
-body{
-    margin:0;
-    font-family: Arial, sans-serif;
-    background:#f5e6d3; /* Light Brown Background */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background: #f5e6d3;
+    min-height: 100vh;
 }
 
 /* HEADER */
-header{
-    background:#8b5e3c;
-    color:white;
-    padding:20px;
-    text-align:center;
+header {
+    background: linear-gradient(135deg, #8b5e3c 0%, #6f4e37 100%);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
 }
 
-header h1{
-    margin:0;
-    font-size:28px;
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+@media (min-width: 768px) {
+    header h1 { font-size: 2.2rem; }
+}
+
+header p {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    opacity: 0.95;
 }
 
 /* NAV */
-nav{
-    background:#6f4e37;
-    text-align:center;
-    padding:10px;
+nav {
+    background: #6f4e37;
+    text-align: center;
+    padding: 12px 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
 }
 
-nav a{
-    color:white;
-    margin:0 15px;
-    text-decoration:none;
-    font-weight:bold;
+nav a {
+    color: white;
+    margin: 0 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+    transition: opacity 0.2s;
 }
 
-nav a:hover{
-    text-decoration:underline;
+@media (min-width: 768px) {
+    nav a { margin: 0 18px; font-size: 0.95rem; }
+}
+
+nav a:active {
+    opacity: 0.7;
 }
 
 /* SECTION */
-.section{
-    padding:30px 20px;
+.section {
+    padding: 30px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-.section h2{
-    background:#8b5e3c;
-    color:white;
-    padding:10px;
-    border-radius:5px;
+.section h2 {
+    background: linear-gradient(135deg, #8b5e3c 0%, #6f4e37 100%);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
 }
 
-.tools-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:15px;
-    margin-top:15px;
+@media (min-width: 768px) {
+    .section h2 { font-size: 1.5rem; }
 }
 
-.tool-card{
-    background:white;
-    padding:15px;
-    border-radius:8px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.2);
-    text-align:center;
-    transition:0.3s;
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
 }
 
-.tool-card:hover{
-    transform:scale(1.05);
+@media (min-width: 768px) {
+    .tools-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
 }
 
-.tool-card a{
-    text-decoration:none;
-    color:#333;
-    font-weight:bold;
+.tool-card {
+    background: white;
+    padding: 16px 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.tool-card:active {
+    transform: scale(0.97);
+}
+
+@media (min-width: 768px) {
+    .tool-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.tool-card a {
+    text-decoration: none;
+    color: #4a3520;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .tool-card a { font-size: 0.9rem; }
 }
 
 /* FOOTER */
-footer{
-    background:#6f4e37;
-    color:white;
-    text-align:center;
-    padding:15px;
-    margin-top:20px;
+footer {
+    background: #6f4e37;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    font-size: 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .section { padding: 20px 15px; }
+    .tool-card { padding: 12px 8px; }
+    .tool-card a { font-size: 0.75rem; }
+}
+
+/* Search Box */
+.search-container {
+    max-width: 500px;
+    margin: 20px auto 0;
+    padding: 0 16px;
+}
+
+.search-box {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Stats */
+.stats {
+    text-align: center;
+    padding: 20px;
+    background: rgba(107, 70, 55, 0.1);
+    margin: 20px;
+    border-radius: 12px;
+}
+
+.stats span {
+    font-weight: bold;
+    color: #8b5e3c;
+    font-size: 1.5rem;
 }
 </style>
 </head>
-
 <body>
 
 <header>
     <h1>🛠 Tools House Online</h1>
-    <p>100+ Professional Free Online Tools</p>
+    <p>100+ Professional Free Online Tools - No Signup Required</p>
 </header>
 
 <nav>
-    <a href="#document">Document Tools</a>
-    <a href="#image">Image Tools</a>
-    <a href="#video">Video Tools</a>
-    <a href="#audio">Audio Tools</a>
-    <a href="#calculator">Calculators</a>
-    <a href="#ai">AI Tools</a>
+    <a href="#document">📄 PDF Tools</a>
+    <a href="#image">🖼️ Image Tools</a>
+    <a href="#video">🎬 Video Tools</a>
+    <a href="#audio">🎵 Audio Tools</a>
+    <a href="#calculator">🧮 Calculators</a>
+    <a href="#ai">🤖 AI Tools</a>
 </nav>
+
+<div class="search-container">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search tools...">
+</div>
+
+<div class="stats">
+    <p>✨ <span>100+</span> Free Tools Available | 🔒 100% Private | ⚡ Instant Processing</p>
+</div>
 
 <!-- DOCUMENT TOOLS -->
 <section id="document" class="section">
-<h2>📄 Document & File Tools</h2>
-<div class="tools-grid">
-<div class="tool-card"><a href="word-to-pdf Converter.html">Word to PDF Converter</a></div>
-<div class="tool-card"><a href="pdf-merger.html">PDF Merger</a></div>
-<div class="tool-card"><a href="pdf-splitter.html">PDF Splitter</a></div>
-<div class="tool-card"><a href="pdf-compressor.html">PDF Compressor</a></div>
-<div class="tool-card"><a href="file-compressor.html">File Compressor</a></div>
-<div class="tool-card"><a href="file-splitter.html">File Splitter</a></div>
-<div class="tool-card"><a href="file-converter.html">File Converter</a></div>
-<div class="tool-card"><a href="excel-to-pdf.html">Excel to PDF</a></div>
-    <div class="tool-card"><a href="pdf-redact.html">Redact PDF Online</a></div>
-    <div class="tool-card"><a href="pdf-repair.html">Repair PDF Online</a></div>
-    <div class="tool-card"><a href="pdf-signer.html">Sign PDF Online</a></div>
-    <div class="tool-card"><a href="pdf-to-jpg.html">PDF to JPG Converter</a></div>
-    <div class="tool-card"><a href="pdf-to-powerpoint.html">PDF to PowerPoint ConverterF</a></div>
-    <div class="tool-card"><a href="pdf-to-word converter.html">PDF to Word Converter</a></div>
-    <div class="tool-card"><a href="powerpoint-to-pdf.html">PowerPoint to PDF Converter</a></div>
-    <div class="tool-card"><a href="pdf-reader.html">PDF Reader Online</a></div>
-    <div class="tool-card"><a href="pdf-organizer.html">Organize PDF Online</a></div>
-    <div class="tool-card"><a href="jpg-to-pdf.html">JPG to PDF Converter Online</a></div>
-    <div class="tool-card"><a href="html-to-pdf.html">HTML to PDF Converter Online</a></div>
-    <div class="tool-card"><a href="edit-pdf.html">Edit PDF Online Free</a></div>
-
-</div>
+    <h2>📄 PDF & Document Tools</h2>
+    <div class="tools-grid" id="document-grid">
+        <div class="tool-card"><a href="pdf-merger.html">PDF Merger</a></div>
+        <div class="tool-card"><a href="pdf-splitter.html">PDF Splitter</a></div>
+        <div class="tool-card"><a href="pdf-compressor.html">PDF Compressor</a></div>
+        <div class="tool-card"><a href="pdf-to-word.html">PDF to Word</a></div>
+        <div class="tool-card"><a href="excel-to-pdf.html">Excel to PDF</a></div>
+        <div class="tool-card"><a href="pdf-redact.html">Redact PDF</a></div>
+        <div class="tool-card"><a href="pdf-repair.html">Repair PDF</a></div>
+        <div class="tool-card"><a href="pdf-to-jpg.html">PDF to JPG</a></div>
+        <div class="tool-card"><a href="powerpoint-pdf.html">PPT to PDF</a></div>
+        <div class="tool-card"><a href="pdf-reader.html">PDF Reader</a></div>
+        <div class="tool-card"><a href="pdf-organizer.html">Organize PDF</a></div>
+        <div class="tool-card"><a href="jpg-to-pdf.html">JPG to PDF</a></div>
+        <div class="tool-card"><a href="html-to-pdf.html">HTML to PDF</a></div>
+        <div class="tool-card"><a href="edit-pdf.html">Edit PDF</a></div>
+        <div class="tool-card"><a href="word-to-pdf.html">Word to PDF</a></div>
+        <div class="tool-card"><a href="pdf-signer.html">Sign PDF</a></div>
+    </div>
 </section>
 
 <!-- IMAGE TOOLS -->
 <section id="image" class="section">
-<h2>🖼 Photo / Image Editing Tools</h2>
-<div class="tools-grid">
-<div class="tool-card"><a href="image-converter.html">Image Converter</a></div>
-<div class="tool-card"><a href="collage-maker.html">Collage Maker</a></div>
-<div class="tool-card"><a href="image-resizer.html">Image Resizer</a></div>
-<div class="tool-card"><a href="filter-&-effects.html">Filter & Effects</a></div>
-<div class="tool-card"><a href="photo-retouch.html">Photo Retouch</a></div>
-<div class="tool-card"><a href="image-enhancer.html">Image Enhancer</a></div>
-<div class="tool-card"><a href="meme-generator.html">Meme Generator</a></div>
-</div>
+    <h2>🖼️ Photo & Image Editing Tools</h2>
+    <div class="tools-grid">
+        <div class="tool-card"><a href="image-converter.html">Image Converter</a></div>
+        <div class="tool-card"><a href="collage-maker.html">Collage Maker</a></div>
+        <div class="tool-card"><a href="image-resizer.html">Image Resizer</a></div>
+        <div class="tool-card"><a href="filter-effects.html">Filter & Effects</a></div>
+        <div class="tool-card"><a href="photo-retouch.html">Photo Retouch</a></div>
+        <div class="tool-card"><a href="image-enhancer.html">Image Enhancer</a></div>
+        <div class="tool-card"><a href="meme-generator.html">Meme Generator</a></div>
+        <div class="tool-card"><a href="qr-generator.html">QR Generator</a></div>
+    </div>
 </section>
 
 <!-- VIDEO TOOLS -->
 <section id="video" class="section">
-<h2>🎬 Video Editing Tools</h2>
-<div class="tools-grid">
-<div class="tool-card"><a href="video-trimmer.html">Video Trimmer</a></div>
-<div class="tool-card"><a href="speed-controller.html">Speed Controller</a></div>
-<div class="tool-card"><a href="subtitle-adder.html">Subtitle Adder</a></div>
-<div class="tool-card"><a href="video-compressor.html">Video Compressor</a></div>
-<div class="tool-card"><a href="video-reverser.html">Video Reverser</a></div>
-<div class="tool-card"><a href="video-rotator.html">Video Rotator</a></div>
-</div>
+    <h2>🎬 Video Editing Tools</h2>
+    <div class="tools-grid">
+        <div class="tool-card"><a href="video-trimmer.html">Video Trimmer</a></div>
+        <div class="tool-card"><a href="video-speed.html">Speed Controller</a></div>
+        <div class="tool-card"><a href="subtitle-adder.html">Subtitle Adder</a></div>
+        <div class="tool-card"><a href="video-compressor.html">Video Compressor</a></div>
+        <div class="tool-card"><a href="video-reverser.html">Video Reverser</a></div>
+        <div class="tool-card"><a href="video-rotator.html">Video Rotator</a></div>
+    </div>
 </section>
 
 <!-- AUDIO TOOLS -->
 <section id="audio" class="section">
-<h2>🎵 Audio Tools</h2>
-<div class="tools-grid">
-<div class="tool-card"><a href="audio-cutter.html">Audio Cutter</a></div>
-<div class="tool-card"><a href="audio-merger.html">Audio Merger</a></div>
-<div class="tool-card"><a href="mp3-converter.html">MP3 Converter</a></div>
-<div class="tool-card"><a href="voice-recorder.html">Voice Recorder</a></div>
-</div>
+    <h2>🎵 Audio Tools</h2>
+    <div class="tools-grid">
+        <div class="tool-card"><a href="audio-cutter.html">Audio Cutter</a></div>
+        <div class="tool-card"><a href="audio-merger.html">Audio Merger</a></div>
+        <div class="tool-card"><a href="mp3-converter.html">MP3 Converter</a></div>
+        <div class="tool-card"><a href="voice-recorder.html">Voice Recorder</a></div>
+    </div>
 </section>
 
 <!-- CALCULATORS -->
 <section id="calculator" class="section">
-<h2>🧮 Calculator & Financial Tools</h2>
-<div class="tools-grid">
-<div class="tool-card"><a href="gst-calculator.html">GST Calculator</a></div>
-<div class="tool-card"><a href="currency-converter.html">Currency Converter</a></div>
-<div class="tool-card"><a href="loan-calculator.html">Loan Calculator</a></div>
-<div class="tool-card"><a href="age-calculator.html">Age Calculator</a></div>
-<div class="tool-card"><a href="compound-interest.html">Compound Interest</a></div>
-</div>
+    <h2>🧮 Calculator & Financial Tools</h2>
+    <div class="tools-grid">
+        <div class="tool-card"><a href="gst-calculator.html">GST Calculator</a></div>
+        <div class="tool-card"><a href="currency-converter.html">Currency Converter</a></div>
+        <div class="tool-card"><a href="loan-calculator.html">Loan Calculator</a></div>
+        <div class="tool-card"><a href="age-calculator.html">Age Calculator</a></div>
+        <div class="tool-card"><a href="compound-interest.html">Compound Interest</a></div>
+        <div class="tool-card"><a href="password-generator.html">Password Generator</a></div>
+    </div>
 </section>
 
 <!-- AI TOOLS -->
 <section id="ai" class="section">
-<h2>🤖 AI Video & Dev Tools</h2>
-<div class="tools-grid">
-<div class="tool-card"><a href="ai-voiceover.html">AI Voiceover</a></div>
-<div class="tool-card"><a href="password-generator.html">Password Generator</a></div>
-<div class="tool-card"><a href="qr-generator.html">QR Generator</a></div>
-</div>
+    <h2>🤖 AI & Dev Tools</h2>
+    <div class="tools-grid">
+        <div class="tool-card"><a href="ai-voiceover.html">AI Voiceover</a></div>
+        <div class="tool-card"><a href="qr-generator.html">QR Generator</a></div>
+        <div class="tool-card"><a href="password-generator.html">Password Generator</a></div>
+    </div>
 </section>
 
 <footer>
-© 2026 Tools House Online | All Rights Reserved
+    <p>© 2026 Tools House Online | All Rights Reserved | 100% Free Tools</p>
+    <p style="margin-top: 8px;"><a href="privacy.html" style="color: white;">Privacy Policy</a> | <a href="terms.html" style="color: white;">Terms & Conditions</a> | <a href="contact.html" style="color: white;">Contact Us</a></p>
 </footer>
 
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const allToolCards = document.querySelectorAll('.tool-card');
+
+searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    
+    allToolCards.forEach(card => {
+        const link = card.querySelector('a');
+        const toolName = link.textContent.toLowerCase();
+        
+        if (toolName.includes(searchTerm) || searchTerm === '') {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Show message if no results
+    const visibleCards = document.querySelectorAll('.tool-card[style=""]');
+    if (visibleCards.length === 0 && searchTerm !== '') {
+        // Optional: show no results message
+    }
+});
+
+// Smooth scroll for navigation links
+document.querySelectorAll('nav a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+</script>
 </body>
 </html>
