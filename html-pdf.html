@@ -1,29 +1,69 @@
-<!DOCTYPE>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML to PDF Converter Online Free</title>
-<meta name="description" content="Convert HTML to PDF online for free. Transform webpages, HTML files, or code into print-ready PDFs while preserving CSS, images, and layout. No signup, no watermark.">
-<meta name="keywords" content="HTML to PDF converter,convert HTML to PDF,webpage to PDF">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>HTML to PDF Converter | Free Online Tool | Convert HTML to PDF</title>
+    
+    <!-- CRITICAL SEO META TAGS - Fixed -->
+    <meta name="description" content="Convert HTML to PDF online for free. Transform webpages, HTML files, or code into print-ready PDFs while preserving CSS, images, and layout. No signup, no watermark.">
+    <meta name="keywords" content="HTML to PDF converter, convert HTML to PDF, webpage to PDF, HTML to PDF free">
+    <meta name="author" content="ToolsHouse">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Google Search Console - REPLACE WITH YOUR CODE -->
+    <meta name="google-site-verification" content="REPLACE_WITH_YOUR_ACTUAL_CODE">
+    
+    <!-- Canonical -->
     <link rel="canonical" href="https://www.toolshouse.online/html-pdf.html">
-    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
     <meta property="og:title" content="HTML to PDF Converter Online Free">
-<meta property="og:description" content="content="Convert HTML to PDF online for free. Transform webpages, HTML files, or code into print-ready PDFs while preserving CSS, images, and layout. No signup, no watermark.">
-<meta property="og:url" content="https://www.toolshouse.online/html-pdf.html">
-<meta property="og:type" content="website">
-  <style>
+    <meta property="og:description" content="Convert HTML to PDF online for free. Transform webpages, HTML files, or code into print-ready PDFs.">
+    <meta property="og:url" content="https://www.toolshouse.online/html-pdf.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.toolshouse.online/html-pdf-og.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HTML to PDF Converter">
+    <meta name="twitter:description" content="Free online HTML to PDF converter. Fast, secure, and easy to use.">
+    
+    <!-- Structured Data for Indexing -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "HTML to PDF Converter",
+        "description": "Free online tool to convert HTML code or files to PDF format",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "url": "https://www.toolshouse.online/html-pdf.html"
+    }
+    </script>
+    
+    <!-- Required Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
         }
 
         .container {
@@ -34,30 +74,35 @@
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
         }
 
         .header p {
             opacity: 0.9;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
+        }
+
+        @media (min-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            body { padding: 20px; }
         }
 
         .converter-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 16px;
             margin-bottom: 20px;
         }
 
-        @media (max-width: 968px) {
+        @media (min-width: 968px) {
             .converter-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
             }
         }
 
@@ -68,16 +113,22 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 600px;
+            height: 500px;
+        }
+
+        @media (min-width: 768px) {
+            .panel { height: 600px; }
         }
 
         .panel-header {
             background: #f8f9fa;
-            padding: 15px 20px;
+            padding: 12px 16px;
             border-bottom: 2px solid #e9ecef;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .panel-title {
@@ -86,11 +137,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 14px;
         }
 
         .panel-icon {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-radius: 6px;
             display: flex;
@@ -102,29 +154,27 @@
 
         .panel-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
             transition: all 0.3s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .btn-secondary {
             background: #e9ecef;
             color: #495057;
         }
 
-        .btn-secondary:hover {
-            background: #dee2e6;
+        .btn:active {
+            transform: scale(0.97);
         }
 
         .panel-content {
@@ -137,14 +187,18 @@
             width: 100%;
             height: 100%;
             border: none;
-            padding: 20px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            line-height: 1.6;
+            padding: 16px;
+            font-family: 'Courier New', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
             resize: none;
             outline: none;
             background: #fafafa;
             color: #212529;
+        }
+
+        @media (min-width: 768px) {
+            #htmlInput { font-size: 14px; padding: 20px; }
         }
 
         .preview-frame {
@@ -158,26 +212,26 @@
             background: white;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 25px;
+            padding: 20px;
             margin-bottom: 20px;
         }
 
         .controls-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
         }
 
         .control-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .control-label {
             font-weight: 600;
             color: #495057;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .control-input {
@@ -193,64 +247,46 @@
             border-color: #667eea;
         }
 
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
+        .template-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
         }
 
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
+        .template-btn {
+            padding: 6px 14px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 14px 32px;
-            font-size: 16px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        .template-btn.active, .template-btn:active {
+            border-color: #667eea;
+            background: #667eea;
             color: white;
         }
 
         .action-bar {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .template-selector {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 28px;
+            font-size: 16px;
         }
 
-        .template-btn {
-            padding: 6px 12px;
-            border: 2px solid #e9ecef;
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-
-        .template-btn:hover, .template-btn.active {
-            border-color: #667eea;
-            background: #f8f9ff;
-            color: #667eea;
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
         }
 
         .loading {
@@ -260,11 +296,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 30px 50px;
+            padding: 30px;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             z-index: 1000;
             text-align: center;
+            min-width: 250px;
         }
 
         .loading.active {
@@ -272,10 +309,10 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 15px;
@@ -303,22 +340,54 @@
 
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
             background: #333;
             color: white;
-            padding: 16px 24px;
+            padding: 12px 20px;
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s;
             z-index: 1001;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .toast { font-size: 12px; white-space: normal; text-align: center; max-width: 90%; }
         }
 
         .toast.show {
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
             opacity: 1;
+        }
+
+        /* Mobile file input fix */
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 24px;
+            color: white;
+            opacity: 0.8;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -327,20 +396,20 @@
     <div class="loading" id="loading">
         <div class="spinner"></div>
         <h3>Generating PDF...</h3>
-        <p>Please wait a moment</p>
+        <p>Please wait</p>
     </div>
-    <div class="toast" id="toast">Action completed successfully!</div>
+    <div class="toast" id="toast">Action completed!</div>
 
     <div class="container">
         <div class="header">
-            <h1>HTML to PDF Converter</h1>
+            <h1>📄 HTML to PDF Converter</h1>
             <p>Professional client-side PDF generation with live preview</p>
         </div>
 
         <div class="controls">
             <div class="controls-grid">
                 <div class="control-group">
-                    <label class="control-label">Page Size</label>
+                    <label class="control-label">📏 Page Size</label>
                     <select class="control-input" id="pageSize">
                         <option value="a4">A4</option>
                         <option value="letter">Letter</option>
@@ -348,30 +417,26 @@
                     </select>
                 </div>
                 <div class="control-group">
-                    <label class="control-label">Orientation</label>
+                    <label class="control-label">🔄 Orientation</label>
                     <select class="control-input" id="orientation">
                         <option value="portrait">Portrait</option>
                         <option value="landscape">Landscape</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label class="control-label">Margins (mm)</label>
+                    <label class="control-label">📐 Margins (mm)</label>
                     <input type="number" class="control-input" id="margins" value="10" min="0" max="50">
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Scale (%)</label>
-                    <input type="number" class="control-input" id="scale" value="100" min="50" max="200">
                 </div>
             </div>
             
             <div style="margin-top: 15px;">
-                <label class="control-label">Quick Templates:</label>
-                <div class="template-selector">
-                    <button class="template-btn active" onclick="loadTemplate('blank')">Blank</button>
-                    <button class="template-btn" onclick="loadTemplate('resume')">Resume</button>
-                    <button class="template-btn" onclick="loadTemplate('invoice')">Invoice</button>
-                    <button class="template-btn" onclick="loadTemplate('report')">Report</button>
-                    <button class="template-btn" onclick="loadTemplate('certificate')">Certificate</button>
+                <label class="control-label">🎨 Quick Templates:</label>
+                <div class="template-selector" id="templateSelector">
+                    <button class="template-btn" data-template="blank">Blank</button>
+                    <button class="template-btn" data-template="resume">Resume</button>
+                    <button class="template-btn" data-template="invoice">Invoice</button>
+                    <button class="template-btn" data-template="report">Report</button>
+                    <button class="template-btn" data-template="certificate">Certificate</button>
                 </div>
             </div>
         </div>
@@ -384,67 +449,62 @@
                         HTML Source
                     </div>
                     <div class="panel-actions">
-                        <div class="file-input-wrapper">
-                            <button class="btn btn-secondary">📁 Load File</button>
+                        <label class="file-input-label" id="fileInputLabel">
+                            📁 Load File
                             <input type="file" id="fileInput" accept=".html,.htm,.txt">
-                        </div>
-                        <button class="btn btn-secondary" onclick="clearEditor()">Clear</button>
+                        </label>
+                        <button class="btn" id="clearBtn">🗑️ Clear</button>
                     </div>
                 </div>
                 <div class="panel-content">
-                    <textarea id="htmlInput" placeholder="Enter your HTML code here..."><!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 40px; }
-        h1 { color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
-        .content { line-height: 1.6; color: #555; }
-    </style>
-</head>
-<body>
-    <h1>Sample Document</h1>
-    <div class="content">
-        <p>This is a sample HTML document. Edit this code to create your own PDF.</p>
-        <p>You can use any HTML tags, CSS styles, and even images (base64 encoded).</p>
-    </div>
-</body>
-</html></textarea>
+                    <textarea id="htmlInput" placeholder="Enter your HTML code here..."></textarea>
                 </div>
             </div>
 
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title">
-                        <div class="panel-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">👁</div>
+                        <div class="panel-icon">👁</div>
                         Live Preview
                     </div>
                     <div class="panel-actions">
-                        <button class="btn btn-secondary" onclick="refreshPreview()">Refresh</button>
+                        <button class="btn" id="refreshBtn">🔄 Refresh</button>
                     </div>
                 </div>
                 <div class="panel-content">
-                    <iframe id="previewFrame" class="preview-frame"></iframe>
+                    <iframe id="previewFrame" class="preview-frame" title="Preview"></iframe>
                 </div>
             </div>
         </div>
 
         <div class="action-bar">
-            <button class="btn btn-primary" onclick="generatePDF()">
-                <span>📄</span> Download PDF
+            <button class="btn btn-primary" id="downloadBtn">
+                📄 Download PDF
             </button>
-            <button class="btn btn-success" onclick="printDocument()">
-                <span>🖨</span> Print
+            <button class="btn btn-success" id="printBtn">
+                🖨️ Print
             </button>
         </div>
+        <footer>
+            <p>🔒 100% Client-side - Your data never leaves your device</p>
+        </footer>
     </div>
 
     <script>
+        // DOM Elements
         const htmlInput = document.getElementById('htmlInput');
         const previewFrame = document.getElementById('previewFrame');
         const fileInput = document.getElementById('fileInput');
         const loading = document.getElementById('loading');
         const overlay = document.getElementById('overlay');
         const toast = document.getElementById('toast');
+        const clearBtn = document.getElementById('clearBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const printBtn = document.getElementById('printBtn');
+        const pageSize = document.getElementById('pageSize');
+        const orientation = document.getElementById('orientation');
+        const margins = document.getElementById('margins');
 
         // Templates
         const templates = {
@@ -452,7 +512,8 @@
 <html>
 <head>
     <style>
-        body { font-family: Arial, sans-serif; padding: 40px; }
+        body { font-family: Arial, sans-serif; padding: 40px; margin: 0; }
+        h1 { color: #333; }
     </style>
 </head>
 <body>
@@ -465,48 +526,23 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; }
         .header { text-align: center; border-bottom: 3px solid #2c3e50; padding-bottom: 20px; margin-bottom: 30px; }
-        .name { font-size: 36px; font-weight: bold; color: #2c3e50; margin: 0; }
-        .contact { color: #7f8c8d; margin-top: 10px; }
-        .section { margin-bottom: 25px; }
-        .section-title { font-size: 20px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; margin-bottom: 15px; }
-        .item { margin-bottom: 15px; }
-        .item-title { font-weight: bold; color: #34495e; }
-        .item-subtitle { color: #7f8c8d; font-size: 14px; }
+        .name { font-size: 32px; font-weight: bold; color: #2c3e50; margin: 0; }
+        .section-title { font-size: 20px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; margin: 20px 0 10px; }
         .skills { display: flex; flex-wrap: wrap; gap: 10px; }
-        .skill { background: #ecf0f1; padding: 5px 15px; border-radius: 15px; font-size: 14px; }
+        .skill { background: #ecf0f1; padding: 5px 15px; border-radius: 15px; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1 class="name">John Doe</h1>
-        <div class="contact">toolstoseonline@gmail.com | (92)34241 | Lahore </div>
+        <p>Web Developer | john.doe@email.com | (123) 456-7890</p>
     </div>
-    
-    <div class="section">
-        <div class="section-title">Professional Summary</div>
-        <p>Experienced professional with expertise in web development and design. Proven track record of delivering high-quality projects.</p>
-    </div>
-    
-    <div class="section">
-        <div class="section-title">Experience</div>
-        <div class="item">
-            <div class="item-title">Senior Developer</div>
-            <div class="item-subtitle">Tech Company | 2020 - Present</div>
-            <p>Led development of web applications using modern technologies.</p>
-        </div>
-    </div>
-    
-    <div class="section">
-        <div class="section-title">Skills</div>
-        <div class="skills">
-            <span class="skill">HTML/CSS</span>
-            <span class="skill">JavaScript</span>
-            <span class="skill">React</span>
-            <span class="skill">Node.js</span>
-        </div>
-    </div>
+    <div class="section-title">Professional Summary</div>
+    <p>Experienced web developer with 5+ years of expertise in modern web technologies.</p>
+    <div class="section-title">Skills</div>
+    <div class="skills"><span class="skill">HTML/CSS</span><span class="skill">JavaScript</span><span class="skill">React</span><span class="skill">Node.js</span></div>
 </body>
 </html>`,
             
@@ -514,64 +550,24 @@
 <html>
 <head>
     <style>
-        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
-        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        body { font-family: Arial, sans-serif; padding: 40px; margin: 0; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 40px; }
         .company { font-size: 24px; font-weight: bold; color: #2c3e50; }
-        .invoice-title { font-size: 32px; color: #e74c3c; margin: 0; }
-        .details { margin-bottom: 30px; }
-        .details-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: #34495e; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #ecf0f1; }
-        .total { text-align: right; margin-top: 20px; font-size: 20px; font-weight: bold; }
+        th { background: #34495e; color: white; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        .total { text-align: right; margin-top: 20px; font-size: 18px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="invoice-header">
-        <div>
-            <div class="company">Your Company Name</div>
-            <div>123 Business Street</div>
-            <div>City, State 12345</div>
-        </div>
-        <div style="text-align: right;">
-            <h1 class="invoice-title">INVOICE</h1>
-            <div>Invoice #: 001</div>
-            <div>Date: ${new Date().toLocaleDateString()}</div>
-        </div>
+    <div class="header">
+        <div class="company">Your Company</div>
+        <div><h1>INVOICE</h1>Date: ${new Date().toLocaleDateString()}</div>
     </div>
-    
-    <div class="details">
-        <div><strong>Bill To:</strong></div>
-        <div>Client Name</div>
-        <div>Client Address</div>
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Web Design Services</td>
-                <td>1</td>
-                <td>$1,000.00</td>
-                <td>$1,000.00</td>
-            </tr>
-            <tr>
-                <td>Development Hours</td>
-                <td>10</td>
-                <td>$100.00</td>
-                <td>$1,000.00</td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div class="total">Total: $2,000.00</div>
+    <table><thead><tr><th>Description</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+    <tbody><tr><td>Web Design</td><td>1</td><td>$500</td><td>$500</td></tr>
+    <tr><td>Development</td><td>10</td><td>$100</td><td>$1000</td></tr></tbody></table>
+    <div class="total">Total: $1500.00</div>
 </body>
 </html>`,
             
@@ -579,49 +575,17 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; padding: 40px; line-height: 1.6; color: #333; }
-        .cover { text-align: center; padding: 100px 0; border-bottom: 3px solid #3498db; margin-bottom: 40px; }
-        .report-title { font-size: 42px; color: #2c3e50; margin-bottom: 20px; }
-        .meta { color: #7f8c8d; font-size: 16px; }
-        h2 { color: #2c3e50; border-left: 4px solid #3498db; padding-left: 15px; margin-top: 30px; }
-        .highlight { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
-        .metric { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; }
-        .metric-value { font-size: 32px; font-weight: bold; color: #3498db; }
-        .metric-label { color: #7f8c8d; margin-top: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; margin: 0; line-height: 1.6; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .metric { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center; }
     </style>
 </head>
 <body>
-    <div class="cover">
-        <h1 class="report-title">Quarterly Business Report</h1>
-        <div class="meta">Prepared by: John Doe<br>Date: ${new Date().toLocaleDateString()}</div>
-    </div>
-    
-    <h2>Executive Summary</h2>
-    <p>This report provides an overview of business performance for the current quarter, highlighting key metrics and strategic initiatives.</p>
-    
-    <div class="highlight">
-        <strong>Key Insight:</strong> Revenue increased by 25% compared to the previous quarter, exceeding targets by 15%.
-    </div>
-    
-    <h2>Performance Metrics</h2>
-    <div class="data-grid">
-        <div class="metric">
-            <div class="metric-value">$2.4M</div>
-            <div class="metric-label">Revenue</div>
-        </div>
-        <div class="metric">
-            <div class="metric-value">+18%</div>
-            <div class="metric-label">Growth</div>
-        </div>
-    </div>
-    
-    <h2>Recommendations</h2>
-    <ul>
-        <li>Increase marketing spend in Q3</li>
-        <li>Expand product line offerings</li>
-        <li>Improve customer retention programs</li>
-    </ul>
+    <h1>Quarterly Report</h1>
+    <p>Date: ${new Date().toLocaleDateString()}</p>
+    <div class="metric"><strong>Revenue:</strong> $2.4M | <strong>Growth:</strong> +18%</div>
+    <h2>Summary</h2>
+    <p>This quarter showed significant growth across all metrics. Revenue increased by 18% compared to previous quarter.</p>
 </body>
 </html>`,
             
@@ -629,184 +593,126 @@
 <html>
 <head>
     <style>
-        body { 
-            font-family: 'Lato', sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .certificate {
-            background: white;
-            padding: 60px;
-            border: 15px solid #d4af37;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 800px;
-            position: relative;
-        }
-        .certificate::before {
-            content: '';
-            position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 2px solid #d4af37;
-        }
-        .title {
-            font-family: 'Playfair Display', serif;
-            font-size: 48px;
-            color: #d4af37;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            font-size: 18px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 40px;
-        }
-        .recipient {
-            font-family: 'Playfair Display', serif;
-            font-size: 36px;
-            color: #2c3e50;
-            margin: 30px 0;
-            border-bottom: 2px solid #d4af37;
-            display: inline-block;
-            padding: 0 20px 10px;
-        }
-        .description {
-            font-size: 16px;
-            color: #555;
-            line-height: 1.8;
-            margin: 30px 0;
-        }
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 60px;
-            padding: 0 40px;
-        }
-        .signature {
-            text-align: center;
-        }
-        .sign-line {
-            border-top: 1px solid #333;
-            width: 150px;
-            margin-bottom: 10px;
-            padding-top: 10px;
-        }
+        body { margin: 0; padding: 0; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: Georgia, serif; }
+        .certificate { background: white; padding: 50px; text-align: center; border: 10px solid #d4af37; max-width: 600px; }
+        h1 { color: #d4af37; font-size: 42px; margin-bottom: 20px; }
+        .name { font-size: 32px; font-weight: bold; margin: 20px 0; border-bottom: 2px solid #d4af37; display: inline-block; }
     </style>
 </head>
 <body>
     <div class="certificate">
-        <div class="title">Certificate</div>
-        <div class="subtitle">of Achievement</div>
-        <div class="description">This is to certify that</div>
-        <div class="recipient">John Doe</div>
-        <div class="description">
-            has successfully completed the requirements and demonstrated<br>
-            exceptional performance in the field of excellence.
-        </div>
-        <div class="footer">
-            <div class="signature">
-                <div class="sign-line">Date</div>
-                <div>${new Date().toLocaleDateString()}</div>
-            </div>
-            <div class="signature">
-                <div class="sign-line">Signature</div>
-                <div>Director</div>
-            </div>
-        </div>
+        <h1>CERTIFICATE</h1>
+        <p>of Achievement</p>
+        <div class="name">John Doe</div>
+        <p>For outstanding performance</p>
+        <p>Date: ${new Date().toLocaleDateString()}</p>
     </div>
 </body>
 </html>`
         };
 
-        // Initialize preview
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.style.background = isError ? '#dc3545' : '#333';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.style.background = '#333';
+            }, 3000);
+        }
+
         function updatePreview() {
             const content = htmlInput.value;
             const blob = new Blob([content], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             previewFrame.src = url;
+            setTimeout(() => URL.revokeObjectURL(url), 100);
         }
 
-        function refreshPreview() {
-            updatePreview();
-            showToast('Preview refreshed');
+        let previewTimeout;
+        function debouncedPreview() {
+            clearTimeout(previewTimeout);
+            previewTimeout = setTimeout(updatePreview, 800);
         }
 
-        function clearEditor() {
-            if(confirm('Are you sure you want to clear the editor?')) {
-                htmlInput.value = '';
+        function loadTemplate(templateName) {
+            if (templates[templateName]) {
+                htmlInput.value = templates[templateName];
                 updatePreview();
+                showToast(`${templateName.charAt(0).toUpperCase() + templateName.slice(1)} template loaded`);
             }
         }
 
-        function loadTemplate(name) {
-            htmlInput.value = templates[name];
-            updatePreview();
-            
-            // Update active state
-            document.querySelectorAll('.template-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            showToast(`${name.charAt(0).toUpperCase() + name.slice(1)} template loaded`);
-        }
+        async function generatePDF() {
+            const content = htmlInput.value.trim();
+            if (!content) {
+                showToast('Please enter HTML content first', true);
+                return;
+            }
 
-        function generatePDF() {
             const element = document.createElement('div');
-            element.innerHTML = htmlInput.value;
+            element.innerHTML = content;
+            
+            const marginVal = parseInt(margins.value) || 10;
             
             const opt = {
-                margin: parseInt(document.getElementById('margins').value),
-                filename: `document_${new Date().getTime()}.pdf`,
+                margin: [marginVal, marginVal, marginVal, marginVal],
+                filename: `document_${Date.now()}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { 
-                    scale: parseInt(document.getElementById('scale').value) / 100,
-                    useCORS: true,
-                    logging: false
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: document.getElementById('pageSize').value,
-                    orientation: document.getElementById('orientation').value
-                }
+                html2canvas: { scale: 2, useCORS: false, logging: false },
+                jsPDF: { unit: 'mm', format: pageSize.value, orientation: orientation.value }
             };
 
             loading.classList.add('active');
             overlay.classList.add('active');
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                loading.classList.remove('active');
-                overlay.classList.remove('active');
+            try {
+                await html2pdf().set(opt).from(element).save();
                 showToast('PDF downloaded successfully!');
-            }).catch(err => {
+            } catch (err) {
+                console.error(err);
+                showToast('Error generating PDF: ' + err.message, true);
+            } finally {
                 loading.classList.remove('active');
                 overlay.classList.remove('active');
-                showToast('Error generating PDF: ' + err.message);
-            });
+            }
         }
 
         function printDocument() {
+            const content = htmlInput.value.trim();
+            if (!content) {
+                showToast('Please enter HTML content first', true);
+                return;
+            }
             const printWindow = window.open('', '_blank');
-            printWindow.document.write(htmlInput.value);
+            printWindow.document.write(content);
             printWindow.document.close();
             printWindow.print();
         }
 
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
+        // Event Listeners
+        htmlInput.addEventListener('input', debouncedPreview);
+        refreshBtn.addEventListener('click', updatePreview);
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Clear all HTML content?')) {
+                htmlInput.value = '';
+                updatePreview();
+                showToast('Editor cleared');
+            }
+        });
+        downloadBtn.addEventListener('click', generatePDF);
+        printBtn.addEventListener('click', printDocument);
 
-        // File input handler
+        // Template buttons
+        document.querySelectorAll('.template-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadTemplate(btn.dataset.template);
+            });
+        });
+
+        // File input - Fixed for mobile
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -814,24 +720,23 @@
                 reader.onload = function(e) {
                     htmlInput.value = e.target.result;
                     updatePreview();
-                    showToast('File loaded successfully');
+                    showToast(`Loaded: ${file.name}`);
+                };
+                reader.onerror = function() {
+                    showToast('Error reading file', true);
                 };
                 reader.readAsText(file);
             }
+            // Reset file input so same file can be loaded again
+            fileInput.value = '';
         });
 
-        // Auto-update preview on input (debounced)
-        let timeout;
-        htmlInput.addEventListener('input', function() {
-            clearTimeout(timeout);
-            timeout = setTimeout(updatePreview, 1000);
-        });
-
-        // Initial load
+        // Initialize with sample content
+        htmlInput.value = templates.blank;
         updatePreview();
+        
+        // Set active template
+        document.querySelector('.template-btn[data-template="blank"]').classList.add('active');
     </script>
-    <script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
-
 </body>
 </html>
