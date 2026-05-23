@@ -343,11 +343,11 @@ a{color:var(--blue);text-decoration:none}
     <div><h1>AI Scanner</h1><p>Camera or upload</p></div>
     <button class="btn btn-sm btn-secondary" onclick="showScanOptions()">⚙️</button>
   </div>
-  <div class="scan-preview glass" id="scanPreview">
+  <div class="scan-preview glass" id="scanPreview" onclick="if(document.getElementById('scanPH').style.display!=='none')showScanOptions()">
     <div class="ph" id="scanPH">
       <div class="ico">📄</div>
       <p style="font-size:.85rem">Tap to upload or open camera</p>
-      <button class="btn btn-primary btn-sm mt-8" onclick="showScanOptions()">📷 Scan Now</button>
+      <button class="btn btn-primary btn-sm mt-8" onclick="event.stopPropagation();showScanOptions()">📷 Scan Now</button>
     </div>
     <video id="camStream" autoplay playsinline style="display:none"></video>
     <img id="scanImg" style="display:none;max-width:100%;max-height:60vh;border-radius:var(--r-md);cursor:pointer">
@@ -356,6 +356,7 @@ a{color:var(--blue);text-decoration:none}
       <div class="c tl"></div><div class="c tr"></div>
       <div class="c bl"></div><div class="c br"></div>
     </div>
+    <button class="cam-btn capture" id="camBtnOverlay" onclick="event.stopPropagation();openCamera()" style="position:absolute;bottom:16px;right:16px;z-index:10;width:56px;height:56px;border-radius:50%;background:var(--grad);color:#fff;border:none;font-size:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.5);display:none">📷</button>
   </div>
   <div class="cam-controls" id="camControls" style="display:none">
     <button class="cam-btn" onclick="flipCamera()">🔄</button>
@@ -363,8 +364,8 @@ a{color:var(--blue);text-decoration:none}
     <button class="cam-btn" onclick="stopCam()">✋</button>
   </div>
   <div class="flex g-8 mt-8" style="flex-wrap:wrap">
-    <button class="btn btn-sm btn-secondary" onclick="showScanOptions()">📁 Upload</button>
-    <button class="btn btn-sm btn-secondary" onclick="openCamera()">📷 Camera</button>
+    <button class="btn btn-sm btn-secondary" onclick="showScanOptions()" style="flex:1">📁 Upload</button>
+    <button class="btn btn-sm btn-primary" onclick="openCamera()" style="flex:1">📷 Camera</button>
   </div>
   <div class="glass mt-12" id="scanActions" style="display:none">
     <div class="fg"><label style="font-size:.8rem">Brightness <span id="brightVal">0</span>%</label>
@@ -670,6 +671,7 @@ function setScanImage(url){
   document.getElementById('camStream').style.display='none';
   document.getElementById('camControls').style.display='none';
   document.getElementById('scanActions').style.display='block';
+  document.getElementById('camBtnOverlay').style.display='flex';
   stopCam();
   setTimeout(()=>{document.getElementById('scanOverlay').style.borderColor='var(--green)';setTimeout(()=>document.getElementById('scanOverlay').style.borderColor='var(--blue)',400);toast('Document detected!','s')},500);
 }
@@ -753,6 +755,7 @@ function applyAdj(){
 
 function autoCrop(){
   if(!S.origData){toast('Scan first','e');return}
+  document.getElementById('scanStatus').textContent='✂️ Detecting document edges...';
   toast('Detecting edges...','i');
   const img=new Image();
   const c=document.createElement('canvas');
@@ -776,7 +779,7 @@ function autoCrop(){
     const pad=10;
     left=Math.max(0,left-pad);top=Math.max(0,top-pad);
     right=Math.min(c.width,right+pad);bottom=Math.min(c.height,bottom+pad);
-    if(right-left<10||bottom-top<10){toast('Could not detect document edges','e');return}
+    if(right-left<10||bottom-top<10){document.getElementById('scanStatus').textContent='❌ Could not detect document edges. Try manual crop.';toast('Could not detect document edges','e');return}
     const cw=right-left,ch=bottom-top;
     const c2=document.createElement('canvas');
     c2.width=cw;c2.height=ch;
@@ -786,6 +789,7 @@ function autoCrop(){
     document.getElementById('scanImg').src=S.origData;
     document.getElementById('brightSlider').value=50;document.getElementById('colorSlider').value=50;
     document.getElementById('brightVal').textContent='50';document.getElementById('colorVal').textContent='50';
+    document.getElementById('scanStatus').textContent='✅ Document cropped successfully';
     toast('Auto cropped!','s');
   };
   img.src=S.origData;
@@ -798,28 +802,61 @@ function manualCrop(){
   ov.classList.add('open');
   ov.classList.add('center');
   modal.classList.add('center');
+  document.getElementById('sheetTitle').textContent='Manual Crop';
   document.getElementById('sheetBody').innerHTML=`
-    <p class="text-sm text-muted mb-8">Enter crop dimensions (pixels):</p>
-    <div class="grid-2">
-      <div class="fg"><label>X</label><input type="number" id="cropX" value="0" min="0"></div>
-      <div class="fg"><label>Y</label><input type="number" id="cropY" value="0" min="0"></div>
-      <div class="fg"><label>Width</label><input type="number" id="cropW" value="500" min="1"></div>
-      <div class="fg"><label>Height</label><input type="number" id="cropH" value="500" min="1"></div>
+    <div style="text-align:center;margin-bottom:8px">
+      <div style="background:var(--bg2);border-radius:var(--r-sm);padding:8px;margin-bottom:8px;position:relative;overflow:hidden;min-height:120px;display:flex;align-items:center;justify-content:center">
+        <img src="${S.origData}" id="cropPreview" style="max-width:100%;max-height:120px;border-radius:4px">
+        <div id="cropBox" style="position:absolute;border:2px dashed var(--blue);background:rgba(0,180,255,0.08);border-radius:2px;pointer-events:none"></div>
+      </div>
     </div>
+    <div class="fg"><label style="font-size:.75rem;display:flex;justify-content:space-between"><span>Top</span><span id="cropYVal">0%</span></label>
+      <input type="range" min="0" max="40" value="0" id="cropYSlider" oninput="updateCropPreview()" style="width:100%;accent-color:var(--blue)"></div>
+    <div class="fg"><label style="font-size:.75rem;display:flex;justify-content:space-between"><span>Bottom</span><span id="cropHVal">0%</span></label>
+      <input type="range" min="0" max="40" value="0" id="cropHSlider" oninput="updateCropPreview()" style="width:100%;accent-color:var(--blue)"></div>
+    <div class="fg"><label style="font-size:.75rem;display:flex;justify-content:space-between"><span>Left</span><span id="cropXVal">0%</span></label>
+      <input type="range" min="0" max="40" value="0" id="cropXSlider" oninput="updateCropPreview()" style="width:100%;accent-color:var(--blue)"></div>
+    <div class="fg"><label style="font-size:.75rem;display:flex;justify-content:space-between"><span>Right</span><span id="cropWVal">0%</span></label>
+      <input type="range" min="0" max="40" value="0" id="cropWSlider" oninput="updateCropPreview()" style="width:100%;accent-color:var(--blue)"></div>
     <div class="flex g-8 mt-8">
       <button class="btn btn-sm btn-secondary" onclick="closeCrop()" style="flex:1">Cancel</button>
       <button class="btn btn-sm btn-primary" onclick="doManualCrop()" style="flex:1">Apply Crop</button>
     </div>`;
+  document.getElementById('cropPreview').onload=()=>updateCropPreview();
+  setTimeout(()=>updateCropPreview(),200);
+}
+function updateCropPreview(){
+  const img=document.getElementById('cropPreview');
+  if(!img||!img.naturalWidth)return;
+  const xP=parseInt(document.getElementById('cropXSlider').value)/100;
+  const yP=parseInt(document.getElementById('cropYSlider').value)/100;
+  const rP=parseInt(document.getElementById('cropWSlider').value)/100;
+  const bP=parseInt(document.getElementById('cropHSlider').value)/100;
+  const box=document.getElementById('cropBox');
+  const rect=img.getBoundingClientRect();
+  const container=img.parentElement.getBoundingClientRect();
+  const scale=img.naturalWidth?rect.width/img.naturalWidth:1;
+  const left=xP*rect.width,top=yP*rect.height;
+  const w=rect.width-left-rP*rect.width,h=rect.height-top-bP*rect.height;
+  box.style.left=(left+rect.left-container.left)+'px';
+  box.style.top=(top+rect.top-container.top)+'px';
+  box.style.width=Math.max(10,w)+'px';box.style.height=Math.max(10,h)+'px';
+  document.getElementById('cropXVal').textContent=Math.round(xP*100)+'%';
+  document.getElementById('cropYVal').textContent=Math.round(yP*100)+'%';
+  document.getElementById('cropWVal').textContent=Math.round(rP*100)+'%';
+  document.getElementById('cropHVal').textContent=Math.round(bP*100)+'%';
 }
 function doManualCrop(){
-  const x=parseInt(document.getElementById('cropX').value)||0;
-  const y=parseInt(document.getElementById('cropY').value)||0;
-  const w=parseInt(document.getElementById('cropW').value)||1;
-  const h=parseInt(document.getElementById('cropH').value)||1;
+  const xP=parseInt(document.getElementById('cropXSlider').value)/100;
+  const yP=parseInt(document.getElementById('cropYSlider').value)/100;
+  const rP=parseInt(document.getElementById('cropWSlider').value)/100;
+  const bP=parseInt(document.getElementById('cropHSlider').value)/100;
   const img=new Image();
   img.onload=()=>{
+    const x=Math.round(img.width*xP),y=Math.round(img.height*yP);
+    const w=Math.round(img.width*(1-xP-rP)),h=Math.round(img.height*(1-yP-bP));
     const c=document.createElement('canvas');
-    c.width=Math.min(w,img.width-x);c.height=Math.min(h,img.height-y);
+    c.width=Math.max(1,w);c.height=Math.max(1,h);
     c.getContext('2d').drawImage(img,x,y,c.width,c.height,0,0,c.width,c.height);
     S.origData=c.toDataURL('image/jpeg',.95);
     S.scanData=S.origData;
@@ -1200,6 +1237,7 @@ window.applyAdj=applyAdj;
 window.autoCrop=autoCrop;
 window.manualCrop=manualCrop;
 window.doManualCrop=doManualCrop;
+window.updateCropPreview=updateCropPreview;
 window.closeCrop=closeCrop;
 window.resetImage=resetImage;
 window.scanToPDF=scanToPDF;
