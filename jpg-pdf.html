@@ -1,45 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>JPG to PDF Converter Online Free</title>
-<meta name="description" content="Convert JPG to PDF online for free. Combine multiple images into one PDF, arrange page order, and customize page size. Perfect for portfolios and receipts. No signup, no watermark.">
-<meta name="keywords" content="jpg to pdf, image to pdf converter, combine images pdf,JPEG to PDF,multiple images to PDF">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>JPG to PDF Converter | Free Online Image to PDF Tool</title>
+    
+    <!-- SEO Meta Tags - Fixed & Complete -->
+    <meta name="description" content="Convert JPG to PDF online for free. Combine multiple images into one PDF, arrange page order, and customize page size. Perfect for portfolios, receipts, and documents. No signup, no watermark.">
+    <meta name="keywords" content="JPG to PDF, image to PDF converter, JPEG to PDF, multiple images to PDF, combine images to PDF, free PDF converter">
+    <meta name="author" content="ToolsHouse">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    
+    <!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+    <meta name="google-site-verification" content="YOUR_ACTUAL_VERIFICATION_CODE_HERE">
+    
+    <!-- Canonical URL - UPDATE WITH YOUR DOMAIN -->
     <link rel="canonical" href="https://www.toolshouse.online/jpg-pdf.html">
-    <meta name="robots" content="index, follow">
-    <meta property="og:title" content="JPG to PDF Converter Online Free">
-<meta property="og:description" content="Convert JPG to PDF online for free...">
-<meta property="og:url" content="https://www.toolshouse.online/jpg-pdf.html">
-<meta property="og:type" content="website">
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this JPG to PDF Converter:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="JPG to PDF Converter | Free Online Image to PDF">
+    <meta property="og:description" content="Convert JPG images to PDF online for free. Combine multiple images, customize page size, and download instantly. No registration required.">
+    <meta property="og:url" content="https://www.toolshouse.online/jpg-pdf.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.toolshouse.online/jpg-pdf-og.jpg">
+    <meta property="og:site_name" content="ToolsHouse">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JPG to PDF Converter">
+    <meta name="twitter:description" content="Free online JPG to PDF converter. Fast, secure, and easy to use.">
+    
+    <!-- Structured Data for Better Indexing -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "JPG to PDF Converter",
+        "description": "Free online tool to convert JPG and other image formats to PDF",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": "Multiple images to single PDF, Page size customization, Image quality control, No signup required",
+        "url": "https://www.toolshouse.online/jpg-pdf.html"
+    }
+    </script>
+    
+    <!-- Required Libraries - Fixed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
         }
 
         .container {
@@ -47,58 +74,77 @@
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            padding: 40px;
+            padding: 24px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 768px) {
+            body { padding: 20px; }
+            .container { padding: 40px; }
         }
 
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 10px;
-            font-size: 2.5em;
+            font-size: 1.8em;
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 2.5em; }
         }
 
         .subtitle {
             text-align: center;
             color: #666;
             margin-bottom: 30px;
-            font-size: 1.1em;
+            font-size: 0.95em;
+        }
+
+        @media (min-width: 768px) {
+            .subtitle { font-size: 1.1em; }
         }
 
         .upload-area {
             border: 3px dashed #667eea;
             border-radius: 15px;
-            padding: 40px;
+            padding: 30px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             background: #f8f9ff;
         }
 
-        .upload-area:hover {
-            border-color: #764ba2;
-            background: #f0f2ff;
-            transform: translateY(-2px);
+        @media (min-width: 768px) {
+            .upload-area { padding: 40px; }
+        }
+
+        .upload-area:active {
+            transform: scale(0.98);
         }
 
         .upload-area.drag-over {
             border-color: #764ba2;
             background: #e8ebff;
-            transform: scale(1.02);
         }
 
         .upload-icon {
-            font-size: 48px;
+            font-size: 40px;
             margin-bottom: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .upload-icon { font-size: 48px; }
         }
 
         .upload-content p {
             margin: 10px 0;
             color: #666;
+            font-size: 14px;
         }
 
         .upload-info {
-            font-size: 0.9em;
+            font-size: 12px;
             color: #999;
         }
 
@@ -107,13 +153,20 @@
         }
 
         .controls {
-            margin: 30px 0;
+            margin: 20px 0;
             padding: 20px;
             background: #f8f9ff;
             border-radius: 15px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 640px) {
+            .controls {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 20px;
+            }
         }
 
         .control-group {
@@ -125,19 +178,20 @@
         .control-group label {
             font-weight: 600;
             color: #333;
-            font-size: 0.95em;
+            font-size: 0.9em;
         }
 
-        .control-group select {
+        .control-group select, .control-group input {
             padding: 10px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
-            font-size: 0.95em;
+            font-size: 14px;
             cursor: pointer;
             transition: border-color 0.3s;
+            background: white;
         }
 
-        .control-group select:focus {
+        .control-group select:focus, .control-group input:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -146,34 +200,41 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 14px 24px;
             border-radius: 10px;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            grid-column: span auto;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
         }
 
-        .convert-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        @media (min-width: 640px) {
+            .convert-btn { width: auto; }
         }
 
-        .convert-btn:active:not(:disabled) {
-            transform: translateY(0);
+        .convert-btn:active {
+            transform: scale(0.97);
         }
 
         .convert-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .image-preview {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
             margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .image-preview {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
         }
 
         .preview-item {
@@ -182,48 +243,52 @@
             border-radius: 10px;
             overflow: hidden;
             background: #f8f9ff;
-            transition: transform 0.3s;
+            transition: transform 0.2s;
         }
 
-        .preview-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .preview-item:active {
+            transform: scale(0.98);
         }
 
         .preview-item img {
             width: 100%;
-            height: 150px;
+            height: 120px;
             object-fit: cover;
         }
 
+        @media (min-width: 768px) {
+            .preview-item img { height: 150px; }
+        }
+
         .preview-info {
-            padding: 8px;
+            padding: 6px;
             background: white;
-            font-size: 0.85em;
+            font-size: 11px;
             text-align: center;
             color: #666;
+            word-break: break-word;
         }
 
         .remove-btn {
             position: absolute;
             top: 5px;
             right: 5px;
-            background: rgba(255,0,0,0.8);
+            background: rgba(220, 53, 69, 0.9);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s;
+            transition: background 0.2s;
         }
 
-        .remove-btn:hover {
-            background: rgba(255,0,0,1);
+        .remove-btn:active {
+            transform: scale(0.95);
         }
 
         .loading {
@@ -248,87 +313,86 @@
 
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 20px;
             border-radius: 8px;
             z-index: 1000;
-            animation: slideIn 0.3s ease;
             font-weight: 500;
+            font-size: 14px;
+            text-align: center;
+            max-width: 90%;
+            white-space: normal;
+            transition: transform 0.3s;
+        }
+
+        @media (min-width: 768px) {
+            .notification {
+                top: 20px;
+                bottom: auto;
+                right: 20px;
+                left: auto;
+                transform: translateX(0) translateY(-100px);
+                white-space: nowrap;
+            }
+            .notification.show {
+                transform: translateX(0) translateY(0);
+            }
         }
 
         .notification-success {
-            background: #4caf50;
+            background: #28a745;
             color: white;
         }
 
         .notification-error {
-            background: #f44336;
+            background: #dc3545;
             color: white;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
         }
 
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
+        @media (min-width: 768px) {
+            .notification.show {
+                transform: translateX(0) translateY(0);
             }
         }
 
         .stats {
             margin-top: 20px;
-            padding: 15px;
+            padding: 12px;
             background: #f8f9ff;
             border-radius: 10px;
             text-align: center;
             color: #666;
+            font-size: 13px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8em;
-            }
-            
-            .controls {
-                grid-template-columns: 1fr;
-            }
-            
-            .convert-btn {
-                grid-column: auto;
-            }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🖼️ JPG to PDF Converter</h1>
-        <p class="subtitle">Convert your images to PDF files easily</p>
+        <p class="subtitle">Convert your images to PDF files easily - Free & Secure</p>
 
         <div class="upload-area" id="uploadArea">
             <div class="upload-content">
                 <div class="upload-icon">📸</div>
-                <p>Drag & drop images here or click to upload</p>
+                <p>📱 Tap or drag & drop images here</p>
                 <p class="upload-info">Supports: JPG, JPEG, PNG, GIF, BMP, WebP</p>
             </div>
-            <input type="file" id="fileInput" multiple accept="image/*">
+            <input type="file" id="fileInput" multiple accept="image/jpeg,image/jpg,image/png,image/gif,image/bmp,image/webp">
         </div>
 
         <div class="controls" id="controls" style="display: none;">
@@ -370,9 +434,13 @@
             <div class="spinner"></div>
             <p>Converting images to PDF...</p>
         </div>
+        
+        <footer>
+            <p>🔒 100% Client-side processing - Your images never leave your device</p>
+            <p style="margin-top: 8px;">© 2024 ToolsHouse - Free JPG to PDF Converter</p>
+        </footer>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         class JPGToPDFConverter {
             constructor() {
@@ -451,6 +519,7 @@
                             if (processedCount === imageFiles.length) {
                                 this.updatePreview();
                                 this.updateStats();
+                                this.showNotification(`✓ ${this.images.length} image(s) loaded successfully`, 'success');
                             }
                         };
                         img.src = e.target.result;
@@ -485,6 +554,7 @@
                     const img = document.createElement('img');
                     img.src = image.src;
                     img.alt = image.name;
+                    img.loading = 'lazy';
                     
                     const info = document.createElement('div');
                     info.className = 'preview-info';
@@ -494,7 +564,10 @@
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'remove-btn';
                     removeBtn.textContent = '×';
-                    removeBtn.onclick = () => this.removeImage(index);
+                    removeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        this.removeImage(index);
+                    };
                     
                     previewItem.appendChild(img);
                     previewItem.appendChild(info);
@@ -511,6 +584,9 @@
                 if (this.images.length === 0) {
                     this.controls.style.display = 'none';
                     this.stats.style.display = 'none';
+                    this.showNotification('All images removed', 'success');
+                } else {
+                    this.showNotification('Image removed', 'success');
                 }
             }
 
@@ -531,10 +607,6 @@
                         const image = this.images[i];
                         const imgData = await this.loadImage(image.src);
                         
-                        // Get quality settings
-                        const qualityValue = this.getQualityValue();
-                        
-                        // Get page dimensions based on settings
                         const dimensions = this.getPageDimensions(imgData);
                         
                         if (i === 0) {
@@ -544,26 +616,27 @@
                                 format: dimensions.format
                             });
                         } else {
-                            pdf.addPage();
+                            pdf.addPage([dimensions.format[0], dimensions.format[1]], dimensions.orientation);
                         }
                         
-                        // Create canvas for better quality control
+                        // Create canvas for quality control
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        let imgWidth = dimensions.width;
-                        let imgHeight = dimensions.height;
+                        let targetWidth = dimensions.width;
+                        let targetHeight = dimensions.height;
                         
-                        canvas.width = imgWidth * 3.7795275591; // Convert mm to pixels (1mm = 3.78px)
-                        canvas.height = imgHeight * 3.7795275591;
+                        // Convert mm to pixels (96 DPI = 3.78 pixels per mm)
+                        canvas.width = targetWidth * 3.78;
+                        canvas.height = targetHeight * 3.78;
                         
                         ctx.drawImage(imgData, 0, 0, canvas.width, canvas.height);
                         
-                        // Convert canvas to image with quality setting
-                        const quality = qualityValue === 'high' ? 1 : (qualityValue === 'medium' ? 0.8 : 0.6);
+                        // Get quality setting
+                        const qualityValue = this.quality.value;
+                        const quality = qualityValue === 'high' ? 0.95 : (qualityValue === 'medium' ? 0.8 : 0.6);
                         const optimizedImage = canvas.toDataURL('image/jpeg', quality);
                         
-                        // Add image to PDF
                         pdf.addImage(
                             optimizedImage,
                             'JPEG',
@@ -573,16 +646,16 @@
                             dimensions.height
                         );
                         
-                        // Update progress (optional)
-                        if (i % 5 === 0) {
-                            await this.delay(10); // Small delay to keep UI responsive
+                        // Small delay to keep UI responsive
+                        if (i % 3 === 0) {
+                            await this.delay(10);
                         }
                     }
                     
                     if (pdf) {
                         const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-                        pdf.save(`converted_images_${timestamp}.pdf`);
-                        this.showNotification(`PDF created successfully! ${this.images.length} image(s) converted.`, 'success');
+                        pdf.save(`converted_${this.images.length}_images_${timestamp}.pdf`);
+                        this.showNotification(`✓ PDF created successfully! ${this.images.length} image(s) converted.`, 'success');
                     }
                 } catch (error) {
                     console.error('Conversion error:', error);
@@ -593,18 +666,15 @@
                 }
             }
 
-            getQualityValue() {
-                return this.quality.value;
-            }
-
             delay(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
             loadImage(src) {
-                return new Promise((resolve) => {
+                return new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => resolve(img);
+                    img.onerror = () => reject(new Error('Failed to load image'));
                     img.src = src;
                 });
             }
@@ -615,7 +685,6 @@
                 
                 let pageWidth, pageHeight, format;
                 
-                // Set page dimensions based on selected size (in mm)
                 switch(pageSize) {
                     case 'a4':
                         pageWidth = 210;
@@ -633,26 +702,26 @@
                         format = 'legal';
                         break;
                     default:
-                        // Auto size - use image dimensions converted to mm (assuming 96 DPI)
-                        pageWidth = img.width * 0.264583;
-                        pageHeight = img.height * 0.264583;
+                        // Auto size - convert pixels to mm (1 inch = 25.4mm, 96 DPI)
+                        pageWidth = img.width * 25.4 / 96;
+                        pageHeight = img.height * 25.4 / 96;
                         format = [pageWidth, pageHeight];
                 }
                 
-                // Adjust orientation
+                // Determine orientation
                 let finalOrientation = orientation;
                 if (orientation === 'auto') {
-                    finalOrientation = pageWidth > pageHeight ? 'landscape' : 'portrait';
+                    finalOrientation = img.width > img.height ? 'landscape' : 'portrait';
                 }
                 
-                // Swap dimensions if needed
+                // Swap dimensions for landscape
                 if (finalOrientation === 'landscape' && pageWidth < pageHeight) {
                     [pageWidth, pageHeight] = [pageHeight, pageWidth];
                 } else if (finalOrientation === 'portrait' && pageWidth > pageHeight) {
                     [pageWidth, pageHeight] = [pageHeight, pageWidth];
                 }
                 
-                // Calculate image dimensions to fit page while maintaining aspect ratio
+                // Calculate image dimensions to fit page
                 let imgWidth = pageWidth;
                 let imgHeight = (img.height / img.width) * imgWidth;
                 
@@ -661,7 +730,7 @@
                     imgWidth = (img.width / img.height) * imgHeight;
                 }
                 
-                // Center image on page
+                // Center image
                 const x = (pageWidth - imgWidth) / 2;
                 const y = (pageHeight - imgHeight) / 2;
                 
@@ -676,36 +745,34 @@
             }
 
             showNotification(message, type) {
+                // Remove existing notification
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                
                 const notification = document.createElement('div');
                 notification.className = `notification notification-${type}`;
                 notification.textContent = message;
                 
                 document.body.appendChild(notification);
                 
+                // Trigger animation
+                setTimeout(() => notification.classList.add('show'), 10);
+                
                 setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease';
+                    notification.classList.remove('show');
                     setTimeout(() => notification.remove(), 300);
                 }, 3000);
             }
         }
 
-        // Initialize the converter when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                new JPGToPDFConverter();
+            });
+        } else {
             new JPGToPDFConverter();
-        });
+        }
     </script>
-    <script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
-    <script>
-  atOptions = {
-    'key' : 'ae869b7d1136099dd8efbbf290e399f1',
-    'format' : 'iframe',
-    'height' : 600,
-    'width' : 160,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/ae869b7d1136099dd8efbbf290e399f1/invoke.js"></script>
-
 </body>
 </html>
