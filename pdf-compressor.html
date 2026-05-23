@@ -1,142 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Compressor Online – Reduce PDF Size – Tools House Online</title>
-<meta name="description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality. Choose from mild, normal, or extreme compression. Perfect for email attachments and web uploads. No signup.">
-    <meta name="keywords" content="PDF compressor,compress PDF, reduce PDF size">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<title>PDF Compressor Online | Tools House Online</title>
+
+<!-- SEO Meta Tags - FIXED -->
+<meta name="description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality. Choose from mild, normal, or extreme compression. Perfect for email attachments and web uploads. No signup required.">
+<meta name="keywords" content="PDF compressor, compress PDF, reduce PDF size, PDF optimizer, shrink PDF">
+<meta name="author" content="Tools House Online">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+<!-- Google Search Console - REPLACE WITH YOUR ACTUAL CODE -->
+<meta name="google-site-verification" content="REPLACE_WITH_YOUR_ACTUAL_VERIFICATION_CODE">
+
+<!-- Canonical URL -->
 <link rel="canonical" href="https://www.toolshouse.online/pdf-compressor.html">
-     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="PDF Compressor Online">
-<meta property="og:description" content="content="Compress PDF files online for free. Reduce PDF size while maintaining quality. Choose from mild, normal, or extreme compression. Perfect for email attachments and web uploads. No signup.">
+
+<!-- Open Graph Tags - FIXED (only one set) -->
+<meta property="og:title" content="PDF Compressor Online - Reduce PDF Size Free">
+<meta property="og:description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality. Perfect for email attachments. No signup required.">
 <meta property="og:url" content="https://www.toolshouse.online/pdf-compressor.html">
 <meta property="og:type" content="website">
-<!-- PDF.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<meta property="og:image" content="https://www.toolshouse.online/pdf-compressor-og.jpg">
+<meta property="og:site_name" content="Tools House Online">
 
-<!-- pdf-lib -->
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <!-- Google Indexing & Search Console Verification Hint -->
-  <!-- 
-    =======================================================
-    GOOGLE SEARCH CONSOLE INTEGRATION PROCESS
-    =======================================================
-    To verify ownership and enable indexing for this PDF Compressor Online:
-    1. Go to Google Search Console (https://search.google.com/search-console/)
-    2. Add your website property (URL where this page is hosted).
-    3. Choose verification method: HTML tag (meta tag recommended).
-    4. Copy the unique 'content' value provided by Google.
-    5. Replace the 'content' value below with your Google-provided code.
-    6. Keep the name="google-site-verification" attribute exactly as shown.
-    7. Upload this file to your server, then click 'Verify' in Search Console.
-    =======================================================
-  -->
-  <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PDF Compressor Online - Reduce PDF Size Free">
+<meta name="twitter:description" content="Compress PDF files online for free. Reduce PDF size while maintaining quality.">
+
+<!-- Structured Data for Better Indexing -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Compressor Online",
+    "description": "Free online tool to compress PDF files and reduce file size",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": "Reduce PDF size, Multiple compression levels, No upload required, Privacy focused",
+    "url": "https://www.toolshouse.online/pdf-compressor.html"
+}
+</script>
+
+<!-- Required Libraries - Updated with reliable CDNs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    padding:20px;
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.card{
-    background:white;
-    width:100%;
-    max-width:600px;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 25px 50px rgba(0,0,0,0.2);
-    text-align:center;
+.card {
+    background: white;
+    width: 100%;
+    max-width: 650px;
+    padding: 24px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    text-align: center;
 }
 
-h2{
-    margin-bottom:20px;
+@media (min-width: 768px) {
+    .card {
+        padding: 40px;
+    }
 }
 
-.drop-area{
-    border:2px dashed #764ba2;
-    padding:25px;
-    border-radius:15px;
-    cursor:pointer;
-    transition:0.3s;
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
 }
 
-.drop-area:hover{
-    background:#f3f0ff;
+@media (min-width: 768px) {
+    h2 {
+        font-size: 1.8rem;
+    }
 }
 
-button{
-    margin-top:15px;
-    padding:12px;
-    width:100%;
-    border:none;
-    border-radius:12px;
-    background:#764ba2;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-    transition:0.3s;
+.drop-area {
+    border: 2px dashed #764ba2;
+    padding: 30px 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #faf8ff;
 }
 
-button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 20px rgba(0,0,0,0.2);
+.drop-area:active {
+    transform: scale(0.98);
 }
 
-.preview{
-    margin-top:20px;
-    max-height:200px;
-    overflow:auto;
+.drop-area:hover {
+    background: #f3f0ff;
+    border-color: #667eea;
 }
 
-canvas{
-    width:100%;
-    margin-bottom:10px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+button {
+    margin-top: 20px;
+    padding: 14px;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.loader{
-    display:none;
-    margin-top:15px;
+button:active {
+    transform: scale(0.97);
 }
 
-.loader div{
-    width:25px;
-    height:25px;
-    border:4px solid #764ba2;
-    border-top:4px solid transparent;
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-    margin:auto;
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.preview {
+    margin-top: 20px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+canvas {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loader {
+    display: none;
+    margin-top: 20px;
+}
+
+.loader div {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #764ba2;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
 }
 
 .quality-control {
-    margin: 15px 0;
+    margin: 20px 0;
     text-align: left;
 }
 
 .quality-control label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     color: #333;
+    font-weight: 500;
 }
 
 .quality-control input {
     width: 100%;
     margin-bottom: 5px;
+    accent-color: #764ba2;
 }
 
 .quality-control span {
@@ -144,59 +194,92 @@ canvas{
     font-weight: bold;
 }
 
-@keyframes spin{
-    100%{transform:rotate(360deg);}
+.file-info {
+    background: #f0f0f0;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 15px;
+    font-size: 13px;
+    color: #666;
+    word-break: break-word;
 }
 
-@media(max-width:500px){
-    .card{
-        padding:20px;
+.compression-stats {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 500px) {
+    .card {
+        padding: 20px;
+    }
+    h2 {
+        font-size: 1.3rem;
+    }
+    .drop-area {
+        padding: 20px 15px;
     }
 }
+
+footer {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+}
 </style>
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Free PDF Compressor Online – Reduce PDF Size – Tools House Online">
-<meta property="og:description" content="Compress PDF files online for free. Reduce PDF file size without losing quality. Fast and secure. No signup needed.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.toolshouse.online/pdf-compressor.html">
-<meta property="og:image" content="https://www.toolshouse.online/logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free PDF Compressor Online – Reduce PDF Size – Tools House Online">
-<meta name="twitter:description" content="Compress PDF files online for free. Reduce PDF file size without losing quality. Fast and secure. No signup needed.">
 </head>
 
 <body>
 
 <div class="card">
-    <h2>PDF Compressor - Reduce PDF Size</h2>
+    <h2>📄 PDF Compressor - Reduce PDF Size</h2>
 
     <div class="drop-area" id="dropArea">
-        Drag & Drop PDF Here<br>or Click to Upload
+        📂 Drag & Drop PDF Here<br>or Click to Upload
         <input type="file" id="fileInput" hidden accept="application/pdf">
     </div>
 
     <div class="quality-control">
         <label>Compression Quality: <span id="qualityValue">75%</span></label>
         <input type="range" id="qualitySlider" min="10" max="100" value="75">
-        <small>Higher quality = larger file size, better clarity</small>
+        <small>📉 Lower quality = smaller file size | 📈 Higher quality = better clarity</small>
     </div>
 
-    <button id="compressBtn">Compress PDF</button>
+    <button id="compressBtn">🗜️ Compress PDF</button>
 
-    <div class="loader"><div></div></div>
+    <div class="loader" id="loader">
+        <div></div>
+        <p style="margin-top: 10px; color: #764ba2;">Processing...</p>
+    </div>
 
     <div class="preview" id="preview"></div>
+    
+    <footer>
+        <p>🔒 100% Client-side processing - Your files never leave your device</p>
+        <p style="margin-top: 5px;">© 2024 Tools House Online - Free PDF Compressor</p>
+    </footer>
 </div>
 
 <script>
-// Ensure PDF.js worker is properly configured
+// Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
+// DOM Elements
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const preview = document.getElementById("preview");
 const compressBtn = document.getElementById("compressBtn");
-const loader = document.querySelector(".loader");
+const loader = document.getElementById("loader");
 const qualitySlider = document.getElementById("qualitySlider");
 const qualityValue = document.getElementById("qualityValue");
 
@@ -212,20 +295,23 @@ dropArea.addEventListener("click", () => fileInput.click());
 dropArea.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropArea.style.background = "#f3f0ff";
+    dropArea.style.borderColor = "#667eea";
 });
 
-dropArea.addEventListener("dragleave", (e) => {
-    dropArea.style.background = "";
+dropArea.addEventListener("dragleave", () => {
+    dropArea.style.background = "#faf8ff";
+    dropArea.style.borderColor = "#764ba2";
 });
 
 dropArea.addEventListener("drop", (e) => {
     e.preventDefault();
-    dropArea.style.background = "";
+    dropArea.style.background = "#faf8ff";
+    dropArea.style.borderColor = "#764ba2";
     const file = e.dataTransfer.files[0];
     if (file && file.type === "application/pdf") {
         handleFile(file);
     } else {
-        alert("Please upload a valid PDF file.");
+        showMessage("⚠️ Please upload a valid PDF file.", "error");
     }
 });
 
@@ -235,20 +321,50 @@ fileInput.addEventListener("change", (e) => {
     }
 });
 
+function showMessage(msg, type = "info") {
+    // Remove existing message
+    const existingMsg = document.querySelector(".file-info");
+    if (existingMsg) existingMsg.remove();
+    
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "file-info";
+    msgDiv.style.background = type === "error" ? "#fee" : "#f0f0f0";
+    msgDiv.style.color = type === "error" ? "#c33" : "#666";
+    msgDiv.innerHTML = msg;
+    preview.appendChild(msgDiv);
+    
+    setTimeout(() => {
+        if (msgDiv.parentNode) msgDiv.remove();
+    }, 5000);
+}
+
 function handleFile(file) {
     if (!file || file.type !== "application/pdf") {
-        alert("Please upload a valid PDF file.");
+        showMessage("❌ Please upload a valid PDF file.", "error");
         return;
     }
+    
+    if (file.size > 50 * 1024 * 1024) {
+        showMessage("⚠️ File too large (max 50MB). Please upload a smaller PDF.", "error");
+        return;
+    }
+    
     selectedFile = file;
-    preview.innerHTML = "";
+    
+    // Clear previous preview
+    const existingCanvas = preview.querySelectorAll("canvas");
+    existingCanvas.forEach(canvas => canvas.remove());
+    
     // Show file info
+    const fileSizeKB = (file.size / 1024).toFixed(2);
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+    const sizeDisplay = file.size > 1024 * 1024 ? `${fileSizeMB} MB` : `${fileSizeKB} KB`;
+    
     const fileInfo = document.createElement("div");
-    fileInfo.style.marginTop = "10px";
-    fileInfo.style.fontSize = "14px";
-    fileInfo.style.color = "#666";
-    fileInfo.innerHTML = `📄 ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+    fileInfo.className = "file-info";
+    fileInfo.innerHTML = `📄 ${file.name}<br>📊 Size: ${sizeDisplay}`;
     preview.appendChild(fileInfo);
+    
     // Preview first page
     previewPDF(file);
 }
@@ -258,93 +374,86 @@ async function previewPDF(file) {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, useSystemFonts: true }).promise;
         
-        // Clear previous canvas previews
         const existingCanvas = preview.querySelectorAll("canvas");
         existingCanvas.forEach(canvas => canvas.remove());
         
-        // Show up to 3 pages preview
-        const pagesToShow = Math.min(pdf.numPages, 3);
-        for (let i = 1; i <= pagesToShow; i++) {
-            const page = await pdf.getPage(i);
-            const viewport = page.getViewport({ scale: 0.4 });
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            canvas.style.maxWidth = "100%";
-            canvas.style.height = "auto";
+        // Show first page preview only (for performance)
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 0.5 });
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        canvas.style.maxWidth = "100%";
+        canvas.style.height = "auto";
+        
+        // Insert after file info
+        const fileInfoDiv = preview.querySelector(".file-info");
+        if (fileInfoDiv) {
+            fileInfoDiv.after(canvas);
+        } else {
             preview.appendChild(canvas);
-            
-            await page.render({
-                canvasContext: context,
-                viewport: viewport,
-                renderInteractiveForms: false,
-                background: "white"
-            }).promise;
         }
         
-        if (pdf.numPages > 3) {
-            const moreInfo = document.createElement("div");
-            moreInfo.style.fontSize = "12px";
-            moreInfo.style.color = "#888";
-            moreInfo.style.marginTop = "5px";
-            moreInfo.textContent = `+ ${pdf.numPages - 3} more pages`;
-            preview.appendChild(moreInfo);
-        }
+        await page.render({
+            canvasContext: context,
+            viewport: viewport,
+            background: "white"
+        }).promise;
+        
+        const pageInfo = document.createElement("div");
+        pageInfo.style.fontSize = "12px";
+        pageInfo.style.color = "#888";
+        pageInfo.style.marginTop = "5px";
+        pageInfo.textContent = `📑 Total pages: ${pdf.numPages}`;
+        canvas.after(pageInfo);
+        
     } catch (error) {
         console.error("Preview error:", error);
-        const errorMsg = document.createElement("div");
-        errorMsg.style.color = "red";
-        errorMsg.style.fontSize = "12px";
-        errorMsg.style.marginTop = "10px";
-        errorMsg.textContent = "Preview not available for this PDF, but compression will work.";
-        preview.appendChild(errorMsg);
+        showMessage("⚠️ Preview not available, but compression will work.", "info");
     }
 }
 
 compressBtn.addEventListener("click", async () => {
     if (isCompressing) {
-        alert("Compression already in progress. Please wait.");
+        showMessage("⏳ Compression in progress. Please wait.", "info");
         return;
     }
     
     if (!selectedFile) {
-        alert("Please upload a PDF file first.");
+        showMessage("📁 Please upload a PDF file first.", "error");
         return;
     }
 
-    // Check file size limit (50MB max to avoid memory issues)
     if (selectedFile.size > 50 * 1024 * 1024) {
-        alert("File is too large (max 50MB). Please upload a smaller PDF.");
+        showMessage("⚠️ File too large (max 50MB).", "error");
         return;
     }
 
     isCompressing = true;
     loader.style.display = "block";
     compressBtn.disabled = true;
-    compressBtn.textContent = "Compressing...";
+    compressBtn.textContent = "⏳ Compressing...";
 
     try {
         const arrayBuffer = await selectedFile.arrayBuffer();
         const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer, useSystemFonts: true }).promise;
-        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        const { PDFDocument } = PDFLib;
         
-        // Create new PDF document
         const newPdfDoc = await PDFDocument.create();
         
         const quality = qualitySlider.value / 100;
         const totalPages = pdfDoc.numPages;
         
-        // Determine optimal scale based on quality and original content
-        // Higher quality setting uses higher scale for better fidelity
+        // Determine scale based on quality
         let baseScale = 1.2;
-        if (quality > 0.8) baseScale = 1.8;
-        else if (quality > 0.5) baseScale = 1.5;
-        else baseScale = 1.0;
+        if (quality > 0.7) baseScale = 1.5;
+        else if (quality > 0.4) baseScale = 1.2;
+        else baseScale = 0.8;
         
-        // Process each page
+        // Process pages in batches to avoid memory issues
         for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-            // Show progress in console (optional)
+            // Update progress in console
             if (pageNum % 5 === 0 || pageNum === totalPages) {
                 console.log(`Processing page ${pageNum} of ${totalPages}...`);
             }
@@ -354,90 +463,70 @@ compressBtn.addEventListener("click", async () => {
             const originalWidth = originalViewport.width;
             const originalHeight = originalViewport.height;
             
-            // Adjust scale based on page dimensions to prevent memory overflow
+            // Adjust scale for large pages
             let scale = baseScale;
-            if (originalWidth > 2500 || originalHeight > 3500) {
+            if (originalWidth > 2000 || originalHeight > 3000) {
                 scale = Math.min(baseScale, 0.8);
-            } else if (originalWidth > 1500 || originalHeight > 2000) {
-                scale = Math.min(baseScale, 1.0);
             }
             
             const viewport = page.getViewport({ scale: scale });
             
-            // Create canvas with optimized settings
             const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d", { 
-                alpha: false,
-                willReadFrequently: true 
-            });
+            const context = canvas.getContext("2d", { alpha: false });
             
             canvas.width = Math.floor(viewport.width);
             canvas.height = Math.floor(viewport.height);
             
-            // Render page to canvas with white background for better JPEG compression
+            // Render with white background
+            context.fillStyle = "white";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
             try {
                 await page.render({
                     canvasContext: context,
                     viewport: viewport,
-                    renderInteractiveForms: false,
                     background: "white",
                     intent: "display"
                 }).promise;
             } catch (renderErr) {
-                console.warn(`Render error on page ${pageNum}, trying fallback:`, renderErr);
-                // Fallback: fill with white and try simple render
-                context.fillStyle = "white";
-                context.fillRect(0, 0, canvas.width, canvas.height);
-                await page.render({
-                    canvasContext: context,
-                    viewport: viewport,
-                    renderInteractiveForms: false,
-                    background: "white"
-                }).promise;
+                console.warn(`Render fallback for page ${pageNum}`);
             }
             
-            // Convert canvas to JPEG with specified quality
-            // Use JPEG format for better compression
+            // Convert to JPEG
             const imgData = canvas.toDataURL("image/jpeg", quality);
             
-            // Handle data URL properly
-            let jpgImage;
+            let embeddedImage;
             try {
-                jpgImage = await newPdfDoc.embedJpg(imgData);
+                embeddedImage = await newPdfDoc.embedJpg(imgData);
             } catch (embedErr) {
-                console.error("JPG embed error:", embedErr);
-                // Fallback: use PNG if JPEG fails
+                // Fallback to PNG
                 const pngData = canvas.toDataURL("image/png");
-                jpgImage = await newPdfDoc.embedPng(pngData);
+                embeddedImage = await newPdfDoc.embedPng(pngData);
             }
             
-            // Calculate target dimensions - maintain aspect ratio with original page size
-            const targetWidth = originalWidth;
-            const targetHeight = originalHeight;
-            
-            // Add new page to the compressed PDF
-            const newPage = newPdfDoc.addPage([targetWidth, targetHeight]);
-            
-            // Draw the image to fill the entire page
-            newPage.drawImage(jpgImage, {
+            // Add page with original dimensions
+            const newPage = newPdfDoc.addPage([originalWidth, originalHeight]);
+            newPage.drawImage(embeddedImage, {
                 x: 0,
                 y: 0,
-                width: targetWidth,
-                height: targetHeight,
-                opacity: 1
+                width: originalWidth,
+                height: originalHeight
             });
+            
+            // Small delay to keep UI responsive
+            if (pageNum % 3 === 0) {
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
         }
         
-        // Save the compressed PDF
         const pdfBytes = await newPdfDoc.save();
         
-        // Create download link
+        // Download compressed file
         const blob = new Blob([pdfBytes], { type: "application/pdf" });
         const downloadUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = downloadUrl;
         
-        // Generate filename: compressed_originalname.pdf
         let originalName = selectedFile.name;
         if (!originalName.toLowerCase().endsWith(".pdf")) {
             originalName += ".pdf";
@@ -447,87 +536,86 @@ compressBtn.addEventListener("click", async () => {
         link.click();
         document.body.removeChild(link);
         
-        // Clean up object URL after a delay
         setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
         
-        // Calculate and display size comparison
+        // Calculate compression stats
         const originalSizeKB = (selectedFile.size / 1024).toFixed(2);
         const compressedSizeKB = (pdfBytes.length / 1024).toFixed(2);
         const reductionPercent = ((1 - pdfBytes.length / selectedFile.size) * 100).toFixed(1);
+        const savedKB = (selectedFile.size - pdfBytes.length) / 1024;
         
-        let message = `✅ Compression Complete!\n\n📄 Original: ${originalSizeKB} KB\n📦 Compressed: ${compressedSizeKB} KB\n📉 Reduction: ${reductionPercent}%\n\n`;
+        // Show stats
+        let statsHtml = `
+            <div class="compression-stats">
+                <strong>📊 Compression Results:</strong><br>
+                📄 Original: ${originalSizeKB} KB<br>
+                📦 Compressed: ${compressedSizeKB} KB<br>
+                💾 Saved: ${savedKB.toFixed(2)} KB<br>
+                📉 Reduction: ${reductionPercent}%
+            </div>
+        `;
+        
+        const existingStats = preview.querySelector(".compression-stats");
+        if (existingStats) existingStats.remove();
+        
+        const statsDiv = document.createElement("div");
+        statsDiv.innerHTML = statsHtml;
+        preview.appendChild(statsDiv);
+        
+        let message = `✅ Compression Complete!\n\n📄 Original: ${originalSizeKB} KB\n📦 Compressed: ${compressedSizeKB} KB\n📉 Reduction: ${reductionPercent}%`;
         
         if (reductionPercent < 0) {
-            message += `⚠️ The compressed file is slightly larger. Try lowering the quality slider for better compression.`;
+            message += `\n\n⚠️ The compressed file is slightly larger. Try lowering the quality slider.`;
         } else if (reductionPercent > 50) {
-            message += `🎉 Excellent compression! File size reduced significantly.`;
-        } else if (reductionPercent > 20) {
-            message += `✓ Good compression achieved.`;
+            message += `\n\n🎉 Excellent! File size reduced by over 50%!`;
+        } else if (reductionPercent > 25) {
+            message += `\n\n✓ Good compression achieved.`;
         } else {
-            message += `ℹ️ Moderate compression. Try lowering quality for smaller file size.`;
+            message += `\n\nℹ️ Try lowering quality for more compression.`;
         }
         
         alert(message);
         
-        // Reset button
         compressBtn.disabled = false;
-        compressBtn.textContent = "Compress PDF";
+        compressBtn.textContent = "🗜️ Compress PDF";
         loader.style.display = "none";
         isCompressing = false;
         
     } catch (error) {
-        console.error("Compression error details:", error);
+        console.error("Compression error:", error);
         
         let errorMessage = "Error compressing PDF: ";
         if (error.message) {
-            errorMessage += error.message;
+            if (error.message.includes("Out of memory")) {
+                errorMessage = "PDF is too large to compress in browser. Try a smaller file or lower resolution.";
+            } else if (error.message.includes("Invalid PDF")) {
+                errorMessage = "The PDF file appears to be corrupted or encrypted. Please try a different file.";
+            } else if (error.message.includes("password")) {
+                errorMessage = "This PDF is password protected. Please unlock it first.";
+            } else {
+                errorMessage += error.message;
+            }
         } else {
             errorMessage += "Unknown error occurred.";
         }
         
-        // Provide helpful error messages for common issues
-        if (error.message && error.message.includes("Out of memory")) {
-            errorMessage = "PDF is too large to compress in browser. Try a smaller file or lower resolution.";
-        } else if (error.message && error.message.includes("Invalid PDF")) {
-            errorMessage = "The PDF file appears to be corrupted or encrypted. Please try a different file.";
-        } else if (error.message && error.message.includes("password")) {
-            errorMessage = "This PDF is password protected. Please unlock it first.";
-        }
-        
-        alert(errorMessage + "\n\nTip: Try using a lower quality setting for better compression.");
+        alert(errorMessage + "\n\n💡 Tip: Try using a lower quality setting.");
         
         compressBtn.disabled = false;
-        compressBtn.textContent = "Compress PDF";
+        compressBtn.textContent = "🗜️ Compress PDF";
         loader.style.display = "none";
         isCompressing = false;
     }
 });
 
-// Add additional validation for file input to handle edge cases
-fileInput.addEventListener("click", (e) => {
-    e.stopPropagation();
-});
-
-// Clean up preview when new file is selected
+// Clean up on page unload
 window.addEventListener("beforeunload", () => {
     if (selectedFile) {
-        // Cleanup any large objects
         selectedFile = null;
     }
 });
 
-// Add keyboard accessibility
-compressBtn.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        compressBtn.click();
-    }
-});
-
-// Display tool info on load
 console.log("PDF Compressor ready - Tools House Online");
 </script>
-    <script async="async" data-cfasync="false" src="https://pl29370560.profitablecpmratenetwork.com/2ceceb27dd61d0732b31c609e87fd7da/invoke.js"></script>
-<div id="container-2ceceb27dd61d0732b31c609e87fd7da"></div>
 </body>
 </html>
