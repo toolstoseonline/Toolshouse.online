@@ -1,7 +1,7 @@
 # ============================================
 # ROBOTS.TXT - Tools House Online
 # Domain: https://www.toolshouse.online
-# Last Updated: 2026-05-17
+# Last Updated: 2026-05-24 (FIXED)
 # ============================================
 
 # Allow all major search engines to crawl everything
@@ -9,15 +9,13 @@ User-agent: *
 Allow: /
 
 # ============================================
-# SITEMAP LOCATIONS
+# SITEMAP LOCATIONS (MUST BE ACCESSIBLE)
 # ============================================
 Sitemap: https://www.toolshouse.online/sitemap.xml
-Sitemap: https://www.toolshouse.online/sitemap-index.xml
 
 # ============================================
 # CRAWL DELAY - Be respectful to server
 # ============================================
-# Recommended crawl delay for bots
 User-agent: Googlebot
 Crawl-delay: 1
 
@@ -37,7 +35,7 @@ User-agent: Yandex
 Crawl-delay: 1
 
 # ============================================
-# BLOCK MALICIOUS BOTS (Known bad bots)
+# BLOCK MALICIOUS BOTS
 # ============================================
 User-agent: MJ12bot
 Disallow: /
@@ -65,10 +63,6 @@ Disallow: /
 
 User-agent: MauiBot
 Disallow: /
-
-User-agent: YandexBot
-Disallow: /temp/
-Disallow: /cache/
 
 # ============================================
 # BLOCK ADMIN & SYSTEM PATHS
@@ -108,17 +102,6 @@ Disallow: /*.bak$
 Disallow: /print/*
 
 # ============================================
-# BLOCK SPECIFIC FILE TYPES
-# ============================================
-User-agent: *
-Disallow: /*.css$
-Disallow: /*.js$
-Disallow: /*.json$
-Disallow: /*.xml$ (except sitemap)
-Disallow: /*.inc$
-Disallow: /*.conf$
-
-# ============================================
 # SEO - Prevent duplicate content
 # ============================================
 User-agent: *
@@ -135,7 +118,7 @@ Disallow: /*?ref=
 Disallow: /*?source=
 
 # ============================================
-# MOBILE & IMAGE BOTS (Allow images)
+# MOBILE & IMAGE BOTS
 # ============================================
 User-agent: Googlebot-Image
 Allow: /images/
@@ -169,21 +152,13 @@ User-agent: Discordbot
 Allow: /
 
 # ============================================
-# CRAWL RATE OPTIMIZATION
-# ============================================
-# Maximum crawl rate for Google
-User-agent: Googlebot
-Host: https://www.toolshouse.online
-
-# ============================================
-# HOST DIRECTIVE (For Yandex)
+# HOST DIRECTIVE
 # ============================================
 Host: https://www.toolshouse.online
 
 # ============================================
 # CLEAN PARAMETERS
 # ============================================
-# Tell Google which parameters to ignore
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
 Clean-param: ref&source&from
 Clean-param: session_id&sid
