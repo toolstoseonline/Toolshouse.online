@@ -12,14 +12,12 @@
 
     <!-- LEGAL PAGES -->
     <url><loc>https://www.toolshouse.online/privacy-policy.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-    <!-- FIX: Both URLs included (terms.html + terms-of-use.html from footer) -->
     <url><loc>https://www.toolshouse.online/terms.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
     <url><loc>https://www.toolshouse.online/terms-of-use.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
     <url><loc>https://www.toolshouse.online/copyright.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
     <url><loc>https://www.toolshouse.online/SECURITY.md</loc><lastmod>2026-04-01</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 
     <!-- ==================== PDF TOOLS ==================== -->
-    <!-- Core PDF Operations -->
     <url><loc>https://www.toolshouse.online/pdf-merger.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/pdf-splitter.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/pdf-compressor.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -28,33 +26,20 @@
     <url><loc>https://www.toolshouse.online/edit-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/pdf-signer.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
     <url><loc>https://www.toolshouse.online/unlock-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-
-    <!-- PDF Security & Repair -->
     <url><loc>https://www.toolshouse.online/pdf-redact.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/pdf-repair.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-    <!-- PDF Conversion (To/From Other Formats) -->
-    <!-- FIX: Both word-pdf.html and word-to-pdf-converter.html included -->
     <url><loc>https://www.toolshouse.online/word-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/word-to-pdf-converter.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/pdf-word.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/excel-to-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/powerpoint-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/pdf-powerpoint.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-    <!-- PDF & Image Interchange -->
     <url><loc>https://www.toolshouse.online/pdf-jpg.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/jpg-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-    <!-- Web & OCR PDF Tools -->
     <url><loc>https://www.toolshouse.online/html-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/ocr-pdf.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
     <url><loc>https://www.toolshouse.online/pdf-page.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-
-    <!-- FIX: pdf-converter.html was MISSING from old sitemap — found on homepage -->
     <url><loc>https://www.toolshouse.online/pdf-converter.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-    <!-- PDF Utilities -->
     <url><loc>https://www.toolshouse.online/camscanner.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
     <url><loc>https://www.toolshouse.online/watermark-remover.html</loc><lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
