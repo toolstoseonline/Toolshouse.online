@@ -9,12 +9,12 @@ User-agent: *
 Allow: /
 
 # ============================================
-# SITEMAP LOCATIONS (MUST BE ACCESSIBLE)
+# SITEMAP LOCATIONS
 # ============================================
 Sitemap: https://www.toolshouse.online/sitemap.xml
 
 # ============================================
-# CRAWL DELAY - Be respectful to server
+# CRAWL DELAY
 # ============================================
 User-agent: Googlebot
 Crawl-delay: 1
@@ -118,7 +118,7 @@ Disallow: /*?ref=
 Disallow: /*?source=
 
 # ============================================
-# MOBILE & IMAGE BOTS
+# IMAGE & MEDIA BOTS
 # ============================================
 User-agent: Googlebot-Image
 Allow: /images/
