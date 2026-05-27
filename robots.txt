@@ -1,7 +1,7 @@
 # ============================================
 # ROBOTS.TXT - Tools House Online
 # Domain: https://www.toolshouse.online
-# Last Updated: 2026-05-24 (FIXED)
+# Last Updated: 2026-05-27 (IMPROVED)
 # ============================================
 
 # Allow all major search engines to crawl everything
@@ -14,10 +14,11 @@ Allow: /
 Sitemap: https://www.toolshouse.online/sitemap.xml
 
 # ============================================
-# CRAWL DELAY
+# CRAWL DELAY & BUDGET
 # ============================================
 User-agent: Googlebot
 Crawl-delay: 1
+Request-rate: 1/1s
 
 User-agent: Bingbot
 Crawl-delay: 1
@@ -88,34 +89,35 @@ Disallow: /lib/
 Disallow: /classes/
 
 # ============================================
-# BLOCK DUPLICATE & PARAMETER PAGES
+# BLOCK SENSITIVE FILE TYPES ONLY
 # ============================================
+# Only block actual sensitive files, not content
 User-agent: *
-Disallow: /*?*
-Disallow: /*.pdf$
-Disallow: /*.zip$
-Disallow: /*.rar$
 Disallow: /*.tmp$
 Disallow: /*.log$
 Disallow: /*.sql$
 Disallow: /*.bak$
-Disallow: /print/*
 
 # ============================================
-# SEO - Prevent duplicate content
+# PREVENT DUPLICATE CONTENT (Smart)
 # ============================================
 User-agent: *
-Disallow: /*/page/
-Disallow: /*/category/
-Disallow: /*/tag/
-Disallow: /*?sort=
-Disallow: /*?order=
-Disallow: /*?filter=
+# Allow pagination, but use rel=next/prev in HTML
+# Allow parameters, but use canonical tags
 Disallow: /*?utm_source=
 Disallow: /*?utm_medium=
 Disallow: /*?utm_campaign=
+Disallow: /*?utm_term=
+Disallow: /*?utm_content=
 Disallow: /*?ref=
 Disallow: /*?source=
+Disallow: /*?from=
+Disallow: /*?session_id=
+Disallow: /*?sid=
+# Remove: /*?* (this was blocking everything)
+# Remove: /*/page/ (this was blocking pagination)
+# Remove: /*/category/ (this was blocking categories)
+# Remove: /*/tag/ (this was blocking tags)
 
 # ============================================
 # IMAGE & MEDIA BOTS
@@ -128,18 +130,17 @@ Allow: /*.jpg
 Allow: /*.jpeg
 Allow: /*.gif
 Allow: /*.webp
-Disallow: /admin/
 
 User-agent: Mediapartners-Google
 Allow: /
 
 # ============================================
-# SOCIAL MEDIA BOTS
+# SOCIAL MEDIA BOTS (Allow for OG tags)
 # ============================================
 User-agent: Twitterbot
 Allow: /
 
-User-agent: Facebookbot
+User-agent: facebookexternalhit
 Allow: /
 
 User-agent: LinkedInBot
@@ -151,14 +152,19 @@ Allow: /
 User-agent: Discordbot
 Allow: /
 
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
 # ============================================
 # HOST DIRECTIVE
 # ============================================
 Host: https://www.toolshouse.online
 
 # ============================================
-# CLEAN PARAMETERS
+# CLEAN PARAMETERS (Google Search Console)
 # ============================================
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
-Clean-param: ref&source&from
-Clean-param: session_id&sid
+Clean-param: ref&source&from&session_id&sid
