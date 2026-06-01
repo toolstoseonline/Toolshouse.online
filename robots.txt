@@ -1,40 +1,43 @@
 # ============================================
 # ROBOTS.TXT - Tools House Online
 # Domain: https://www.toolshouse.online
-# Last Updated: 2026-05-28
+# Last Updated: 2026-05-31
 # ============================================
 
 # ============================================
-# ALLOW ALL MAJOR SEARCH ENGINES
+# ALLOW ALL MAJOR SEARCH ENGINES TO INDEX TOOLS
 # ============================================
-User-agent: *
-Allow: /
-
 User-agent: Googlebot
+Allow: /
 Crawl-delay: 1
 
 User-agent: Googlebot-Image
 Allow: /images/
 Allow: /img/
-Allow: /*.png
-Allow: /*.jpg
-Allow: /*.jpeg
-Allow: /*.gif
-Allow: /*.webp
+Allow: *.png
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.gif
+Allow: *.webp
 
 User-agent: Bingbot
+Allow: /
 Crawl-delay: 1
 
 User-agent: Slurp
+Allow: /
 Crawl-delay: 1
 
 User-agent: DuckDuckBot
+Allow: /
 Crawl-delay: 1
 
 User-agent: Baiduspider
+Allow: /
 Crawl-delay: 2
 
 User-agent: Yandexbot
+Allow: /
 Crawl-delay: 1
 
 # ============================================
@@ -65,7 +68,13 @@ User-agent: Mediapartners-Google
 Allow: /
 
 # ============================================
-# BLOCK AI TRAINING BOTS
+# DEFAULT: ALLOW ALL OTHER GOOD BOTS
+# ============================================
+User-agent: *
+Allow: /
+
+# ============================================
+# BLOCK AI TRAINING BOTS (Data scrapers)
 # ============================================
 User-agent: Amazonbot
 Disallow: /
@@ -86,6 +95,9 @@ User-agent: GPTBot
 Disallow: /
 
 User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Google-Extended
 Disallow: /
 
 # ============================================
@@ -113,6 +125,9 @@ User-agent: spbot
 Disallow: /
 
 User-agent: MauiBot
+Disallow: /
+
+User-agent: DataForSeoBot
 Disallow: /
 
 # ============================================
@@ -143,7 +158,7 @@ Disallow: /*.sql$
 Disallow: /*.bak$
 
 # ============================================
-# BLOCK UTM / TRACKING PARAMETERS
+# BLOCK UTM / TRACKING PARAMETERS (Avoid duplicate URLs)
 # ============================================
 User-agent: *
 Disallow: /*?utm_source=
@@ -155,6 +170,6 @@ Disallow: /*?ref=
 Disallow: /*?session_id=
 
 # ============================================
-# SITEMAP
+# SITEMAP LOCATION
 # ============================================
 Sitemap: https://www.toolshouse.online/sitemap.xml
